@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.61",
-  "commit": "8d13850729baa5b1d781bb95036ffd1583037d3a",
-  "builtAt": "2026-11-14T22:58:53.534799+00:00",
+  "version": "0.1.62",
+  "commit": "c81a92d4e88794ceafe4cb2247e4ab7e7eb40c21",
+  "builtAt": "2026-11-14T23:38:37.432364+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 2271,
-      "sha256": "4809762874635f2646c4838384fbbc47281215af576668a06460c775c7b9d6cb"
+      "bytes": 3017,
+      "sha256": "49b2ff9a7ecd19de9943d9c99b8cc319a541178d21f819253a45d3d23653065a"
     },
     {
       "file": "game.js",
-      "bytes": 95461,
-      "sha256": "7698e13b9e6518be07a59cbe6c8668ac06d14927b40fa1da18d31c0956d01350"
+      "bytes": 99427,
+      "sha256": "2e849a2056070eeca3c45bd599bbbd703c6029bdc1af52eaa770870f207b0486"
     },
     {
       "file": "assets.js",
@@ -21,8 +21,8 @@
     },
     {
       "file": "assets_ce.js",
-      "bytes": 7073891,
-      "sha256": "3b2e16b25ec80190766740adddac18faa6e5fc5b9867b6624f0f9599a71312d7"
+      "bytes": 8614922,
+      "sha256": "8b1174ebfbeb2d43d9c55526fc2ffb9c9538ed186ca85fdf869d04407b0f4379"
     },
     {
       "file": "sound.js",
@@ -76,13 +76,58 @@
     },
     {
       "file": "ce_bison.js",
-      "bytes": 1842,
-      "sha256": "c369031ab15431684b2d9044ab0a7beb4924991ba518af29917dccea04d89496"
+      "bytes": 1898,
+      "sha256": "7c9b9e14c9503dabc391cc6beb2c6ee0e263b53fed363d9124ded7eb0925700a"
+    },
+    {
+      "file": "ce_bison_input.js",
+      "bytes": 1593,
+      "sha256": "16f9cf66afb7125a67ff4b3a0da905f3f838dc632652d454401c91b1b63ead56"
+    },
+    {
+      "file": "ce_charge_specials.js",
+      "bytes": 4124,
+      "sha256": "5e116c1f033be5658245493e167d7f006016c0bf6daff08c093eeaa1aef2cde9"
+    },
+    {
+      "file": "ce_bison_throw.js",
+      "bytes": 5942,
+      "sha256": "dc111d299b3accc8980f3aa33470887e0cc09fabb6bd4766d278ee7f18e26103"
+    },
+    {
+      "file": "ce_chun_throw.js",
+      "bytes": 1833,
+      "sha256": "da676b98c2466bb960c3909afea853adf9cb4d8f4064d65b9bc0df66166b2d88"
+    },
+    {
+      "file": "ce_chun_legs.js",
+      "bytes": 2148,
+      "sha256": "cf0590054d434e0cad32a6d12a2174c326bd625623bad9311145c8c90fd577ca"
+    },
+    {
+      "file": "ce_chun_air.js",
+      "bytes": 857,
+      "sha256": "6a50a5cbdcb736910aea7a690436a7ad6fb48237c451bd0931276fffd7d0d6b8"
+    },
+    {
+      "file": "ce_zangief.js",
+      "bytes": 798,
+      "sha256": "accb207a859585f4649949090565cea34f12ac3e43fe52a370b4848203933356"
+    },
+    {
+      "file": "ce_blanka_bite.js",
+      "bytes": 3103,
+      "sha256": "768234f6db004ff7490b5a1aa9ec5a8366c267782776adeeaf4a287eec4ddda9"
+    },
+    {
+      "file": "ce_normals.js",
+      "bytes": 900,
+      "sha256": "a456b354102b0ba1111d4020e0a628fc1f965a1fcf967dfbf5d8269f2bbcb85d"
     },
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "2e640a204a6a6b0535c9ae36f04e44eed8c45934836f3d1068fbfc3a094afa3e"
+      "sha256": "8867bcc0a7a1c02a4547481123c997d045499d662aea056baa7f578e73b505ea"
     },
     {
       "file": "lobby.css",

@@ -62,7 +62,7 @@ function dmgfix(){if(typeof DMG_CE!=='object'||!DMG_CE[0])return;Object.assign(D
 const CNTHR_CE={6:{1:80,2:80},7:{0:102,1:102,4:116}};
 function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk];if(t&&(Math.abs(p.opp.X-p.X)>>8)<=t){const n=AI(p,'cn'+['LP','MP','HP','LK','MK','HK'][atk]);if(n>=0)return n;}return AN_CLP+atk;}
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
-function resetp(p,x,face){Object.assign(p,{X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:MAXHP,HPD:MAXHP,PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,MQP:[],MQK:[],PREV:0,KEYS:0});
+function resetp(p,x,face){Object.assign(p,{X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:MAXHP,HPD:MAXHP,PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   p.MSEQ=[[0,0],[0,0],[0,0]];p.THV=null;p.hitdone=0;setanim(p,AN_IDLE,0);}
 function resetround(){if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],c=Math.max(r[0],Math.min(r[1],OFS));resetp(P[0],(110+c)<<8,1);resetp(P[1],(210+c)<<8,0);G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;}
 function resetmatch(){P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
@@ -88,17 +88,22 @@ function motion(p,keys,nw,rel){
   if(dir&8){p.CD++;p.CDW=p.CD>=40?12:0;}else{p.CD=0;if(p.CDW)p.CDW--;}
   const cbf=(p.CBW||p.CB>=40)&&(dir&1), cdu=(p.CDW||p.CD>=40)&&(dir&4);
   if(p.CBLW&&(dir&1)&&!(dir&2)&&kb)ev.push(['cbfl','K',low(kb)]);
-  if(cbf){if(pb)ev.push(['cbf','P',low(pb)]);if(kb)ev.push(['cbf','K',low(kb)]);}
+  const bisonInput=VER.cur==='CE'&&p.fid===8&&window.SF2BISONINPUT;
+  if(cbf){if(pb&&!bisonInput)ev.push(['cbf','P',low(pb)]);if(kb)ev.push(['cbf','K',low(kb)]);}
+  if(bisonInput){const event=bisonInput.step(p,dir,((nw|rel)>>4)&7,()=>rand());if(event)ev.push(event);}
   if(cdu){if(pb)ev.push(['cdu','P',low(pb)]);if(kb)ev.push(['cdu','K',low(kb)]);}
   // mash: 3 presses of punch (or kick) buttons inside 30 ticks
-  for(const [b,k] of [[pb,'P'],[kb,'K']]){const q=p['MQ'+k]; if(b){q.push(T); while(q.length&&T-q[0]>30)q.shift(); if(q.length>=3){ev.push(['mash',k,low(b)]);q.length=0;}}}
+  const chunLegs=VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS;
+  if(chunLegs){const e=chunLegs.input(p,kb);if(e)ev.push(e);}
+  for(const [b,k] of [[pb,'P'],[kb,'K']]){if(chunLegs&&k==='K')continue;const q=p['MQ'+k]; if(b){q.push(T); while(q.length&&T-q[0]>30)q.shift(); if(q.length>=3){ev.push(['mash',k,low(b)]);q.length=0;}}}
   // 360 (approx.): forward, back and down all seen within 40 ticks, then punch
   if(dir&1)p.R3[0]=T; if(dir&2)p.R3[1]=T; if(dir&8)p.R3[2]=T; if(dir&4)p.R3[3]=T;
   if(pb&&p.R3.slice(0,3).every(t=>T-t<=40)){ev.push(['360','P',low(pb)]);p.R3=[-99,-99,-99,-99];}
   // PPP: two or more punch buttons within 3 ticks
-  for(let i=0;i<3;i++)if(pb&(1<<i))p.PT[i]=T; if(pb&&p.PT.filter(t=>T-t<=3).length>=2){ev.push(['ppp','P',2]);p.PT=[-99,-99,-99];}
+  for(let i=0;i<3;i++)if(pb&(1<<i))p.PT[i]=T;const ceGief=VER.cur==='CE'&&p.fid===6;
+  if(ceGief?pb===7:pb&&p.PT.filter(t=>T-t<=3).length>=2){ev.push(['ppp','P',2]);p.PT=[-99,-99,-99];}
   // KKK (CE Zangief quick lariat)
-  if(!p.KT)p.KT=[-99,-99,-99]; for(let i=0;i<3;i++)if(kb&(1<<i))p.KT[i]=T; if(kb&&p.KT.filter(t=>T-t<=3).length>=2){ev.push(['kkk','K',2]);p.KT=[-99,-99,-99];}
+  if(!p.KT)p.KT=[-99,-99,-99]; for(let i=0;i<3;i++)if(kb&(1<<i))p.KT[i]=T; if(!ceGief&&kb&&p.KT.filter(t=>T-t<=3).length>=2){ev.push(['kkk','K',2]);p.KT=[-99,-99,-99];}
   // CE Balrog Turn Punch: hold all three punches (or kicks) >= 60 ticks, then release
   {const hp=((keys>>4)&7)===7,hk=((keys>>7)&7)===7; if(hp||hk){p.TPH=(p.TPH||0)+1;p.TPF=hp?'P':'K';} else {if(p.TPH>=60)ev.push(['tp',p.TPF,2]);p.TPH=0;}}
   return ev;}
@@ -115,7 +120,8 @@ function btnof(n){for(const b of [AN_SLP,AN_CLP,AN_NEAR,AN_JD,AN_JU])if(n>=b&&n<
 const THK={throw:1,athrow:1};
 function toidle(p){setanim(p,AN_IDLE,0);p.Y=0;p.ST=S_FREE;}
 function relth(p){const o=p.opp,v=p.THV;p.THV=null;o.HP=Math.max(0,o.HP-v.dmg);o.X=p.X+v.d*(40<<8);fallst(o,o.HP?S_DOWN:S_KO,v.d);const X=XS(p);sfxc(X&&X.fall,SN_HIT[2]);}
-function update(p){p.X0=p.X;if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.cur!==p.THAN))relth(p);
+const cethooks=()=>({find:AI,anim:setanim,idle:toidle,fall:fallst,sound:sfxc,tick:animstep});
+function update(p){p.X0=p.X;if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.actor&&SF2CETHROWS.actor(p,cethooks()))return end(p);if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.victim(p,{fall:(q,d)=>fallst(q,q.HP?S_DOWN:S_KO,d),find:AI,anim:setanim,idle:q=>{if(q.HP)toidle(q);else{q.ST=S_KO;setanim(q,AN_FALL+1,0);}},land:q=>sfxc(XS(q)&&0x2e)}))return end(p);if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.cur!==p.THAN))relth(p);
   if(p.VQ){if(p.ST!==S_SPEC)p.VQ=null;else{p.VT++;while(p.VQ.length&&p.VQ[0][0]<=p.VT)sfxc(p.VQ.shift()[1]);}}
   if(p.WAKET>0)p.WAKET--; if(p.LANDT>0)p.LANDT--;
   if(p.ST===S_FREE&&p.PST===S_GETUP)p.WAKET=6; if((p.ST===S_FREE||p.ST===S_CR)&&p.PST===S_AIR)p.LANDT=4; p.PST=p.ST;
@@ -132,13 +138,13 @@ function update(p){p.X0=p.X;if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.c
   // mash-capable button family (Honda/Blanka punches, Chun-Li kicks): a lone tap still gives the normal, but it is
   // no longer deferred (CE ROM starts it next frame); further taps (or mashing) are swallowed, so the mash special starts clean
   if(st===S_FREE||st===S_CR||st===S_ATK){ const fam=atk<0?null:atk<3?'P':'K';
-    if(fam&&!(st===S_FREE&&dx!==0&&atk%3&&canthrow(p,atk>=3))&&p.F.moves.some(m=>m.inp==='mash'&&m.btn===fam)){
+    if(fam&&!(VER.cur==='CE'&&p.fid===5&&fam==='K'&&window.SF2CHUNLEGS)&&!(st===S_FREE&&dx!==0&&atk%3&&canthrow(p,atk>=3))&&p.F.moves.some(m=>m.inp==='mash'&&m.btn===fam)){
       /* ROM-measured (fdtrace2 lag): the first tap's normal starts at once; only follow-up taps are swallowed so the mash special can take over */
       if(p['MQ'+fam].length>=2||st===S_ATK&&p.MASHF===fam){p.MASHF=fam;atk=-1;} else p.MASHF=null; } }
   if(st!==S_FREE&&st!==S_CR&&st!==S_ATK)p.PENDT=0;
   if(atk>=0&&(st===S_FREE||st===S_CR||st===S_AIR&&!p.JA&&!p.PJ)){const X=XS(p);sfxc(X&&(st===S_CR||keys&K_D?X.whc:X.wh)[atk],SN_WHIFF,0.35);}
   if(VER.cur==='CE'&&st===S_SPEC&&atk>=0&&atk<3&&p.MV&&p.MV.inp==='cdu'&&p.MV.kind==='rise'&&p.Y>(24<<8)&&bossair(p,dx))return end(p);
-  if((ev.length||force)&&(st===S_FREE||st===S_CR||st===S_UP||(st===S_ATK&&ev.some(e=>e[0]==='mash'||e[0]==='ppp'))||(st===S_SPEC&&p.MV&&p.MV.inp==='mash'))&&startspec(p,ev,force))return end(p);
+  if((ev.length||force)&&(st===S_FREE||st===S_CR||st===S_UP||(st===S_ATK&&ev.some(e=>e[0]==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)||e[0]==='ppp'))||(st===S_SPEC&&p.MV&&p.MV.inp==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)))&&startspec(p,ev,force))return end(p);
   const ad=p.adone;
   switch(st){
   case S_FREE:
@@ -157,19 +163,22 @@ function update(p){p.X0=p.X;if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.c
     if(p.RETCR&&(keys&K_D)){setanim(p,AN_CROUCH,2);p.ST=S_CR;} else toidle(p); break;
   case S_ATK:
     if(!ad)break; if(p.RETCR&&(keys&K_D)){setanim(p,AN_CROUCH,2);p.ST=S_CR;} else toidle(p); break;
-  case S_UP: if(ad)toidle(p); break;
+  case S_UP: if(ad||p.CESLREC&&(p.anim.flags[p.aidx]&0x8000)){if(p.CESLREC){p.CESLREC=0;if(keys&K_D){setanim(p,AN_CROUCH,2);p.ST=S_CR;}else toidle(p);}else toidle(p);} break;
   case S_GETUP: if(ad){ if(p.DIZZY===1){p.DIZZY=2;setanim(p,AN_HITL+1,0);p.ST=S_HIT;p.STUN=DIZT;p.RETCR=0;} else toidle(p);} break;
   case S_AIR: if(p.PJ>0){p.PJ--;break;}
+    if(VER.cur==='CE'&&window.SF2CHUNAIR&&SF2CHUNAIR.step(p,G.cam))break;
+    if(atk>=0&&!p.JA&&VER.cur==='CE'&&window.SF2CHUNAIR&&SF2CHUNAIR.start(p,atk,keys&K_D,{find:AI,anim:setanim}))atk=-1;
     if(atk>=0&&!p.JA&&atk%3&&dx>0&&airthrow(p,atk))break;
     if(atk>=0&&!p.JA&&p.F.anims[AN_JD+atk]){p.JA=1;setanim(p,(p.JN?AN_JU:AN_JD)+atk,0);} // M13b: jump normals (were missing)
-    if(!gravity(p)){p.JA=0;toidle(p);sfxc(XS(p)&&0x2f);} break;
+    if(!gravity(p)){p.JA=0;p.CEST=null;toidle(p);sfxc(XS(p)&&0x2f);} break;
   case S_DOWN: if(p.FALLW>0){p.FALLW--;break;} p.DOWNT=(p.DOWNT||0)+1; if(!gravity(p)&&p.cur===AN_FALL&&p.Y===0&&p.DOWNT>4){setanim(p,AN_FALL+1,0);sfxc(XS(p)&&0x2e);} else if(p.Y===0&&p.VY===0&&p.adone&&p.DOWNT>=KDT){setanim(p,AN_GETUP,0);p.ST=S_GETUP;} break;
   case S_KO: p.DOWNT=(p.DOWNT||0)+1; if(!gravity(p)&&p.cur===AN_FALL&&p.DOWNT>4){if(p.Y===0&&p.cur===AN_FALL)sfxc(XS(p)&&0x2e);setanim(p,AN_FALL+1,0);} break;
   case S_SPEC: spec(p); break;
   }
   return end(p);}
 // knockback now applied every 60Hz frame (was the 25fps cadence): same total distance, decay 0.75^(5/12) per frame
-function end(p){ if(p.KB){p.X+=(p.KB*29)>>6; let k=p.KB-((p.KB*29)>>8); if(k+63>>>0<127)k=0; p.KB=k;} animstep(p);}
+function end(p){if(VER.cur==='CE'&&window.SF2CENORMALS)SF2CENORMALS.step(p,{finish:q=>{const face=q.opp.X>q.X?1:0,a=AI(q,'slidecrouch');if(face!==q.FACE&&a>=0){q.FACE=face;setanim(q,a,0);q.acc=-1;q.ST=S_UP;q.CESLREC=1;}else if(q.KEYS&K_D){setanim(q,AN_CROUCH,2);q.ST=S_CR;}else toidle(q);}});
+  if(p.KB){p.X+=(p.KB*29)>>6;let k=p.KB-((p.KB*29)>>8);if(k+63>>>0<127)k=0;p.KB=k;}animstep(p);if(p.CESLREC&&(p.anim.flags[p.aidx]&0x8000)){p.CESLREC=0;if(p.KEYS&K_D){setanim(p,AN_CROUCH,2);p.ST=S_CR;}else toidle(p);}}
 const DASHV=[0x300,0x400,0x500];
 function startspec(p,ev,force){const mv=p.F.moves; let m=null,str=0;
   if(force){const k=(force&15)-1; if(mv[k]){m=mv[k];str=force>>4;}}
@@ -211,7 +220,9 @@ const TDMG_WW={0:38,3:38,4:38,5:21,6:27,7:34},TDMG_CE={0:32,1:46,2:44,3:32,4:32,
 /* CE Zangief crouch MP/HP within 80px: a grab (ROM 0x73b34/0x73bcc, 28 dmg, no hitstun, 54/59f; ce/fd/zc.py) */
 function zgrab(p,atk){const o=p.opp,n=AI(p,'cn'+['LP','MP','HP'][atk]);if(!(VER.cur==='CE'&&p.fid===6&&(atk===1||atk===2)&&n>=0&&hurtable(o)&&o.Y===0&&(Math.abs(o.X-p.X)>>8)<=80))return false;
   if(!trythrow(p,atk,1))return false;setanim(p,n,0);p.THAN=n;p.SCNT=atk===1?50:55;p.THV.dmg=28;p.THV.t=p.SCNT-6;p.ZG=1;return true;}
-function trythrow(p,atk,force){const o=p.opp; if(!force&&!canthrow(p,atk>=3))return false; if(XS(p)&&atk>=3&&AI(p,'throwk')<0)return false; /* CE: only Ryu/Ken/Honda/Chun-Li/Zangief have a kick throw */
+function trythrow(p,atk,force){if(VER.cur==='CE'&&p.fid===5&&atk>=3)return false;const o=p.opp; if(!force&&!canthrow(p,atk>=3))return false; if(XS(p)&&atk>=3&&AI(p,'throwk')<0)return false; /* CE: only Ryu/Ken/Honda/Chun-Li/Zangief have a kick throw */
+  if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.init(p,atk,{find:AI,anim:setanim,move:THROW,voice:q=>sfxc(XS(q)&&XS(q).thr)})){G.throws=(G.throws||0)+1;return true;}
+  if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.init(p,atk,cethooks())){G.throws=(G.throws||0)+1;return true;}
   Object.assign(p,{MV:THROW,SPK:0,SPKD:0,SPSTR:atk%3,SPPH:0,RETCR:0,KB:0,SCNT:30});
   const dmg=24+4*(atk%3); const d=p.FACE?-1:1;
   const fi=p.fid,X=XS(p),tk=X&&atk>=3?AI(p,'throwk'):-1,TI=tk>=0?tk:AN_THROW,ta=D.fighters[fi]&&D.fighters[fi].anims[TI],own=ta&&(ta.name==='throw'||ta.name==='throwk');
@@ -234,7 +245,9 @@ function bossair(p,dx){const o=p.opp;
   if(p.fid===8&&p.SPPH>=2&&AI(p,'dive')>=0){ const v=0x300; p.MV={kind:'dive'};p.SVX=o.X>p.X?v:-v;p.FACE=o.X>p.X?1:0;setanim(p,AI(p,'dive'),0);p.hitdone=0;return true;}
   return false;}
 function spec(p){const m=p.MV;p.FBTK=(p.FBTK||0)+1;
-  if(VER.cur==='CE'&&window.SF2CESPECIALS&&SF2CESPECIALS.step(p,{idle:toidle,anim:setanim,land:q=>sfxc(XS(q)&&0x2f),wall:q=>q.FACE?q.X>=(Math.min(SW-40,G.cam+W-40)<<8):q.X<=(Math.max(40,G.cam+40)<<8)}))return;
+  if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.step(p,cethooks()))return;
+  if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.step(p,{find:AI,anim:setanim,tick:animstep,idle:toidle,freeze:n=>{G.hfz=n;},hit:q=>sfxc(XS(q)&&XS(q).hit[2]),land:q=>sfxc(XS(q)&&0x2f)}))return;
+  if(VER.cur==='CE'&&window.SF2CESPECIALS&&SF2CESPECIALS.step(p,{idle:toidle,anim:setanim,sound:sfxc,land:q=>sfxc(XS(q)&&0x2f),wall:q=>q.FACE?q.X>=(Math.min(SW-40,G.cam+W-40)<<8):q.X<=(Math.max(40,G.cam+40)<<8)}))return;
   if(m.kind==='athrow'){const o=p.opp,v=p.THV; p.Y=Math.max(0,p.Y-0x300); if(v){o.X=p.X-v.d*(24<<8);o.Y=p.Y;o.STUN=999;}
     if(p.Y===0&&(p.adone||++p.SCNT>40)){if(p.THV)relth(p);toidle(p);sfxc(XS(p)&&0x2f);} return;}
   if(m.kind==='dive'){p.X+=p.SVX;p.Y=Math.max(0,p.Y-0x400); if(p.Y===0){toidle(p);sfxc(XS(p)&&0x2f);} return;}
@@ -262,7 +275,7 @@ function spec(p){const m=p.MV;p.FBTK=(p.FBTK||0)+1;
   if(p.SVY<0){ if(p.SPPH===0){p.SPPH=1;setanim(p,AN_TAT+p.SPSTR,0);return;} if(p.Y<=0){p.Y=0;p.SPPH=3;toidle(p);} } }
 // ---- boxes / hits ----
 function boxw(p,k){const b=ent(p)[2+k]; if(!b[2])return null; return [(p.FACE?-b[0]:b[0])+(p.X>>8),b[1]+(p.Y>>8),b[2],b[3]];}
-function push(){const a=boxw(P[0],3),b=boxw(P[1],3); if(!a||!b)return;
+function push(){if(VER.cur==='CE'&&P.some(p=>p.CETH||p.CETHV||p.CEBV||p.CEB&&p.CEB.phase===0))return;const a=boxw(P[0],3),b=boxw(P[1],3); if(!a||!b)return;
   if(Math.abs(a[1]-b[1])>=a[3]+b[3])return; const ov=a[2]+b[2]-Math.abs(a[0]-b[0]); if(ov<=0)return;
   let lt=P[0].X<P[1].X||(P[0].X===P[1].X&&P[0].FACE!==0); const L=lt?P[0]:P[1],R=lt?P[1]:P[0];
   /* M13d: arcade push - a walker shoves the other 1px/frame (walker slows to match); otherwise split the overlap */
@@ -275,14 +288,21 @@ function push(){const a=boxw(P[0],3),b=boxw(P[1],3); if(!a||!b)return;
   const lo=Math.max(40,G.cam+40)<<8,hi=Math.min(SW-40,G.cam+W-40)<<8;
   if(L.X<lo){R.X+=lo-L.X;L.X=lo;} if(R.X>hi){L.X-=R.X-hi;R.X=hi;}}
 function hurtable(d){return G.gph===1&&d.ST!==S_DOWN&&d.ST!==S_KO&&d.ST!==S_GETUP;}
-function ovlhurt(bx,d){for(let k=0;k<3;k++){const h=boxw(d,k);if(!h)continue;
-  if(Math.abs(bx[0]-h[0])<bx[2]+h[2]&&Math.abs(bx[1]-h[1])<bx[3]+h[3])return true;}return false;}
+function hurtregion(bx,d){const depths=[-1,-1,-1];let mask=0,best=-1;
+  for(let k=0;k<3;k++){const h=boxw(d,k);if(!h)continue;const depth=bx[3]+h[3]-Math.abs(bx[1]-h[1]),dx=Math.abs(bx[0]-h[0]),touch=VER.cur==='CE';
+    if((touch?dx<=bx[2]+h[2]:dx<bx[2]+h[2])&&(touch?depth>=0:depth>0)){depths[k]=depth;mask|=1<<k;if(best<0||depth>depths[best])best=k;}}
+  /* CE 0x95f8e/0x96026 chooses the deepest vertical penetration. With all
+     three overlaps, a head/body tie selects body; foot must be strictly deeper. */
+  if(mask===7){best=depths[1]>=depths[0]?1:0;if(depths[2]>depths[best])best=2;}
+  return best;}
+function ovlhurt(bx,d){return hurtregion(bx,d)>=0;}
 /* M13d: hits are probed for both fighters first, then applied, so simultaneous hits trade like the arcade */
 function hitprobe(p){ if(p.MV===THROW&&p.ST===S_SPEC||p.ST!==S_ATK&&p.ST!==S_SPEC&&!(p.ST===S_AIR&&p.JA)||p.hitdone)return false; const d=p.opp; if(!hurtable(d))return false;
-  const bx=boxw(p,4); return !!(bx&&(ovlhurt(bx,d)||p.MH2&&d.Y===0));} /* MH2: ROM two-hit normals land their 2nd hit on a victim still in hit/blockstun from the 1st */
+  const bx=boxw(p,4);if(!bx)return 0;const region=hurtregion(bx,d);return region>=0?region+1:p.MH2&&d.Y===0?(p.HREG||0)+1:0;} /* MH2: ROM two-hit normals land their 2nd hit on a victim still in hit/blockstun from the 1st */
 function hitcheck(p,pr){ if(!pr)return; const d=p.opp; p.hitdone=1; const e=ent(p);
-  let kd=e[9]; if(p.ST===S_SPEC&&p.SPKD)kd=1;
-  const sp=p.ST===S_SPEC,dc=VER.cur==='CE'&&!sp&&DMG_CE[p.fid]&&DMG_CE[p.fid][p.cur],mh=dc&&MHIT_CE[p.fid]&&MHIT_CE[p.fid][p.cur],dm=dc?Math.max(1,(mh?(p.aidx>=mh?dc-(dc>>1):dc>>1):dc)+((rand()>>>20)%3)-1):dmgof(e[7]); /* two-hit normals: ROM total split across the hits */ const bl=applyhit(d,dm,e[8],kd,p.ST===S_AIR?-1:e[10],d.X>=p.X?1:-1,sp?dm>>2:0);
+  if(VER.cur==='CE'&&window.SF2CHUNAIR)SF2CHUNAIR.contact(p);
+  p.HREG=pr-1;let kd=p.CEST?0:e[9]; if(p.ST===S_SPEC&&p.SPKD)kd=1;
+  const sp=p.ST===S_SPEC,dc=VER.cur==='CE'&&!sp&&DMG_CE[p.fid]&&DMG_CE[p.fid][p.cur],mh=dc&&MHIT_CE[p.fid]&&MHIT_CE[p.fid][p.cur],dm=dc?Math.max(1,(mh?(p.aidx>=mh?dc-(dc>>1):dc>>1):dc)+((rand()>>>20)%3)-1):dmgof(e[7]); /* two-hit normals: ROM total split across the hits */ const bl=applyhit(d,dm,e[8],kd,p.ST===S_AIR?-1:e[10],d.X>=p.X?1:-1,sp?dm>>2:0,p.HREG);
   const X=XS(p),old=bl?SN_BLOCK:p.ST===S_SPEC?SN_HIT[2]:SN_HIT[Math.min(2,e[8])];
   if(!X)snd(old); else {const k=sp?p.F.moves.indexOf(p.MV):-1,b=btnof(p.cur); sfxc(bl?X.blk:sp?(k>=0?X.sph[k]:p.fid===11?0x36:0x2a):X.hit[b>=0?b:Math.min(2,e[8])],old);}}
 // ---- M9 feel model, measured on the arcade program in the emulator (60Hz ticks; see README) ----
@@ -294,7 +314,7 @@ const HSTUN_WW=[11,17,21],BSTUN_WW=[26,31,42],HSTUN_CE=[14,19,23],BSTUN_CE=[14,1
 /* CE ROM normal damage per fighter/anim (median of 4 hits on an idle full-HP P2, per hit; /workspace/ce/fd dmg.py+wdmg.py) */
 const DMG_CE={"0":{"47":4,"14":5,"48":14,"15":13,"49":19,"16":18,"11":7,"17":5,"12":14,"18":13,"52":24,"19":18,"8":4,"9":12,"10":18,"13":18},"1":{"47":15,"14":13,"48":19,"15":17,"49":22,"16":22,"50":14,"17":13,"51":17,"18":34,"52":48,"19":22},"2":{"47":13,"14":11,"48":17,"15":16,"49":18,"16":19,"50":13,"17":11,"51":35,"18":15,"52":21,"19":19,"8":11,"9":15,"10":18,"11":11,"12":16,"13":21},"3":{"47":5,"14":5,"48":15,"15":15,"49":22,"16":21,"50":7,"17":7,"51":15,"18":14,"52":21,"19":22,"8":5,"9":15,"12":14,"13":21},"4":{"47":4,"14":5,"48":17,"15":15,"49":22,"16":21,"11":8,"17":5,"12":16,"18":15,"52":26,"19":21,"9":15,"10":21,"13":23},"5":{"47":12,"14":5,"48":16,"15":11,"49":17,"16":17,"50":14,"17":7,"51":14,"18":11,"52":17,"19":14,"9":11,"10":15,"11":7,"12":11,"13":18},"6":{"47":12,"14":5,"48":17,"49":22,"50":12,"17":11,"51":17,"18":17,"52":31,"19":22,"8":12,"11":13},"7":{"47":7,"14":8,"48":11,"15":11,"49":29,"16":13,"50":7,"17":7,"51":10,"18":13,"52":14,"19":12,"8":7,"9":11,"11":7},"8":{"8":5,"14":5,"9":16,"15":16,"10":22,"16":22,"11":8,"17":8,"12":15,"18":15,"13":21,"19":21},"9":{"8":9,"14":9,"9":15,"15":15,"10":22,"16":22,"11":16,"17":9,"12":23,"18":15,"13":19,"19":22},"10":{"8":6,"14":6,"48":24,"15":15,"49":22,"11":11,"17":6,"51":24,"18":15,"52":22,"19":21,"9":15,"10":22,"16":21,"12":15,"13":22},"11":{"8":6,"14":6,"9":11,"15":11,"10":16,"16":16,"11":6,"17":8,"12":11,"18":11,"13":16,"19":14}};
 function dmgof(i){return Math.round(12+1.8*(i&0x7f))+((rand()>>>20)%3)-1;}
-function applyhit(d,dmg,str,kd,low,dir,chip){ if(str>2)str=2;
+function applyhit(d,dmg,str,kd,low,dir,chip,region=0){ if(str>2)str=2;
   if(d.ST===S_FREE||d.ST===S_CR||d.ST===S_BLK){const back=dir>0?K_R:K_L; /* M13d: block away from the attacker's actual side (crossups) */
     if(d.KEYS&back&&(!low||(low>0)===!!(d.KEYS&K_D))){ /* low>0 must crouch-block, low<0 (jump-in) must stand-block */const c=d.KEYS&K_D?1:0;d.RETCR=c;setanim(d,c?AN_BLOCKC:AN_BLOCKS,0);d.ST=S_BLK;
       d.KB=PUSHKB[str]*dir;d.STUN=BSTUN[str]-(VER.cur==="CE"&&d.opp.MH2?2:0);G.hfz=BFRZ; /* CE: 2nd blocked hit of a two-hit normal frees 2f sooner (ROM stun trace) */
@@ -306,7 +326,8 @@ function applyhit(d,dmg,str,kd,low,dir,chip){ if(str>2)str=2;
    const kb=VER.cur==='CE'&&btnof(d.opp.cur)>=3,r=VER.cur==='CE'&&d.opp.MH2?[4,9]:kb?STPRK[str]:STPR[str]; d.STP=(d.STP||0)+r[0]+((rand()>>>20)%(r[1]-r[0]+1));}
   if(d.STP>=DIZP&&!d.DIZZY){d.STP=0;d.DIZZY=1;G.dizzies=(G.dizzies||0)+1;return fallst(d,S_DOWN,dir);}
   if(d.Y!==0||kd){fallst(d,S_DOWN,dir);if(VER.cur==='CE'&&d.Y===0&&d.opp.cur===AN_CLP+5)d.FALLW=4;return;} /* CE sweeps: victim leaves the ground 4f later than WW (ROM freeat trace, all 12 fighters 3-5f) */
-  const c=d.ST===S_CR?1:0; d.RETCR=c; setanim(d,(c?AN_CHITL:AN_HITL)+str,0); d.ST=S_HIT; d.KB=dir*PUSHKB[str]; d.STUN=HSTUN[str];}
+  const c=d.ST===S_CR?1:0;d.RETCR=c;const body=VER.cur==='CE'&&!c&&region>0?AI(d,'bodyhit'+['L','M','H'][str]):-1;
+  setanim(d,body>=0?body:(c?AN_CHITL:AN_HITL)+str,0);d.ST=S_HIT;d.KB=dir*PUSHKB[str];d.STUN=HSTUN[str];}
 function fallst(d,s,dir){d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});}
 // ---- projectile ----
 /* M13e: Guile sonic boom / Dhalsim yoga fire spawn tick, total recovery and spawn offset, measured on the arcade */
@@ -343,12 +364,22 @@ function drawfb(p,ground,camera){const sx=(p.FBX>>8)-camera,sy=ground-(p.FBY>>8)
 function fbclash(){const a=P[0],b=P[1];if(!(a.FBON&&b.FBON))return;
   if(Math.abs(a.FBX-b.FBX)<24<<8&&Math.abs(a.FBY-b.FBY)<20<<8)a.FBON=b.FBON=0;}
 function fbhit(p){if(!p.FBON)return;const d=p.opp;if(!hurtable(d))return;
-  const box=fbbox(p);if(!box||!ovlhurt(box,d))return; p.FBON=0; const s=p.FBDEF?p.FBSTR:(Math.abs(p.FBVX)>>8)-3;
-  const bl=applyhit(d,20+((rand()>>>20)%3)-1,s,0,0,p.FBVX>=0?1:-1,s<2?5:8),X=XS(p);sfxc(X&&(bl?X.blk:X.fbhit),bl?SN_BLOCK:SN_HIT[2]);}
+  const box=fbbox(p);if(!box)return;const region=hurtregion(box,d);if(region<0)return;p.FBON=0;const s=p.FBDEF?p.FBSTR:(Math.abs(p.FBVX)>>8)-3;
+  const bl=applyhit(d,20+((rand()>>>20)%3)-1,s,0,0,p.FBVX>=0?1:-1,s<2?5:8,region),X=XS(p);sfxc(X&&(bl?X.blk:X.fbhit),bl?SN_BLOCK:SN_HIT[2]);}
 // ---- camera / clamp (M5 clamps to a fixed 320 view; here the 864px stage scrolls) ----
 // usable camera range per stage: every non-wrapping back layer must cover the whole view (fixes black edge bands)
 const CAMR=D.camr; // usable camera range per stage (tools/camrange.py): the captured layers don't cover the far edges
-function camera(){const m=((P[0].X+P[1].X)>>9),r=CAMR[G.stage];G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));}
+function camera(){
+  const r=CAMR[G.stage];
+  if(VER.cur!=='CE'){const m=(P[0].X+P[1].X)>>9;G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));return;}
+  // CE 0x9c77c..0x9c86c. A close pair stays inside the 64/320
+  // camera margins; a wider pair follows its centre, at most 6 px/tick.
+  const x0=P[0].X>>8,x1=P[1].X>>8,left=Math.min(x0,x1)-40,right=Math.max(x0,x1)+40,span=right-left;
+  let delta=0;
+  if(span<256){if(right-G.cam>320)delta=right-G.cam-320;else if(left-G.cam<64)delta=left-G.cam-64;}
+  else if(span<384)delta=((left+right)>>1)-G.cam-192;
+  G.cam=Math.max(r[0],Math.min(r[1],G.cam+Math.max(-6,Math.min(6,delta))));
+}
 function clampx(p){const lo=Math.max(40,G.cam+40)<<8,hi=Math.min(SW-40,G.cam+W-40)<<8;/* M13d: arcade keeps fighters 40px inside the screen (max gap 304) */if(p.X<lo)p.X=lo;if(p.X>hi)p.X=hi;}
 // ---- rounds (frame counts in M5 25fps frames, timer in 60Hz ticks) ----
 function phase(){
@@ -448,8 +479,9 @@ function step0(net){
   if(G.mode2p)P[1].KEYS=dq[1]; else if(G.gph===1)ai(P[1]);
   if(G.gph!==1){P[0].KEYS=P[1].KEYS=0;P[1].FORCE=0;}
   if(G.hfz>0){G.hfz--;for(const q of P){const n=q.KEYS&~(q.HZK||0);q.HZK=q.KEYS;if(n&0x70)q.MQP.push(G.tick);if(n&0x380)q.MQK.push(G.tick);} /* mash taps made during hitstop still count (ROM keeps counting presses) */P[0].PREV=P[0].KEYS&P[0].PREV;P[1].PREV=P[1].KEYS&P[1].PREV;G.fr=false;camera();return;}
-  update(P[0]);update(P[1]);fbmove(P[0]);fbmove(P[1]);fbclash();push();
-  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);camera();clampx(P[0]);clampx(P[1]);phase();}
+  if(VER.cur==='CE')camera();
+  update(P[0]);update(P[1]);if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));fbmove(P[0]);fbmove(P[1]);fbclash();push();
+  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);phase();}
 /* ---- bonus stages (CE arcade ladder: car after fight 3, barrels after 6, drums after 9). Art from the CE program's VRAM
    (tools/bonus_ce.py -> window.SF2BONUS in screens_ce.js); behaviour from emulator runs: car 40 count (~52f each), 4 front
    hits (snd 0x33) then 4 rear, ~55f between damaging hits, clank 0x72 otherwise; barrels 20 count, break 0x2c/0x2e,
@@ -545,7 +577,7 @@ function cetimes(F){dmgfix();{const v=F[11]&&F[11].anims,r=v&&v.find(a=>a.name==
   /* fid 8 cHK: NTIME e1 already contained the hitstop */
   {const a=F[8].anims;if(a[19]&&a[19].ents[1])a[19].ents[1][1]=29;}}
 function loadce(){if(VER.loading)return;VER.loading=1;const sc=document.createElement('script');sc.src=asseturl('assets_ce.js');
-  sc.onload=()=>{const F=window.SF2CE.fighters;cetimes(F);{const z=F[6].moves;if(z&&!z.some(m=>m.inp==='kkk')){const q=z.find(m=>m.inp==='ppp');if(q)z.push(Object.assign({},q,{inp:'kkk',btn:'K'}));}}const fi=F.map(f=>img(f.img));const st=SF2CE.stages||D.stages;VER.ce={f:F,fi,fia:F.map((f,i)=>altatlas(f,fi[i])),st,sti:SF2CE.stages?st.map(ls=>ls.map(l=>img(l.img))):STI,z80:SF2CE.z80||null};VER.loading=2;if(G.wantce)setver('CE');};
+  sc.onload=()=>{const F=window.SF2CE.fighters;cetimes(F);const fi=F.map(f=>img(f.img));const st=SF2CE.stages||D.stages;VER.ce={f:F,fi,fia:F.map((f,i)=>altatlas(f,fi[i])),st,sti:SF2CE.stages?st.map(ls=>ls.map(l=>img(l.img))):STI,z80:SF2CE.z80||null};VER.loading=2;if(G.wantce)setver('CE');};
   sc.onerror=()=>{VER.loading=3;};document.head.appendChild(sc);
   const s2=document.createElement('script');s2.src=asseturl('screens_ce.js');s2.onload=()=>{const R=window.SF2SCRCE,m=e=>e&&Object.assign({},e,{im:img(e.img)});
     SCE={bg:img(R.selbg),cur:{1:m(R.cur['1']),2:m(R.cur['2'])},vsb:'rgb('+R.vsblue.join(',')+')',logo:m(R.vslogo),f:Object.keys(R.f).map(k=>{const o={};for(const n in R.f[k])o[n]=m(R.f[k][n]);return o;})};};document.head.appendChild(s2);}
@@ -782,7 +814,7 @@ SF2.net={
   advance(pair){if(!netActive||!Array.isArray(pair)||pair.length!==2)throw new Error('No active synchronized match');step(pair.map(k=>k&1023));},
   hash(){const omit=new Set(['F','opp','anim','ft','AIPC']);const players=P.map(p=>Object.fromEntries(Object.entries(p).filter(([k])=>!omit.has(k))));
     const gs=Object.fromEntries(Object.entries(G).filter(([k])=>!['hisc','sndlog','muslog','cmdlog','endk'].includes(k)));
-    const text=JSON.stringify([gs,players,rng,IQ,selprev]);let h=2166136261;for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return (h>>>0).toString(16).padStart(8,'0');},
+    const text=JSON.stringify([gs,players,rng,IQ,selprev],(key,value)=>{if(value===P[0]||value===P[1])return {player:value.i};if(key==='anim'||key==='F'||key==='ft')return undefined;return value;});let h=2166136261;for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return (h>>>0).toString(16).padStart(8,'0');},
   get active(){return netActive;}
 };
 resetmatch();

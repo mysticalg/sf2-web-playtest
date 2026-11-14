@@ -11,6 +11,7 @@
       if(p.fid!==8||m.inp!=='cbf'||m.btn!=='P')return prior.init(p,m,h);
       const s=p.SPSTR,start=h.find(p,'crush'+s+'s'),rise=h.find(p,'crush'+s+'r'),flight=h.find(p,'crush'+s+'f');
       if(start<0||rise<0||flight<0||!p.F.anims[start].flags)return prior.init(p,m,h);
+      if(window.SF2BISONINPUT)SF2BISONINPUT.consume(p);
       const c=p.CES={kind:'crusher',move:m,phase:0,start,rise,flight,vx:(p.FACE?1:-1)*[0x500,0x700,0x900][s],vy:0,ay:0,time:[32,36,62][s]};
       anim(p,c,'start',h);return true;
     },
