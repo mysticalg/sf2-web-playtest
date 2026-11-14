@@ -64,7 +64,9 @@ function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 function resetp(p,x,face){Object.assign(p,{X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:MAXHP,HPD:MAXHP,PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   p.MSEQ=[[0,0],[0,0],[0,0]];p.THV=null;p.hitdone=0;setanim(p,AN_IDLE,0);}
-function resetround(){if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],c=Math.max(r[0],Math.min(r[1],OFS));resetp(P[0],(110+c)<<8,1);resetp(P[1],(210+c)<<8,0);G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;}
+// CE 0x38b2/0x38ca: native X 552/728, camera 448; browser world origin is native X 256.
+const CE_CAM_EXTENT=[40,56,53,40,40,36,46,40,40,44,40,40]; // ROM 0x394c, actor+0x1c2
+function resetround(){if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;}
 function resetmatch(){P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
 // ---- motion input buffer (sf2ua 0x2d58e) ----
 function mwin(){return WINTAB[rand()&31];}
@@ -374,7 +376,7 @@ function camera(){
   if(VER.cur!=='CE'){const m=(P[0].X+P[1].X)>>9;G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));return;}
   // CE 0x9c77c..0x9c86c. A close pair stays inside the 64/320
   // camera margins; a wider pair follows its centre, at most 6 px/tick.
-  const x0=P[0].X>>8,x1=P[1].X>>8,left=Math.min(x0,x1)-40,right=Math.max(x0,x1)+40,span=right-left;
+  const x0=P[0].X>>8,x1=P[1].X>>8,l=x0<=x1?P[0]:P[1],rgt=l===P[0]?P[1]:P[0],left=Math.min(x0,x1)-CE_CAM_EXTENT[l.fid],right=Math.max(x0,x1)+CE_CAM_EXTENT[rgt.fid],span=right-left;
   let delta=0;
   if(span<256){if(right-G.cam>320)delta=right-G.cam-320;else if(left-G.cam<64)delta=left-G.cam-64;}
   else if(span<384)delta=((left+right)>>1)-G.cam-192;
@@ -611,6 +613,7 @@ function stagedraw(front){for(const l of D.stages[G.stage]){if(l.front!==front)c
     if(l.wrap){x0=((x0%l.w)+l.w)%l.w;for(let x=-x0;x<W;x+=l.w)cx.drawImage(im,x,0);}else{cx.drawImage(im,-x0,0); if(l.w>=500){const h=im.height; // stretch the edge column over any gap (was black bands)
       if(x0<0)cx.drawImage(im,0,0,1,h,0,0,-x0,h); const r=l.w-x0; if(r<W)cx.drawImage(im,l.w-1,0,1,h,r,0,W-r,h);}}}}
 function render(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();const c=G.cam;cx.fillStyle='#000';cx.fillRect(0,0,W,H);stagedraw(false);
+  if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of P){const f=SF2CESHADOW.frame(p,G.stage);if(f)cx.drawImage(f.image,(p.X>>8)-c+f.x,GROUND+f.y);}
   const drawp=p=>{spr(p===P[1]&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid],p.F.frames[ent(p)[0]],(p.X>>8)-c,GROUND-(p.Y>>8),p.FACE);
     if(p.DIZZY===2){cx.fillStyle='#ffe000';for(let i=0;i<3;i++){const a=G.tick/12+i*2.09;cx.fillRect((p.X>>8)-c+Math.cos(a)*14-2,GROUND-(p.Y>>8)-100+Math.sin(a)*4,4,4);}}};
   const top=(P[0].ST===S_ATK||P[0].ST===S_SPEC)?0:1; drawp(P[1-top]);drawp(P[top]);

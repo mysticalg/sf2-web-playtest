@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.62",
-  "commit": "c81a92d4e88794ceafe4cb2247e4ab7e7eb40c21",
-  "builtAt": "2026-11-14T23:38:37.432364+00:00",
+  "version": "0.1.63",
+  "commit": "9d54c94f6dc56fd23c3772148b622ed151d7dfc4",
+  "builtAt": "2026-11-14T23:58:59.855775+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 3017,
-      "sha256": "49b2ff9a7ecd19de9943d9c99b8cc319a541178d21f819253a45d3d23653065a"
+      "bytes": 3097,
+      "sha256": "f7a1d830d8234dd73b91c3acd87c824716221df8c58337b9e653bc3fc091e96a"
     },
     {
       "file": "game.js",
-      "bytes": 99427,
-      "sha256": "2e849a2056070eeca3c45bd599bbbd703c6029bdc1af52eaa770870f207b0486"
+      "bytes": 99875,
+      "sha256": "495e688747a14ae834ec8ac1098f25822d25e8d76dba6182a2e4a04d60f5b7b8"
     },
     {
       "file": "assets.js",
@@ -68,6 +68,11 @@
       "file": "victory_ce.js",
       "bytes": 228402,
       "sha256": "61215a3d6f07bfd62348066b470245563e034ccbaee7022c2520ae4c78ecf59f"
+    },
+    {
+      "file": "shadows_ce.js",
+      "bytes": 78719,
+      "sha256": "90212a5fe7c7f2aa66deab0af69141fdbe5aaa954cefc3ea642f5551ffa75718"
     },
     {
       "file": "ce_specials.js",
@@ -127,7 +132,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "8867bcc0a7a1c02a4547481123c997d045499d662aea056baa7f578e73b505ea"
+      "sha256": "aae1370d291972928570108ba3b2fb82219e8b4ad7e664638f646e83f0390645"
     },
     {
       "file": "lobby.css",
