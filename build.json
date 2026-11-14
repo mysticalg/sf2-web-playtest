@@ -1,0 +1,66 @@
+{
+  "status": "work-in-progress",
+  "commit": "be54724bd9db8ee48c4adb420e82fd7ae836b8a2",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 1229,
+      "sha256": "74e644f71221b8a78b75d4c4c871041f28e443655e3238db60db335553530f1a"
+    },
+    {
+      "file": "game.js",
+      "bytes": 93001,
+      "sha256": "69eeb731102f09694a613ed673d346c8fd7ad379cdac53037a7e79cc1d87650e"
+    },
+    {
+      "file": "assets.js",
+      "bytes": 6459926,
+      "sha256": "9fe6f3dd9f726b9d943d388d37a6ea8d3f33e294e242b825fc2074d605d70c8f"
+    },
+    {
+      "file": "assets_ce.js",
+      "bytes": 6940672,
+      "sha256": "a5e2efb2d7bad47b9ebcb445c27f6f35a5a36acba70398f6def26a175e48fc2b"
+    },
+    {
+      "file": "sound.js",
+      "bytes": 436954,
+      "sha256": "19b9a3b38427c80a5a3020042987934c03a37478e6eec7377dd53d85e91dbf73"
+    },
+    {
+      "file": "music.js",
+      "bytes": 88091,
+      "sha256": "7a1952fdf8d1be66acf08ba5d25831ec53b70dfd5bb61025784bdda468121976"
+    },
+    {
+      "file": "font.js",
+      "bytes": 6164,
+      "sha256": "f5f2d89728ec45a1e6eb6171e6fef4437f796b7ee4066a718cae7b142806f59d"
+    },
+    {
+      "file": "screens.js",
+      "bytes": 93006,
+      "sha256": "6249d5707c81d710dbb694339db7a184b5ef36e9f0946ab434b5a23caa442e84"
+    },
+    {
+      "file": "screens_ce.js",
+      "bytes": 628228,
+      "sha256": "9c8f89a20aec0a8c6cebdcb436061e8c07943d6dac47a94d3e038d7c0a83b20f"
+    },
+    {
+      "file": "endings.js",
+      "bytes": 14273650,
+      "sha256": "008a53828914e3d0367d430f2fbb1f67dd9e828c05af5faa2910874f615b1de5"
+    },
+    {
+      "file": "endings_ce.js",
+      "bytes": 32508244,
+      "sha256": "0e08d91f99c67d20927e1956b421a89d91d3361f1ea1cefa6c9b1746bbb7c1d6"
+    },
+    {
+      "file": "projectiles_ce.js",
+      "bytes": 19158,
+      "sha256": "fe4f81b95edc53f8924c61e588b9312ac24f31d759045885bc24548d2686ad67"
+    }
+  ]
+}
