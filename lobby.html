@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <link rel="icon" href="data:,">
+  <title>Street Fighter II — online versus</title>
+  <script>window.SF2BUILD={"version":"0.1.61","commit":"8d13850729baa5b1d781bb95036ffd1583037d3a","builtAt":"2026-11-14T22:58:53.534799+00:00"};</script>
+  <link rel="stylesheet" href="lobby.css?v=8d13850729baa5b1d781bb95036ffd1583037d3a">
+  <script src="netplay.js?v=8d13850729baa5b1d781bb95036ffd1583037d3a" defer></script>
+</head>
+<body>
+  <header>
+    <div><a class="brand" href="index.html">STREET FIGHTER II</a><span class="tag">ONLINE VERSUS · PREVIEW</span></div>
+    <a href="index.html">Single player</a>
+  </header>
+  <main>
+    <section id="lobby-panel" class="panel">
+      <h1>Find a challenger</h1>
+      <p>Join the lobby, choose an available player, and invite them to a versus match.</p>
+      <form id="connect-form">
+        <label>Your name<input id="player-name" maxlength="20" autocomplete="nickname" placeholder="Player" required></label>
+        <button id="connect-button" type="submit">Join lobby</button>
+        <button id="disconnect-button" type="button" class="secondary" hidden>Leave lobby</button>
+      </form>
+      <details id="connection-settings">
+        <summary>Connection settings</summary>
+        <label>Online server<input id="server-url" type="url" placeholder="wss://…" spellcheck="false" autocomplete="off"></label>
+        <p class="small">A live multiplayer server is required. The lobby never invents an online count.</p>
+      </details>
+      <p id="connection-status" class="status" role="status" aria-live="polite">Connecting information…</p>
+      <div class="lobby-heading"><h2>Players <span id="online-count">—</span></h2>
+        <label class="compact">Game<select id="game-version"><option value="CE">Champion Edition</option><option value="WW">World Warrior</option></select></label>
+      </div>
+      <div id="players" class="players"><p class="empty">Join the lobby to see who is online.</p></div>
+      <section id="challenge-panel" class="challenge" hidden aria-live="polite">
+        <h2 id="challenge-title">Challenge</h2>
+        <p id="challenge-description"></p>
+        <div class="actions"><button id="accept-challenge" type="button">Accept</button><button id="decline-challenge" type="button" class="secondary">Decline</button><button id="cancel-challenge" type="button" class="secondary">Cancel invitation</button></div>
+      </section>
+    </section>
+    <section id="match-panel" hidden>
+      <div class="match-heading"><p id="match-status" role="status" aria-live="polite">Preparing match…</p><button id="leave-match" class="secondary" type="button">Return to lobby</button></div>
+      <iframe id="game-frame" title="Synchronized Street Fighter II versus match" allow="autoplay; fullscreen; gamepad" src="about:blank"></iframe>
+      <p class="small controls">Both players use arrows + A S D / Z X C, or their first gamepad. Enter confirms. Escape leaves the match. Fixed-delay synchronization pauses if either connection falls behind.</p>
+    </section>
+  </main>
+  <footer><span id="build-version">Local development</span> · Online versus is in active development.</footer>
+</body>
+</html>

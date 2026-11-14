@@ -22,7 +22,7 @@ jobs:
       - name: Stage browser files only
         run: |
           mkdir _site
-          cp index.html game.js assets.js assets_ce.js sound.js music.js font.js screens.js screens_ce.js endings.js endings_ce.js projectiles_ce.js build.json .nojekyll _site/
+          cp index.html game.js assets.js assets_ce.js sound.js music.js font.js screens.js screens_ce.js endings.js endings_ce.js projectiles_ce.js victory_ce.js ce_specials.js ce_bison.js lobby.html lobby.css netplay.js build.json .nojekyll _site/
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
