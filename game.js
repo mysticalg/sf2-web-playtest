@@ -582,14 +582,14 @@ const held=c=>down.has(c)||tapped.has(c);
 const rk=t=>t.reduce((m,c,i)=>down.has(c)||tapped.has(c)?m|(1<<i):m,0);
 // ---- gamepads (standard mapping): d-pad/left stick dirs; X/Y/RB = LP/MP/HP, A/B/RT = LK/MK/HK; Start pause/confirm, View Back ----
 const PADB=[2,3,5,0,1,7]; let padN=[false,false],padMsg='',padMsgT=0;
-function padRead(i){const ps=(navigator.getGamepads?navigator.getGamepads():[])||[];const g=[...ps].filter(Boolean)[i];
+function padRead(i){const ps=(navigator.getGamepads?navigator.getGamepads():[])||[];const g=[...ps].filter(p=>p&&p.connected!==false)[i];
   if(!g)return {k:0,g:0,on:false};const b=n=>{const x=g.buttons[n];return !!x&&(x.pressed||x.value>0.5);};
   const ax=g.axes[0]||0,ay=g.axes[1]||0,DZ=0.4;let k=0;
   if(b(14)||ax<-DZ)k|=K_L;if(b(15)||ax>DZ)k|=K_R;if(b(12)||ay<-DZ)k|=K_U;if(b(13)||ay>DZ)k|=K_D;
   PADB.forEach((n,j)=>{if(b(n))k|=K_ATK<<j;});return {k,g:(b(8)?2:0)|(b(9)?4:0),menu:(b(0)?1:0)|(b(1)?2:0)|(b(8)?4:0)|(b(9)?8:0),on:true};}
 function pads(){const r=[padRead(0),padRead(1)];
   r.forEach((p,i)=>{if(p.on!==padN[i]){padN[i]=p.on;padMsg='Pad '+(i+1)+(p.on?' connected':' disconnected');padMsgT=180;
-    if(i===1&&p.on)G.mode2p=1;if(p.on)audioInit();}});return r;}
+    if(p.on)audioInit();}});return r;}
 
 // UI contributes only input bits and commands; all scenes remain in this engine.
 function externalKey(i){const k=window.SF2Input?.keys?.[i];return Number.isInteger(k)?k&1023:0;}
@@ -639,7 +639,7 @@ function localCommands(pd,k1,k2){
   const commands=Array.isArray(window.SF2Input?.commands)?SF2Input.commands.splice(0,64):[];
   const esc=held('Escape')?1:0;if(esc&&!CONTROL.keyPrev)commands.push('back');CONTROL.keyPrev=esc;
   for(let i=0;i<2;i++){
-    const bits=pd[i].menu||0,edge=bits&~CONTROL.padPrev[i],variantKick=ryuVariantStrip()&&i===G.selstep,allowKick=variantKick||!CONTROL.paused&&(G.scene==='fight'||G.scene==='bonus'||G.arc&&['vs','win','cont','end','over','rank'].includes(G.scene));CONTROL.padPrev[i]=bits;
+    const bits=pd[i].menu||0,edge=bits&~CONTROL.padPrev[i],variantKick=ryuVariantStrip()&&i===G.selstep,allowKick=variantKick||!CONTROL.paused&&(G.scene!=='title'&&(G.scene!=='select'||G.arc));CONTROL.padPrev[i]=bits;
     if(edge&8)commands.push(G.scene==='fight'?'pause':'confirm');
     else if(edge&4)commands.push('back');
     if(CONTROL.paused&&(edge&1))commands.push('confirm');
