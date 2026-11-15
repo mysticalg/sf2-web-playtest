@@ -1,42 +1,9 @@
 {
-  "schemaVersion": 1,
   "editionId": "ai",
-  "displayName": "AI Edition \u2014 Ryu vs Evil Ryu",
-  "release": "ai-0.1.1",
-  "rulesetId": "ai-ce-rift-v1",
-  "simulationSchema": 1,
-  "upstreamFaithfulCommit": "f14f766d45566b834b932071c07d5c7576b87346",
+  "entry": "../?edition=ai",
+  "status": "integrated-mode-compatibility-link",
+  "independentRuntime": false,
   "onlineEnabled": false,
-  "tickRate": 60,
-  "roster": [
-    "ce:ryu",
-    "ai:evil-ryu"
-  ],
-  "stages": [
-    "ce:ryu-stage"
-  ],
-  "modes": [
-    "practice",
-    "cpu",
-    "versus"
-  ],
-  "assets": [],
-  "dependencies": [
-    "assets.js",
-    "sound.js",
-    "music.js",
-    "font.js",
-    "screens.js",
-    "projectiles_ce.js",
-    "victory_ce.js",
-    "shadows_ce.js",
-    "ce_specials.js"
-  ],
-  "lazyDependencies": [
-    "assets_ce.js",
-    "screens_ce.js"
-  ],
-  "storageNamespace": "sf2:ai:rift-v1",
-  "status": "development-prototype",
-  "contentHash": "a5dbedacc3c7c1077ee6a88798e2512e02f4c4d052def744532c3428eda65b7d"
+  "upstreamFaithfulCommit": "f14f766d45566b834b932071c07d5c7576b87346",
+  "referenceNote": "The pinned CE dependency folder is a local read-only character-production reference, not a separate playable engine."
 }

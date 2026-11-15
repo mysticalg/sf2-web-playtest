@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.64",
-  "commit": "b3285d6146025b0152a88195f9151642bbe7047f",
-  "builtAt": "2026-11-15T00:08:48.631108+00:00",
+  "version": "0.1.71",
+  "commit": "73ba2809dd1c597137753bde63a71b83a1079f80",
+  "builtAt": "2026-11-15T01:46:28.849365+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 3097,
-      "sha256": "4ea24844df979dd3aaa0eefba73485458c8a068839b3d7305bb03dfd95307564"
+      "bytes": 3510,
+      "sha256": "8962d8eadeaa496b4955c58acc6c4a6e917eb5b8c7d352a3a13f17fb4087dde3"
     },
     {
       "file": "game.js",
-      "bytes": 100005,
-      "sha256": "8c1df265e765a338be62c05ad77d7357fefd26da8873261010699db2781351b0"
+      "bytes": 118611,
+      "sha256": "1ad8acf88f0fbcc01732f44b87ad49438ec58bbee68826b8a6a583f7c19451d0"
     },
     {
       "file": "assets.js",
@@ -132,7 +132,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "50a0ba49ecff3ab54b9f57fb142a6920ee966be1ca63bb4d3750e31795c040ec"
+      "sha256": "735f0026659a97e4f4edecb7ba359e86ff484105228cd2292e3d84d5abac0730"
     },
     {
       "file": "lobby.css",
@@ -143,6 +143,26 @@
       "file": "netplay.js",
       "bytes": 12415,
       "sha256": "c6b30d9bf0d4aa991240bf383840a553e00a9130f9d98d6da1eb2feb2bfa6310"
+    },
+    {
+      "file": "ai_roster.js",
+      "bytes": 1013,
+      "sha256": "18946ef324a937c0cfc50bd4eb797e37300493c39f82502f189747a4ede38ea4"
+    },
+    {
+      "file": "input_ui.js",
+      "bytes": 6691,
+      "sha256": "98db98027b2ca790a8901aa8e798f25a7f7ad09f18707ef314b36eb08479d739"
+    },
+    {
+      "file": "ai/index.html",
+      "bytes": 454,
+      "sha256": "4c85f2aacff9648edc43c8be72e73c58a47ef13dd66593fe839ae9e5cd44af06"
+    },
+    {
+      "file": "ai/edition.json",
+      "bytes": 371,
+      "sha256": "6b715979fa3a51d7bc8712e93fe100b0846768269d7a921fa756f136ab0cf9a5"
     }
   ]
 }
