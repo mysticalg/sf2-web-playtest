@@ -1070,4 +1070,4 @@ Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...Object.
 
 /* CE is the default version: start loading it at once (WW stays selectable on the title) */
 G.wantce=1;loadce();
-try{const query=new URLSearchParams(location.search),edition=query.get('edition');if(['ww','ce','ai'].includes(edition)){if(edition==='ai'&&query.get('prototype')==='evil-ryu')SF2AI.configure({p1:'evil-ryu',p2:'ryu',training:true,mode:'versus',dummy:'stand'}).catch(console.error);else setEdition(edition).catch(console.error);}}catch(e){console.error(e);}
+try{const query=new URLSearchParams(location.search),edition=query.get('edition');if(['ww','ce','ai'].includes(edition)){if(edition==='ai'&&query.get('prototype')==='evil-ryu')SF2AI.configure({p1:'evil-ryu',p2:'ryu',training:query.get('mode')==='practice',mode:query.get('mode')==='versus'?'versus':'cpu',dummy:['stand','block','cpu'].includes(query.get('dummy'))?query.get('dummy'):'stand'}).catch(console.error);else setEdition(edition).catch(console.error);}}catch(e){console.error(e);}
