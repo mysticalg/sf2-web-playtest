@@ -903,7 +903,7 @@ function selce(){const bl=(G.tick>>4)&1;
     dimg(a.flag);dimg(a.selL);dimg(a.name);if(two){dimg(b.flag);if(G.sel[0]===G.sel[1])dimg(b.selR);else dimg(b.selL,0,true);dimg(b.name2);}
     for(const i of (two?[0,1]:[0])){if(i>G.selstep)continue;const [x,y]=cecell(G.cep[i]),c=SCE.cur[i?'2':'1'];if(i===G.selstep&&bl)continue;
       if(c&&c.im.complete)cx.drawImage(c.im,x+c.x,y+c.y);}   // the ROM's own 1P/2P cursor sprites
-    if(aiEnabled())tx('AI EDITION',W/2,14,8,'#ffe000','#000');
+    if(aiEnabled())tx('AI EDITION',W-54,8,8,'#ffe000','#000');
     return;}cx.fillStyle=BLUE;cx.fillRect(0,0,W,H);tx(aiEnabled()?'AI EDITION':'CHAMPION EDITION',W/2,18,12,'#ffb000','#600');tx('PLAYER SELECT',W/2,98,9,'#fff','#000');
   CEGRID.forEach((f,q)=>{const [x,y]=cecell(q),F=D.fighters[f],r=F.frames[F.anims[0].ents[0][0]],s=Math.min(38/r[3],30/r[2]);
     cx.fillStyle='#000';cx.fillRect(x+1,y+1,30,40);cx.strokeStyle='#ffb000';cx.lineWidth=1;cx.strokeRect(x+0.5,y+0.5,31,41);
