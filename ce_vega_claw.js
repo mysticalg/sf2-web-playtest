@@ -49,8 +49,7 @@
  }
  function drawDrops(ctx,players,cam,ground){
   for(const p of players){const d=p.CECLAW?.drop;if(!d)continue;
-   if(!d.initialized){d.initialized=true;h.rand();continue;}
-   d.visible=true;
+   if(!d.visible)continue;
    part(ctx,data.drop.entries[d.index].views[(d.alternate?2:0)+(d.face?1:0)],(d.X>>8)-cam,ground-(d.Y>>8));
   }
  }

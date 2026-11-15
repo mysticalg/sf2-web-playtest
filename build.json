@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.81",
-  "commit": "5a2b05ef98456c0c5582ae4a73486b25b3554cdf",
-  "builtAt": "2026-11-15T18:55:29.049143+00:00",
+  "version": "0.1.82",
+  "commit": "81c45b5bd02796b908e358a4623caf78e3aea3c8",
+  "builtAt": "2026-11-15T19:57:53.691927+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 4328,
-      "sha256": "728cf93272a081278509c3661b46e2e017f5f4c3dfd7172179106ffac4ab367a"
+      "bytes": 4660,
+      "sha256": "cb5224ab1c7b121c6e650c1d5a550ba6640b056c6c55f6987324f7dc9194ddec"
     },
     {
       "file": "game.js",
-      "bytes": 132930,
-      "sha256": "194c2c5915b4a341c74f07686415ad8147b3c6b6ce58ca5ec545cd74d0dd0612"
+      "bytes": 136561,
+      "sha256": "72c62a037928daa595e34d0018ff92b7d2f222e2ec6308424d6863d492d17494"
     },
     {
       "file": "assets.js",
@@ -145,9 +145,29 @@
       "sha256": "29de20291cc7773925ea18f196d72ae2a482be206f5b2ac9dbdb21cff75b024e"
     },
     {
+      "file": "ce_announcer.js",
+      "bytes": 703,
+      "sha256": "99d82a05747c49b10c5b7a4eae41c9a549088634478986783134938f96a60c2d"
+    },
+    {
+      "file": "ce_presentation.js",
+      "bytes": 41304,
+      "sha256": "f89c9ed4202286af3f28d34d1ce824f15145e19515e867efdabde0ebf8ac9e6b"
+    },
+    {
+      "file": "world_map_ce.js",
+      "bytes": 69213,
+      "sha256": "b9aabd000ee8fcc02d704f01a3239afeb30fc80fd6abec17797deec8974964a3"
+    },
+    {
+      "file": "ce_world_map.js",
+      "bytes": 3457,
+      "sha256": "54b74aa8e603e84a6feb1bb8111dc3b52ace48ff21fcbe15037dffd172082ecf"
+    },
+    {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "b476c8fed72322b1c1322a424c45b90d0510c35f139e1f0e8f7ee0b36891c62e"
+      "sha256": "74cf8d9708a68334129bd3a11d2c7fcf9c214274aad0c10b5e9668c237a90ac2"
     },
     {
       "file": "lobby.css",
@@ -196,8 +216,8 @@
     },
     {
       "file": "ce_vega_claw.js",
-      "bytes": 2935,
-      "sha256": "958d1dca6f0e1b816935664eb1434bed78f1fa0a9e6654e9e994f874be5420bb"
+      "bytes": 2882,
+      "sha256": "6197c88a63474986b737ef0429466b8a676843c42571277e4c91c952a6d6268d"
     },
     {
       "file": "input_ui.js",
