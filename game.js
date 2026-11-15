@@ -16,10 +16,17 @@ const MAXHP=144;
 // Explicit per-player identity; base fid remains 0 for inherited CE tables.
 const AICFG={configured:false,prototype:false,selectedProfiles:[null,null],profiles:['ryu','ryu'],training:true,mode:'versus',dummy:'stand'};
 const AI_PROFILES={ken:{key:'ce:ken',name:'Ken',maxHP:144,baseFighterId:4},'evil-ken':{key:'ai:evil-ken',name:'Evil Ken',maxHP:136,baseFighterId:4},ryu:{key:'ce:ryu',name:'Ryu',maxHP:144},'evil-ryu':{key:'ai:evil-ryu',name:'Evil Ryu',maxHP:136}};
-const EDITION_SETTING_KEYS={faithful:'sf2:faithful:v1:settings',ai:'sf2:ai:ce-v1:settings'};
+const EDITION_SETTING_KEYS={faithful:'sf2:faithful:v1:settings',ai:'sf2:ai:ce-v1:settings',ce:'sf2:ce:v2:settings'};
 function readEditionSettings(key){try{const value=JSON.parse(localStorage.getItem(key));if(value&&Number.isInteger(value.diff)&&value.diff>=0&&value.diff<4&&[0,30,60,99].includes(value.rtime))return {diff:value.diff,rtime:value.rtime};}catch{}return null;}
 const EDITION_SETTINGS={faithful:readEditionSettings(EDITION_SETTING_KEYS.faithful),ai:readEditionSettings(EDITION_SETTING_KEYS.ai)};
-function saveEditionSettings(){if(AICFG.prototype)return;const key=aiEnabled()?'ai':'faithful',settings={diff:G.diff,rtime:G.rtime};if(!Number.isInteger(settings.diff)||settings.diff<0||settings.diff>3||![0,30,60,99].includes(settings.rtime))return;EDITION_SETTINGS[key]=settings;try{localStorage.setItem(EDITION_SETTING_KEYS[key],JSON.stringify(settings));}catch{}}
+// Migration preserves preset order, not equivalence to the former approximate CPU.
+try{const s=JSON.parse(localStorage.getItem(EDITION_SETTING_KEYS.ce));if(s&&Number.isInteger(s.difficulty)&&s.difficulty>=0&&s.difficulty<8&&[0,30,60,99].includes(s.rtime))EDITION_SETTINGS.ce={difficulty:s.difficulty,rtime:s.rtime};}catch{}
+if(!EDITION_SETTINGS.ce){const old=EDITION_SETTINGS.faithful;EDITION_SETTINGS.ce={difficulty:old?[0,3,4,7][old.diff]:3,rtime:old?.rtime??99};try{localStorage.setItem(EDITION_SETTING_KEYS.ce,JSON.stringify(EDITION_SETTINGS.ce));}catch{}}
+function settingsKey(){return aiEnabled()?'ai':VER.edition==='ce'?'ce':'faithful';}
+function captureEditionSettings(){if(AICFG.prototype)return;const key=settingsKey();EDITION_SETTINGS[key]=key==='ce'?{difficulty:G.ceDifficulty,rtime:G.rtime}:{diff:G.diff,rtime:G.rtime};}
+function restoreEditionSettings(id){const s=EDITION_SETTINGS[id==='ww'?'faithful':id]||EDITION_SETTINGS.faithful||{diff:1,rtime:99};G.diff=s.diff??1;G.rtime=s.rtime;if(id==='ce')G.ceDifficulty=s.difficulty;}
+function saveEditionSettings(){if(AICFG.prototype)return;captureEditionSettings();const key=settingsKey(),s=EDITION_SETTINGS[key],n=key==='ce'?s.difficulty:s.diff;if(!Number.isInteger(n)||n<0||n>=(key==='ce'?8:4)||![0,30,60,99].includes(s.rtime))return;try{localStorage.setItem(EDITION_SETTING_KEYS[key],JSON.stringify(s));}catch{}}
+function changeDifficulty(delta){if(VER.edition==='ce')G.ceDifficulty=(G.ceDifficulty+delta+8)%8;else G.diff=(G.diff+delta+4)%4;}
 const RIFT=Object.freeze({distance:72,startup:6,travel:6,recovery:12,cost:4,minHP:5});
 function aiMax(p){return p.maxHP||MAXHP;}
 function aiName(p){return p.profileName||p.F.name;}
@@ -123,6 +130,7 @@ let rng=0x2545F491;
 function rand(){rng^=rng<<13;rng>>>=0;rng^=rng>>>17;rng^=rng<<5;rng>>>=0;return rng;}
 const G={scene:'title',arc:0,ladder:[],li:0,st:0,menu:0,cont:9,slow:0,bann:'',ko:0,mw:0,sel:[0,4],selstep:0,stage:4,mode2p:0,gph:0,gt:0,timer:99,rtime:99,diff:1,tick60:0,round:1,winmask:0,aicool:20,aidelay:0,aipend:0,stepacc:0,cam:OFS,fr:false,tick:0};
 if(EDITION_SETTINGS.faithful)Object.assign(G,EDITION_SETTINGS.faithful);
+G.ceDifficulty=EDITION_SETTINGS.ce.difficulty;
 function mkp(i){return {i,X:0,Y:0,VX:0,VY:0,AX:0,AY:0,FACE:0,ST:0,RETCR:0,cur:0,anim:null,aidx:0,acc:0,adone:0,hitdone:0,
  HP:MAXHP,KEYS:0,PREV:0,KB:0,WINS:0,SPK:0,SPPH:0,SPSTR:0,SVX:0,SVY:0,SCNT:0,LOOPED:0,MSEQ:[[0,0],[0,0],[0,0]],CB:0,CD:0,CBW:0,CDW:0,MQP:[],MQK:[],R3:[-99,-99,-99,-99],PT:[-99,-99,-99],FBK:'hado',
  FBON:0,FBX:0,FBY:0,FBVX:0,FBT:0,FORCE:0,fid:i?4:0,F:D.fighters[i?4:0],ft:FTX[i?4:0]};}
@@ -153,12 +161,12 @@ function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 function resetp(p,x,face){Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   if(VER.cur==='CE'){p.CEWALL=0;p.CEVSL=null;}else{delete p.CEWALL;delete p.CEVSL;}
-  delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;
+  delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;
   if(window.SF2CEVEGACLAW)SF2CEVEGACLAW.reset(p,VER.cur==='CE');
   aiResetPlayer(p);p.MSEQ=[[0,0],[0,0],[0,0]];p.THV=null;p.hitdone=0;setanim(p,AN_IDLE,0);}
 // CE 0x38b2/0x38ca: native X 552/728, camera 448; browser world origin is native X 256.
 const CE_CAM_EXTENT=[40,56,53,40,40,36,46,40,40,44,40,40]; // ROM 0x394c, actor+0x1c2
-function resetround(){G.ann=null;if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;}
+function resetround(){if(VER.cur==='CE')window.SF2CEPROJECTILES?.reset(P);G.ann=null;if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;}
 function resetmatch(){P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
 // ---- motion input buffer (sf2ua 0x2d58e) ----
 function mwin(){return WINTAB[rand()&31];}
@@ -460,12 +468,14 @@ function fbspawn(p){const key=p.fid===9&&p.MV.btn==='K'?'tigerlow':p.FBK;
     p.FBX=p.X+(p.FACE?def.spawn[0]<<8:-(def.spawn[0]<<8));p.FBY=p.Y+(def.spawn[1]<<8);
     p.FBVX=p.FACE?def.speed[p.SPSTR]:-def.speed[p.SPSTR];
   }else{const v=(p.SPSTR+3)<<8;p.FBX=p.X+(p.FACE?0x5000:-0x5000);p.FBVX=p.FACE?v:-v;p.FBY=p.Y+0x3800;}
-  if(ceShotoProjectile(p)){p.FBIMPACT=0;p.FBDEFER=0;p.FBSLOT=p.opp.FBON?((p.opp.FBSLOT||0)^1):0;}p.FBT=0;p.FBA=0;p.FBON=1;}
+  if(VER.cur==='CE'){p.FBIMPACT=0;p.FBDEFER=0;delete p.FBCLASH;p.FBSLOT=p.opp.FBON?((p.opp.FBSLOT||0)^1):0;}p.FBT=0;p.FBA=0;p.FBON=1;}
 const ceShotoProjectile=p=>VER.cur==='CE'&&(p.fid===0||p.fid===4);
-function fbmove(p){if(!p.FBON)return;if(ceShotoProjectile(p)&&G.scene==='fight'){p.FBDEFER=1;return;}fbadvance(p);}
+const ceBoundProjectile=p=>VER.cur==='CE'&&G.scene==='fight'&&!!window.SF2CEPROJECTILES?.record(p);
+function fbmove(p){if(!p.FBON)return;if((ceShotoProjectile(p)||ceBoundProjectile(p))&&G.scene==='fight'){p.FBDEFER=1;return;}fbadvance(p);}
 function fbafter(p){if(p.FBDEFER){p.FBDEFER=0;fbadvance(p);}}
-function fbadvance(p){if(!p.FBON)return;if(ceShotoProjectile(p)&&p.FBIMPACT){if(--p.FBIMPACT===0)p.FBON=0;return;}
+function fbadvance(p){if(!p.FBON)return;if((ceShotoProjectile(p)||ceBoundProjectile(p))&&p.FBIMPACT){if(--p.FBIMPACT===0)p.FBON=0;return;}
   if(p.FBDEF&&p.FBINIT){p.FBINIT=0;return;} // initialization does not also execute the movement state
+  if(ceBoundProjectile(p)&&SF2CEPROJECTILES.beforeAdvance(p,{tick:G.tick,rand,body:q=>fbhit(q,true)}))return;
   p.FBX+=p.FBVX;p.FBA=(p.FBA||0)+1;
   if(p.FBDEF){/* 0x2302 / 0x22d8: move, then decrement the ROM animation timer. */
     if(--p.FBC===0){p.FBI++;if(p.FBI===p.FBAN.entries.length)p.FBI=p.FBAN.loop;p.FBC=p.FBAN.entries[p.FBI][1];}
@@ -478,13 +488,16 @@ function drawfb(p,ground,camera){const sx=(p.FBX>>8)-camera,sy=ground-(p.FBY>>8)
     cx.save();if(p.FBVX>0){cx.translate(sx,sy);cx.scale(-1,1);fimgKind('object',im,f.x,f.y);}else fimgKind('object',im,sx+f.x,sy+f.y);cx.restore();return;}
   if(p.FBK==='sonic'){if((p.FBA||0)<7)return;const f=((p.FBA+2)>>1)&1,im=SBI[f];if(!im.width)return;cx.save();if(p.FBVX<0){cx.translate(2*sx,0);cx.scale(-1,1);}fimgKind('object',im,sx+SBX[f],sy-18);cx.restore();}
   else fx(D.pfx[p.FBK][(p.FBT>>1)&1],sx,sy,p.FBVX>=0);}
-function fbclash(){const a=P[0],b=P[1];if(!(a.FBON&&b.FBON)||ceShotoProjectile(a)&&a.FBIMPACT||ceShotoProjectile(b)&&b.FBIMPACT)return;
+function fbclash(){const a=P[0],b=P[1];if(ceBoundProjectile(a)&&ceBoundProjectile(b))return;if(!(a.FBON&&b.FBON)||ceShotoProjectile(a)&&a.FBIMPACT||ceShotoProjectile(b)&&b.FBIMPACT)return;
   if(Math.abs(a.FBX-b.FBX)<24<<8&&Math.abs(a.FBY-b.FBY)<20<<8)a.FBON=b.FBON=0;}
 const ceProjectilePose=p=>({cur:p.cur,aidx:p.aidx,acc:p.acc,adone:p.adone,hitdone:p.hitdone,MH2:p.MH2});
-function fbhit(p){if(!p.FBON||ceShotoProjectile(p)&&(p.FBINIT||p.FBIMPACT||((G.tick+(p.FBSLOT||0))&1)))return;const d=p.opp;if(!hurtable(d))return;
-  const box=fbbox(p);if(!box)return;const region=hurtregion(box,d);if(region<0)return;if(ceShotoProjectile(p)){p.FBIMPACT=2;p.FBDEFER=0;}else p.FBON=0;const s=p.FBDEF?p.FBSTR:(Math.abs(p.FBVX)>>8)-3;
+function fbhit(p,nativeStep=false){if(ceBoundProjectile(p)&&!nativeStep)return;if(!p.FBON||ceShotoProjectile(p)&&(p.FBINIT||p.FBIMPACT||((G.tick+(p.FBSLOT||0))&1)))return;const d=p.opp;if(!hurtable(d))return;
+  const box=fbbox(p);if(!box)return;const region=hurtregion(box,d);if(region<0)return;
+  const nativeImpact=ceBoundProjectile(p),hurt=nativeImpact?boxw(d,region):null,impactPoint=hurt?[(box[0]+hurt[0])>>1,(box[1]+hurt[1])>>1]:null;
+  if(ceShotoProjectile(p)||ceBoundProjectile(p)){p.FBIMPACT=2;p.FBDEFER=0;}else p.FBON=0;const s=p.FBDEF?p.FBSTR:(Math.abs(p.FBVX)>>8)-3;
   const localStop=VER.cur==='CE'&&(p.fid===0||p.fid===4),oldPose=localStop?ceProjectilePose(d):null;
   const damage=20+((rand()>>>20)%3)-1,bl=applyhit(d,isEvilKen(p)?Math.floor(damage*192/256):damage,s,0,0,p.FBVX>=0?1:-1,s<2?5:8,region,localStop),X=XS(p);
+  if(nativeImpact)SF2CEPROJECTILES.bodyImpact(p,impactPoint,{tick:G.tick,rand});
   if(localStop){d.CEPF={init:1,ticks:14,pose:ceProjectilePose(d)};Object.assign(d,oldPose);d.anim=d.F.anims[d.cur];}
   sfxc(X&&(bl?X.blk:X.fbhit),bl?SN_BLOCK:SN_HIT[2]);}
 // ---- camera / clamp (M5 clamps to a fixed 320 view; here the 864px stage scrolls) ----
@@ -629,7 +642,7 @@ function pointCommand(x,y){
     if(row<0)return 0;G.menu=row;
     if(row<2){G.st=Math.max(G.st,21);return 1;}
     if(row===4)cycleEdition(x<W/2?-1:1);
-    else if(row===2)G.diff=(G.diff+(x<W/2?3:1))%4;
+    else if(row===2)changeDifficulty(x<W/2?-1:1);
     else{const q=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(q+(x<W/2?RTIMES.length-1:1))%RTIMES.length];}
     if(row===2||row===3)saveEditionSettings();
     return 0;
@@ -709,13 +722,14 @@ function step0(net){
   if(G.gph!==1){P[0].KEYS=P[1].KEYS=0;P[1].FORCE=0;}
   if(G.hfz>0){G.hfz--;for(const q of P){const n=q.KEYS&~(q.HZK||0);q.HZK=q.KEYS;if(n&0x70)q.MQP.push(G.tick);if(n&0x380)q.MQK.push(G.tick);} /* mash taps made during hitstop still count (ROM keeps counting presses) */P[0].PREV=P[0].KEYS&P[0].PREV;P[1].PREV=P[1].KEYS&P[1].PREV;G.fr=false;camera();return;}
   if(VER.cur==='CE'){if(window.SF2CETHROWS?.preCamera)P.forEach(p=>SF2CETHROWS.preCamera(p,cethooks()));camera();}
+  if(VER.cur==='CE')window.SF2CEPROJECTILES?.stepEffects({tick:G.tick});
   update(P[0]);update(P[1]);if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));fbmove(P[0]);fbmove(P[1]);fbclash();push();
-  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);fbafter(P[0]);fbafter(P[1]);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);if(!ceTimedOut)phase();}
+  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);const fbOrder=VER.cur==='CE'&&window.SF2CEPROJECTILES?P.slice().sort((a,b)=>(b.FBSLOT||0)-(a.FBSLOT||0)):P;fbOrder.forEach(fbafter);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);if(!ceTimedOut)phase();}
 /* ---- bonus stages (CE arcade ladder: car after fight 3, barrels after 6, drums after 9).
    CE car composition, counters, contact stop and suspension use SF2CECAR's native data.
    The legacy car path remains available for WW. Barrels/drums retain recovered behavior. ---- */
 const BG0=200,BIM={};function bim(u){return BIM[u]||(BIM[u]=img(u));}
-function bonusinit(kind){const p=P[0],d=P[1],B=G.bon={kind,tk:0,time:kind===0?40:kind===1?20:30,end:0,cool:0,pts:0,hits:0,ob:[],fx:[]};
+function bonusinit(kind){if(VER.cur==='CE')window.SF2CEPROJECTILES?.reset(P);const p=P[0],d=P[1],B=G.bon={kind,tk:0,time:kind===0?40:kind===1?20:30,end:0,cool:0,pts:0,hits:0,ob:[],fx:[]};
   setfighter(p,G.sel[0]);setfighter(d,G.sel[0]);resetp(p,(kind===0?60:kind===1?192:104)<<8,1);resetp(d,300<<8,0);d.ST=S_KO;d.HP=0;G.cam=0;G.gph=1;G.slow=0;IQ.length=0;
   if(kind===0){B.dmg=0;B.fr=0;B.rr=0;if(VER.cur==='CE'&&window.SF2CECAR)SF2CECAR.init(B,p,rand,bim);}
   /* ROM object table (0xffa036.., stride 0xc0; bonus/cap3): 3 drums, two on the floor at centres 160/224, one on top at 192 (+72) */
@@ -805,7 +819,7 @@ function altatlas(f,im){const c=document.createElement('canvas');const go=()=>{c
   const d=g.getImageData(0,0,c.width,c.height),a=d.data,m=new Map();f.pal.forEach((p,i)=>m.set((p[0]<<16)|(p[1]<<8)|p[2],f.pal2[i]));
   for(let i=0;i<a.length;i+=4){if(!a[i+3])continue;const q=m.get((a[i]<<16)|(a[i+1]<<8)|a[i+2]);if(q){a[i]=q[0];a[i+1]=q[1];a[i+2]=q[2];}}g.putImageData(d,0,0);c.ready=1;};
   if(im.complete&&im.width)go();else im.addEventListener('load',go);return c;}
-function setver(v,keepEdition=false){const leavingAI=!keepEdition&&aiEnabled();if(leavingAI&&EDITION_SETTINGS.faithful)Object.assign(G,EDITION_SETTINGS.faithful);if(!keepEdition){VER.edition=v==='WW'?'ww':'ce';AICFG.prototype=AICFG.configured=false;AICFG.selectedProfiles=[null,null];for(const p of P)aiClearProfile(p);}if(v==='CE'&&!VER.ce){loadce();return;}VER.cur=v;const S=v==='CE'?VER.ce:VER.ww;D.fighters=S.f;D.stages=S.st;STI=S.sti;musver();THRR=v==='CE'?THRR_CE:THRR_WW;NTHR=v==='CE'?NTHR_CE:NTHR_WW;RKD=rkd(v);try{if(!localStorage.getItem(rankStorageKey()))RK=RKD.map(o=>({...o}));}catch(e){}FTX=v==='CE'?FTX_CE:FTX_WW;for(const q of P)if(q.F)q.ft=FTX[q.fid];HSTUN=v==='CE'?HSTUN_CE:HSTUN_WW;BSTUN=v==='CE'?BSTUN_CE:BSTUN_WW;TDMG=v==='CE'?TDMG_CE:TDMG_WW;FI=S.fi;FIA=S.fia;
+function setver(v,keepEdition=false){const leavingAI=!keepEdition&&aiEnabled();if(!keepEdition){captureEditionSettings();restoreEditionSettings(v==='WW'?'ww':'ce');VER.edition=v==='WW'?'ww':'ce';AICFG.prototype=AICFG.configured=false;AICFG.selectedProfiles=[null,null];for(const p of P)aiClearProfile(p);}if(v==='CE'&&!VER.ce){loadce();return;}VER.cur=v;const S=v==='CE'?VER.ce:VER.ww;D.fighters=S.f;D.stages=S.st;STI=S.sti;musver();THRR=v==='CE'?THRR_CE:THRR_WW;NTHR=v==='CE'?NTHR_CE:NTHR_WW;RKD=rkd(v);try{if(!localStorage.getItem(rankStorageKey()))RK=RKD.map(o=>({...o}));}catch(e){}FTX=v==='CE'?FTX_CE:FTX_WW;for(const q of P)if(q.F)q.ft=FTX[q.fid];HSTUN=v==='CE'?HSTUN_CE:HSTUN_WW;BSTUN=v==='CE'?BSTUN_CE:BSTUN_WW;TDMG=v==='CE'?TDMG_CE:TDMG_WW;FI=S.fi;FIA=S.fia;
   S.f.forEach((f,i)=>NAMES[i]=f.name);for(const p of P)setfighter(p,p.fid);if(leavingAI){try{const saved=JSON.parse(localStorage.getItem('sf2rank'));RK=validrank(saved)?saved:RKD.map(o=>({...o}));}catch{RK=RKD.map(o=>({...o}));}G.hisc=RK[0].s;for(const p of P)p.SCORE=0;}}
 /* CE normals timing from the CE ROM (tools/emu_ce/fdtrace.py -> tools/fd_compare.py): entry durations per fighter/anim so every
    stand/crouch normal hits its ROM entry boundaries and returns to neutral on the ROM frame (last entry hands back after 1f) */
@@ -862,6 +876,7 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
   const top=(P[0].ST===S_ATK||P[0].ST===S_SPEC)?0:1; drawp(P[1-top]);drawp(P[top]);
   if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.drawDrops(CE_OBJECT_CONTEXT,P,c,GROUND);
   for(const p of P)if(p.FBON)drawfb(p,GROUND,c);
+  if(VER.cur==='CE')window.SF2CEPROJECTILES?.drawEffects(cx,GROUND,c,{image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});
   stagedraw(true);bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
   {const R='#ee6644',B='#0044aa';txw('1P',6,9,R,B,'left');txw(P[0].SCORE||0,113,9,R,B);txw(G.hisc=Math.max(G.hisc||RK[0].s,P[0].SCORE||0,P[1].SCORE||0),247,9,R,B);txw('2P',268,9,R,B,'left');if(G.mode2p||P[1].SCORE)txw(P[1].SCORE||0,377,9,R,B);}
   if(!(G.gph===2&&G.ko&&(G.tick>>3)&1))fimg(KOI,176,19);const t=Math.max(0,G.timer);
@@ -914,8 +929,11 @@ const SCR=window.SF2SCR||{ports:[]},SCRI=SCR.title?[SCR.title,SCR.selbg,...SCR.p
 const TITLEI=SCRI[0],SELI=SCRI[1],PORTI=SCRI.slice(2);
 const NAMES=D.fighters.map(f=>f.name),BOSSES=[10,11,9,8]; // Balrog, Vega, Sagat, then Bison last
 const RTIMES=[30,60,99,0],DIFFN=['EASY','NORMAL','HARD','HARDEST'],DIFFM=[0.55,0.8,1.0,1.25];
+// Existing decision policy remains approximate; these anchors preserve old migrated presets.
+const CE_DIFFM=[0.55,0.55+0.25/3,0.55+0.5/3,0.8,1,1+0.25/3,1+0.5/3,1.25];
+function difficultyLabel(){return VER.edition==='ce'?String(G.ceDifficulty)+(G.ceDifficulty===0?' EASIEST':G.ceDifficulty===3?' NORMAL':G.ceDifficulty===7?' HARDEST':''):DIFFN[G.diff];}
 // CPU level along the arcade ladder: the measured damage the arcade CPU dealt per stage rises ~3x from stage 1 to Sagat/Bison
-function ailvl(){const n=G.ladder.length||1;const base=G.arc?0.3+0.7*Math.min(1,G.li/Math.max(1,n-2)):0.65;return Math.min(1.3,base*DIFFM[G.diff]);}
+function ailvl(){const n=G.ladder.length||1;const base=G.arc?0.3+0.7*Math.min(1,G.li/Math.max(1,n-2)):0.65;return Math.min(1.3,base*(VER.edition==='ce'?CE_DIFFM[G.ceDifficulty]:DIFFM[G.diff]));}
 const HOME=['JAPAN','JAPAN','BRAZIL','USA','USA','CHINA','USSR','INDIA','THAILAND','THAILAND','USA','SPAIN'];
 let selprev=[0,0];
 const CONF=K_ATK*63;
@@ -950,7 +968,7 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
   switch(G.scene){
   case 'title': if(n1&(K_U|K_D))sfxc(VER.cur==='CE'&&0x21); if(n1&K_D)G.menu=(G.menu+1)%5; if(n1&K_U)G.menu=(G.menu+4)%5;
     if(G.menu===4&&n1&(K_L|K_R)){cycleEdition(n1&K_L?-1:1);sfxc(0x21,SN_BLOCK,0.3);}
-    if(G.menu>=2&&G.menu<4&&n1&(K_L|K_R)){const d=n1&K_R?1:-1; if(G.menu===2)G.diff=(G.diff+d+4)%4; else {const i=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(i+d+4)%4];} saveEditionSettings();sfxc(0x21,SN_BLOCK,0.3);}
+    if(G.menu>=2&&G.menu<4&&n1&(K_L|K_R)){const d=n1&K_R?1:-1; if(G.menu===2)changeDifficulty(d); else {const i=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(i+d+4)%4];} saveEditionSettings();sfxc(0x21,SN_BLOCK,0.3);}
     if(ok&&G.st>20&&G.menu<2&&!(G.wantce&&VER.cur!=='CE')){sfxc(0x20,SN_BLOCK,0.4);G.mode2p=G.menu;G.arc=G.menu?0:1;if(aiEnabled())AICFG.selectedProfiles=[null,null];G.selstep=0;G.sel=[0,4];if(VER.cur==='CE'){G.cep=[0,6];}go('select');} break;
   case 'select': {if(!G.cep)G.cep=[0,6];const i=G.selstep, who=i===1&&G.mode2p?n2:n1, n=G.mode2p?12:8; let c=G.sel[i];
     if(VER.cur==='CE'){let q=G.cep[i];if(who&K_L)q=q%6?q-1:q+5; if(who&K_R)q=q%6===5?q-5:q+1; if(who&(K_U|K_D))q=(q+6)%12;if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))q=G.cep[i];G.cep[i]=q;c=CEGRID[q];}
@@ -1028,7 +1046,7 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
   switch(G.scene){
   case 'title': if(TITLEI){fimg(TITLEI,0,0);cx.fillStyle='#000';cx.fillRect(0,158,W,H-158);}
     {const c=i=>G.menu===i?'#ffe000':'#888';tx('1P  ARCADE',W/2,166,10,c(0),'#000');tx('2P  VERSUS',W/2,178,10,c(1),'#000');
-    tx('DIFFICULTY  < '+DIFFN[G.diff]+' >',W/2,192,8,c(2),'#000');tx('TIME  < '+(G.rtime||'INF')+' >',W/2,203,8,c(3),'#000');
+    tx('DIFFICULTY  < '+difficultyLabel()+' >',W/2,192,8,c(2),'#000');tx('TIME  < '+(G.rtime||'INF')+' >',W/2,203,8,c(3),'#000');
     tx('VERSION  < '+(G.wantce&&VER.cur!=='CE'?(VER.loading===3?'CE LOAD FAILED':'LOADING CE'):VER.edition==='ai'?'AI EDITION':VER.cur==='CE'?'CHAMPION EDITION':'WORLD WARRIOR')+' >',W/2,214,8,c(4),'#000');}
     break;
   case 'select': {if(VER.cur==='CE'){selce();break;} if(SELI)fimg(SELI,0,0);
@@ -1087,7 +1105,7 @@ SF2.net={
     if(!['WW','CE'].includes(options.version)||VER.cur!==options.version)throw new Error('Requested game version is not loaded');
     CONTROL.paused=false;SF2.freeze=1;netActive=true;rng=(options.seed>>>0)||0x2545F491;
     for(const key of Object.keys(G))delete G[key];Object.assign(G,JSON.parse(JSON.stringify(NET_BASE_G)));
-    Object.assign(G,{mode2p:1,arc:0,diff:1,rtime:[0,30,60,99].includes(options.time)?options.time:99,sel:[0,4],cep:[0,6],selstep:0});
+    Object.assign(G,{mode2p:1,arc:0,diff:1,ceDifficulty:3,rtime:[0,30,60,99].includes(options.time)?options.time:99,sel:[0,4],cep:[0,6],selstep:0});
     down.clear();tapped.clear();IQ.length=0;IDEL=0;gprev=0;selprev=[0,0];
     setfighter(P[0],0);setfighter(P[1],4);P[0].SCORE=P[1].SCORE=0;resetmatch();go('select');render();
   },
@@ -1104,12 +1122,8 @@ async function setEdition(id,options={}){
   if(id==='ai'&&!aiAllowedFids().length)throw new Error('AI roster registry is unavailable');
   if(netActive)throw new Error('Leave the online match before changing edition');
   const oldAI=aiEnabled(),wasPrototype=AICFG.prototype;
-  if(!oldAI)EDITION_SETTINGS.faithful={diff:G.diff,rtime:G.rtime};
-  else if(!wasPrototype)EDITION_SETTINGS.ai={diff:G.diff,rtime:G.rtime};
-  if(id==='ai'){
-    if(!EDITION_SETTINGS.ai)EDITION_SETTINGS.ai=readEditionSettings(EDITION_SETTING_KEYS.ai);
-    Object.assign(G,EDITION_SETTINGS.ai||EDITION_SETTINGS.faithful||{diff:1,rtime:99});
-  }else if(oldAI&&EDITION_SETTINGS.faithful)Object.assign(G,EDITION_SETTINGS.faithful);
+  captureEditionSettings();
+  restoreEditionSettings(id);
   if(!options.prototype){try{localStorage.setItem('sf2:edition:v1',id);}catch{}}
   VER.edition=id;G.wantce=id!=='ww';AICFG.selectedProfiles=[null,null];AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
   for(const p of P)aiClearProfile(p);
@@ -1181,8 +1195,8 @@ window.SF2AI={
     for(let i=0;i<frames;i++)step(pair);return aiInfo();}}
 };
 resetmatch();
-Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...Object.values(CWIN||{}).flatMap(f=>Object.values(f))].map(i=>i.decode()).concat([window.SF2CEWORLDMAP?.ready,window.SF2CEFADE?.ready].filter(Boolean))).then(()=>{render();requestAnimationFrame(loop);});
+Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...Object.values(CWIN||{}).flatMap(f=>Object.values(f))].map(i=>i.decode()).concat([window.SF2CEWORLDMAP?.ready,window.SF2CEFADE?.ready,window.SF2CEPROJECTILES?.ready].filter(Boolean))).then(()=>{render();requestAnimationFrame(loop);});
 
 /* CE is the default version: start loading it at once (WW stays selectable on the title) */
-G.wantce=1;loadce();
+restoreEditionSettings('ce');G.wantce=1;loadce();
 try{const query=new URLSearchParams(location.search),explicit=query.get('edition');let saved=null;try{saved=localStorage.getItem('sf2:edition:v1');}catch{}const edition=['ww','ce','ai'].includes(explicit)?explicit:query.has('online')?null:saved;if(['ww','ce','ai'].includes(edition)){if(explicit==='ai'&&query.get('prototype')==='evil-ryu')SF2AI.configure({p1:'evil-ryu',p2:'ryu',training:query.get('mode')==='practice',mode:query.get('mode')==='versus'?'versus':'cpu',dummy:['stand','block','cpu'].includes(query.get('dummy'))?query.get('dummy'):'stand'}).catch(console.error);else setEdition(edition).catch(console.error);}}catch(e){console.error(e);}

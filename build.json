@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.83",
-  "commit": "ab015b43587365f1ce98a849fb7845a6f7e1ee6c",
-  "builtAt": "2026-11-15T20:46:44.327845+00:00",
+  "version": "0.1.84",
+  "commit": "8ce47ab4594e88e6e2d4048dc6ff635cf7a93631",
+  "builtAt": "2026-11-15T21:13:46.425472+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 4660,
-      "sha256": "55028306a16574863cf9395cd3c6ab8b8ea6dab49ee3ee643c5223f33686dd0e"
+      "bytes": 4848,
+      "sha256": "1954c73624ef510dbbf300f33bd7c638a8bf3dcfd79e905ecba0dde2748b08d3"
     },
     {
       "file": "game.js",
-      "bytes": 137050,
-      "sha256": "249d1f5692017575f43ec57667a1c0f13f3c54768d48df29607a49be7af9521f"
+      "bytes": 139423,
+      "sha256": "241b3c08c7788109d313c88f86ce77ef07335c3aef8479cda4145e4efbcbda9f"
     },
     {
       "file": "assets.js",
@@ -63,6 +63,16 @@
       "file": "projectiles_ce.js",
       "bytes": 19157,
       "sha256": "4d5351e35f13b44eafcf76c18c43b2586edc70f5d0c4f2c95048049741669884"
+    },
+    {
+      "file": "ce_projectile_clash_data.js",
+      "bytes": 26397,
+      "sha256": "b0a4742dbfcc1202a1d5245b2d2e893fdb9fef19e20b96768a5df02f5bceb98a"
+    },
+    {
+      "file": "ce_projectile_clash.js",
+      "bytes": 3189,
+      "sha256": "61572d8d5e05e647d5f2bfd19d00a44fe0891c66e06ec0961735c6aa7094688d"
     },
     {
       "file": "victory_ce.js",
@@ -167,7 +177,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "b8b30cc50ffc1efd2e7a68dbaf9e9cc2c7cb8472d303a7ba238bdc5f041c70af"
+      "sha256": "4298d77ec34257cf1287ee32e81296236b0d8e3a1aaf07754567f9166238f65f"
     },
     {
       "file": "lobby.css",
