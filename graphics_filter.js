@@ -97,8 +97,10 @@
     new Uint32Array(accelerated.memory.buffer,base,w*h).set(src.subarray(0,w*h));accelerated.mmpx_scale2x(base,base+bytes,w,h);
     dst.set(new Uint32Array(accelerated.memory.buffer,base+bytes,w*h*4));return dst;
   }
-  let display=null,native=null,nativeContext=null,displayContext=null,width=384,height=224,mode='original',select=null;
-  const modes=['original','smooth2x','smooth4x'],scale=()=>mode==='smooth4x'?4:mode==='smooth2x'?2:1;
+  const preferenceKey='sf2:graphics:v1',modes=['original','smooth2x','smooth4x'];
+  function savedMode(){try{const value=localStorage.getItem(preferenceKey),mode=value==='smooth'?'smooth4x':value;if(modes.includes(mode))return mode;}catch{}return 'smooth2x';}
+  let display=null,native=null,nativeContext=null,displayContext=null,width=384,height=224,mode=savedMode(),select=null;
+  const scale=()=>mode==='smooth4x'?4:mode==='smooth2x'?2:1;
   let two=null,four=null,outputImage=null,previous=null,validPrevious=false;
   const durations=[];let frames=0,filtered=0,cached=0,lastMs=0;
   function sizeDisplay(){
@@ -132,7 +134,7 @@
   }
   function setMode(value){
     if(value==='smooth')value='smooth4x';if(!modes.includes(value))throw new Error('Unknown graphics mode');
-    mode=value;sizeDisplay();present();return mode;
+    mode=value;try{localStorage.setItem(preferenceKey,mode);}catch{}sizeDisplay();present();return mode;
   }
   function attach(canvas,w=384,h=224){
     if(display){if(display!==canvas)throw new Error('Graphics display already attached');return native;}

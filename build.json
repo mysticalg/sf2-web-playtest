@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.79",
-  "commit": "758eded05dc7c1aba80eabd794de80f68c4c188c",
-  "builtAt": "2026-11-15T16:28:21.123186+00:00",
+  "version": "0.1.80",
+  "commit": "82a6b94ad50eb76587e9ae9471339d065b236514",
+  "builtAt": "2026-11-15T18:37:00.161828+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 4005,
-      "sha256": "1048d7ded5910273c0bfa20869d941333eb4ab255757aef1d7d3a88e4dc3f739"
+      "bytes": 4328,
+      "sha256": "8e11538b55ceee51bab32c98fb0e6c6a46fa0963f72f08fbfbc105b6a08333ad"
     },
     {
       "file": "game.js",
-      "bytes": 128447,
-      "sha256": "f6b673052e9c0203d7d9afc80f32f81043b745904af8506a591a9c8e7cec40b9"
+      "bytes": 132994,
+      "sha256": "283383ed32580668fb937b6ef7c255f9c86fc67db870138ea76f621f802fb7ab"
     },
     {
       "file": "assets.js",
@@ -21,8 +21,8 @@
     },
     {
       "file": "assets_ce.js",
-      "bytes": 8664021,
-      "sha256": "186b68a04d849b9023d0e33989fa22e61f376a9a3843d59b67dc48a3cb1e31d0"
+      "bytes": 8679043,
+      "sha256": "e2d527f58450052f3b039ce905ec4b46c03829dd8a0824499f1463b192bb1750"
     },
     {
       "file": "sound.js",
@@ -81,8 +81,8 @@
     },
     {
       "file": "ce_bison.js",
-      "bytes": 1898,
-      "sha256": "7c9b9e14c9503dabc391cc6beb2c6ee0e263b53fed363d9124ded7eb0925700a"
+      "bytes": 17223,
+      "sha256": "333470f22fc418a919907e9e18fcfd30df38bcb372aef8ca214a0de6b16947b6"
     },
     {
       "file": "ce_bison_input.js",
@@ -135,9 +135,19 @@
       "sha256": "0ec32b39dbe5de15450afeb0c2e1c928f58b9242950b79843224f7a85d3ee10f"
     },
     {
+      "file": "ce_car.js",
+      "bytes": 5492,
+      "sha256": "3b08a4d37effcc12cdede4b74889ab3cc3c83ab366dfffa1b3391617f495b259"
+    },
+    {
+      "file": "ce_car_assets.js",
+      "bytes": 103889,
+      "sha256": "29de20291cc7773925ea18f196d72ae2a482be206f5b2ac9dbdb21cff75b024e"
+    },
+    {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "4f6b45d96274307726a0c63c1d3ddaffc6fbbefd8521107770eed0a3325719de"
+      "sha256": "ca241495b0167f12b385c121bf2bbc12298f339096359e9ce3fe50d466a697a8"
     },
     {
       "file": "lobby.css",
@@ -166,8 +176,8 @@
     },
     {
       "file": "graphics_filter.js",
-      "bytes": 27187,
-      "sha256": "405efa460d38682d9714c89bc081bac8a3cdc605f5758c6d1e9fab3c90f17efc"
+      "bytes": 27460,
+      "sha256": "6cdba169bb6dca7f4149a0df9d0b18231bfda8ba939fbea23826ff7d0d5ff251"
     },
     {
       "file": "ce_shoto_throw.js",
@@ -176,8 +186,18 @@
     },
     {
       "file": "ce_vega.js",
-      "bytes": 17228,
-      "sha256": "35b88e61099f9924419bb7cdda42b2d16b626c502097034bbb655b8d2d52f496"
+      "bytes": 17510,
+      "sha256": "9eee05334715cf7b6207192f63c172d42d77868fa7f9794141ae147ad9cb1cab"
+    },
+    {
+      "file": "vega_claw_ce.js",
+      "bytes": 65091,
+      "sha256": "845a6f2f372dcb9af95c6cb99947dcf03adef33edef9828c829a152be8a60b27"
+    },
+    {
+      "file": "ce_vega_claw.js",
+      "bytes": 2935,
+      "sha256": "958d1dca6f0e1b816935664eb1434bed78f1fa0a9e6654e9e994f874be5420bb"
     },
     {
       "file": "input_ui.js",
