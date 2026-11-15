@@ -1,37 +1,37 @@
 {
   "editionId": "ai",
-  "version": "ai-0.1.0",
-  "commit": "c21025a35a54ce02a4234b437ec241eb4f8dccc3",
+  "version": "ai-0.1.1",
+  "commit": "8a4a1c4c2dc3970296a8a519d90a26eede9bda9d",
   "upstreamFaithfulCommit": "f14f766d45566b834b932071c07d5c7576b87346",
-  "contentHash": "d1663ee8465ba0ecc1b5dab7f2e3d38dbd7f7d17696e097fc83bfd79d8c7b6d9",
+  "contentHash": "a5dbedacc3c7c1077ee6a88798e2512e02f4c4d052def744532c3428eda65b7d",
   "rulesetId": "ai-ce-rift-v1",
-  "builtAt": "2026-11-15T00:34:11.162315+00:00",
+  "builtAt": "2026-11-15T01:08:01.315869+00:00",
   "status": "development-prototype",
   "files": [
     {
       "file": "index.html",
       "bytes": 3524,
-      "sha256": "da095ede439cdcf71dbea50eb53dea151b2a2f7b770c5ff886d89a1ff4fa8c41"
+      "sha256": "2f965d9720ba12c387eecccf122a3925eeedf4c6254c76ac7dd5e671741b9c7c"
     },
     {
       "file": "style.css",
-      "bytes": 3138,
-      "sha256": "bc730958749aee8d1a2a8f12f731e36cabdbedfd83f7edef30fd56d81b1e2f86"
+      "bytes": 3218,
+      "sha256": "f9ed7a6377f8007cf59f4828d9c6ffabf8d6e9ac8d86d0c7fab79456329f9c16"
     },
     {
       "file": "bootstrap.js",
-      "bytes": 4888,
-      "sha256": "9eee0a1bb504aa91aeb8cf945c6b2f675cd158ace5b4a619ebbcdba8d6108c4f"
+      "bytes": 10535,
+      "sha256": "ca11f6cf70c7bd6f348654bf2d71180a1d4e22920dc21980e09ceee838967e34"
     },
     {
       "file": "game.js",
-      "bytes": 107465,
-      "sha256": "fe79fca2314834f2c677f556266df75249417f6a2ecc3ec798b4311460c2b342"
+      "bytes": 107638,
+      "sha256": "cafa6a24d1eb07820e90e97da95650db5fdb57d379b6037a3f10e09509de44a7"
     },
     {
       "file": "edition.json",
       "bytes": 887,
-      "sha256": "26b010d584abd555eb018ebec00b170eee01eb2494b4dc80a8d559d213a09202"
+      "sha256": "268b2753245193ddfb459c23a667fa445b5a87f6c01f5a8b932a88045f3e31f4"
     },
     {
       "file": "vendor/assets.js",

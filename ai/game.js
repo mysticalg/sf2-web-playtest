@@ -527,7 +527,9 @@ function padRead(i){const ps=(navigator.getGamepads?navigator.getGamepads():[])|
   if(!g)return {k:0,g:0,on:false};const b=n=>{const x=g.buttons[n];return !!x&&(x.pressed||x.value>0.5);};
   const ax=g.axes[0]||0,ay=g.axes[1]||0,DZ=0.4;let k=0;
   if(b(14)||ax<-DZ)k|=K_L;if(b(15)||ax>DZ)k|=K_R;if(b(12)||ay<-DZ)k|=K_U;if(b(13)||ay>DZ)k|=K_D;
-  PADB.forEach((n,j)=>{if(b(n))k|=K_ATK<<j;});return {k,g:(b(8)?2:0)|(b(9)?4:0),on:true};}
+  PADB.forEach((n,j)=>{if(b(n))k|=K_ATK<<j;});
+  if(AICFG.configured&&window.SF2AIController?.suppressGameplay)k=0;
+  return {k,g:(b(8)?2:0)|(b(9)?4:0),on:true};}
 function pads(){const r=[padRead(0),padRead(1)];
   r.forEach((p,i)=>{if(p.on!==padN[i]){padN[i]=p.on;padMsg='Pad '+(i+1)+(p.on?' connected':' disconnected');padMsgT=180;
     if(i===1&&p.on&&!AICFG.configured)G.mode2p=1;if(p.on)audioInit();}});return r;}
@@ -536,7 +538,8 @@ function step(net){step0(net);if(AICFG.configured){for(const p of P){if(p.AIComb
 function step0(net){
   G.stepacc+=5; G.fr=G.stepacc>=12; if(G.fr)G.stepacc-=12; G.tick++;
   const pd=net?[{k:net[0],g:0},{k:net[1],g:0}]:pads();
-  const g=net?0:(held('Tab')?2:0)|(held('Space')?4:0)|pd[0].g|pd[1].g, ng=g&~gprev; gprev=g;
+  const padMenu=AICFG.configured&&window.SF2AIController;
+  const g=net?0:(held('Tab')?2:0)|(held('Space')?4:0)|(padMenu?0:pd[0].g|pd[1].g), ng=g&~gprev; gprev=g;
   if(!AICFG.configured&&(ng&2)){if(G.scene==='fight'&&G.arc&&!G.mode2p){G.mode2p=1;G.arc=0;music(MUSC.stop);sfxc(VER.cur==='CE'&&0x20,SN_BLOCK,0.5);go('chal');return;} G.mode2p^=1;}
   const k1=net?net[0]:rk(P1K)|pd[0].k|(held('Enter')?K_ATK:0),k2=net?net[1]:rk(P2K)|pd[1].k;
   if(G.scene==='bonus'){if(!netActive&&held('Escape')){go('title');return;}bonusstep(k1);return;}
@@ -911,6 +914,7 @@ window.SF2AI={
     return aiStart();
   },
   setSound(on){muted=!on;audioInit();if(MG)MG.gain.value=muted?0:1;return !muted;},
+  clearInput(){clearinput();},
   start:aiStart,
   resetRound(){
     if(!AICFG.configured)return aiStart();
