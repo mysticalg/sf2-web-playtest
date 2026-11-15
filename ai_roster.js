@@ -1,4 +1,4 @@
-/* Readiness-gated roster for the integrated AI mode. No unfinished pack is loaded. */
+/* Integrated AI roster: complete originals plus the explicitly selectable Ryu prototype. */
 'use strict';
 window.SF2AI_ROSTER={
   schemaVersion:1,
@@ -18,6 +18,6 @@ window.SF2AI_ROSTER={
   ],
   additions:[],
   developmentProfiles:[
-    {key:'ai:evil-ryu',baseFighterId:0,name:'Evil Ryu',status:'prototype',ready:false,maxHP:136}
+    {key:'ai:evil-ryu',baseFighterId:0,name:'Evil Ryu',status:'prototype',ready:false,selectablePrototype:true,maxHP:136}
   ]
 };

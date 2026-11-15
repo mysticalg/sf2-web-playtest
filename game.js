@@ -14,13 +14,17 @@ const AN_IDLE=0,AN_WALKF=1,AN_WALKB=2,AN_CROUCH=3,AN_STANDUP=4,AN_JUMPN=5,AN_JUM
  AN_HITL=20,AN_CHITL=23,AN_BLOCKS=26,AN_BLOCKC=27,AN_FALL=28,AN_GETUP=30,AN_WIN=31,AN_HADO=32,AN_SHO=35,AN_TATS=38,AN_TAT=39,AN_TATLAND=42,AN_THROW=46;
 const MAXHP=144;
 // Explicit per-player identity; base fid remains 0 for inherited CE tables.
-const AICFG={configured:false,prototype:false,profiles:['ryu','ryu'],training:true,mode:'versus',dummy:'stand'};
+const AICFG={configured:false,prototype:false,selectedProfiles:[null,null],profiles:['ryu','ryu'],training:true,mode:'versus',dummy:'stand'};
 const AI_PROFILES={ryu:{key:'ce:ryu',name:'Ryu',maxHP:144},'evil-ryu':{key:'ai:evil-ryu',name:'Evil Ryu',maxHP:136}};
 const EDITION_SETTINGS={faithful:null,ai:null};
 const RIFT=Object.freeze({distance:72,startup:6,travel:6,recovery:12,cost:4,minHP:5});
 function aiMax(p){return p.maxHP||MAXHP;}
 function aiName(p){return p.profileName||p.F.name;}
 function aiEnabled(){return VER.edition==='ai';}
+function evilRyuSelectable(){return window.SF2AI_ROSTER?.developmentProfiles?.some(p=>p.key==='ai:evil-ryu'&&p.baseFighterId===0&&p.selectablePrototype===true);}
+function evilRyuSelected(slot,fid){return aiEnabled()&&fid===0&&(AICFG.prototype?AICFG.profiles[slot]:AICFG.selectedProfiles[slot])==='evil-ryu';}
+function selectedProfileLabel(slot,fid){return evilRyuSelected(slot,fid)?'EVIL RYU PROTOTYPE':D.fighters[fid].name.toUpperCase();}
+function ryuVariantStrip(){return aiEnabled()&&!AICFG.prototype&&evilRyuSelectable()&&G.scene==='select'&&G.sel[G.selstep]===0;}
 function aiAllowedFids(){const roster=window.SF2AI_ROSTER?.baseRoster;return Array.isArray(roster)?roster.filter(f=>f.ready===true&&Number.isInteger(f.fighterId)&&f.fighterId>=0&&f.fighterId<12&&typeof f.key==='string'&&f.key.startsWith('ce:')).map(f=>f.fighterId):[];}
 const CE_KEYS=['ryu','honda','blanka','guile','ken','chun-li','zangief','dhalsim','bison','sagat','balrog','vega'];
 function aiClearProfile(p){
@@ -28,7 +32,7 @@ function aiClearProfile(p){
 }
 function aiSetProfile(p,fid){
   if(!aiAllowedFids().includes(fid))throw new Error('Fighter is not ready for AI Edition');
-  const evil=AICFG.prototype&&fid===0&&AICFG.profiles[p.i]==='evil-ryu';
+  const evil=evilRyuSelected(p.i,fid);
   const id=evil?'evil-ryu':CE_KEYS[fid],key=evil?'ai:evil-ryu':'ce:'+id,source=D.fighters[fid];
   if(p._AI_SOURCE!==source||p.fighterKey!==key){p.F=JSON.parse(JSON.stringify(source));delete p.F._ai;p._AI_SOURCE=source;}
   p.fid=fid;p.ft=FTX[fid];p.aiProfile=id;p.fighterKey=key;p.profileName=evil?'Evil Ryu':source.name;
@@ -576,8 +580,9 @@ function pointCommand(x,y){
   }
   if(G.scene==='select'){
     const who=G.selstep;
+    if(ryuVariantStrip()&&y>=64&&y<124&&x>=96&&x<288)return {slot:who,keys:x<192?K_ATK:K_ATK<<3};
     if(VER.cur==='CE'){
-      for(let q=0;q<12;q++){const [a,b]=cecell(q);if(x>=a&&x<a+32&&y>=b&&y<b+32){if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))return 0;G.cep[who]=q;G.sel[who]=CEGRID[q];return who+1;}}
+      for(let q=0;q<12;q++){const [a,b]=cecell(q);if(x>=a&&x<a+32&&y>=b&&y<b+32){if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))return 0;G.cep[who]=q;G.sel[who]=CEGRID[q];if(aiEnabled()&&CEGRID[q]===0&&evilRyuSelectable())return 0;return who+1;}}
     }else for(let fid=0;fid<(G.mode2p?12:8);fid++){const [a,b]=cell(fid);if(x>=a&&x<a+32&&y>=b&&y<b+40){G.sel[who]=fid;return who+1;}}
   }
   if(G.scene==='win'||G.scene==='vs'||G.scene==='cont')return 1;
@@ -588,12 +593,12 @@ function localCommands(pd,k1,k2){
   const commands=Array.isArray(window.SF2Input?.commands)?SF2Input.commands.splice(0,64):[];
   const esc=held('Escape')?1:0;if(esc&&!CONTROL.keyPrev)commands.push('back');CONTROL.keyPrev=esc;
   for(let i=0;i<2;i++){
-    const bits=pd[i].menu||0,edge=bits&~CONTROL.padPrev[i];CONTROL.padPrev[i]=bits;
+    const bits=pd[i].menu||0,edge=bits&~CONTROL.padPrev[i],variantKick=ryuVariantStrip()&&i===G.selstep;CONTROL.padPrev[i]=bits;
     if(edge&8)commands.push(G.scene==='fight'?'pause':'confirm');
     else if(edge&4)commands.push('back');
     if(CONTROL.paused&&(edge&1))commands.push('confirm');
-    else if((CONTROL.paused||G.scene!=='fight')&&(edge&2))commands.push('back');
-    if(G.scene!=='fight'||CONTROL.paused){pd[i].k&=~256;if(i===0)k1=(k1&~256)|(rk(P1K)&256)|(externalKey(0)&256);else k2=(k2&~256)|(rk(P2K)&256)|(externalKey(1)&256);}
+    else if(!variantKick&&(CONTROL.paused||G.scene!=='fight')&&(edge&2))commands.push('back');
+    if(!variantKick&&(G.scene!=='fight'||CONTROL.paused)){pd[i].k&=~256;if(i===0)k1=(k1&~256)|(rk(P1K)&256)|(externalKey(0)&256);else k2=(k2&~256)|(rk(P2K)&256)|(externalKey(1)&256);}
   }
   let confirm=0;
   for(const command of commands){
@@ -609,7 +614,7 @@ function localCommands(pd,k1,k2){
     if(nw&K_U)CONTROL.item=(CONTROL.item+3)%4;if(nw&K_D)CONTROL.item=(CONTROL.item+1)%4;
     if(nw&K_ATK)pauseConfirm();return {stop:true,k1:0,k2:0};
   }
-  if(confirm){selprev=[0,0];if(confirm===2)k2|=K_ATK;else if(G.scene==='select'&&G.mode2p&&G.selstep===1)k2|=K_ATK;else k1|=K_ATK;}
+  if(confirm){selprev=[0,0];if(typeof confirm==='object'){if(confirm.slot===1)k2|=confirm.keys;else k1|=confirm.keys;}else if(confirm===2)k2|=K_ATK;else if(G.scene==='select'&&G.mode2p&&G.selstep===1)k2|=K_ATK;else k1|=K_ATK;}
   return {stop:false,k1,k2};
 }
 function pauseRender(){
@@ -732,7 +737,7 @@ function altatlas(f,im){const c=document.createElement('canvas');const go=()=>{c
   const d=g.getImageData(0,0,c.width,c.height),a=d.data,m=new Map();f.pal.forEach((p,i)=>m.set((p[0]<<16)|(p[1]<<8)|p[2],f.pal2[i]));
   for(let i=0;i<a.length;i+=4){if(!a[i+3])continue;const q=m.get((a[i]<<16)|(a[i+1]<<8)|a[i+2]);if(q){a[i]=q[0];a[i+1]=q[1];a[i+2]=q[2];}}g.putImageData(d,0,0);c.ready=1;};
   if(im.complete&&im.width)go();else im.addEventListener('load',go);return c;}
-function setver(v,keepEdition=false){const leavingAI=!keepEdition&&aiEnabled();if(leavingAI&&EDITION_SETTINGS.faithful)Object.assign(G,EDITION_SETTINGS.faithful);if(!keepEdition){VER.edition=v==='WW'?'ww':'ce';AICFG.prototype=AICFG.configured=false;for(const p of P)aiClearProfile(p);}if(v==='CE'&&!VER.ce){loadce();return;}VER.cur=v;const S=v==='CE'?VER.ce:VER.ww;D.fighters=S.f;D.stages=S.st;STI=S.sti;musver();THRR=v==='CE'?THRR_CE:THRR_WW;NTHR=v==='CE'?NTHR_CE:NTHR_WW;RKD=rkd(v);try{if(!localStorage.getItem(rankStorageKey()))RK=RKD.map(o=>({...o}));}catch(e){}FTX=v==='CE'?FTX_CE:FTX_WW;for(const q of P)if(q.F)q.ft=FTX[q.fid];HSTUN=v==='CE'?HSTUN_CE:HSTUN_WW;BSTUN=v==='CE'?BSTUN_CE:BSTUN_WW;TDMG=v==='CE'?TDMG_CE:TDMG_WW;FI=S.fi;FIA=S.fia;
+function setver(v,keepEdition=false){const leavingAI=!keepEdition&&aiEnabled();if(leavingAI&&EDITION_SETTINGS.faithful)Object.assign(G,EDITION_SETTINGS.faithful);if(!keepEdition){VER.edition=v==='WW'?'ww':'ce';AICFG.prototype=AICFG.configured=false;AICFG.selectedProfiles=[null,null];for(const p of P)aiClearProfile(p);}if(v==='CE'&&!VER.ce){loadce();return;}VER.cur=v;const S=v==='CE'?VER.ce:VER.ww;D.fighters=S.f;D.stages=S.st;STI=S.sti;musver();THRR=v==='CE'?THRR_CE:THRR_WW;NTHR=v==='CE'?NTHR_CE:NTHR_WW;RKD=rkd(v);try{if(!localStorage.getItem(rankStorageKey()))RK=RKD.map(o=>({...o}));}catch(e){}FTX=v==='CE'?FTX_CE:FTX_WW;for(const q of P)if(q.F)q.ft=FTX[q.fid];HSTUN=v==='CE'?HSTUN_CE:HSTUN_WW;BSTUN=v==='CE'?BSTUN_CE:BSTUN_WW;TDMG=v==='CE'?TDMG_CE:TDMG_WW;FI=S.fi;FIA=S.fia;
   S.f.forEach((f,i)=>NAMES[i]=f.name);for(const p of P)setfighter(p,p.fid);if(leavingAI){try{const saved=JSON.parse(localStorage.getItem('sf2rank'));RK=validrank(saved)?saved:RKD.map(o=>({...o}));}catch{RK=RKD.map(o=>({...o}));}G.hisc=RK[0].s;for(const p of P)p.SCORE=0;}}
 /* CE normals timing from the CE ROM (tools/emu_ce/fdtrace.py -> tools/fd_compare.py): entry durations per fighter/anim so every
    stand/crouch normal hits its ROM entry boundaries and returns to neutral on the ROM frame (last entry hands back after 1f) */
@@ -777,7 +782,7 @@ function stagedraw(front){for(const l of D.stages[G.stage]){if(l.front!==front)c
       if(x0<0)cx.drawImage(im,0,0,1,h,0,0,-x0,h); const r=l.w-x0; if(r<W)cx.drawImage(im,l.w-1,0,1,h,r,0,W-r,h);}}}}
 function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();const c=G.cam;cx.fillStyle='#000';cx.fillRect(0,0,W,H);stagedraw(false);
   if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of P){const f=SF2CESHADOW.frame(p,G.stage);if(f)cx.drawImage(f.image,(p.X>>8)-c+f.x,GROUND+f.y);}
-  const drawp=p=>{spr(aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&AICFG.prototype&&p.aiProfile==='ryu'?FI[p.fid]:p===P[1]&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid],p.F.frames[ent(p)[0]],(p.X>>8)-c,GROUND-(p.Y>>8),p.FACE);
+  const drawp=p=>{spr(aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&p.aiProfile==='ryu'&&(AICFG.prototype||P.some(q=>q.aiProfile==='evil-ryu'))?FI[p.fid]:p===P[1]&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid],p.F.frames[ent(p)[0]],(p.X>>8)-c,GROUND-(p.Y>>8),p.FACE);
     if(p.DIZZY===2){cx.fillStyle='#ffe000';for(let i=0;i<3;i++){const a=G.tick/12+i*2.09;cx.fillRect((p.X>>8)-c+Math.cos(a)*14-2,GROUND-(p.Y>>8)-100+Math.sin(a)*4,4,4);}}};
   const top=(P[0].ST===S_ATK||P[0].ST===S_SPEC)?0:1; drawp(P[1-top]);drawp(P[top]);
   for(const p of P)if(p.FBON)drawfb(p,GROUND,c);
@@ -788,7 +793,7 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
   tx(aiName(P[0]).toUpperCase(),32,40,8,'#ffaa66','#0044aa','left');tx(aiName(P[1]).toUpperCase(),352,40,8,'#ffaa66','#0044aa','right');
   for(let i=0;i<P[0].WINS;i++)fx(7,2+12*i,14); for(let i=0;i<P[1].WINS;i++)fx(7,372-12*i,14);
   if(padMsgT>0){padMsgT--;tx(padMsg,4,218,8,'#fff','#000','left');}
-  if(aiEnabled()&&AICFG.prototype)tx('DEVELOPMENT PROFILE - RIFT STEP',W/2,218,7,'#fff','#000');
+  if(aiEnabled()&&(AICFG.prototype||P.some(p=>p.aiProfile==='evil-ryu')))tx('EVIL RYU PROTOTYPE - RIFT STEP',W/2,218,7,'#fff','#000');
   if(G.gph===0){const fin=P[0].WINS===1&&P[1].WINS===1||G.round>=4; if(G.gt<70){if(fin)tx('FINAL ROUND',W/2,110,24,'#ffe000','#a01000');else fx(1+Math.min(3,G.round),152,96);}else fx(5,160,96);}
   if(G.gph===2&&G.bann&&G.gt>=(G.ko?96:0)){const b=G.bann.split('  ');tx(b[0],W/2,70,8,'#ffffff','#0044aa');if(b[1])tx(b[1],W/2,84,8,'#ffffff','#0044aa');}
 }
@@ -866,14 +871,14 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
   case 'title': if(n1&(K_U|K_D))sfxc(VER.cur==='CE'&&0x21); if(n1&K_D)G.menu=(G.menu+1)%5; if(n1&K_U)G.menu=(G.menu+4)%5;
     if(G.menu===4&&n1&(K_L|K_R)){cycleEdition(n1&K_L?-1:1);sfxc(0x21,SN_BLOCK,0.3);}
     if(G.menu>=2&&G.menu<4&&n1&(K_L|K_R)){const d=n1&K_R?1:-1; if(G.menu===2)G.diff=(G.diff+d+4)%4; else {const i=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(i+d+4)%4];} sfxc(0x21,SN_BLOCK,0.3);}
-    if(ok&&G.st>20&&G.menu<2&&!(G.wantce&&VER.cur!=='CE')){sfxc(0x20,SN_BLOCK,0.4);G.mode2p=G.menu;G.arc=G.menu?0:1;G.selstep=0;G.sel=[0,4];if(VER.cur==='CE'){G.cep=[0,6];}go('select');} break;
+    if(ok&&G.st>20&&G.menu<2&&!(G.wantce&&VER.cur!=='CE')){sfxc(0x20,SN_BLOCK,0.4);G.mode2p=G.menu;G.arc=G.menu?0:1;if(aiEnabled())AICFG.selectedProfiles=[null,null];G.selstep=0;G.sel=[0,4];if(VER.cur==='CE'){G.cep=[0,6];}go('select');} break;
   case 'select': {if(!G.cep)G.cep=[0,6];const i=G.selstep, who=i===1&&G.mode2p?n2:n1, n=G.mode2p?12:8; let c=G.sel[i];
     if(VER.cur==='CE'){let q=G.cep[i];if(who&K_L)q=q%6?q-1:q+5; if(who&K_R)q=q%6===5?q-5:q+1; if(who&(K_U|K_D))q=(q+6)%12;if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))q=G.cep[i];G.cep[i]=q;c=CEGRID[q];}
     else{if(who&K_L)c=c%4?c-1:c+3; if(who&K_R)c=c%4===3?c-3:c+1;
     if(who&K_U)c=(c+n-4)%n; if(who&K_D)c=(c+4)%n;} G.sel[i]=c;
     if(who&(K_L|K_R|K_U|K_D))sfxc(VER.cur==='CE'&&0x21);
     if(aiEnabled()&&!aiAllowedFids().includes(G.sel[i]))break;
-    if((who&CONF)||(i===0&&(ng&4))){sfxc(0x22,SN_BLOCK,0.4);
+    if((who&CONF)||(i===0&&(ng&4))){if(aiEnabled()){AICFG.selectedProfiles[i]=G.sel[i]===0&&evilRyuSelectable()?(who&0x380?'evil-ryu':'ryu'):null;}sfxc(0x22,SN_BLOCK,0.4);
       if(!G.mode2p&&G.arc){startarcade(G.sel[0]);break;}
       if(++G.selstep>=2){G.selstep=0;go('vs');}}
     break;}
@@ -898,12 +903,34 @@ function port(f,x,y,flip,dim,sc,alt){sc=sc||1;const FIM=alt&&FIA[f]&&FIA[f]!==FI
     if(!flip){cx.translate(X+w,Y);cx.scale(-1,1);cx.drawImage(FIM,r[0],r[1],r[2],r[3],0,0,w,h);}else cx.drawImage(FIM,r[0],r[1],r[2],r[3],X,Y,w,h);}
   cx.restore();}
 function cecell(q){return SCE?[96+32*(q%6),144+32*((q/6)|0)]:[96+32*(q%6),132+42*((q/6)|0)];}
+
+function drawRyuVariantStrip(){
+  if(!ryuVariantStrip())return;
+  cx.fillStyle=BLUE;cx.fillRect(96,44,192,84);cx.strokeStyle='#ffe000';cx.strokeRect(96.5,44.5,191,83);cx.beginPath();cx.moveTo(192,66);cx.lineTo(192,124);cx.stroke();
+  tx('RYU VARIANT',192,59,8,'#ffe000','#000');
+  tx('PUNCH',144,79,8,'#fff','#000');tx('RYU',144,96,8,'#ffe000','#000');
+  tx('KICK',240,79,8,'#fff','#000');tx('EVIL RYU',240,96,8,'#ffe000','#000');tx('PROTOTYPE',240,113,8,'#fff','#000');
+}
+function drawSelectionProfiles(){
+  if(!aiEnabled()||!G.sel.some((fid,i)=>evilRyuSelected(i,fid)))return;
+  for(const i of G.mode2p?[0,1]:[0])tx((i?'2P ':'1P ')+selectedProfileLabel(i,G.sel[i]),i?380:4,222,7,i?'#ff6060':'#80b0ff','#000',i?'right':'left');
+}
+function drawVsProfiles(a,b){
+  if(!aiEnabled()||!evilRyuSelected(0,a)&&!evilRyuSelected(1,b))return;
+  tx(selectedProfileLabel(0,a),96,204,8,'#fff','#000');tx(selectedProfileLabel(1,b),288,204,8,'#fff','#000');
+}
+function drawResultProfiles(w,l){
+  if(!aiEnabled()||!P.some(p=>p.aiProfile==='evil-ryu'))return;
+  const label=p=>p.aiProfile==='evil-ryu'?'EVIL RYU PROTOTYPE':aiName(p).toUpperCase();
+  tx(label(P[w]),96,10,8,'#fff','#000');tx(label(P[l]),288,10,8,'#fff','#000');
+}
+
 function selce(){const bl=(G.tick>>4)&1;
   if(SCE&&SCE.bg.complete){cx.drawImage(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
     dimg(a.flag);dimg(a.selL);dimg(a.name);if(two){dimg(b.flag);if(G.sel[0]===G.sel[1])dimg(b.selR);else dimg(b.selL,0,true);dimg(b.name2);}
     for(const i of (two?[0,1]:[0])){if(i>G.selstep)continue;const [x,y]=cecell(G.cep[i]),c=SCE.cur[i?'2':'1'];if(i===G.selstep&&bl)continue;
       if(c&&c.im.complete)cx.drawImage(c.im,x+c.x,y+c.y);}   // the ROM's own 1P/2P cursor sprites
-    if(aiEnabled())tx('AI EDITION',W-54,8,8,'#ffe000','#000');
+    drawRyuVariantStrip();drawSelectionProfiles();if(aiEnabled())tx('AI EDITION',W-54,8,8,'#ffe000','#000');
     return;}cx.fillStyle=BLUE;cx.fillRect(0,0,W,H);tx(aiEnabled()?'AI EDITION':'CHAMPION EDITION',W/2,18,12,'#ffb000','#600');tx('PLAYER SELECT',W/2,98,9,'#fff','#000');
   CEGRID.forEach((f,q)=>{const [x,y]=cecell(q),F=D.fighters[f],r=F.frames[F.anims[0].ents[0][0]],s=Math.min(38/r[3],30/r[2]);
     cx.fillStyle='#000';cx.fillRect(x+1,y+1,30,40);cx.strokeStyle='#ffb000';cx.lineWidth=1;cx.strokeRect(x+0.5,y+0.5,31,41);
@@ -913,7 +940,7 @@ function selce(){const bl=(G.tick>>4)&1;
     cx.strokeStyle=i?'#f22':'#48f';cx.lineWidth=2;cx.strokeRect(x+1+i*2,y+1+i*2,30-i*4,40-i*4);tx(i?'2P':'1P',x+16,y+(i?38:10),8,i?'#f22':'#48f','#000');}
   port(G.sel[0],0,128-8,false);tx('1P',56,32,12,'#48f','#000');tx(NAMES[G.sel[0]].toUpperCase(),56,46,12,'#ffb000','#600');
   if(G.mode2p){port(G.sel[1],272,128-8,true,false,1,G.sel[0]===G.sel[1]);tx('2P',328,32,12,'#f22','#000');tx(NAMES[G.sel[1]].toUpperCase(),328,46,12,'#ffb000','#600');}
-  tx('Esc: title   Tab: '+(G.mode2p?'2P':'1P'),W/2,222,7,'#aaa');}
+  drawRyuVariantStrip();drawSelectionProfiles();tx('Esc: title   Tab: '+(G.mode2p?'2P':'1P'),W/2,222,7,'#aaa');}
 function cell(c){return c<8?[128+32*(c%4),144+40*((c/4)|0)]:[128+32*(c%4),102];}
 function scenerender(){cx.fillStyle=BLUE;cx.fillRect(0,0,W,H);const t=G.st,bl=(G.tick>>4)&1;
   switch(G.scene){
@@ -937,18 +964,18 @@ function scenerender(){cx.fillStyle=BLUE;cx.fillRect(0,0,W,H);const t=G.st,bl=(G
     if(VER.cur==='CE'&&SCE){cx.fillStyle=SCE.vsb;cx.fillRect(0,0,W,H);const A=SCE.f[a],B=SCE.f[b],o=Math.round((1-s)*200);
       dimg(A.vsL,-o);if(a===b)dimg(B.vsR,o);else dimg(B.vsL,o,true);dimg(A.vsname);dimg(B.vsname2);if(t>20)dimg(SCE.logo);
       tx(HOME[a],A.vsname?A.vsname.x+A.vsname.im.width/2:96,184,8,'#fff','#000');tx(HOME[b],B.vsname2?B.vsname2.x+B.vsname2.im.width/2:288,184,8,'#fff','#000');
-      if(G.arc){tx('STAGE '+(G.li+1)+' / '+G.ladder.length,W/2,20,9,'#fff','#000');}break;}
+      if(G.arc){tx('STAGE '+(G.li+1)+' / '+G.ladder.length,W/2,20,9,'#fff','#000');}drawVsProfiles(a,b);break;}
     cx.fillStyle='#200000';cx.fillRect(0,0,W/2,H);cx.fillStyle='#000030';cx.fillRect(W/2,0,W/2,H);
     port(a,-168+176*s,48,false,false,1.5);port(b,W+8-176*s,48,true,false,1.5);
     tx(NAMES[a].toUpperCase(),90,40,16,'#ffb000','#600');tx(NAMES[b].toUpperCase(),294,40,16,'#ffb000','#600');
     if(t>20)tx('VS',W/2,124,40,'#ffe000','#c01000');
-    tx(HOME[b],W/2,206,9,'#fff','#000');
+    tx(HOME[b],W/2,206,9,'#fff','#000');drawVsProfiles(a,b);
     if(G.arc){tx('STAGE '+(G.li+1)+' / '+G.ladder.length,W/2,20,9,'#fff','#000');for(let i=0;i<G.ladder.length;i++){cx.fillStyle=i<G.li?'#555':i===G.li?'#ffe000':'#fff';cx.fillRect(W/2-6*G.ladder.length+12*i+2,186,8,8);}}
     break;}
   case 'win': {const w=G.mw<0?0:G.mw,l=1-w,wf=P[w].fid,lf=P[l].fid;
     if(VER.cur==='CE'&&G.mw>=0&&CWIN&&CWIN[wf]&&CWIN[lf]){const a=CWIN[wf],b=CWIN[lf];
-      if(a.win.complete&&a.win.naturalWidth&&b.lose.complete&&b.lose.naturalWidth&&a.quote.complete&&a.quote.naturalWidth){cx.fillStyle='#000';cx.fillRect(0,0,W,H);cx.drawImage(a.win,0,16);cx.drawImage(b.lose,192,16);cx.drawImage(a.quote,0,160);break;}}
-    port(wf,24,40,false,false,1.5);port(lf,W-192,40,true,true,1.5);
+      if(a.win.complete&&a.win.naturalWidth&&b.lose.complete&&b.lose.naturalWidth&&a.quote.complete&&a.quote.naturalWidth){cx.fillStyle='#000';cx.fillRect(0,0,W,H);cx.drawImage(a.win,0,16);cx.drawImage(b.lose,192,16);cx.drawImage(a.quote,0,160);drawResultProfiles(w,l);break;}}
+    port(wf,24,40,false,false,1.5);port(lf,W-192,40,true,true,1.5);drawResultProfiles(w,l);
     tx(G.mw<0?'DRAW':(G.arc&&!G.mode2p?(w?'YOU LOSE':'YOU WIN'):NAMES[wf].toUpperCase()+' WINS'),W/2,32,20,'#ffe000','#a01000');
     if(G.arc&&w===0)tx(G.li+1>=G.ladder.length?'THE TOURNAMENT IS YOURS':'NEXT: '+NAMES[G.ladder[G.li+1]].toUpperCase(),W/2,206,10,'#fff','#000');break;}
   case 'cont': port(G.sel[0],136,40,false,true,1);tx('CONTINUE?',W/2,40,22,'#ffe000','#a01000');tx(String(Math.max(0,G.cont)),W/2,182,40,'#fff','#c01000');
@@ -1000,7 +1027,7 @@ async function setEdition(id,options={}){
     if(!EDITION_SETTINGS.ai){try{const saved=JSON.parse(localStorage.getItem('sf2:ai:ce-v1:settings'));if(saved&&Number.isInteger(saved.diff)&&saved.diff>=0&&saved.diff<4&&[0,30,60,99].includes(saved.rtime))EDITION_SETTINGS.ai=saved;}catch{}}
     Object.assign(G,EDITION_SETTINGS.ai||EDITION_SETTINGS.faithful||{diff:1,rtime:99});
   }else if(oldAI&&EDITION_SETTINGS.faithful)Object.assign(G,EDITION_SETTINGS.faithful);
-  VER.edition=id;G.wantce=id!=='ww';AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
+  VER.edition=id;G.wantce=id!=='ww';AICFG.selectedProfiles=[null,null];AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
   for(const p of P)aiClearProfile(p);
   if(G.scene!=='title'){go('title');}CONTROL.paused=false;if(!options.keepMenuInput)clearinput();
   if(id==='ww')setver('WW',true);
@@ -1019,9 +1046,10 @@ function cycleEdition(direction){const ids=['ww','ce','ai'];setEdition(ids[(ids.
 
 // Prototype controller API: explicit entry only; no arcade or faithful lobby.
 function aiInfo(){return {
-  edition:VER.edition,prototype:AICFG.prototype,onlineEnabled:false,upstream:'f14f766',runtimeBaseline:'b3285',ready:VER.cur==='CE'&&VER.loading===2,
+  edition:VER.edition,prototype:AICFG.prototype||P.some(p=>p.aiProfile==='evil-ryu'),onlineEnabled:false,upstream:'f14f766',runtimeBaseline:'b3285',ready:VER.cur==='CE'&&VER.loading===2,
   configured:aiEnabled(),training:AICFG.training,mode:AICFG.mode,dummy:AICFG.dummy,sound:!muted,
   scene:G.scene,phase:G.scene==='win'?'result':G.gph===0?'intro':G.gph===1?'fight':'round-over',
+  selection:G.sel.map((fid,i)=>({fid,profile:evilRyuSelected(i,fid)?'evil-ryu':CE_KEYS[fid],label:selectedProfileLabel(i,fid)})),
   round:G.round,winner:G.scene==='win'?G.mw:null,winnerName:G.scene==='win'&&G.mw>=0?aiName(P[G.mw]):null,tick:G.tick,hitstop:G.hfz||0,
   rift:{...RIFT,total:RIFT.startup+RIFT.travel+RIFT.recovery},
   players:P.map(p=>({slot:p.i,profile:p.aiProfile||CE_KEYS[p.fid],fighterKey:p.fighterKey||'ce:'+CE_KEYS[p.fid],name:aiName(p),
