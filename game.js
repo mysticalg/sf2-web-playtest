@@ -775,7 +775,7 @@ function tx(s,x,y,sz,fill,stroke,al){s=String(s);const k=Math.max(1,Math.round(s
   for(let i=0;i<s.length;i++){const c=s.charCodeAt(i)-32;if(c>0&&c<96)cx.drawImage(A,c*8,0,8,8,x0+i*8*k,y0,8*k,8*k);}}
 function txw(s,xr,y,fill,stroke,al){s=String(s);const A=fatlas(fill,stroke),aw=11.5;let x0=al==='left'?xr:xr-aw*s.length;cx.imageSmoothingEnabled=false;
   for(let i=0;i<s.length;i++){const c=s.charCodeAt(i)-32;if(c>0&&c<96)cx.drawImage(A,c*8,0,8,8,Math.round(x0+i*aw),y-8,11,9);}}
-function stagedraw(front){for(const l of D.stages[G.stage]){if(l.front!==front)continue;const im=STI[G.stage][D.stages[G.stage].indexOf(l)];
+function stagedraw(front){for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(cx,layerIndex,G.cam,G.tick))continue;const im=STI[G.stage][layerIndex];
     if(l.rows){for(const [y0,y1,A,B] of l.rows)cx.drawImage(im,Math.round(A*G.cam+B),y0,W,y1-y0,0,y0,W,y1-y0);continue;} // scroll2 row scroll
     let x0=Math.round(l.a*G.cam+l.b+l.drift*G.tick);
     if(l.wrap){x0=((x0%l.w)+l.w)%l.w;for(let x=-x0;x<W;x+=l.w)cx.drawImage(im,x,0);}else{cx.drawImage(im,-x0,0); if(l.w>=500){const h=im.height; // stretch the edge column over any gap (was black bands)
