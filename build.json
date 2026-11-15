@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.78",
-  "commit": "8f3f26f17763b334a31365f6bed35b0d4af8a6bc",
-  "builtAt": "2026-11-15T15:12:03.340854+00:00",
+  "version": "0.1.79",
+  "commit": "758eded05dc7c1aba80eabd794de80f68c4c188c",
+  "builtAt": "2026-11-15T16:28:21.123186+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 3592,
-      "sha256": "97c6875067318da9bc0d6c7eab7b50873c1dc7f7eff3ef4d1316034fe56eea4c"
+      "bytes": 4005,
+      "sha256": "1048d7ded5910273c0bfa20869d941333eb4ab255757aef1d7d3a88e4dc3f739"
     },
     {
       "file": "game.js",
-      "bytes": 121667,
-      "sha256": "6a4ec0693f3aebdb05d68e166127b6ac85886406ff7db4fcff9897c36a20bf1f"
+      "bytes": 128447,
+      "sha256": "f6b673052e9c0203d7d9afc80f32f81043b745904af8506a591a9c8e7cec40b9"
     },
     {
       "file": "assets.js",
@@ -21,8 +21,8 @@
     },
     {
       "file": "assets_ce.js",
-      "bytes": 8614922,
-      "sha256": "8b1174ebfbeb2d43d9c55526fc2ffb9c9538ed186ca85fdf869d04407b0f4379"
+      "bytes": 8664021,
+      "sha256": "186b68a04d849b9023d0e33989fa22e61f376a9a3843d59b67dc48a3cb1e31d0"
     },
     {
       "file": "sound.js",
@@ -71,8 +71,8 @@
     },
     {
       "file": "shadows_ce.js",
-      "bytes": 78719,
-      "sha256": "90212a5fe7c7f2aa66deab0af69141fdbe5aaa954cefc3ea642f5551ffa75718"
+      "bytes": 80773,
+      "sha256": "0972429568de3da12a297fac4ebf448e9b519c0262995ab0f933e63c30b14b7d"
     },
     {
       "file": "ce_specials.js",
@@ -137,7 +137,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "55b2b6a97960300025f4c3fd808093cf24b89c8406f9e36bd23b50f0521fabdc"
+      "sha256": "4f6b45d96274307726a0c63c1d3ddaffc6fbbefd8521107770eed0a3325719de"
     },
     {
       "file": "lobby.css",
@@ -151,13 +151,38 @@
     },
     {
       "file": "ai_roster.js",
-      "bytes": 1044,
-      "sha256": "57e9bba41ee75cb80335cb6fc0aa3edf61c3bac9cff388f84b1f4fd5b5db5cc2"
+      "bytes": 1157,
+      "sha256": "4553fe4cd80f5d6ce54e5cc2155593f026bc3b92b03d59deda51d32f3160f88a"
+    },
+    {
+      "file": "ai_evil_ken.js",
+      "bytes": 17204,
+      "sha256": "86ee4ae7cf71f97fe0142f9c26c53b7de069c3f6fdd235f8518de389080b0a89"
+    },
+    {
+      "file": "ai_evil_ken_data.js",
+      "bytes": 504628,
+      "sha256": "a33a8bda33bbe9cf282eccb3e298977046ace0178a69ea77507302a46a17a7d4"
+    },
+    {
+      "file": "graphics_filter.js",
+      "bytes": 27187,
+      "sha256": "405efa460d38682d9714c89bc081bac8a3cdc605f5758c6d1e9fab3c90f17efc"
+    },
+    {
+      "file": "ce_shoto_throw.js",
+      "bytes": 9397,
+      "sha256": "0bcbf614a5ee5d180b1dbeb9528573d5ece74ac0b3702d15695a1d432f2ef95d"
+    },
+    {
+      "file": "ce_vega.js",
+      "bytes": 17228,
+      "sha256": "35b88e61099f9924419bb7cdda42b2d16b626c502097034bbb655b8d2d52f496"
     },
     {
       "file": "input_ui.js",
-      "bytes": 6691,
-      "sha256": "98db98027b2ca790a8901aa8e798f25a7f7ad09f18707ef314b36eb08479d739"
+      "bytes": 6736,
+      "sha256": "28db3a3b42e86cc3a895be88021fee6f6abc13228e2ef78208d81149ccabdc25"
     },
     {
       "file": "ai/index.html",

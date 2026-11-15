@@ -68,9 +68,10 @@
   canvas.addEventListener('pointerup',e=>{
     const start=taps.get(e.pointerId);taps.delete(e.pointerId);
     if(!start||Math.hypot(e.clientX-start.x,e.clientY-start.y)>14)return;
-    const r=canvas.getBoundingClientRect(),scale=Math.min(r.width/canvas.width,r.height/canvas.height);
-    const x=(e.clientX-r.left-(r.width-canvas.width*scale)/2)/scale,y=(e.clientY-r.top-(r.height-canvas.height*scale)/2)/scale;
-    if(x>=0&&x<canvas.width&&y>=0&&y<canvas.height){wake();command({type:'point',x,y});}
+    const width=window.SF2Graphics?.width||384,height=window.SF2Graphics?.height||224;
+    const r=canvas.getBoundingClientRect(),scale=Math.min(r.width/width,r.height/height);
+    const x=(e.clientX-r.left-(r.width-width*scale)/2)/scale,y=(e.clientY-r.top-(r.height-height*scale)/2)/scale;
+    if(x>=0&&x<width&&y>=0&&y<height){wake();command({type:'point',x,y});}
   });
   addEventListener('blur',clear);addEventListener('visibilitychange',()=>{if(document.hidden)clear();});
   const coarse=matchMedia('(pointer: coarse)');

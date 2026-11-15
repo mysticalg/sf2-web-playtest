@@ -22,7 +22,7 @@ jobs:
       - name: Stage browser files only
         run: |
           mkdir _site
-          cp index.html game.js assets.js assets_ce.js sound.js music.js font.js screens.js screens_ce.js endings.js endings_ce.js projectiles_ce.js victory_ce.js shadows_ce.js ce_specials.js ce_bison.js ce_bison_input.js ce_charge_specials.js ce_bison_throw.js ce_chun_throw.js ce_chun_legs.js ce_chun_air.js ce_zangief.js ce_blanka_bite.js ce_normals.js ce_ryu_stage.js lobby.html lobby.css netplay.js ai_roster.js input_ui.js build.json .nojekyll _site/
+          cp index.html game.js assets.js assets_ce.js sound.js music.js font.js screens.js screens_ce.js endings.js endings_ce.js projectiles_ce.js victory_ce.js shadows_ce.js ce_specials.js ce_bison.js ce_bison_input.js ce_charge_specials.js ce_bison_throw.js ce_chun_throw.js ce_chun_legs.js ce_chun_air.js ce_zangief.js ce_blanka_bite.js ce_normals.js ce_ryu_stage.js lobby.html lobby.css netplay.js ai_roster.js ai_evil_ken.js ai_evil_ken_data.js graphics_filter.js ce_shoto_throw.js ce_vega.js input_ui.js build.json .nojekyll _site/
           mkdir -p _site/ai
           cp ai/index.html ai/edition.json _site/ai/
       - uses: actions/upload-pages-artifact@v4
