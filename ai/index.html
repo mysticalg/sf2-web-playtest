@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101012">
+  <link rel="icon" href="data:,">
+  <title>AI Edition — Ryu vs Evil Ryu</title>
+  <script>window.SF2AIBUILD={"editionId":"ai","version":"ai-0.1.0","commit":"c21025a35a54ce02a4234b437ec241eb4f8dccc3","upstreamFaithfulCommit":"f14f766d45566b834b932071c07d5c7576b87346","contentHash":"d1663ee8465ba0ecc1b5dab7f2e3d38dbd7f7d17696e097fc83bfd79d8c7b6d9","rulesetId":"ai-ce-rift-v1","builtAt":"2026-11-15T00:34:11.162315+00:00"};</script>
+  <link rel="stylesheet" href="style.css?v=c21025a35a54ce02a4234b437ec241eb4f8dccc3">
+</head>
+<body>
+  <main class="arcade">
+    <header>
+      <div><h1>AI EDITION</h1><p>Ryu vs Evil Ryu</p></div>
+      <a href="../">Play faithful version</a>
+    </header>
+
+    <section class="game" aria-label="Playable match">
+      <canvas id="c" width="384" height="224" aria-label="Street Fighter II AI Edition match"></canvas>
+      <div id="loading" class="loading" role="status">Loading the fighting engine…</div>
+    </section>
+    <div class="match-status" aria-live="polite"><span id="match-status">Preparing practice</span><span id="rift-status">Rift Step: preparing</span></div>
+
+    <section class="controls" aria-label="Match setup">
+      <div class="modes" role="group" aria-label="Mode">
+        <button type="button" data-mode="practice" aria-pressed="true">Practice</button>
+        <button type="button" data-mode="cpu" aria-pressed="false">CPU match</button>
+        <button type="button" data-mode="versus" aria-pressed="false">Local versus</button>
+      </div>
+      <div class="selection">
+        <label>Player 1<select id="player-one"><option value="evil-ryu">Evil Ryu</option><option value="ryu">Ryu</option></select></label>
+        <label>Player 2<select id="player-two"><option value="ryu">Ryu</option><option value="evil-ryu">Evil Ryu</option></select></label>
+        <label id="dummy-control">Opponent<select id="dummy"><option value="stand">Stand</option><option value="block">Block</option><option value="cpu">CPU</option></select></label>
+      </div>
+      <div class="actions">
+        <button type="button" class="primary" id="start" disabled>Start match</button>
+        <button type="button" id="reset" disabled>Reset round</button>
+        <button type="button" id="sound" disabled>Sound: off</button>
+        <button type="button" id="fullscreen">Fullscreen</button>
+      </div>
+    </section>
+
+    <section class="move-guide" aria-label="Move guide">
+      <div><h2>RIFT STEP</h2><p class="command" aria-label="Down, down-forward, forward plus kick">↓ ↘ → + K</p></div>
+      <p>Costs 4 life · No invulnerability<br>Cancel confirmed grounded hits once per combo.<br>Blocked and missed attacks cannot cancel.</p>
+      <div class="keys"><p><b>P1</b> Arrows · A S D / Z X C</p><p><b>P2</b> I J K L · Numpad 7 8 9 / 4 5 6</p><p>Standard gamepads supported · M toggles sound</p></div>
+    </section>
+    <footer><span>Development prototype · Local play</span><span id="build-version">AI development</span></footer>
+    <p class="note">Ryu retains the inherited CE mechanics. Evil Ryu has 136 life and Rift Step, using original CE Ryu sprites and the original alternate palette. This slice has no online matchmaking or expanded arcade ladder.</p>
+  </main>
+  <script type="module" src="bootstrap.js?v=c21025a35a54ce02a4234b437ec241eb4f8dccc3"></script>
+</body>
+</html>

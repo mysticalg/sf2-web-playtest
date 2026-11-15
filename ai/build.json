@@ -1,0 +1,92 @@
+{
+  "editionId": "ai",
+  "version": "ai-0.1.0",
+  "commit": "c21025a35a54ce02a4234b437ec241eb4f8dccc3",
+  "upstreamFaithfulCommit": "f14f766d45566b834b932071c07d5c7576b87346",
+  "contentHash": "d1663ee8465ba0ecc1b5dab7f2e3d38dbd7f7d17696e097fc83bfd79d8c7b6d9",
+  "rulesetId": "ai-ce-rift-v1",
+  "builtAt": "2026-11-15T00:34:11.162315+00:00",
+  "status": "development-prototype",
+  "files": [
+    {
+      "file": "index.html",
+      "bytes": 3524,
+      "sha256": "da095ede439cdcf71dbea50eb53dea151b2a2f7b770c5ff886d89a1ff4fa8c41"
+    },
+    {
+      "file": "style.css",
+      "bytes": 3138,
+      "sha256": "bc730958749aee8d1a2a8f12f731e36cabdbedfd83f7edef30fd56d81b1e2f86"
+    },
+    {
+      "file": "bootstrap.js",
+      "bytes": 4888,
+      "sha256": "9eee0a1bb504aa91aeb8cf945c6b2f675cd158ace5b4a619ebbcdba8d6108c4f"
+    },
+    {
+      "file": "game.js",
+      "bytes": 107465,
+      "sha256": "fe79fca2314834f2c677f556266df75249417f6a2ecc3ec798b4311460c2b342"
+    },
+    {
+      "file": "edition.json",
+      "bytes": 887,
+      "sha256": "26b010d584abd555eb018ebec00b170eee01eb2494b4dc80a8d559d213a09202"
+    },
+    {
+      "file": "vendor/assets.js",
+      "bytes": 6459926,
+      "sha256": "9fe6f3dd9f726b9d943d388d37a6ea8d3f33e294e242b825fc2074d605d70c8f"
+    },
+    {
+      "file": "vendor/sound.js",
+      "bytes": 436953,
+      "sha256": "735b28dd6647d929c236a86ccaa32ca11203c35b9ded26f2f11587d9489f69af"
+    },
+    {
+      "file": "vendor/music.js",
+      "bytes": 88090,
+      "sha256": "8d237f087a332f5bde3a5efaa5cd37b9624ab67f8a71c8174f7729ac84c81f06"
+    },
+    {
+      "file": "vendor/font.js",
+      "bytes": 6163,
+      "sha256": "ebf7b1e7592207d447a5f64318c060f75402c475372200cde0c26ec6b2d0ee0f"
+    },
+    {
+      "file": "vendor/screens.js",
+      "bytes": 93005,
+      "sha256": "7225ed3aded93c9f7a615aba47dacaf1e10bd94781012c465ce7868b1f5dd4e5"
+    },
+    {
+      "file": "vendor/projectiles_ce.js",
+      "bytes": 19157,
+      "sha256": "4d5351e35f13b44eafcf76c18c43b2586edc70f5d0c4f2c95048049741669884"
+    },
+    {
+      "file": "vendor/victory_ce.js",
+      "bytes": 228402,
+      "sha256": "61215a3d6f07bfd62348066b470245563e034ccbaee7022c2520ae4c78ecf59f"
+    },
+    {
+      "file": "vendor/shadows_ce.js",
+      "bytes": 78719,
+      "sha256": "90212a5fe7c7f2aa66deab0af69141fdbe5aaa954cefc3ea642f5551ffa75718"
+    },
+    {
+      "file": "vendor/ce_specials.js",
+      "bytes": 3253,
+      "sha256": "1e29cecc85961e3f479cf95bc4e7cfe7bfcfda6aaf94686d0a4d2bd5f19f2251"
+    },
+    {
+      "file": "vendor/assets_ce.js",
+      "bytes": 8614922,
+      "sha256": "8b1174ebfbeb2d43d9c55526fc2ffb9c9538ed186ca85fdf869d04407b0f4379"
+    },
+    {
+      "file": "vendor/screens_ce.js",
+      "bytes": 628226,
+      "sha256": "f55045ac26d252499a9381e221834c9f39096cafc329c8615faf20f8b64e1d16"
+    }
+  ]
+}

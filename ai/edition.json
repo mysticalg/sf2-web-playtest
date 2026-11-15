@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "editionId": "ai",
+  "displayName": "AI Edition \u2014 Ryu vs Evil Ryu",
+  "release": "ai-0.1.0",
+  "rulesetId": "ai-ce-rift-v1",
+  "simulationSchema": 1,
+  "upstreamFaithfulCommit": "f14f766d45566b834b932071c07d5c7576b87346",
+  "onlineEnabled": false,
+  "tickRate": 60,
+  "roster": [
+    "ce:ryu",
+    "ai:evil-ryu"
+  ],
+  "stages": [
+    "ce:ryu-stage"
+  ],
+  "modes": [
+    "practice",
+    "cpu",
+    "versus"
+  ],
+  "assets": [],
+  "dependencies": [
+    "assets.js",
+    "sound.js",
+    "music.js",
+    "font.js",
+    "screens.js",
+    "projectiles_ce.js",
+    "victory_ce.js",
+    "shadows_ce.js",
+    "ce_specials.js"
+  ],
+  "lazyDependencies": [
+    "assets_ce.js",
+    "screens_ce.js"
+  ],
+  "storageNamespace": "sf2:ai:rift-v1",
+  "status": "development-prototype",
+  "contentHash": "d1663ee8465ba0ecc1b5dab7f2e3d38dbd7f7d17696e097fc83bfd79d8c7b6d9"
+}
