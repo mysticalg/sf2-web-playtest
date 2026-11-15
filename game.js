@@ -542,6 +542,7 @@ function bonusstep(k){const B=G.bon,p=P[0],d=P[1];G.st++;
   for(const f of B.fx)f.t++;B.fx=B.fx.filter(f=>f.t<30);}
 function bonusrender(){const B=G.bon,S=window.SF2BONUS,p=P[0];cx.fillStyle='#000';cx.fillRect(0,0,W,H);if(!S)return;
   const K=[S.car,S.barrel,S.drum][B.kind],im=bim(K.bg);if(im.width)cx.drawImage(im,0,0);
+  if(VER.cur==='CE'&&window.SF2CESHADOW){const f=SF2CESHADOW.frame(p,12+B.kind);if(f)cx.drawImage(f.image,(p.X>>8)+f.x,BG0+f.y);}
   const shake=G.slow>0?((G.tick&2)?2:-2):0;
   if(B.kind===0){const s=K.st[B.dmg],ci=bim(s.img);if(ci.width)cx.drawImage(ci,s.x+shake,s.y);}
   if(B.kind===2)for(const o of B.ob){const di=bim(K.drum);if(di.width)cx.drawImage(di,o.x+(o.hp<3?shake:0),BG0+1-79-o.y);
