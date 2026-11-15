@@ -777,7 +777,7 @@ function stagedraw(front){for(const l of D.stages[G.stage]){if(l.front!==front)c
       if(x0<0)cx.drawImage(im,0,0,1,h,0,0,-x0,h); const r=l.w-x0; if(r<W)cx.drawImage(im,l.w-1,0,1,h,r,0,W-r,h);}}}}
 function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();const c=G.cam;cx.fillStyle='#000';cx.fillRect(0,0,W,H);stagedraw(false);
   if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of P){const f=SF2CESHADOW.frame(p,G.stage);if(f)cx.drawImage(f.image,(p.X>>8)-c+f.x,GROUND+f.y);}
-  const drawp=p=>{spr(aiEnabled()&&p.AIAtlas?p.AIAtlas:p===P[1]&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid],p.F.frames[ent(p)[0]],(p.X>>8)-c,GROUND-(p.Y>>8),p.FACE);
+  const drawp=p=>{spr(aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&AICFG.prototype&&p.aiProfile==='ryu'?FI[p.fid]:p===P[1]&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid],p.F.frames[ent(p)[0]],(p.X>>8)-c,GROUND-(p.Y>>8),p.FACE);
     if(p.DIZZY===2){cx.fillStyle='#ffe000';for(let i=0;i<3;i++){const a=G.tick/12+i*2.09;cx.fillRect((p.X>>8)-c+Math.cos(a)*14-2,GROUND-(p.Y>>8)-100+Math.sin(a)*4,4,4);}}};
   const top=(P[0].ST===S_ATK||P[0].ST===S_SPEC)?0:1; drawp(P[1-top]);drawp(P[top]);
   for(const p of P)if(p.FBON)drawfb(p,GROUND,c);
