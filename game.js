@@ -511,9 +511,18 @@ function clampx(p){
   }
 const lo=Math.max(40,G.cam+40)<<8,hi=Math.min(SW-40,G.cam+W-40)<<8;/* M13d: arcade keeps fighters 40px inside the screen (max gap 304) */if(p.X<lo)p.X=lo;if(p.X>hi)p.X=hi;}
 // ---- rounds (frame counts in M5 25fps frames, timer in 60Hz ticks) ----
+// Original CE0x9470..0x94ea:40 video clocks per BCD count, including displayed00.
+// This clock runs before actor hitstop; the native timer does not freeze with a hit.
+function ceRoundClock(){
+  if(!G.rtime||G.gph!==1)return false;
+  if(++G.tick60<40)return false;G.tick60=0;
+  if(G.timer>0){G.timer--;return false;}
+  const a=P[0].HP,b=P[1].HP;endround((a>=b?1:0)|(a<=b?2:0));return true;
+}
 function phase(){
   if(G.gph===1){const a=P[0].HP,b=P[1].HP;let m=0;
     if(a===0||b===0){if(a>0)m|=1;if(b>0)m|=2;if(!m)m=3;return endround(m);}
+    if(VER.cur==='CE')return;
     if(G.rtime&&++G.tick60>=30){G.tick60-=30;G.timer--;}
     if(G.timer>0)return; if(a>=b)m=1; if(a<=b)m|=2; return endround(m);}
   G.gt++;
@@ -688,6 +697,7 @@ function step0(net){
   if(G.scene==='bonus'){if(!netActive&&held('Escape')){go('title');return;}bonusstep(k1);return;}
   if(G.scene!=='fight'){scenestep(k1,k2,ng);return;}
   if(ng&4){if(aiEnabled()&&AICFG.prototype)SF2AI.resetRound();else resetmatch();}
+  const ceTimedOut=VER.cur==='CE'&&ceRoundClock();
   for(const p of P){if(p.HPD>p.HP){if(G.tick%2)p.HPD--;}else p.HPD=p.HP;}
   if(G.slow>0){G.slow--;if(G.slow%3){G.fr=false;return;}}
   /* M13f: arcade input latency - the game acts on the joystick/buttons read one frame earlier (IDEL frames, default 1; ?delay=0 for none) */
@@ -700,7 +710,7 @@ function step0(net){
   if(G.hfz>0){G.hfz--;for(const q of P){const n=q.KEYS&~(q.HZK||0);q.HZK=q.KEYS;if(n&0x70)q.MQP.push(G.tick);if(n&0x380)q.MQK.push(G.tick);} /* mash taps made during hitstop still count (ROM keeps counting presses) */P[0].PREV=P[0].KEYS&P[0].PREV;P[1].PREV=P[1].KEYS&P[1].PREV;G.fr=false;camera();return;}
   if(VER.cur==='CE'){if(window.SF2CETHROWS?.preCamera)P.forEach(p=>SF2CETHROWS.preCamera(p,cethooks()));camera();}
   update(P[0]);update(P[1]);if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));fbmove(P[0]);fbmove(P[1]);fbclash();push();
-  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);fbafter(P[0]);fbafter(P[1]);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);phase();}
+  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);fbafter(P[0]);fbafter(P[1]);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);if(!ceTimedOut)phase();}
 /* ---- bonus stages (CE arcade ladder: car after fight 3, barrels after 6, drums after 9).
    CE car composition, counters, contact stop and suspension use SF2CECAR's native data.
    The legacy car path remains available for WW. Barrels/drums retain recovered behavior. ---- */
