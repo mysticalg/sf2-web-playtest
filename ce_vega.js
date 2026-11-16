@@ -73,7 +73,7 @@
  }
  function grab(p,c){
   const o=p.opp,[width,center]=COMBAT.grabTargets[o.fid];
-  if(!(p.KEYS&15)||o.HP<=0||![0,1,2,3,4].includes(o.ST)||invulnerable(o))return false;
+  if(!(p.KEYS&15)||!window.SF2.health.alive(o)||![0,1,2,3,4].includes(o.ST)||invulnerable(o))return false;
   if(Math.abs((p.X>>8)-(o.X>>8))>53+width||Math.abs((p.Y>>8)+49-(o.Y>>8)-center)>48)return false;
   c.phase=10;c.invulnerable=false;p.hitdone=1;
   p.CETH={kind:'vegaizuna',rows:COMBAT.izunaRows[o.fid],indices:COMBAT.izunaIndices,fresh:1};
@@ -93,8 +93,8 @@
     p.Y&=255;c.phase=15;const o=p.opp,dir=p.FACE?1:-1;
     let damage=COMBAT.damage[14][p.CE_ATTACK_LEVEL??16];
     if(o.HP<31)damage=Math.max(1,damage-(damage*COMBAT.lowHealth[Math.max(0,o.HP)]>>5));
-    o.HP=Math.max(0,o.HP-damage);o.CETHV={kind:'fall',shoto:true,vegaIzuna:true,phase:0,dir,dmg:0,vx:dir*0x200,vy:0x600,ay:0x58,bounce:[0x280,0x280,0x48],slide:0x100};
-    o.ST=o.HP?7:8;o.STUN=o.KB=o.DOWNT=o.VX=o.VY=0;p.CETH=null;h.sound?.(0x2e);p.acc--;return true;
+    window.SF2.health.damage(o,damage);o.CETHV={kind:'fall',shoto:true,vegaIzuna:true,phase:0,dir,dmg:0,vx:dir*0x200,vy:0x600,ay:0x58,bounce:[0x280,0x280,0x48],slide:0x100};
+    o.ST=window.SF2.health.alive(o)?7:8;o.STUN=o.KB=o.DOWNT=o.VX=o.VY=0;p.CETH=null;h.sound?.(0x2e);p.acc--;return true;
    }
    c.vy-=c.ay;p.Y+=c.vy;p.acc--;return true;
   }

@@ -21,13 +21,13 @@ window.SF2CEBITE=(()=>{
     if(p.MV.kind!=='throw'){p.CEB=null;return false;}
     const o=p.opp;
     if(c.phase===0){
-      if(--c.time===0||o.HP===0){
+      if(--c.time===0||!window.SF2.health.alive(o)){
         c.phase=1;c.vy=0x600;c.vx=-c.dir*0x180;
         h.anim(p,h.find(p,'bitefinish'),0);p.acc=-1;
         h.anim(o,h.find(o,'bitetoss'),0);
         o.CEBV={owner:p,phase:1,wait:p.i===0?1:0,dir:c.dir};return true;
       }
-      if(p.anim.flags[p.aidx]&1){o.HP=Math.max(0,o.HP-(c.hits++?4:20));h.freeze(12);h.hit(p);}
+      if(p.anim.flags[p.aidx]&1){window.SF2.health.damage(o,c.hits++?4:20);h.freeze(12);h.hit(p);}
       h.tick(p);pose(p,c,h);p.acc--;return true;
     }
     if(c.phase===1){

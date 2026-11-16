@@ -39,6 +39,8 @@
   return {...meta,damage,chip:chipDamage,appliedDamage:blocked?chipDamage:damage};
  }
  function resolve(p,d,region,random,options={}){return calculate(profile(p,d,region,options),random,options);}
+ // Original throw0x3626..0x3728 has no normal-hit variation/defense RNG.
+ function throwDamage(p,d,code=13){let damage=D.damage[code]?.[level(p.CE_ATTACK_LEVEL??p.CE_HANDICAP)];if(!Number.isInteger(damage))return null;if(d.HP>=0&&d.HP<31)damage=Math.max(1,damage-((damage*D.lowHP[d.HP])>>>5));return {damage,scoreCommand:D.score[code]};}
  function matchLevels(p1,p2,{wins=[0,0],random}={}){
   const offset=(p1<<4)+(p2<<1),values=D.twoPlayerHandicap.slice(offset,offset+2);
   if(wins[0]!==wins[1]){if(typeof random!=='function')throw new Error('Native unequal-win handicap needs RNG');const i=wins[0]?1:0;values[i]=Math.min(31,values[i]+D.handicapDelta[random()&31]);}
@@ -54,5 +56,5 @@
  function humanLevel(humanFid,cpuFid,{humanSide=0}={}){return D.humanHandicap[(humanSide===0?cpuFid<<3:0)+humanFid];}
  // 0x548c/0x549a command0x20, offset table0x541e, original four-byte BCD amounts.
  const scoreAmount=command=>D.scoreAmounts[String(command)]??null;
- window.SF2CECOMBAT={record,projectileRecord,criticalBox,criticalOverlap,posture,profile,calculate,resolve,matchLevels,humanLevel,cpuLevel,scoreAmount,data:D};
+ window.SF2CECOMBAT={record,projectileRecord,criticalBox,criticalOverlap,posture,profile,calculate,resolve,throwDamage,matchLevels,humanLevel,cpuLevel,scoreAmount,data:D};
 })();

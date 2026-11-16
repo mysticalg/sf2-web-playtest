@@ -17,10 +17,10 @@
   const a=record(p);if(!a||!a[2])return null;
   return [a[0]>127?a[0]-256:a[0],a[1]>127?a[1]-256:a[1],a[2],a[3]];
  }
- function hurt(p,h){if(p.fid===11&&p.HP>0){const c=state(p);if(c.equipped){c.pending=true;actor(p,h);}}}
+ function hurt(p,h){if(p.fid===11&&window.SF2.health.alive(p)){const c=state(p);if(c.equipped){c.pending=true;actor(p,h);}}}
  function actor(p,h){
   if(p.fid!==11)return;const c=state(p);if(!c.pending)return;c.pending=false;
-  if(!c.equipped||p.HP<=0)return;
+  if(!c.equipped||!window.SF2.health.alive(p))return;
   if(c.injuries<8){c.injuries++;return;}
   if((0xdfdf>>>(h.rand()&15))&1)return;
   c.equipped=false;c.hitGroup=null;

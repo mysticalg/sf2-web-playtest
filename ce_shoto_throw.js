@@ -6,7 +6,10 @@
  const EXTENT=[40,56,53,40,40,36,46,40,40,44,40,40];
  const flags=p=>p.anim.flags[p.aidx],freeze=p=>p.acc--;
  function start(p,c,h){h.anim(p,h.find(p,c.kick?'throwk':'throw'),0);c.phase=1;h.sound(0x47);}
- function release(p,h,dir){prior.release(p,0,h,dir);p.CETHV.shoto=true;}
+ function release(p,h,dir){const native=window.SF2.edition==='ce'?window.SF2CECOMBAT.throwDamage(p.opp,p):null;prior.release(p,0,h,dir,native?native.damage:32);p.CETHV.shoto=true;
+  //0x35c0..0x35e2: lethal throws mark KO immediately; other damage waits for impact.
+  if(native&&native.damage>p.HP){p.HP=-1;p.CETHV.dmg=0;p.CEKO_THROW=true;p.ST=8;}
+ }
  function finish(p,h){const face=p.FACE^1,y=p.Y;p.CETH=null;h.idle(p);p.FACE=face;p.Y=y;}
  function move(p,c){p.X+=c.vx;p.Y+=c.vy;c.vy-=0x20;if(c.vy<0&&p.Y<0){p.Y&=255;return true;}return false;}
  window.SF2CETHROWS={...prior,
@@ -29,18 +32,18 @@
     if(c.phase===2&&c.pause){c.pause--;freeze(p);return true;}
     c.vy-=c.ay;p.X+=c.vx;p.Y+=c.vy;
     // 0x39b70: first-flight wall impact applies damage once and pauses12ticks.
-    if(c.phase===2&&wall&&!c.wallHit){c.wallHit=true;c.pause=12;c.vx=0;if(c.vy>=0)c.vy=0;p.HP=Math.max(0,p.HP-c.dmg);c.dmg=0;h.sound(0x2e);}
+    if(c.phase===2&&wall&&!c.wallHit){c.wallHit=true;c.pause=12;c.vx=0;if(c.vy>=0)c.vy=0;window.SF2.health.damage(p,c.dmg);c.dmg=0;h.sound(0x2e);}
     // 0x39c78: bounce moves first; previous-frame boundary then cancels X motion.
     if(c.phase===4&&wall)c.vx=0;
     if(c.vy<0&&p.Y<0){
      p.Y&=255;
-     if(c.phase===2){p.HP=Math.max(0,p.HP-c.dmg);c.dmg=0;c.phase=3;c.time=4;set('throwfall1');h.sound(0x2e);}
+     if(c.phase===2){window.SF2.health.damage(p,c.dmg);c.dmg=0;c.phase=3;c.time=4;set('throwfall1');h.sound(0x2e);}
      else{c.phase=5;c.vx=c.dir*c.slide;set('throwfall3');}
     }return true;
    }
    if(c.phase===3){if(--c.time===0){c.phase=4;c.vx=c.dir*c.bounce[0];c.vy=c.bounce[1];c.ay=c.bounce[2];set('throwfall2');}return true;}
    if(c.phase===5){const v=c.vx-c.dir*0x14;c.vx=v*c.dir<0?0:v;p.X+=c.vx;if(!c.vx||wall){c.phase=6;c.time=10;}return true;}
-   if(c.phase===6){freeze(p);if(--c.time===0){if(!p.HP){p.CETHV=null;p.ST=8;p.VX=p.VY=0;h.anim(p,h.find(p,'lie'),0);}else{c.phase=7;p.ST=10;set('getup');}}return true;}
+   if(c.phase===6){freeze(p);if(--c.time===0){if(!window.SF2.health.alive(p)){p.CETHV=null;p.ST=8;p.VX=p.VY=0;h.anim(p,h.find(p,'lie'),0);}else{c.phase=7;p.ST=10;set('getup');}}return true;}
    h.tick(p);freeze(p);if(flags(p)&255){const y=p.Y;p.CETHV=null;h.idle(p);p.Y=y;}return true;
   },
   sync(p,h){

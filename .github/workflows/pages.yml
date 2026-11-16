@@ -26,6 +26,7 @@ jobs:
           cp ce_stage_palettes_data.js ce_stage_palettes.js _site/
           cp ce_stage_boat_data.js ce_stage_boat.js _site/
           cp ce_stage_birds_data.js ce_stage_birds.js _site/
+          cp ce_round_data.js ce_round.js _site/
           cp ce_camera_data.js ce_camera.js _site/
           cp ce_stage_water_data.js ce_stage_spray_data.js ce_stage_water.js _site/
           cp ce_stage_animations_data.js ce_stage_animations.js ce_stage_dancers_data.js ce_stage_dancers.js _site/

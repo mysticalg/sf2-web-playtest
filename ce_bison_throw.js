@@ -17,7 +17,7 @@
   function release(p,descriptor,h,dir,dmg=32){
     const t=descriptor===12?[0x700,0x100,0x58,0x580,0x180,0x48,0x180]:[0x380,0x380,0x48,0x280,0x280,0x48,0x100];
     p.CETHV={kind:'fall',phase:0,dir,dmg,vx:dir*t[0],vy:t[1],ay:t[2],bounce:t.slice(3,6),slide:t[6]};
-    p.ST=p.HP?7:8;p.STUN=0;p.KB=0;p.DOWNT=0;p.VX=p.VY=0;
+    p.ST=window.SF2.health.alive(p)?7:8;p.STUN=0;p.KB=0;p.DOWNT=0;p.VX=p.VY=0;
   }
   function sync(p,h){
     const c=p.CETH;
@@ -37,7 +37,7 @@
       if(c.vy<0&&p.Y<0){
         p.Y&=255;
         if(c.phase===2){
-          p.HP=Math.max(0,p.HP-c.dmg);c.dmg=0;c.phase=3;c.time=4;
+          window.SF2.health.damage(p,c.dmg);c.dmg=0;c.phase=3;c.time=4;
           set(p,h.find(p,'throwfall1'),h);h.sound(0x2e);
         }else{c.phase=5;c.vx=c.dir*c.slide;set(p,h.find(p,'throwfall3'),h);}
       }return true;
@@ -52,7 +52,7 @@
     }
     if(c.phase===6){
       if(--c.time===0){
-        if(!p.HP){p.CETHV=null;p.ST=8;p.VX=p.VY=0;h.anim(p,29,0);}
+        if(!window.SF2.health.alive(p)){p.CETHV=null;p.ST=8;p.VX=p.VY=0;h.anim(p,29,0);}
         else{c.phase=7;p.ST=10;set(p,30,h);}
       }return true;
     }
