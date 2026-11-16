@@ -137,7 +137,9 @@ function mkp(i){return {i,X:0,Y:0,VX:0,VY:0,AX:0,AY:0,FACE:0,ST:0,RETCR:0,cur:0,
 function setfighter(p,fid){if(aiEnabled()){aiSetProfile(p,fid);return;}p.fid=fid;p.F=D.fighters[fid];p.ft=FTX[fid];aiClearProfile(p);}
 const P=[mkp(0),mkp(1)]; P[0].opp=P[1]; P[1].opp=P[0];
 const ent=p=>p.anim.ents[p.aidx];
-function setanim(p,n,idx){if(aiEnabled())p.AIAttackSerial=(p.AIAttackSerial||0)+1;p.cur=n;p.aidx=idx;p.anim=p.F.anims[n];p.acc=0;p.adone=0;p.hitdone=0;p.MH2=0;}
+// Native human normal controllers: shotos0x3d6b6, Vega LP; other normals retain their existing owners.
+function ceNativeNormal(p,n=p.cur){return VER.cur==='CE'&&!isEvilKen(p)&&(([0,4].includes(p.fid)&&n>=8&&n<=19)||(p.fid===11&&[8,14].includes(n)));}
+function setanim(p,n,idx){if(aiEnabled())p.AIAttackSerial=(p.AIAttackSerial||0)+1;p.cur=n;p.aidx=idx;p.anim=p.F.anims[n];if(ceNativeNormal(p,n)&&p.anim.nativeDurations){const a=p.anim;p.anim={...a,ents:a.ents.map((e,i)=>{const q=e.slice();q[1]=a.nativeDurations[i];return q;})};}p.acc=0;p.adone=0;p.hitdone=0;p.MH2=0;}
 function wantanim(p,n){if(p.cur!==n)setanim(p,n,0);}
 function animstep(p){ // one 60Hz tick
   p.LOOPED=0; const a=p.anim; let i=p.aidx, acc=p.acc+1;
@@ -161,7 +163,7 @@ function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 function resetp(p,x,face){Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   if(VER.cur==='CE'){p.CEWALL=0;p.CEVSL=null;}else{delete p.CEWALL;delete p.CEVSL;}
-  delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;delete p.CER;delete p.CERSTOP;delete p.CEGUARD;delete p.CESHAKE;delete p.CERHOSTTICK;delete p.CERRESUME;delete p.CE_DAMAGE_TRACE;delete p.CEVLAND;delete p.CEVBB;delete p.CEVNSTART;delete p.CECameraIgnore;
+  delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;delete p.CER;delete p.CERSTOP;delete p.CEGUARD;delete p.CESHAKE;delete p.CERHOSTTICK;delete p.CERRESUME;delete p.CE_DAMAGE_TRACE;delete p.CEVLAND;delete p.CEVBB;delete p.CEVNSTART;delete p.CENORMALINIT;delete p.CECameraIgnore;
   if(window.SF2CEVEGACLAW)SF2CEVEGACLAW.reset(p,VER.cur==='CE');
   aiResetPlayer(p);if(VER.cur==='CE'&&window.SF2CEREACTION)SF2CEREACTION.preregister(p);p.MSEQ=[[0,0],[0,0],[0,0]];p.THV=null;p.hitdone=0;setanim(p,AN_IDLE,0);}
 // CE 0x38b2/0x38ca: native X 552/728, camera 448; browser world origin is native X 256.
@@ -264,7 +266,7 @@ function ceGuardOptions(p){
   const o=p.opp,source=o.anim?.source+24*o.aidx;
   return {attacking:[S_ATK,S_SPEC].includes(o.ST)&&!!window.SF2CEREACTIONDATA?.postures[source],projectile:o.FBON?{X:o.FBX,FACE:o.FBVX>0?1:0}:null,opponentFlagsLow:o.anim?.flags[o.aidx]&255};
 }
-function update(p){p.X0=p.X;if(p.CEVNSTART){const n=p.CEVNSTART;delete p.CEVNSTART;if(p.ST===S_ATK)setanim(p,n.slot,n.entry);}if(p.CEVLAND&&p.ST!==S_FREE)delete p.CEVLAND;if(p.CES?.kind==='vegaflip'&&p.ST!==S_SPEC){p.CES=null;p.MV=null;}if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.actor&&SF2CETHROWS.actor(p,cethooks()))return endCeVictim(p);if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.victim(p,{fall:(q,d)=>fallst(q,q.HP?S_DOWN:S_KO,d),find:AI,anim:setanim,idle:q=>{if(q.HP)toidle(q);else{q.ST=S_KO;setanim(q,AN_FALL+1,0);}},land:q=>sfxc(XS(q)&&0x2e)}))return endCeVictim(p);if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.cur!==p.THAN))relth(p);
+function update(p){p.X0=p.X;if(p.CEVNSTART){const n=p.CEVNSTART;delete p.CEVNSTART;if(p.ST===S_ATK){setanim(p,n.slot,n.entry);if(n.whiff)sfxc(...n.whiff);p.CENORMALINIT=ceNativeNormal(p)&&p.fid===11;}}if(p.CEVLAND&&p.ST!==S_FREE)delete p.CEVLAND;if(p.CES?.kind==='vegaflip'&&p.ST!==S_SPEC){p.CES=null;p.MV=null;}if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.actor&&SF2CETHROWS.actor(p,cethooks()))return endCeVictim(p);if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.victim(p,{fall:(q,d)=>fallst(q,q.HP?S_DOWN:S_KO,d),find:AI,anim:setanim,idle:q=>{if(q.HP)toidle(q);else{q.ST=S_KO;setanim(q,AN_FALL+1,0);}},land:q=>sfxc(XS(q)&&0x2e)}))return endCeVictim(p);if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.cur!==p.THAN))relth(p);
   if(p.VQ){if(p.ST!==S_SPEC)p.VQ=null;else{p.VT++;while(p.VQ.length&&p.VQ[0][0]<=p.VT)sfxc(p.VQ.shift()[1]);}}
   if(p.WAKET>0)p.WAKET--; if(p.LANDT>0)p.LANDT--;
   if(p.ST===S_FREE&&p.PST===S_GETUP)p.WAKET=6; if((p.ST===S_FREE||p.ST===S_CR)&&p.PST===S_AIR)p.LANDT=4; p.PST=p.ST;
@@ -276,7 +278,7 @@ function update(p){p.X0=p.X;if(p.CEVNSTART){const n=p.CEVNSTART;delete p.CEVNSTA
   // CE projectile stop is local: input/charge recognition above continues;
   // reaction initialization and14timer ticks hold victim physics/animation.
   if(VER.cur==='CE'&&p.CEPF){const c=p.CEPF;if(c.init){Object.assign(p,c.pose);p.anim=p.F.anims[p.cur];c.init=0;return;}if(c.ticks>0){c.ticks--;return;}p.CEPF=null;}
-  let ceCommonReleased=false,ceSkipAnimation=false;
+  let ceCommonReleased=false,ceSkipAnimation=!!p.CENORMALINIT;delete p.CENORMALINIT;
   if(VER.edition==='ce'&&window.SF2CEREACTION){
     if(p.CER){p.CERRESUME=false;SF2CEREACTION.step(p,{tick:animstep,release:ceReactionRelease});if(!p.CERRESUME)return;ceCommonReleased=true;p.CERRESUME=false;}
     if(SF2CEREACTION.ownerStep(p))return;
@@ -295,7 +297,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
     else if(!(keys&12)&&!(nw&0x3f0)&&!ev.length&&!force&&!(VER.edition==='ce'&&window.SF2CEREACTION?.guardAdmission(p,ceGuardOptions(p)))&&(p.opp.X===p.X||(p.opp.X>p.X?1:0)===p.FACE)&&--p.CEVLAND>0)return end(p,true);
     else{landingPose={cur:p.cur,anim:p.anim,aidx:p.aidx,acc:p.acc,adone:p.adone};p.CEVLAND=0;const y=p.Y;toidle(p);p.Y=y;if(keys&K_D)ceSkipAnimation=true;}
   }
-  const st=p.ST;
+  const st=p.ST,normalPose={cur:p.cur,anim:p.anim,aidx:p.aidx,acc:p.acc,adone:p.adone};
   /* M13d: arcade reversal - a special completed 1 frame before the fighter is free (wakeup, block/hitstun end) still comes out */
   if(ev.length&&st!==S_FREE&&st!==S_CR&&st!==S_ATK&&st!==S_SPEC)p.EVB=[ev,G.tick];
   else if(!ev.length&&(st===S_FREE||st===S_CR)&&p.EVB&&G.tick-p.EVB[1]<=1)ev=p.EVB[0];
@@ -310,7 +312,8 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
       /* ROM-measured (fdtrace2 lag): the first tap's normal starts at once; only follow-up taps are swallowed so the mash special can take over */
       if(p['MQ'+fam].length>=2||st===S_ATK&&p.MASHF===fam){p.MASHF=fam;atk=-1;} else p.MASHF=null; } }
   if(st!==S_FREE&&st!==S_CR&&st!==S_ATK)p.PENDT=0;
-  if(atk>=0&&(st===S_FREE||st===S_CR||st===S_AIR&&!p.JA&&!p.PJ)){const X=XS(p);sfxc(X&&(st===S_CR||keys&K_D?X.whc:X.wh)[atk],SN_WHIFF,0.35);}
+  let ceWhiff=null;
+  if(atk>=0&&(st===S_FREE||st===S_CR||st===S_AIR&&!p.JA&&!p.PJ)){const X=XS(p),args=[X&&(st===S_CR||keys&K_D?X.whc:X.wh)[atk],SN_WHIFF,0.35];if(VER.cur==='CE'&&!isEvilKen(p)&&[S_FREE,S_CR].includes(st)&&([0,4].includes(p.fid)||p.fid===11&&atk===0))ceWhiff=args;else sfxc(...args);}
   if(VER.cur==='CE'&&st===S_SPEC&&atk>=0&&atk<3&&p.MV&&p.MV.inp==='cdu'&&p.MV.kind==='rise'&&p.Y>(24<<8)&&bossair(p,dx))return end(p);
   if((ev.length||force)&&(st===S_FREE||st===S_CR||st===S_UP||(VER.cur==='CE'&&window.SF2CEVEGA&&p.fid===11&&st===S_AIR&&(p.Y>>8)===0&&ev.some(e=>e[0]==='cdu'&&e[1]==='K'))||(st===S_ATK&&ev.some(e=>e[0]==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)||e[0]==='ppp'))||(st===S_SPEC&&p.MV&&p.MV.inp==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)))&&startspec(p,ev,force))return end(p);
   if(VER.edition==='ce'&&window.SF2CEREACTION&&[S_FREE,S_CR].includes(st)){
@@ -322,7 +325,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
   case S_FREE:
     if(keys&K_U){let n=AN_JUMPN,j=2;if(dx>0){n=AN_JUMPF;j=4;}else if(dx<0){n=AN_JUMPB;j=3;}
       setanim(p,n,0);const nativeJump=VER.cur==='CE'&&!isEvilKen(p);if(nativeJump&&dx)j=dx>0?3:4;let [vx,ax,vy,ay]=p.ft[j];if(nativeJump?p.FACE:!p.FACE){vx=-vx;ax=-ax;}Object.assign(p,{VX:vx,AX:ax,VY:vy,AY:ay,PJ:nativeJump?cePrejumpTicks(p.anim):VER.cur==='CE'?PJCE[p.fid]-1:3,JA:0,JN:dx===0,JAN:n});p.ST=S_AIR;ceSkipAnimation=ceCommonReleased||VER.cur==='CE'&&!isEvilKen(p);break;}
-    if(keys&K_D){if(atk>=0){if(zgrab(p,atk))break;setanim(p,crn(p,atk),0);p.RETCR=1;p.ST=S_ATK;break;}setanim(p,AN_CROUCH,0);p.ST=S_CR;break;}
+    if(keys&K_D){if(atk>=0){if(zgrab(p,atk))break;setanim(p,crn(p,atk),0);p.RETCR=1;p.ST=S_ATK;break;}setanim(p,AN_CROUCH,0);p.ST=S_CR;if(VER.cur==='CE'&&!isEvilKen(p))ceSkipAnimation=true;break;}
     if(atk>=0&&dx!==0&&atk%3&&trythrow(p,atk))break;
     if(VER.cur==='CE'&&p.fid===3&&atk===5&&dx>0&&(Math.abs(p.opp.X-p.X)>>8)<=GFHK_CE[p.opp.fid]&&AI(p,'fHK')>0){setanim(p,AI(p,'fHK'),0);p.RETCR=0;p.ST=S_ATK;break;}
     if(atk>=0){const cd=Math.abs(p.opp.X-p.X)>>8,nativeClose=VER.edition==='ce'&&carMode(p)?SF2CECAR.closeNormal(G.bon,p,atk):ceBarrelMode()?SF2CEBARRELS.closeNormal(G.bon,p,atk):null;setanim(p,((nativeClose??(cd<NTHR[p.fid][atk]))&&p.F.anims[AN_NEAR+atk]?AN_NEAR:AN_SLP)+atk,0);p.RETCR=0;p.ST=S_ATK;break;}
@@ -330,12 +333,15 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
     {let n=dx===0?AN_IDLE:dx>0?AN_WALKF:AN_WALKB, v=dx>0?p.ft[0]:dx<0?p.ft[1]:0; if(dx<0)v=-v; if(!p.FACE)v=-v; p.X+=v; wantanim(p,n);} break;
   case S_CR:
     if(atk>=0){if(zgrab(p,atk))break;setanim(p,crn(p,atk),0);p.RETCR=1;p.ST=S_ATK;break;}
-    if(!(keys&K_D)){setanim(p,AN_STANDUP,0);p.ST=S_UP;} break;
+    if(!(keys&K_D)){if(VER.cur==='CE'&&!isEvilKen(p)){animstep(p);const timer=p.anim.ents[p.aidx][1]-p.acc;setanim(p,AN_STANDUP,0);p.acc=p.anim.ents[0][1]-timer;ceSkipAnimation=true;}else setanim(p,AN_STANDUP,0);p.ST=S_UP;} break;
   case S_HIT: case S_BLK: if(p.STUN>0&&--p.STUN>0)break; if(p.DIZZY){p.DIZZY=0;}
     if(p.RETCR&&(keys&K_D)){setanim(p,AN_CROUCH,2);p.ST=S_CR;} else toidle(p); break;
   case S_ATK:
+    // These controllers test the terminal flag before ticking. Shotos also
+    // retain their outer animation tick after the common standing/crouch return.
+    if(ceNativeNormal(p)){if(!(p.anim.flags[p.aidx]&0x8000))break;if(p.RETCR&&(keys&K_D)){setanim(p,AN_CROUCH,2);p.ST=S_CR;}else toidle(p);if(p.fid!==11)animstep(p);break;}
     if(!ad)break; if(p.RETCR&&(keys&K_D)){setanim(p,AN_CROUCH,2);p.ST=S_CR;} else toidle(p); break;
-  case S_UP: if(ad||p.CESLREC&&(p.anim.flags[p.aidx]&0x8000)){if(p.CESLREC){p.CESLREC=0;if(keys&K_D){setanim(p,AN_CROUCH,2);p.ST=S_CR;}else toidle(p);}else toidle(p);} break;
+  case S_UP: if(VER.cur==='CE'&&!isEvilKen(p)&&p.cur===AN_STANDUP){animstep(p);ceSkipAnimation=true;if(p.anim.flags[p.aidx]&0x8000){toidle(p);ceSkipAnimation=false;}break;}if(ad||p.CESLREC&&(p.anim.flags[p.aidx]&0x8000)){if(p.CESLREC){p.CESLREC=0;if(keys&K_D){setanim(p,AN_CROUCH,2);p.ST=S_CR;}else toidle(p);}else toidle(p);} break;
   case S_GETUP: if(ad){ if(p.DIZZY===1){p.DIZZY=2;setanim(p,AN_HITL+1,0);p.ST=S_HIT;p.STUN=DIZT;p.RETCR=0;} else toidle(p);} break;
   case S_AIR: if(p.PJ>0){p.PJ--;break;}
     if(VER.cur==='CE'&&window.SF2CHUNAIR&&SF2CHUNAIR.step(p,G.cam))break;
@@ -347,7 +353,9 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
   case S_KO: p.DOWNT=(p.DOWNT||0)+1; if(!gravity(p)&&p.cur===AN_FALL&&p.DOWNT>4){if(p.Y===0&&p.cur===AN_FALL)sfxc(XS(p)&&0x2e);setanim(p,AN_FALL+1,0);} break;
   case S_SPEC: if(spec(p,input))return;break;
   }
-  if(landingPose&&p.ST===S_ATK){const slot=p.cur;Object.assign(p,landingPose);p.CEVNSTART={slot,entry:0};ceSkipAnimation=true;}
+  if(p.ST===S_ATK&&[S_FREE,S_CR].includes(st)&&ceNativeNormal(p)){const slot=p.cur;Object.assign(p,landingPose||normalPose);p.CEVNSTART={slot,entry:0,whiff:ceWhiff};ceSkipAnimation=st!==S_CR;}
+  else if(landingPose&&p.ST===S_ATK){const slot=p.cur;Object.assign(p,landingPose);p.CEVNSTART={slot,entry:0};ceSkipAnimation=true;}
+  if(ceWhiff&&!p.CEVNSTART&&p.ST===S_ATK)sfxc(...ceWhiff);
   return end(p,ceSkipAnimation);}
 // knockback now applied every 60Hz frame (was the 25fps cadence): same total distance, decay 0.75^(5/12) per frame
 function end(p,skipAnimation=false){if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.actor(p,{rand});if(VER.cur==='CE'&&window.SF2CEVEGA)SF2CEVEGA.normal(p,{find:AI,anim:setanim,idle:toidle});if(VER.cur==='CE'&&window.SF2CENORMALS)SF2CENORMALS.step(p,{finish:q=>{const face=q.opp.X>q.X?1:0,a=AI(q,'slidecrouch');if(face!==q.FACE&&a>=0){q.FACE=face;setanim(q,a,0);q.acc=-1;q.ST=S_UP;q.CESLREC=1;}else if(q.KEYS&K_D){setanim(q,AN_CROUCH,2);q.ST=S_CR;}else toidle(q);}});
@@ -394,6 +402,7 @@ const TDMG_WW={0:38,3:38,4:38,5:21,6:27,7:34},TDMG_CE={0:32,1:46,2:44,3:32,4:32,
 function zgrab(p,atk){const o=p.opp,n=AI(p,'cn'+['LP','MP','HP'][atk]);if(!(VER.cur==='CE'&&p.fid===6&&(atk===1||atk===2)&&n>=0&&hurtable(o)&&(o.Y>>8)===0&&(Math.abs(o.X-p.X)>>8)<=80))return false;
   if(!trythrow(p,atk,1))return false;setanim(p,n,0);p.THAN=n;p.SCNT=atk===1?50:55;p.THV.dmg=28;p.THV.t=p.SCNT-6;p.ZG=1;return true;}
 function trythrow(p,atk,force){if(VER.cur==='CE'&&p.fid===5&&atk>=3)return false;const o=p.opp; if(!force&&!canthrow(p,atk>=3))return false; if(XS(p)&&atk>=3&&AI(p,'throwk')<0)return false; /* CE: only Ryu/Ken/Honda/Chun-Li/Zangief have a kick throw */
+  if(aiEnabled()&&o.AIRift)o.AIRift=null;
   if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.init(p,atk,{find:AI,anim:setanim,move:THROW,voice:q=>sfxc(XS(q)&&XS(q).thr)})){G.throws=(G.throws||0)+1;return true;}
   if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.init(p,atk,cethooks())){G.throws=(G.throws||0)+1;return true;}
   Object.assign(p,{MV:THROW,SPK:0,SPKD:0,SPSTR:atk%3,SPPH:0,RETCR:0,KB:0,SCNT:30});
@@ -423,7 +432,7 @@ function ceVegaControlRelease(p,input){
   // Crouch/prejump initialization retains its complete first animation timer.
   const poseGate=!(input.nw&0x3f0)&&!!(input.keys&12);
   controls(p,{...input,ev:[],force:0},poseGate,poseGate);
-  if(p.ST===S_ATK&&!(input.keys&12)&&!p.CEVSL){
+  if(p.ST===S_ATK&&!p.CEVNSTART&&!(input.keys&12)&&!p.CEVSL){
     const slot=p.cur;setanim(p,AN_IDLE,0);p.CEVNSTART={slot,entry:0};
   }
 }
@@ -938,7 +947,7 @@ function setver(v,keepEdition=false){const leavingAI=!keepEdition&&aiEnabled();i
 /* CE normals timing from the CE ROM (tools/emu_ce/fdtrace.py -> tools/fd_compare.py): entry durations per fighter/anim so every
    stand/crouch normal hits its ROM entry boundaries and returns to neutral on the ROM frame (last entry hands back after 1f) */
 const NTIME_CE={"0":{"8":[3,4,4,0],"9":[2,2,4,3,3,0],"10":[4,2,6,10,12,0],"11":[4,3,8,4,0],"12":[6,6,12,6,0],"13":[3,4,8,10,6,0],"14":[3,4,4,0],"15":[2,2,4,3,3,0],"16":[4,3,8,10,12,0],"17":[3,4,4,0],"18":[2,2,6,4,4,0],"19":[4,6,6,8,10,0]},"1":{"8":[3,2,4,2,0],"9":[3,2,2,4,2,2,0],"10":[4,3,3,4,7,5,3,2,0],"11":[4,3,3,4,3,3,0],"12":[4,3,3,4,5,6,0],"13":[4,3,3,6,8,10,0],"14":[3,2,8,2,0],"15":[3,2,2,8,6,4,0],"16":[3,3,4,6,8,6,4,3,0],"17":[4,3,3,3,3,3,0],"18":[4,3,3,6,5,4,0],"19":[4,4,6,4,8,6,0]},"2":{"8":[3,2,3,4,3,3,0],"9":[4,2,2,3,3,0],"10":[3,3,4,6,10,7,0],"11":[3,2,2,4,3,3,0],"12":[3,2,2,4,3,3,0],"13":[4,3,6,5,5,5,5,5,0],"14":[3,2,4,3,3,3,0],"15":[4,3,3,7,3,3,3,0],"16":[4,4,6,10,7,0],"17":[3,2,4,3,3,0],"18":[3,2,4,3,3,0],"19":[2,2,3,4,10,12,0]},"3":{"8":[4,4,2,2,0],"9":[3,2,4,3,3,2,0],"10":[3,3,4,5,10,7,0],"11":[3,2,4,3,2,0],"12":[3,3,3,4,5,4,3,2,2,1,0],"13":[3,3,5,6,8,9,0],"14":[4,4,4,0],"15":[4,4,4,3,0],"16":[3,3,4,12,9,0],"17":[4,3,4,3,2,0],"18":[4,4,5,4,2,0],"19":[3,1,4,5,4,6,8,1,5,4,5,4,5,0]},"4":{"8":[3,4,4,0],"9":[2,2,4,3,3,0],"10":[4,2,6,10,12,0],"11":[4,3,8,4,0],"12":[6,6,12,6,0],"13":[3,4,8,10,6,0],"14":[3,4,4,0],"15":[2,2,4,3,3,0],"16":[4,3,8,10,12,0],"17":[3,4,4,0],"18":[2,2,6,4,4,0],"19":[4,6,6,8,10,0]},"5":{"8":[3,2,4,3,0],"9":[3,2,4,3,0],"10":[3,3,6,10,7,0],"11":[4,3,5,4,0],"12":[4,3,5,4,3,0],"13":[4,3,4,8,7,6,0],"14":[3,2,4,4,0],"15":[3,2,4,4,0],"16":[4,3,6,8,10,0],"17":[4,3,4,4,0],"18":[5,5,3,0],"19":[4,3,6,8,10,0]},"6":{"8":[3,4,4,0],"9":[3,2,3,4,0],"10":[4,3,6,10,8,6,4,0],"11":[3,2,4,0],"12":[4,3,4,4,4,0],"13":[5,8,10,0],"14":[4,4,0],"15":[4,3,8,4,4,0],"16":[4,3,8,10,12,0],"17":[4,4,6,0],"18":[4,6,8,0],"19":[4,10,12,0]},"7":{"8":[3,3,6,4,0],"9":[4,4,4,6,4,4,0],"10":[4,4,4,20,10,8,0],"11":[3,3,8,4,4,0],"12":[3,3,8,4,4,0],"13":[2,2,3,4,6,10,8,0],"14":[3,3,3,6,4,4,0],"15":[3,3,3,6,4,4,0],"16":[4,4,4,6,10,8,0],"17":[2,1,14,4,0],"18":[5,4,16,4,0],"19":[5,4,18,20,0]},"8":{"8":[2,1,1,1,1,1,1,1,1,1,1,0],"9":[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],"10":[2,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],"11":[3,2,4,4,0],"12":[3,2,4,7,0],"13":[3,3,6,20,0],"14":[3,1,1,1,1,1,1,1,1,1,0],"15":[3,1,1,1,1,1,1,1,1,1,1,1,1,0],"16":[3,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,0],"17":[6,4,4,0],"18":[6,8,4,0],"19":[8,43,16,0]},"9":{"8":[4,4,4,0],"9":[3,2,4,3,3,0],"10":[5,2,6,10,12,0],"11":[3,1,2,2,2,2,2,0],"12":[3,2,2,2,2,3,4,0],"13":[5,2,3,3,5,6,9,0],"14":[4,4,4,0],"15":[5,4,6,0],"16":[7,6,20,0],"17":[2,2,4,2,2,0],"18":[3,2,4,3,3,0],"19":[5,2,6,10,10,0]},"10":{"8":[4,4,4,0],"9":[3,2,4,3,3,0],"10":[5,2,6,9,5,0],"11":[4,4,4,0],"12":[5,4,6,0],"13":[5,2,6,9,5,0],"14":[2,2,4,2,1,0],"15":[3,2,4,3,3,0],"16":[5,2,6,9,5,0],"17":[2,2,4,2,1,0],"18":[3,2,4,3,3,0],"19":[3,4,6,9,5,0]},"11":{"8":[2,2,4,4,0],"9":[3,2,4,6,0],"10":[5,2,6,18,0],"11":[2,2,4,4,0],"12":[3,2,4,6,0],"13":[5,2,6,18,0],"14":[2,1,1,4,1,1,1,0],"15":[2,1,2,4,2,2,2,0],"16":[2,2,3,6,7,6,5,0],"17":[2,1,1,1,4,4,0],"18":[2,1,1,1,4,6,0],"19":[3,2,2,21,13,0]}};
-function cetimes(F){dmgfix();{const v=F[11]&&F[11].anims,r=v&&v.find(a=>a.name==='slrec'),h=v&&v[AN_CLP+5];if(r&&h&&!r._fx){r._fx=1;r.ents=r.ents.slice(0,4).map(e=>{e=e.slice();e[1]=3;return e;});r.mode=1;const l=h.ents[h.ents.length-1];if(l[1]===0)l[1]=1;}} /* Vega slide end: 1f last pose + 4x3f recovery (ROM) */F[7].anims.forEach((a,i)=>{const v={cnLP:8,cnMP:11,cnMK:11}[a.name];if(v&&DMG_CE[7])DMG_CE[7][i]=v;});F[6].anims.forEach((a,i)=>{const v={cnMP:28,cnHP:28}[a.name];if(v&&DMG_CE[6])DMG_CE[6][i]=v;});F[3].anims.forEach((a,i)=>{if(a.name==='fHK'&&DMG_CE[3])DMG_CE[3][i]=20;}); /* Dhalsim close crouch damage (ROM close traces) */for(let f=0;f<12;f++)for(let i=47;i<F[f].anims.length;i++){if(i>52&&!/^cn/.test(F[f].anims[i].name))continue;const a=F[f].anims[i];if(!a||(NTIME_CE[f]&&NTIME_CE[f][i]))continue;const e=a.ents;if(f!==0&&f!==4&&f!==7)e[0][1]+=1;e[e.length-1][1]=0;} /* CE ROM close normals (fd_compare2 close.timing): first entry shows its full duration (Ryu/Ken/Bison one less), last entry ends the move */
+function cetimes(F){for(const f of [0,4,11])for(const n of (f===11?[8,14]:Array.from({length:12},(_,i)=>i+8))){const a=F[f].anims[n];a.nativeDurations??=a.ents.map(e=>e[1]);}dmgfix();{const v=F[11]&&F[11].anims,r=v&&v.find(a=>a.name==='slrec'),h=v&&v[AN_CLP+5];if(r&&h&&!r._fx){r._fx=1;r.ents=r.ents.slice(0,4).map(e=>{e=e.slice();e[1]=3;return e;});r.mode=1;const l=h.ents[h.ents.length-1];if(l[1]===0)l[1]=1;}} /* Vega slide end: 1f last pose + 4x3f recovery (ROM) */F[7].anims.forEach((a,i)=>{const v={cnLP:8,cnMP:11,cnMK:11}[a.name];if(v&&DMG_CE[7])DMG_CE[7][i]=v;});F[6].anims.forEach((a,i)=>{const v={cnMP:28,cnHP:28}[a.name];if(v&&DMG_CE[6])DMG_CE[6][i]=v;});F[3].anims.forEach((a,i)=>{if(a.name==='fHK'&&DMG_CE[3])DMG_CE[3][i]=20;}); /* Dhalsim close crouch damage (ROM close traces) */for(let f=0;f<12;f++)for(let i=47;i<F[f].anims.length;i++){if(i>52&&!/^cn/.test(F[f].anims[i].name))continue;const a=F[f].anims[i];if(!a||(NTIME_CE[f]&&NTIME_CE[f][i]))continue;const e=a.ents;if(f!==0&&f!==4&&f!==7)e[0][1]+=1;e[e.length-1][1]=0;} /* CE ROM close normals (fd_compare2 close.timing): first entry shows its full duration (Ryu/Ken/Bison one less), last entry ends the move */
   for(const f in NTIME_CE)for(const i in NTIME_CE[f]){const a=F[f].anims[i];if(a)NTIME_CE[f][i].forEach((d,n)=>{if(a.ents[n])a.ents[n][1]=d;});}
   /* fid 8 cHK: NTIME e1 already contained the hitstop */
   {const a=F[8].anims;if(a[19]&&a[19].ents[1])a[19].ents[1][1]=29;}}
