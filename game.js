@@ -635,6 +635,8 @@ function ceRoundClock(){
   if(G.timer>0){G.timer--;return false;}
   const a=P[0].HP,b=P[1].HP;endround((a>=b?1:0)|(a<=b?2:0));return true;
 }
+// Original Dhalsim 0x42fc4..0x42fd4 holds60 actor updates before pose admission.
+function ceVictoryHold(p){return VER.edition==='ce'&&p.fid===7?60:0;}
 function phase(){
   if(G.gph===1){const a=P[0].HP,b=P[1].HP;let m=0;
     if(a===0||b===0){if(a>0)m|=1;if(b>0)m|=2;if(!m)m=3;return endround(m);}
@@ -643,14 +645,15 @@ function phase(){
     if(G.timer>0)return; if(a>=b)m=1; if(a<=b)m|=2; return endround(m);}
   G.gt++;
   if(G.gph===0){if(G.gt===5)sfxc(0x5f,SN_ROUND);if(G.gt===34)sfxc(0x60+Math.min(G.round,4)-1,SN_NUM+Math.min(G.round,9)-1);if(G.gt===70)sfxc(0x56,SN_FIGHT);if(G.gt>=120){G.gph=1;}return;}
-  if(G.gt===60){for(let i=0;i<2;i++)if(G.winmask&(1<<i)&&P[i].HP){const p=P[i];let n=AN_WIN;
+  const victoryHold=Math.max(0,...P.filter((p,i)=>(G.winmask&(1<<i))&&p.HP).map(ceVictoryHold));
+  for(let i=0;i<2;i++)if(G.winmask&(1<<i)&&P[i].HP&&G.gt===60+ceVictoryHold(P[i])){const p=P[i];let n=AN_WIN;
     /* CE Ryu/Ken, 0x3d932: normal round-win selection uses these ROM bit masks.
        Other fighters currently use their first observed genuine victory sequence. */
     if(VER.cur==='CE'&&(p.fid===0||p.fid===4)&&([0x1082,0xef7d][Math.min(1,p.WINS-1)]&(1<<(rand()&15)))){const a=AI(p,'win2');if(a>=0)n=a;}
-    setanim(p,n,0);p.Y=p.VX=p.VY=0;p.ST=S_WIN;}}
-    if(G.gt===96&&G.winmask!==3){const w=G.winmask&1?0:1;G.bann=(VER.cur==='CE'||G.mode2p||!G.arc?aiName(P[w]).toUpperCase()+' WIN':w?'YOU LOSE':'YOU WIN')+(P[w].HP===aiMax(P[w])?'  PERFECT':'');if(VER.cur==='CE'&&window.SF2CEANNOUNCER){G.ann=SF2CEANNOUNCER.init(G.mode2p?P[w].fid:w?13:12);for(const code of SF2CEANNOUNCER.step(G.ann))sfxc(code);}}
-  if(G.gt===96&&G.winmask===3)G.bann=G.ko?'DOUBLE K.O.':'DRAW GAME';
-  if(G.gt>=264){if(P[0].WINS>=2||P[1].WINS>=2||G.round>=5)matchend();else{G.round++;resetround();}}}
+    setanim(p,n,0);p.Y=p.VX=p.VY=0;p.ST=S_WIN;if(VER.edition==='ce'&&p.fid===7)p.CECameraIgnore=true;}
+    if(G.gt===96+victoryHold&&G.winmask!==3){const w=G.winmask&1?0:1;G.bann=(VER.cur==='CE'||G.mode2p||!G.arc?aiName(P[w]).toUpperCase()+' WIN':w?'YOU LOSE':'YOU WIN')+(P[w].HP===aiMax(P[w])?'  PERFECT':'');if(VER.cur==='CE'&&window.SF2CEANNOUNCER){G.ann=SF2CEANNOUNCER.init(G.mode2p?P[w].fid:w?13:12);for(const code of SF2CEANNOUNCER.step(G.ann))sfxc(code);}}
+  if(G.gt===96+victoryHold&&G.winmask===3)G.bann=G.ko?'DOUBLE K.O.':'DRAW GAME';
+  if(G.gt>=264+victoryHold){if(P[0].WINS>=2||P[1].WINS>=2||G.round>=5)matchend();else{G.round++;resetround();}}}
 function endround(m){G.ko=!P[0].HP||!P[1].HP;if(G.ko){const k=P.find(q=>!q.HP),X=k&&XS(k);sfxc(X&&X.ko,SN_KO);G.slow=72;}else G.bann='TIME OVER';G.winmask=m;if(m&1)P[0].WINS++;if(m&2)P[1].WINS++;G.gph=2;G.gt=0;}
 // ---- CPU: decided every 60Hz frame; random choices keep the old per-25fps-tick odds (q60), counters in frames ----
 const q60=q=>1-Math.pow(1-q,5/12);
