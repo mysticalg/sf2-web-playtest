@@ -161,7 +161,7 @@ function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 function resetp(p,x,face){Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   if(VER.cur==='CE'){p.CEWALL=0;p.CEVSL=null;}else{delete p.CEWALL;delete p.CEVSL;}
-  delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;delete p.CER;delete p.CERSTOP;delete p.CEGUARD;delete p.CESHAKE;delete p.CERHOSTTICK;delete p.CERRESUME;delete p.CE_DAMAGE_TRACE;delete p.CEVLAND;
+  delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;delete p.CER;delete p.CERSTOP;delete p.CEGUARD;delete p.CESHAKE;delete p.CERHOSTTICK;delete p.CERRESUME;delete p.CE_DAMAGE_TRACE;delete p.CEVLAND;delete p.CEVBB;delete p.CEVNSTART;
   if(window.SF2CEVEGACLAW)SF2CEVEGACLAW.reset(p,VER.cur==='CE');
   aiResetPlayer(p);if(VER.cur==='CE'&&window.SF2CEREACTION)SF2CEREACTION.preregister(p);p.MSEQ=[[0,0],[0,0],[0,0]];p.THV=null;p.hitdone=0;setanim(p,AN_IDLE,0);}
 // CE 0x38b2/0x38ca: native X 552/728, camera 448; browser world origin is native X 256.
@@ -175,6 +175,7 @@ function motion(p,keys,nw,rel){
   if(p.FACE) lr=((lr>>1)&1)|((lr&1)<<1);
   const dir=r|lr, btn=nw|rel, ev=[], low=b=>{let st=0;while(!(b&1)){b>>=1;st++;}return st;};
   const pb=(nw>>4)&7, kb=(nw>>7)&7, T=G.tick;
+  if(VER.cur==='CE'&&window.SF2CEVEGA){const e=SF2CEVEGA.input(p,dir);if(e)ev.push(e);}
   for(let m=0;m<3;m++){const s=SEQ[m]; const bp=(btn>>4)&7, bk=(btn>>7)&7; let [idx,t]=p.MSEQ[m];
     if(idx===0){ if(dir===s[0]){idx=1;t=mwin();} }
     else{ t-=1; if(t<=0) idx=0;
@@ -262,7 +263,7 @@ function ceGuardOptions(p){
   const o=p.opp,source=o.anim?.source+24*o.aidx;
   return {attacking:[S_ATK,S_SPEC].includes(o.ST)&&!!window.SF2CEREACTIONDATA?.postures[source],projectile:o.FBON?{X:o.FBX,FACE:o.FBVX>0?1:0}:null,opponentFlagsLow:o.anim?.flags[o.aidx]&255};
 }
-function update(p){p.X0=p.X;if(p.CEVLAND&&p.ST!==S_FREE)delete p.CEVLAND;if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.actor&&SF2CETHROWS.actor(p,cethooks()))return endCeVictim(p);if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.victim(p,{fall:(q,d)=>fallst(q,q.HP?S_DOWN:S_KO,d),find:AI,anim:setanim,idle:q=>{if(q.HP)toidle(q);else{q.ST=S_KO;setanim(q,AN_FALL+1,0);}},land:q=>sfxc(XS(q)&&0x2e)}))return endCeVictim(p);if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.cur!==p.THAN))relth(p);
+function update(p){p.X0=p.X;if(p.CEVNSTART){const n=p.CEVNSTART;delete p.CEVNSTART;if(p.ST===S_ATK)setanim(p,n.slot,n.entry);}if(p.CEVLAND&&p.ST!==S_FREE)delete p.CEVLAND;if(p.CES?.kind==='vegaflip'&&p.ST!==S_SPEC){p.CES=null;p.MV=null;}if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.actor&&SF2CETHROWS.actor(p,cethooks()))return endCeVictim(p);if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.victim(p,{fall:(q,d)=>fallst(q,q.HP?S_DOWN:S_KO,d),find:AI,anim:setanim,idle:q=>{if(q.HP)toidle(q);else{q.ST=S_KO;setanim(q,AN_FALL+1,0);}},land:q=>sfxc(XS(q)&&0x2e)}))return endCeVictim(p);if(p.THV&&(p.ST!==S_SPEC||p.MV&&!THK[p.MV.kind]&&p.cur!==p.THAN))relth(p);
   if(p.VQ){if(p.ST!==S_SPEC)p.VQ=null;else{p.VT++;while(p.VQ.length&&p.VQ[0][0]<=p.VT)sfxc(p.VQ.shift()[1]);}}
   if(p.WAKET>0)p.WAKET--; if(p.LANDT>0)p.LANDT--;
   if(p.ST===S_FREE&&p.PST===S_GETUP)p.WAKET=6; if((p.ST===S_FREE||p.ST===S_CR)&&p.PST===S_AIR)p.LANDT=4; p.PST=p.ST;
@@ -365,7 +366,7 @@ function startspec(p,ev,force){const mv=p.F.moves; let m=null,str=0;
   else if(m.kind==='grab'){p.SCNT=40;o.HP=Math.max(0,o.HP-(30+4*str));p.X=o.X+(p.FACE?-(28<<8):(28<<8));
     fallst(o,o.HP?S_DOWN:S_KO,p.FACE?1:-1);const X=XS(p);sfxc(X&&X.fall,SN_HIT[2]);}
   const v=VOICE[p.fid],k=mv.indexOf(m),X=XS(p);
-  if(VER.cur==='CE'&&p.fid===11&&window.SF2CEVEGA&&(m.inp==='cbf'&&m.btn==='P'||m.inp==='cdu'&&m.btn==='K')){p.VQ=[];p.VT=0;}else if(X){p.VQ=(X.sp[k]||[]).map(e=>e.slice());p.VT=0;while(p.VQ.length&&p.VQ[0][0]<=0)sfxc(p.VQ.shift()[1],v&&v[k]);} else if(v&&v[k])snd(v[k]);
+  if(VER.cur==='CE'&&p.fid===11&&window.SF2CEVEGA&&(m.inp==='cbf'&&m.btn==='P'||m.inp==='cdu'&&m.btn==='K'||m.inp==='bb')){p.VQ=[];p.VT=0;}else if(X){p.VQ=(X.sp[k]||[]).map(e=>e.slice());p.VT=0;while(p.VQ.length&&p.VQ[0][0]<=0)sfxc(p.VQ.shift()[1],v&&v[k]);} else if(v&&v[k])snd(v[k]);
   const previousPose={cur:p.cur,aidx:p.aidx,acc:p.acc,adone:p.adone};setanim(p,n,0);p.ST=S_SPEC;if(isEvilKen(p)&&m.kind==='fb'){p.acc-=6;p.AIEvilKen.metrics.projectileStarts=(p.AIEvilKen.metrics.projectileStarts||0)+1;}if(VER.cur==='CE'&&(p.fid===0||p.fid===4)&&m.kind==='fb')p.acc--;if(VER.cur==='CE'&&window.SF2CESPECIALS)SF2CESPECIALS.init(p,m,{find:AI,anim:setanim,cam:G.cam,stage:G.stage,rand,sound:sfxc,previousPose});return true;}
 // generic throw for every fighter: fwd/back + MP/HP/MK/HK at close range on a grounded, free opponent. The thrower
 // plays its strong/fierce normal as the throw pose (approximation -- ROM throw anims not exported per fighter), the
@@ -380,7 +381,7 @@ let THRR=THRR_WW;
 const PJCE=[4,7,6,4,4,4,6,3,3,3,4,5];
 const THRM_CE=[[[77,77],[76,76],[78,78],[78,78],[77,77],[73,73],[93,93],[83,83],[76,76],[80,80],[75,75],[76,76]],[[93,93],[92,92],[94,94],[94,94],[93,93],[89,89],[109,109],[99,99],[92,92],[96,96],[91,91],[92,92]],[[93,0],[92,0],[94,0],[94,0],[93,0],[89,0],[109,0],[99,0],[92,0],[96,0],[91,0],[92,0]],[[77,110],[76,126],[78,123],[78,110],[77,110],[73,106],[93,116],[83,110],[76,110],[80,114],[75,110],[76,110]],[[77,77],[76,76],[78,78],[78,78],[77,77],[73,73],[93,93],[83,83],[76,76],[80,80],[75,75],[76,76]],[[74,80],[90,96],[87,93],[74,80],[74,80],[70,76],[80,86],[74,80],[74,80],[78,84],[74,80],[74,80]],[[80,88],[96,102],[93,101],[80,88],[80,88],[76,84],[86,94],[80,88],[80,88],[84,92],[80,88],[80,88]],[[93,0],[92,0],[94,0],[94,0],[93,0],[89,0],[109,0],[99,0],[92,0],[96,0],[91,0],[92,0]],[[81,0],[80,0],[82,0],[82,0],[81,0],[77,0],[97,0],[87,0],[80,0],[84,0],[79,0],[80,0]],[[77,0],[76,0],[78,0],[78,0],[77,0],[73,0],[93,0],[83,0],[76,0],[80,0],[75,0],[76,0]],[[70,0],[86,0],[83,0],[70,0],[70,0],[66,0],[76,0],[70,0],[70,0],[74,0],[70,0],[70,0]],[[77,0],[76,0],[78,0],[78,0],[77,0],[73,0],[93,0],[83,0],[76,0],[80,0],[75,0],[76,0]]];
 function thrr(p,k){return VER.cur==='CE'?(THRM_CE[p.fid][p.opp.fid][k?1:0]||THRM_CE[p.fid][p.opp.fid][0]):THRR[p.fid];}
-function canthrow(p,k){const o=p.opp;return Math.abs(o.X-p.X)<=(thrr(p,k)<<8)&&(VER.cur==='CE'?(o.Y>>8)===0&&(p.Y>>8)===0:o.Y===0&&p.Y===0)&&hurtable(o)&&(o.ST===S_FREE||o.ST===S_CR||o.ST===S_ATK||o.ST===S_UP||aiEnabled()&&!!o.AIRift||isEvilKen(o)&&o.MV?.kind==='evil-ken-heat');}
+function canthrow(p,k){const o=p.opp;return Math.abs(o.X-p.X)<=(thrr(p,k)<<8)&&(VER.cur==='CE'?(o.Y>>8)===0&&(p.Y>>8)===0:o.Y===0&&p.Y===0)&&hurtable(o)&&(o.ST===S_FREE||o.ST===S_CR||o.ST===S_ATK||o.ST===S_UP||VER.cur==='CE'&&o.ST===S_SPEC&&o.CES?.kind==='vegaflip'&&o.aidx>=7||aiEnabled()&&!!o.AIRift||isEvilKen(o)&&o.MV?.kind==='evil-ken-heat');}
 // arcade proximity block: holding back while the opponent's attack/fireball is close holds the guard pose instead of walking
 function proxblk(p){const o=p.opp,d=Math.abs(o.X-p.X)>>8;if((o.ST===S_ATK||o.ST===S_SPEC)&&d<140)return true;
   return !!(o.FBON&&Math.abs(o.FBX-p.X)>>8<110&&(o.FBVX>0)===(o.FBX<p.X));}
@@ -413,11 +414,21 @@ function bossair(p,dx){if(VER.cur==='CE'&&p.fid===11&&p.CES?.kind==='vegawall')r
     const b=AI(p,'bslash'); if(b<0)return false; setanim(p,b,0);p.hitdone=0;return true;}
   if(p.fid===8&&p.SPPH>=2&&AI(p,'dive')>=0){ const v=0x300; p.MV={kind:'dive'};p.SVX=o.X>p.X?v:-v;p.FACE=o.X>p.X?1:0;setanim(p,AI(p,'dive'),0);p.hitdone=0;return true;}
   return false;}
+// Native0x4654a returns through0x37ddc into ordinary controls on this tick.
+function ceVegaControlRelease(p,input){
+  const y=p.Y;toidle(p);p.Y=y;
+  // Crouch/prejump initialization retains its complete first animation timer.
+  const poseGate=!(input.nw&0x3f0)&&!!(input.keys&12);
+  controls(p,{...input,ev:[],force:0},poseGate,poseGate);
+  if(p.ST===S_ATK&&!(input.keys&12)&&!p.CEVSL){
+    const slot=p.cur;setanim(p,AN_IDLE,0);p.CEVNSTART={slot,entry:0};
+  }
+}
 function spec(p,input){const m=p.MV;p.FBTK=(p.FBTK||0)+1;
   if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.step(p,cethooks()))return;
   if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.step(p,{find:AI,anim:setanim,tick:animstep,idle:toidle,freeze:n=>{G.hfz=n;},hit:q=>sfxc(XS(q)&&XS(q).hit[2]),land:q=>sfxc(XS(q)&&0x2f)}))return;
   let landed=false;
-  if(VER.cur==='CE'&&window.SF2CESPECIALS&&SF2CESPECIALS.step(p,{cam:G.cam,stage:G.stage,rand,random:()=>rand()>>>20,floor:carMode(p)?carLanding:undefined,idle:toidle,anim:setanim,tick:animstep,sound:sfxc,land:q=>sfxc(XS(q)&&0x2f),approachLand:(q,slot)=>{landed=true;q.CEVLAND=7;q.ST=S_FREE;q.KB=q.STUN=0;setanim(q,slot,0);sfxc(0x2f);controls(q,input);},wall:q=>!!(((q.CEWALL||0)|(carMode(q)?q.CARSIDE||0:0))&(q.FACE+1))}))return landed;
+  if(VER.cur==='CE'&&window.SF2CESPECIALS&&SF2CESPECIALS.step(p,{cam:G.cam,stage:G.stage,rand,random:()=>rand()>>>20,floor:carMode(p)?carLanding:undefined,idle:toidle,anim:setanim,tick:animstep,sound:sfxc,land:q=>sfxc(XS(q)&&0x2f),controlRelease:q=>{landed=true;ceVegaControlRelease(q,input);},approachLand:(q,slot)=>{landed=true;q.CEVLAND=7;q.ST=S_FREE;q.KB=q.STUN=0;setanim(q,slot,0);sfxc(0x2f);controls(q,input);},wall:q=>!!(((q.CEWALL||0)|(carMode(q)?q.CARSIDE||0:0))&(q.FACE+1))}))return landed;
   if(m.kind==='athrow'){const o=p.opp,v=p.THV; p.Y=Math.max(0,p.Y-0x300); if(v){o.X=p.X-v.d*(24<<8);o.Y=p.Y;o.STUN=999;}
     if(p.Y===0&&(p.adone||++p.SCNT>40)){if(p.THV)relth(p);toidle(p);sfxc(XS(p)&&0x2f);} return;}
   if(m.kind==='dive'){p.X+=p.SVX;p.Y=Math.max(0,p.Y-0x400); if(p.Y===0){toidle(p);sfxc(XS(p)&&0x2f);} return;}
@@ -528,7 +539,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
   if((VER.cur==='CE'?(d.Y>>8)!==0:d.Y!==0)||kd){fallst(d,S_DOWN,dir);if(VER.cur==='CE'&&(d.Y>>8)===0&&d.opp.cur===AN_CLP+5)d.FALLW=4;return;} /* CE sweeps: victim leaves the ground 4f later than WW (ROM freeat trace, all 12 fighters 3-5f) */
   const c=reaction&&typeof reaction.crouching==='boolean'?(reaction.crouching?1:0):d.ST===S_CR?1:0;d.RETCR=c;const body=VER.cur==='CE'&&!c&&region>0?AI(d,'bodyhit'+['L','M','H'][str]):-1,named=reaction?.reactionName?AI(d,reaction.reactionName):-1;
   setanim(d,named>=0?named:body>=0?body:(c?AN_CHITL:AN_HITL)+str,0);d.ST=S_HIT;d.KB=dir*PUSHKB[str];d.STUN=HSTUN[str];}
-function fallst(d,s,dir){if(VER.cur==='CE'){if(d.CES?.kind==='vegawall'){d.CES=null;d.MV=null;}delete d.CEVLAND;delete d.CER;delete d.CERSTOP;delete d.CEGUARD;delete d.CESHAKE;delete d.CERHOSTTICK;delete d.CERRESUME;}d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});}
+function fallst(d,s,dir){if(VER.cur==='CE'){if(d.CES?.kind==='vegawall'||d.CES?.kind==='vegaflip'){d.CES=null;d.MV=null;}delete d.CEVLAND;delete d.CER;delete d.CERSTOP;delete d.CEGUARD;delete d.CESHAKE;delete d.CERHOSTTICK;delete d.CERRESUME;}d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});}
 // ---- projectile ----
 /* M13e: Guile sonic boom / Dhalsim yoga fire spawn tick, total recovery and spawn offset, measured on the arcade */
 /* CE ROM (tools fb3.meas): [spawn frame, back-to-neutral frame per LP/MP/HP] counted from the press, Ryu/Ken/Sagat */
@@ -799,7 +810,7 @@ function step0(net){
   if(aiEnabled()&&AICFG.prototype&&AICFG.training&&AICFG.dummy!=='cpu'){P[1].FORCE=0;P[1].KEYS=AICFG.dummy==='block'&&(P[0].ST===S_ATK||P[0].ST===S_SPEC||P[0].FBON)?(P[0].X<P[1].X?K_R:K_L):0;}
   if(aiEnabled()&&G.gph===1)P.forEach(aiInput);
   if(G.gph!==1){P[0].KEYS=P[1].KEYS=0;P[1].FORCE=0;}
-  if(G.hfz>0){G.hfz--;for(const q of P){const n=q.KEYS&~(q.HZK||0);q.HZK=q.KEYS;if(n&0x70)q.MQP.push(G.tick);if(n&0x380)q.MQK.push(G.tick);} /* mash taps made during hitstop still count (ROM keeps counting presses) */P[0].PREV=P[0].KEYS&P[0].PREV;P[1].PREV=P[1].KEYS&P[1].PREV;G.fr=false;camera();return;}
+  if(G.hfz>0){G.hfz--;for(const q of P){if(VER.cur==='CE')window.SF2CEVEGA?.inputFrozen(q,q.KEYS);const n=q.KEYS&~(q.HZK||0);q.HZK=q.KEYS;if(n&0x70)q.MQP.push(G.tick);if(n&0x380)q.MQK.push(G.tick);} /* mash taps made during hitstop still count (ROM keeps counting presses) */P[0].PREV=P[0].KEYS&P[0].PREV;P[1].PREV=P[1].KEYS&P[1].PREV;G.fr=false;camera();return;}
   if(VER.cur==='CE'){if(window.SF2CETHROWS?.preCamera)P.forEach(p=>SF2CETHROWS.preCamera(p,cethooks()));camera();}
   if(VER.cur==='CE')window.SF2CEPROJECTILES?.stepEffects({tick:G.tick});
   update(P[0]);update(P[1]);if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));fbmove(P[0]);fbmove(P[1]);fbclash();push();

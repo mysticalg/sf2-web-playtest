@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.93",
-  "commit": "a418b7f299ed89bb25d925238c6628cc579177af",
-  "builtAt": "2026-11-16T03:26:56.373472+00:00",
+  "version": "0.1.94",
+  "commit": "4230e84d7376cec063e6cc603639d961c6340262",
+  "builtAt": "2026-11-16T04:23:14.662427+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 6140,
-      "sha256": "a5db289f6e20048f4e4adb55114c3b34b4ae9aac334b14f7d7075a627e4dd900"
+      "sha256": "2b3abbc3a24e6c4d5d698f68a3f771479636fa0ddebba28e8d3bc95a19711590"
     },
     {
       "file": "game.js",
-      "bytes": 150867,
-      "sha256": "470286976f977058feff9760a41547723a804d78ca05de653935b296b4936918"
+      "bytes": 151846,
+      "sha256": "89519f8be53911abe621e30762376b5f68dfb4c2d9516b10733fd53c6291b998"
     },
     {
       "file": "assets.js",
@@ -21,8 +21,8 @@
     },
     {
       "file": "assets_ce.js",
-      "bytes": 8679043,
-      "sha256": "e2d527f58450052f3b039ce905ec4b46c03829dd8a0824499f1463b192bb1750"
+      "bytes": 8712115,
+      "sha256": "b163a57ba4f8c4d52d5a2b29c3427dd6ee9beed2fdb35d7d509f0f25308ca54a"
     },
     {
       "file": "sound.js",
@@ -252,7 +252,7 @@
     {
       "file": "lobby.html",
       "bytes": 3572,
-      "sha256": "8a0c70c83b257c9844ac33f33c162e00821dc6ff43801368b04032c8f2dccc87"
+      "sha256": "ec98db61a2eb7ce5201b7ff4ef8f25517da99c036a85fd87a4a579b15ae78de9"
     },
     {
       "file": "lobby.css",
@@ -267,7 +267,7 @@
     {
       "file": "history.html",
       "bytes": 1336,
-      "sha256": "3e665eb6b61149b9f3f28dbe89b51c113c736d68d1f098b741f86fd1d04e7e8f"
+      "sha256": "1c08f84f924fea744a7bd1ed1d94538a9a0e5198a089c654277d04418cb87114"
     },
     {
       "file": "history.js",
@@ -301,13 +301,13 @@
     },
     {
       "file": "ce_vega.js",
-      "bytes": 17988,
-      "sha256": "faae5703bab5419d31d71b297da3a43b2cb7281fad36b99541649cfc207e0ebd"
+      "bytes": 19939,
+      "sha256": "2b47ca1f30f231326f6240f9ef0ab34c4bba9bece9336a8305fab9e5e80da824"
     },
     {
       "file": "vega_claw_ce.js",
-      "bytes": 65091,
-      "sha256": "845a6f2f372dcb9af95c6cb99947dcf03adef33edef9828c829a152be8a60b27"
+      "bytes": 65913,
+      "sha256": "3aa49c59ce7330fbe7e25c4ac5941a7caa973731817e2630978804bc080254f0"
     },
     {
       "file": "ce_vega_claw.js",

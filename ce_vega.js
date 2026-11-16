@@ -1,4 +1,4 @@
-/* CE Vega: original 0x45bd8 crouching HK and 0x45cee Crystal Flash.
+/* CE Vega: original crouching HK, Crystal Flash, Barcelona and double-back evasion.
    8.8 motion uses 0x2346: subtract acceleration, then add velocity.
    Original animation flags, rather than guessed timers, release each phase. */
 'use strict';
@@ -24,7 +24,27 @@
   const c=combatState(p),a=attackRecord(p);if(!c||!a)return null;c.hitGroup=a[5];
   return {...combatRecord(p,d,region,random,a),kd:p.ST===1?a[7]:0};
  }
- function invulnerable(p){return p.CETH?.kind==='vegaizuna'||p.CETHV?.kind==='held'&&p.opp.CETH?.kind==='vegaizuna'||p.fid===11&&p.ST===11&&p.CES?.kind==='vegawall'&&p.CES.invulnerable===true;}
+ function invulnerable(p){return p.CETH?.kind==='vegaizuna'||p.CETHV?.kind==='held'&&p.opp.CETH?.kind==='vegaizuna'||p.fid===11&&p.ST===11&&(p.CES?.kind==='vegawall'&&p.CES.invulnerable===true||p.CES?.kind==='vegaflip'&&p.aidx<7);}
+ function input(p,dir,blocked=false){
+  if(p.fid!==11)return null;
+  const c=p.CEVBB||(p.CEVBB={phase:0,time:0,previous:0}),edge=dir&~c.previous;c.previous=dir;
+  // Native0x4577a: back edge, then another within20 ticks; a forward edge cancels.
+  if(!c.phase){if(edge&2){c.phase=1;c.time=20;}return null;}
+  if(--c.time===0||edge&1){c.phase=0;return null;}
+  if(edge&2){c.phase=0;return !blocked&&[0,3,4].includes(p.ST)?['bb','',0]:null;}return null;
+ }
+ function flip(p,c,h){
+  if(c.sound){h.sound?.(c.sound);c.sound=0;} // Native sound latch consumes the queued command next tick.
+  const sound=code=>{c.sound=code;},tick=()=>h.tick(p),flags=()=>p.anim.flags[p.aidx],move=()=>{c.vy-=c.ay;p.X+=c.vx;p.Y+=c.vy;},floor=()=>h.floor?h.floor(p):(p.Y>>8)<0;
+  if(c.phase===0){tick();if(!(flags()&255)){c.phase=1;sound(0x27);}else{p.acc--;return true;}}
+  if(c.phase===1){tick();if(flags()&255)c.phase=2;move();if(p.Y<0)p.Y&=255;}
+  else if(c.phase===2){move();if(floor()){p.Y&=255;c.vy=0;c.phase=3;sound(0x2f);}}
+  else if(c.phase===3){tick();if((flags()&255)===2){c.phase=4;c.vy=0x500;c.time=10;}}
+  else if(c.phase===4){if(--c.time===0)sound(0x27);move();if(floor()){p.Y&=255;c.phase=5;p.acc=p.anim.ents[p.aidx][1]-1;tick();sound(0x2f);}else if(p.aidx===5||!(flags()&255))tick();}
+  else if(c.phase===5){if(flags()&0x8000){p.CES=null;p.MV=null;if(h.controlRelease)h.controlRelease(p);else{const y=p.Y;h.idle(p);p.Y=y;}return true;}tick();}
+  // The native controller owns animation clocks, including frozen airborne poses.
+  p.acc--;return true;
+ }
  function normal(p,h){
   if(p.fid!==11)return;
   let c=p.CEVSL;
@@ -165,9 +185,12 @@
    o.X+=correction;p.X+=correction;if(c.fresh){c.fresh=0;return;}const name=h.find(o,'thpose'+row[3]);h.anim(o,name>=0?name:h.find(o,'thpose0'),name>=0?0:row[3]);
   }
  };
- window.SF2CEVEGA={normal,reprobe,combat,combatRecord,invulnerable};
+ window.SF2CEVEGA={normal,reprobe,combat,combatRecord,invulnerable,input,inputFrozen(p,keys){const lr=keys&3;return input(p,(keys&12)|(p.FACE?((lr>>1)&1)|((lr&1)<<1):lr),true);}};
  window.SF2CESPECIALS={
   init(p,m,h){
+   if(p.fid===11&&m.inp==='bb'){
+    p.SPK=p.SPKD=0;p.CES={kind:'vegaflip',move:m,phase:0,vx:p.FACE?-0x300:0x300,vy:0xa00,ay:0xa0};h.anim(p,h.find(p,'vegaflip'),0);return true;
+   }
    if(p.fid===11&&m.inp==='cdu'&&m.btn==='K'){
     const slot=h.find(p,h.stage===11?'vegawall0':'vegawall12');if(slot<0)return prior.init(p,m,h);
     const names=[...Array.from({length:13},(_,i)=>'vegawall'+i),'vegawallcontact','biteland','jumpb'];
@@ -180,7 +203,7 @@
    h.anim(p,slot,0);return true;
   },
   step(p,h){
-   const c=p.CES;if(c?.kind==='vegawall')return wall(p,c,h);
+   const c=p.CES;if(c?.kind==='vegaflip'&&p.MV===c.move)return flip(p,c,h);if(c?.kind==='vegawall')return wall(p,c,h);
    if(!c||c.kind!=='vegaroll')return prior.step(p,h);
    if(p.MV!==c.move){p.CES=null;return prior.step(p,h);}
    const flags=p.anim.flags[p.aidx];
