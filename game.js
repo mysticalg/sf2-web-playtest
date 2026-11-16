@@ -680,7 +680,7 @@ function ceEndRound(m,preActors){
 function ceRoundPhase(){const s=G.CERound;G.gt++;
  if(s.done){ceFinishRound();return;}
  const allReady=P.every(p=>p.CEWin?.ready||p.CEKO?.ready||(!hpAlive(p)&&!p.CETHV&&p.ST===S_KO&&p.cur===AN_FALL+1&&p.adone));
- const h={banner:()=>{G.bann=s.draw?(s.ko?'DOUBLE K.O.':'DRAW GAME'):aiName(P[s.winner]).toUpperCase()+' WIN';},announce:()=>{G.ann=SF2CEANNOUNCER.init(G.mode2p?P[s.winner].fid:s.winner?13:12);},perfect:()=>{G.bann+='  PERFECT';sfxc(0x55);},score:(_,amount)=>{const p=P[s.winner];p.SCORE=Math.min(9999999,(p.SCORE||0)+amount);}};
+ const h={clock:G.tick-1,sound:sfxc,banner:()=>{G.bann=s.draw?(s.ko?'DOUBLE K.O.':'DRAW GAME'):aiName(P[s.winner]).toUpperCase()+' WIN';},announce:()=>{G.ann=SF2CEANNOUNCER.init(G.mode2p?P[s.winner].fid:s.winner?13:12);},perfect:()=>{G.bann+='  PERFECT';sfxc(0x55);},score:(_,amount)=>{const p=P[s.winner];p.SCORE=Math.min(9999999,(p.SCORE||0)+amount);}};
  SF2CEROUND.bonusStep(s,h);SF2CEROUND.uiStep(s,allReady,h);
 }
 function ceFinishRound(){
@@ -832,7 +832,13 @@ function pauseRender(){
 }
 
 // ---- one 60Hz step ----
-function step(net){step0(net);if(VER.cur==='CE'&&G.scene==='fight'){window.SF2CESTAGESCROLL?.advance(G.stage,ceStageClock());window.SF2CESTAGEANIMATIONS?.advanceNative(G.stage,G.cam,ceStageClock(),{main:SF2CECAMERA.state.main,far:SF2CECAMERA.state.far>>16});}if(VER.cur==='CE'&&G.scene==='fight'&&G.stage===5)window.SF2CESTAGECYCLISTS?.advance(ceStageClock(),G.cam);if(aiEnabled()){for(const p of P)if(p.AICombo?.active&&![S_HIT,S_DOWN,S_GETUP,S_KO].includes(p.opp.ST)&&G.hfz===0)aiBreakCombo(p);}if(!net)tapped.clear();}
+function step(net){
+  const result=VER.edition==='ce'&&G.scene==='fight'&&G.gph===2&&G.CERound?.ui&&!G.fade&&!CONTROL.paused;
+  const keys=result?(net?net[0]|net[1]:rk(P1K)|rk(P2K)|pads().reduce((k,p)=>k|p.k,0)|externalKey(0)|externalKey(1)):0;
+  const count=result&&(keys&K_ATK)?3:1;
+  for(let i=0;i<count;i++){stepOnce(net);if(count>1&&(G.scene!=='fight'||G.gph!==2||G.fade))break;}
+}
+function stepOnce(net){step0(net);if(VER.cur==='CE'&&G.scene==='fight'){window.SF2CESTAGESCROLL?.advance(G.stage,ceStageClock());window.SF2CESTAGEANIMATIONS?.advanceNative(G.stage,G.cam,ceStageClock(),{main:SF2CECAMERA.state.main,far:SF2CECAMERA.state.far>>16});}if(VER.cur==='CE'&&G.scene==='fight'&&G.stage===5)window.SF2CESTAGECYCLISTS?.advance(ceStageClock(),G.cam);if(aiEnabled()){for(const p of P)if(p.AICombo?.active&&![S_HIT,S_DOWN,S_GETUP,S_KO].includes(p.opp.ST)&&G.hfz===0)aiBreakCombo(p);}if(!net)tapped.clear();}
 function step0(net){
   const pd=net?[{k:net[0],g:0},{k:net[1],g:0}]:pads();
   if(!net&&CONTROL.resumeGate){const blocked=pd.some(p=>p.menu);for(const p of pd)p.k=0;if(!blocked)CONTROL.resumeGate=false;}
@@ -1058,6 +1064,8 @@ function render(){renderGame();if(CONTROL.paused)pauseRender();if(window.SF2Grap
 const SN_HIT=[16,18,11],SN_BLOCK=29,SN_WHIFF=4,SN_KO=77,SN_ROUND=53,SN_NUM=54,SN_FIGHT=44;
 const VOICE={0:[72,73,74],4:[72,73,74],3:[71,0,0],7:[69,70,0]};
 let AC=null,MG=null,muted=false;const SB={};
+let sfxOverlap=true;try{sfxOverlap=localStorage.getItem('sf2:sfx-overlap:v1')!=='0';}catch{}const soundStats={voices:0,pending:0,delivered:0};
+function setSfxOverlap(on){sfxOverlap=!!on;try{localStorage.setItem('sf2:sfx-overlap:v1',sfxOverlap?'1':'0');}catch{}if(SN)SN.port.postMessage({overlap:sfxOverlap});const input=document.getElementById('sfx-overlap');if(input)input.checked=sfxOverlap;return sfxOverlap;}
 function okiDecode(r,s,t){const o=new Float32Array((t-s+1)*2);let sig=-2,si=0,k=0;
   for(let a=s;a<=t;a++)for(const nib of [r[a]>>4,r[a]&15]){const ss=OKISTEP[si],diff=(ss*((nib&7)*2+1))>>3;
     sig=nib&8?sig-diff:sig+diff;sig=Math.max(-2048,Math.min(2047,sig));si=Math.max(0,Math.min(48,si+OKIADJ[nib&7]));o[k++]=sig/2048;}return o;}
@@ -1074,11 +1082,11 @@ const b64=s=>{const b=atob(s),r=new Uint8Array(b.length);for(let i=0;i<b.length;
 function curz80(){return (VER.cur==='CE'&&VER.ce&&VER.ce.z80)||SF2SND.z80;}
 let MUSZ=null; // which Z80 program the worklet runs; switching version restarts it with that version's sound program
 function musver(){if(!SN||MUSZ===curz80())return;try{SN.disconnect();}catch(e){}SN=null;const m=MUS;MUS=-1;SNQ=m>=0?[{c:m}]:[];musInit();}
-function musOpts(oki,init){MUSZ=curz80();return {wasm:b64(SF2MUS.wasm),z80:b64(MUSZ),oki:oki||b64(SF2SND.oki),init:init||[]};}
+function musOpts(oki,init){MUSZ=curz80();return {wasm:b64(SF2MUS.wasm),z80:b64(MUSZ),oki:oki||b64(SF2SND.oki),init:init||[],overlap:sfxOverlap};}
 function musInit(oki){if(!window.SF2MUS||!SF2SND.z80||!AC.audioWorklet)return;
   AC.audioWorklet.addModule('data:text/javascript,'+encodeURIComponent(SF2MUS.proc)).then(()=>{
     const n=new AudioWorkletNode(AC,'sf2snd',{numberOfInputs:0,outputChannelCount:[1],processorOptions:musOpts(oki,SNQ.filter(m=>m.c!==undefined).map(m=>m.c))});
-    n.port.onmessage=e=>{if(e.data.rms!==undefined){LVL.push([MUS,e.data.rms]);if(LVL.length>400)LVL.shift();}};
+    n.port.onmessage=e=>{if(e.data.rms!==undefined){soundStats.voices=e.data.voices||0;soundStats.pending=e.data.pending||0;soundStats.delivered=e.data.delivered||0;LVL.push([MUS,e.data.rms]);if(LVL.length>400)LVL.shift();}};
     n.connect(MG);SN=n;SNQ=[];}).catch(e=>console.log('music off: '+e));}
 // stage themes indexed by fid (= stage); scene jingles. Codes logged from the 68000's writes to the sound latch (0x800181).
 const STM=[0x01,0x02,0x03,0x05,0x04,0x06,0x07,0x08,0x0c,0x0b,0x09,0x0a];
@@ -1259,7 +1267,8 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 let last=performance.now(),accum=0;
 const FRMS=1000/59.637;  /* CPS1 vertical refresh (59.637Hz), the arcade game speed */
 function loop(now){if(window.SF2.freeze){last=now;requestAnimationFrame(loop);return;}accum+=Math.min(250,now-last);last=now;while(accum>=FRMS){step();accum-=FRMS;}render();requestAnimationFrame(loop);}
-window.SF2={health:{alive:hpAlive,damage:hpDamage},VER,setEdition,get edition(){return VER.edition;},get paused(){return CONTROL.paused;},clearInput:clearinput,boxw,setver,get FIA(){return FIA},get FI(){return FI},get IDEL(){return IDEL},set IDEL(v){IDEL=v;IQ.length=0},music,LVL,musOpts,MUSC,STM,get SN(){return SN},D,G,P,startfight,step,render,resetmatch,down,pads,snd,audioInit,SB,startarcade,matchend,bonusinit,get RK(){return RK},get cmdlog(){return G.cmdlog}};
+window.SF2={health:{alive:hpAlive,damage:hpDamage},VER,setEdition,get edition(){return VER.edition;},get paused(){return CONTROL.paused;},clearInput:clearinput,boxw,setver,get FIA(){return FIA},get FI(){return FI},get IDEL(){return IDEL},set IDEL(v){IDEL=v;IQ.length=0},music,LVL,musOpts,MUSC,STM,get SN(){return SN},D,G,P,startfight,step,render,resetmatch,down,pads,snd,audioInit,SB,startarcade,matchend,bonusinit,get RK(){return RK},get cmdlog(){return G.cmdlog},setSfxOverlap,get sfxOverlap(){return sfxOverlap},soundStats};
+const overlapControl=document.getElementById('sfx-overlap');if(overlapControl){overlapControl.checked=sfxOverlap;overlapControl.addEventListener('change',()=>setSfxOverlap(overlapControl.checked));}
 window.SF2CESTAGEANIMATIONS?.setSound(sfxc);
 // Online versus uses frame-numbered inputs supplied by the lobby's paired relay.
 // Audio/rendering remain local; focus loss releases physical input without rewriting simulation state.

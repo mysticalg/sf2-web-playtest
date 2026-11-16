@@ -80,7 +80,7 @@
       if(match!==current)return;
       S.net.begin({seed:message.seed,version:message.settings.version,time:message.settings.time,bot:message.bot});
       const doc=ui.frame.contentDocument,lines=doc.querySelectorAll('body > div'),label=doc.getElementById('build-version')?.textContent||'Local development';
-      if(lines[0])lines[0].textContent='Online controls: arrows + A S D (punch) Z X C (kick) · Enter confirms · F fullscreen · M mute';
+      const overlap=doc.getElementById('sfx-overlap')?.closest('label');if(lines[0]){lines[0].textContent='Online controls: arrows + A S D (punch) Z X C (kick) · Enter confirms · F fullscreen · M mute';if(overlap)lines[0].append(' · ',overlap);}
       if(lines[1])lines[1].textContent=label+' · Esc returns to the lobby';
       current.game=S;if(message.started)S.net.replaying=true;else{ui.frame.style.visibility='visible';ui.frame.setAttribute('aria-busy','false');}
       ui.frame.contentWindow.addEventListener('keydown',event=>{if(event.code==='Escape'){event.preventDefault();exitMatch();}});

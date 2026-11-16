@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.107",
-  "commit": "6c197302d95631645952c072cf405f338b3540d2",
-  "builtAt": "2026-11-16T15:29:35.570423+00:00",
+  "version": "0.1.108",
+  "commit": "fe5926c77accffd1fa92b5acedb9a37d213f6cb7",
+  "builtAt": "2026-11-16T17:01:46.437586+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 7425,
-      "sha256": "04031d6aa9ea6a189da9a06b2e16092a26fef7efacb247166fe2a5b14959ffc4"
+      "bytes": 7553,
+      "sha256": "4a630e4402a3a337922f15e08f9607f564538b6557b7aca571e533ec6f9e823f"
     },
     {
       "file": "game.js",
-      "bytes": 163643,
-      "sha256": "de827cdb2c1dd0285f8f0ec77f0468639aac1f5aa307f97e757536eef772a546"
+      "bytes": 166242,
+      "sha256": "12008793d140cb9b22fc54e82509fb7059c42fafd71ab0ef506c94b9e0e11b0e"
     },
     {
       "file": "assets.js",
@@ -31,8 +31,8 @@
     },
     {
       "file": "music.js",
-      "bytes": 88090,
-      "sha256": "8d237f087a332f5bde3a5efaa5cd37b9624ab67f8a71c8174f7729ac84c81f06"
+      "bytes": 94097,
+      "sha256": "b7aa059445fb9f40310ba35804c4e93f1f5be5ab5fd1d92a111a77ccb97a81e2"
     },
     {
       "file": "font.js",
@@ -301,8 +301,8 @@
     },
     {
       "file": "ce_round.js",
-      "bytes": 6254,
-      "sha256": "73e450f9cf713fac05c18b83e0c6e3ec95edbb00defb3378b5781ea005de9f03"
+      "bytes": 6411,
+      "sha256": "600276cf9d8702f58ff753289cfb7f47fe1960153094208f82222c81c3b6c1bd"
     },
     {
       "file": "ce_announcer.js",
@@ -327,7 +327,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "679544c1c154e5edffb20872e65582338a7e4601894f53c8965669995378b3b2"
+      "sha256": "44efb39a7b39cc9d2e2cf245c81c7b1a237b9ce27900d1d294c0a0caab13b809"
     },
     {
       "file": "lobby.css",
@@ -336,13 +336,13 @@
     },
     {
       "file": "netplay.js",
-      "bytes": 21926,
-      "sha256": "aee3a0068d0925721662a9b8516045624e07f98d2e6394848e180916ab0953a1"
+      "bytes": 22224,
+      "sha256": "ade7902357767d552e32bcc8e0362b3a0a1c31c64eefe45fe09c862fb5205b54"
     },
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "35cdfcdc02e21d2f203f4b712055381bf64decc23df6534071065b13f2c3ed53"
+      "sha256": "1c0e19a747e4557cda9441bb76e42e9604801153de2d18f1278eb3baa297c88d"
     },
     {
       "file": "history.js",

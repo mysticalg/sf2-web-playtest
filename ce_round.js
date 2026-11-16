@@ -58,7 +58,7 @@
   // Original actor order: time, total, vitality. Allocator-dependent UI sampling stays visible in fixtures.
   for(const a of s.bonus.slice().sort((a,b)=>[0,2,1][a.kind>>1]-[0,2,1][b.kind>>1])){
    if(a.fresh){a.fresh=false;if(a.kind!==4){if(a.left)s.bonusMask|=1<<(a.kind>>1);if(a.kind===2&&s.vitality>=300)h.perfect(s);}continue;}
-   if(a.kind===4){s.counting=true;continue;}
+   if(a.kind===4){s.counting=true;if(s.total&&(h.clock&3)===0&&a.seenTotal!==s.total){a.seenTotal=s.total;h.sound?.(0x24);}continue;}
    if(!s.counting)continue;
    if(a.left){a.left--;s.total++;h.score(s,100);}else s.bonusMask&=~(1<<(a.kind>>1));
   }
