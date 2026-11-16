@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.89",
-  "commit": "918993c81c68d01c47af0aca218a496113883e4d",
-  "builtAt": "2026-11-16T01:03:11.884320+00:00",
+  "version": "0.1.90",
+  "commit": "2acc0dc89c578caabf4db061691e7485c5d6994f",
+  "builtAt": "2026-11-16T02:26:52.037227+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 5963,
-      "sha256": "828fc23d55e493a4d389ea48bd2fe4eacbed0d713a695df9cf0ac1e9518abbba"
+      "sha256": "1a57c6aacc2d401a38c88140c7b6535bd44979277d481d73893f5deea4c62c4a"
     },
     {
       "file": "game.js",
-      "bytes": 149071,
-      "sha256": "361e8e86aac40b4c5dbfa64364b1ba12b2e078b832bcd42ddf3be76b35381e1d"
+      "bytes": 150084,
+      "sha256": "35f2ad25bcf9111e3083b42e2d65a57ba5562d4afdc172174a28947edd628091"
     },
     {
       "file": "assets.js",
@@ -96,8 +96,8 @@
     },
     {
       "file": "ce_reactions.js",
-      "bytes": 8940,
-      "sha256": "f98f224073284efde9453b547fbb24587e3c4efe8c0fe5746d0f56a0254cfaeb"
+      "bytes": 8945,
+      "sha256": "4b87b96072c38de1e203cd082eab67cde70c5d84706ea76e11851cf2abf4ce8b"
     },
     {
       "file": "victory_ce.js",
@@ -242,7 +242,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "c3d15433bc96b42a62c8820645e8adbc139aa209bcdf926d1b54703c7fb9bc1f"
+      "sha256": "f584b327955eeaeebe4f34313079abfb4e25514d13735f394d40613d737c9799"
     },
     {
       "file": "lobby.css",
@@ -281,8 +281,8 @@
     },
     {
       "file": "ce_vega.js",
-      "bytes": 17540,
-      "sha256": "ab418b75584f4338218626c3f951de38a50b8359a45c0ef05a21542147d45aee"
+      "bytes": 17988,
+      "sha256": "faae5703bab5419d31d71b297da3a43b2cb7281fad36b99541649cfc207e0ebd"
     },
     {
       "file": "vega_claw_ce.js",

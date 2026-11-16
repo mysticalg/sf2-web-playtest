@@ -110,6 +110,13 @@
    if(++c.airTime>=30)c.invulnerable=true;
    p.X+=c.vx;p.Y+=c.vy+(c.descend?-c.ay:c.ay);
    if(c.descend)c.ay+=0x40;else{c.ay-=0x40;if(c.ay<0){c.ay=0;c.descend=true;}}
+   //0x45e70..0x45e7a: a scrolling wall can recede beyond this fixed-world
+   // launch. Native0x454 detects the descending floor crossing and tail-jumps
+   //0x37f38 into ordinary landing controls before testing wall acquisition.
+   if(c.descend&&(h.floor?h.floor(p):p.Y<0)){
+    if(!h.floor)p.Y&=255;c.invulnerable=false;p.CES=null;p.MV=null;
+    if(h.approachLand)h.approachLand(p,c.slots.biteland);else{h.idle(p);h.land?.(p);}return true;
+   }
    if(p.Y>=24*256&&p.CEWALL){c.phase=2;c.time=4;set('vegawallcontact');}
    return true;
   }

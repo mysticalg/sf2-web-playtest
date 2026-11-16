@@ -24,7 +24,7 @@
   if(!raw||!Number.isInteger(region)||region<0||region>2)return null;
   const crouch=!!(poseMetadata(d)?.[1]??block?.crouching);
   if(block?.blocked)return crouch?8:6;
-  if(d.Y>0)return null; // native airborne byte181 dispatches another family
+  if((d.Y>>8)>0)return null; // native airborne byte181 dispatches another family
   if(raw[7]===0)return crouch?10:2*region;
   if(raw[7]===1)return 14;
   if(raw[7]===2)return crouch?10:12;
