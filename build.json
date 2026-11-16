@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.90",
-  "commit": "2acc0dc89c578caabf4db061691e7485c5d6994f",
-  "builtAt": "2026-11-16T02:26:52.037227+00:00",
+  "version": "0.1.91",
+  "commit": "190951eded021d7cd4ba78e8011f3eb260fd3e0d",
+  "builtAt": "2026-11-16T02:56:53.105070+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 5963,
-      "sha256": "1a57c6aacc2d401a38c88140c7b6535bd44979277d481d73893f5deea4c62c4a"
+      "bytes": 6140,
+      "sha256": "9d68b686f823ef869b1cf6706c4bed896f1aa59a7c1c00a72a3128dc786135a9"
     },
     {
       "file": "game.js",
-      "bytes": 150084,
-      "sha256": "35f2ad25bcf9111e3083b42e2d65a57ba5562d4afdc172174a28947edd628091"
+      "bytes": 150260,
+      "sha256": "6c59b65420258dc461e5b4c7fdc8efac4ff611485ebbbf9536963597308369ac"
     },
     {
       "file": "assets.js",
@@ -180,6 +180,16 @@
       "sha256": "c22496c5999fc55ed67ef7ef7e44c31383d521e86164d85f1f1cf75624e6ccbf"
     },
     {
+      "file": "ce_stage_dancers_data.js",
+      "bytes": 40564,
+      "sha256": "0ad8ddb921abf2f8708a99c06b95a0e70b7554bf9825e252758c712b387f7484"
+    },
+    {
+      "file": "ce_stage_dancers.js",
+      "bytes": 1213,
+      "sha256": "4b2e4c9776e5e5fa460e799a14815247bd9ca307d9300c87bcdafc383a6257d1"
+    },
+    {
       "file": "ce_stage_palettes_data.js",
       "bytes": 253802,
       "sha256": "8e65ce4ed7322e1af59d349d9da8c7fe54a5f57c8d2c5648778e72ff2cdaab78"
@@ -242,7 +252,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "f584b327955eeaeebe4f34313079abfb4e25514d13735f394d40613d737c9799"
+      "sha256": "a16e9f289fcd4f477de46b0293fb7af18485f623f499a57cead4b9d822b61a77"
     },
     {
       "file": "lobby.css",
