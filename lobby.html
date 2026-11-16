@@ -1,52 +1,37 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <link rel="icon" href="data:,">
-  <title>Street Fighter II — online versus</title>
-  <script>window.SF2BUILD={"version":"0.1.105","commit":"6bc7c66a34ff7724b83178e56a2500c8e298673d","builtAt":"2026-11-16T13:20:51.450305+00:00"};</script>
-  <link rel="stylesheet" href="lobby.css?v=6bc7c66a34ff7724b83178e56a2500c8e298673d">
-  <script src="netplay.js?v=6bc7c66a34ff7724b83178e56a2500c8e298673d" defer></script>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="icon" href="data:,">
+  <title>Street Fighter II — online room</title>
+  <script>window.SF2BUILD={"version":"0.1.106","commit":"2495cb82b9265d55d06b54ba6a2efd81c78ae8b5","builtAt":"2026-11-16T13:45:14.659618+00:00"};</script>
+  <link rel="stylesheet" href="lobby.css?v=2495cb82b9265d55d06b54ba6a2efd81c78ae8b5"><script src="netplay.js?v=2495cb82b9265d55d06b54ba6a2efd81c78ae8b5" defer></script>
 </head>
 <body>
-  <header>
-    <div><a class="brand" href="index.html">STREET FIGHTER II</a><span class="tag">ONLINE VERSUS · PREVIEW</span></div>
-    <a href="index.html">Single player</a>
-  </header>
+  <header><div><a class="brand" href="index.html">STREET FIGHTER II</a><span class="tag">ONLINE ROOM</span></div><nav aria-label="Game navigation"><a href="index.html">Single player</a><a id="history-link" href="history.html">Full match history</a></nav></header>
   <main>
-    <section id="lobby-panel" class="panel">
-      <h1>Find a challenger</h1>
-      <p>Join the lobby, choose an available player, and invite them to a versus match.</p>
-      <form id="connect-form">
-        <label>Your name<input id="player-name" maxlength="20" autocomplete="nickname" placeholder="Player" required></label>
-        <button id="connect-button" type="submit">Join lobby</button>
-        <button id="disconnect-button" type="button" class="secondary" hidden>Leave lobby</button>
-      </form>
-      <details id="connection-settings">
-        <summary>Connection settings</summary>
-        <label>Online server<input id="server-url" type="url" placeholder="wss://…" spellcheck="false" autocomplete="off"></label>
-        <p class="small">A live multiplayer server is required. The lobby never invents an online count.</p>
-      </details>
-      <p id="connection-status" class="status" role="status" aria-live="polite">Connecting information…</p>
-      <div class="lobby-heading"><h2>Players <span id="online-count">—</span></h2>
-        <label class="compact">Game<select id="game-version"><option value="CE">Champion Edition</option><option value="WW">World Warrior</option></select></label>
+    <section id="lobby-panel" class="lobby-shell">
+      <div class="entry-bar">
+        <div class="entry-title"><h1>Find a challenger</h1><p>Watch the room. Join when you’re ready.</p></div>
+        <form id="connect-form"><label>Your name<input id="player-name" maxlength="20" autocomplete="nickname" placeholder="e.g. Player1" required></label><button id="connect-button" type="submit">Join lobby</button><button id="disconnect-button" type="button" class="secondary" hidden>Leave lobby</button></form>
+        <div class="guest-note"><strong id="player-identity-label">Guest play available</strong><span>Your record is saved on this browser.</span></div>
       </div>
-      <p><a id="history-link" href="history.html">Match history and player records</a></p>
-      <div id="players" class="players"><p class="empty">Join the lobby to see who is online.</p></div>
-      <h2 class="section-title">Games in progress</h2><div id="active-games" class="players" aria-live="polite"><p class="empty">Join the lobby to see active games.</p></div>
-      <section id="challenge-panel" class="challenge" hidden aria-live="polite">
-        <h2 id="challenge-title">Challenge</h2>
-        <p id="challenge-description"></p>
-        <div class="actions"><button id="accept-challenge" type="button">Accept</button><button id="decline-challenge" type="button" class="secondary">Decline</button><button id="cancel-challenge" type="button" class="secondary">Cancel invitation</button></div>
-      </section>
+      <p id="connection-status" class="status" role="status" aria-live="polite">Opening the live room…</p>
+      <section id="challenge-panel" class="challenge" hidden aria-live="polite"><div><h2 id="challenge-title">Challenge</h2><p id="challenge-description"></p></div><div class="actions"><button id="accept-challenge" type="button">Accept</button><button id="decline-challenge" type="button" class="secondary">Decline</button><button id="cancel-challenge" type="button" class="secondary">Cancel invitation</button></div></section>
+      <div class="room-grid">
+        <div class="room-main">
+          <section class="room-section roster-section" aria-labelledby="players-heading">
+            <div class="lobby-heading"><div class="heading-count"><h2 id="players-heading">Players</h2><span id="online-count">Connecting…</span></div><label class="compact"><span class="sr-only">Game</span><select id="game-version"><option value="CE">Champion Edition</option><option value="WW">World Warrior</option></select></label></div>
+            <p id="roster-help" class="roster-help">Join to challenge. You can browse the room without joining.</p>
+            <div class="roster-columns" aria-hidden="true"><span>Player</span><span>Record</span><span>Status</span><span>Action</span></div>
+            <div id="players" class="players" role="list" aria-label="Lobby players"><p class="empty">Loading the real player list…</p></div>
+          </section>
+          <section class="room-section games-section" aria-labelledby="games-heading"><div class="lobby-heading"><h2 id="games-heading">Games in progress</h2></div><div id="active-games" class="players" aria-live="polite"><p class="empty">Loading active games…</p></div></section>
+        </div>
+        <aside class="room-section results-section" aria-labelledby="results-heading"><div class="lobby-heading"><h2 id="results-heading">Recent results</h2></div><div id="recent-results" aria-live="polite"><p class="empty">Loading recorded results…</p></div><a id="recent-history-link" class="all-history" href="history.html">View all match history</a></aside>
+      </div>
+      <div class="room-bottom"><details id="connection-settings"><summary>Connection settings</summary><label>Online server<input id="server-url" type="url" placeholder="wss://…" spellcheck="false" autocomplete="off"></label></details><p>Keyboard · gamepad · touch</p></div>
     </section>
-    <section id="match-panel" hidden>
-      <div class="match-heading"><p id="match-status" role="status" aria-live="polite">Preparing match…</p><button id="leave-match" class="secondary" type="button">Return to lobby</button></div>
-      <iframe id="game-frame" title="Synchronized Street Fighter II versus match" allow="autoplay; fullscreen; gamepad" src="about:blank"></iframe>
-      <p class="small controls">Both players use arrows + A S D / Z X C, or their first gamepad. Enter confirms. Escape leaves the match. Fixed-delay synchronization pauses if either connection falls behind.</p>
-    </section>
+    <section id="match-panel" hidden><div class="match-heading"><p id="match-status" role="status" aria-live="polite">Preparing match…</p><button id="leave-match" class="secondary" type="button">Return to lobby</button></div><iframe id="game-frame" title="Synchronized Street Fighter II versus match" allow="autoplay; fullscreen; gamepad" src="about:blank"></iframe><p class="small controls">Arrows + A S D / Z X C, or your first gamepad. Enter confirms. Escape leaves the match. The match pauses while either connection recovers.</p></section>
   </main>
-  <footer><span id="build-version">Local development</span> · Online versus is in active development.</footer>
-</body>
-</html>
+  <footer><span id="build-version">Local development</span> · Online versus preview</footer>
+</body></html>

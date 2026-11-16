@@ -5,6 +5,7 @@
   const $=id=>document.getElementById(id), FRAME_MS=1000/59.637;
   const ui={form:$('connect-form'),name:$('player-name'),server:$('server-url'),join:$('connect-button'),leave:$('disconnect-button'),status:$('connection-status'),players:$('players'),count:$('online-count'),challenge:$('challenge-panel'),challengeTitle:$('challenge-title'),challengeText:$('challenge-description'),accept:$('accept-challenge'),decline:$('decline-challenge'),cancel:$('cancel-challenge'),lobby:$('lobby-panel'),match:$('match-panel'),frame:$('game-frame'),matchStatus:$('match-status'),back:$('leave-match'),version:$('game-version')};
   let reconnectTimer=0,retry=0,explicitLeave=false,loadSerial=0;
+  let recentTimer=0;
   let socket=null,self=null,players=[],challenge=null,match=null,build=null,raf=0,heartbeat=0;
   const saved=key=>{try{return localStorage.getItem(key)||'';}catch{return '';}};
   const save=(key,value)=>{try{localStorage.setItem(key,value);}catch{}};
@@ -14,22 +15,38 @@
   ui.name.value=saved('sf2-online-name');
   ui.server.value=params.get('server')||window.SF2NET_ENDPOINT||saved('sf2-online-server')||'wss://www.id-recordings.com/sf2-ws';
   const send=message=>{if(socket&&socket.readyState===WebSocket.OPEN){socket.send(JSON.stringify(message));return true;}return false;};
-  function status(text,error=false){ui.status.textContent=text;ui.status.className='status'+(error?' error':self?' connected':'');}
+  function status(text,error=false){ui.status.textContent=text;ui.status.className='status'+(error?' error':self?' connected':socket?.readyState===WebSocket.OPEN?' viewing':'');}
   function renderPlayers(){
-    ui.count.textContent=self?String(players.length):'—';ui.players.replaceChildren();
-    if(!self){const p=document.createElement('p');p.className='empty';p.textContent='Join the lobby to see who is online.';ui.players.append(p);return;}
-    if(players.length===1){const p=document.createElement('p');p.className='empty';p.textContent='You are the first player here. Share this lobby link with a friend.';ui.players.append(p);}
+    ui.count.textContent=players.filter(p=>p.kind==='human'&&p.connected!==false).length+' online · '+players.filter(p=>p.kind==='cpu').length+' CPU';ui.players.replaceChildren();
+    $('roster-help').textContent=self?'Choose an available opponent to send an invitation.':'Join to challenge. You can browse the room without joining.';
+    if(!players.length){const p=document.createElement('p');p.className='empty';p.textContent='Waiting for the live player list…';ui.players.append(p);return;}
     for(const player of players){
-      const row=document.createElement('div');row.className='player';const info=document.createElement('div'),name=document.createElement('a'),state=document.createElement('span');
-      name.className='player-name';name.href='history.html?profile='+encodeURIComponent(player.profileId)+'&server='+encodeURIComponent(ui.server.value);name.textContent=player.name+(player.id===self?' (you)':'');state.className='player-state';
-      const compatible=!player.build||player.build===build.commit;state.textContent=player.connected===false?'Reconnecting…':!compatible?'Different preview build — refresh to play':player.status==='in-match'?'In a match':player.status==='challenged'?'Considering a challenge':'Available';
-      const stats=document.createElement('span');stats.className='player-state';stats.textContent=player.wins+' wins · '+player.losses+' losses · '+player.draws+' draws';info.append(name,state,stats);row.append(info);
-      if(player.id!==self){const button=document.createElement('button');button.type='button';button.textContent='Challenge';button.disabled=!compatible||player.status!=='available'||!!challenge||!!match||players.find(p=>p.id===self)?.status!=='available';
-        button.addEventListener('click',()=>send({type:'challenge',target:player.id,settings:{version:ui.version.value,time:99,delayFrames:4}}));row.append(button);}
+      const row=document.createElement('div');row.className='player';row.setAttribute('role','listitem');const info=document.createElement('div'),name=document.createElement('a'),state=document.createElement('span');info.className='player-info';
+      name.className='player-name';name.href='history.html?profile='+encodeURIComponent(player.profileId)+'&server='+encodeURIComponent(ui.server.value);name.textContent=player.name+(player.id===self?' (you)':'');
+      if(player.kind==='cpu'){const cpu=document.createElement('small');cpu.textContent='CPU';name.append(cpu);}
+      const compatible=!player.build||player.build===build.commit;state.className='player-state'+(player.connected===false?' offline':player.status!=='available'?' busy':'');state.textContent=player.connected===false?'Reconnecting…':!compatible?'Refresh to play':player.status==='in-match'?'In a match':player.status==='challenged'?'Invited':'Available';
+      const stats=document.createElement('span');stats.className='player-record';stats.textContent=player.wins+'W '+player.losses+'L '+player.draws+'D';stats.setAttribute('aria-label',player.wins+' wins, '+player.losses+' losses, '+player.draws+' draws');info.append(name,stats,state);row.append(info);
+      if(player.id!==self){const button=document.createElement('button');button.type='button';button.textContent='Challenge';button.disabled=!self||!compatible||player.status!=='available'||!!challenge||!!match||players.find(p=>p.id===self)?.status!=='available';
+        button.addEventListener('click',()=>self&&send({type:'challenge',target:player.id,settings:{version:ui.version.value,time:99,delayFrames:4}}));row.append(button);}
+      else{const label=document.createElement('span');label.className='player-action';label.textContent='You';row.append(label);}
       ui.players.append(row);
     }
   }
-  function renderActive(games){const root=$('active-games');root.replaceChildren();if(!games.length){const p=document.createElement('p');p.className='empty';p.textContent='No games in progress.';root.append(p);}for(const game of games){const row=document.createElement('div');row.className='player';const p=document.createElement('span');p.textContent=game.participants.map(p=>p.name).join(' vs ');const status=document.createElement('span');status.className='player-state';status.textContent=game.version+' · '+game.phase;row.append(p,status);root.append(row);}}
+  function requestRecent(){clearTimeout(recentTimer);recentTimer=setTimeout(()=>send({type:'history'}),300);}
+  function updateHistoryLinks(){for(const id of ['history-link','recent-history-link'])$(id).href='history.html?server='+encodeURIComponent(ui.server.value);}
+  function renderRecent(games){
+    const root=$('recent-results');root.replaceChildren();const rows=[...new Map(games.map(g=>[g.id,g])).values()].slice(0,6);
+    if(!rows.length){const p=document.createElement('p');p.className='empty';p.textContent='No recorded matches yet.';root.append(p);return;}
+    for(const game of rows){
+      const row=document.createElement('article');row.className='result-row';row.dataset.matchId=game.id;const title=document.createElement('div');title.className='result-title';
+      if(game.status==='complete'&&game.winner>=0){const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');svg.setAttribute('viewBox','0 0 20 20');svg.setAttribute('aria-hidden','true');const path=document.createElementNS('http://www.w3.org/2000/svg','path');path.setAttribute('fill','currentColor');path.setAttribute('d','M2 5 6 9 10 3 14 9 18 5 16 16H4Z');svg.append(path);title.append(svg);}
+      const people=document.createElement('span');game.participants.forEach((person,i)=>{if(i)people.append(' vs ');const a=document.createElement('a');a.textContent=person.name;a.href='history.html?profile='+encodeURIComponent(person.id)+'&server='+encodeURIComponent(ui.server.value);people.append(a);});title.append(people);
+      const fighters=document.createElement('span');fighters.className='result-meta result-fighters';fighters.textContent=game.fighters?.length===2?game.fighters.map(f=>f.name).join(' vs '):'Fighters not recorded';
+      const meta=document.createElement('span');meta.className='result-meta';const minutes=Math.max(0,Math.floor((Date.now()-(game.endedAt||game.createdAt))/60000)),ago=minutes<1?'just now':minutes<60?minutes+'m ago':minutes<1440?Math.floor(minutes/60)+'h ago':Math.floor(minutes/1440)+'d ago';
+      const result=game.status==='complete'?(game.winner===-1?'Draw':game.participants[game.winner]?.name+' won'):game.status==='cancelled'?'Cancelled':'No result';meta.textContent=result+' · '+game.settings.version+' · '+ago;row.append(title,fighters,meta);root.append(row);
+    }
+  }
+  function renderActive(games){const root=$('active-games');root.replaceChildren();if(!games.length){const p=document.createElement('p');p.className='empty';p.textContent='No games in progress.';root.append(p);}for(const game of games){const row=document.createElement('div');row.className='player';const p=document.createElement('span');p.textContent=game.participants.map(p=>p.name).join(' vs ');const status=document.createElement('span');status.className='player-state';status.textContent=(game.fighters?game.fighters.map(f=>f.name).join(' vs ')+' · ':'')+game.version+' · '+game.phase;row.append(p,status);root.append(row);}}
   function showChallenge(message){
     challenge=message.challenge;const incoming=challenge.to===self;
     ui.challenge.hidden=false;ui.challengeTitle.textContent=incoming?message.from.name+' challenges you':'Invitation sent';
@@ -86,6 +103,7 @@
       if(m.frame%120===0){const hash=m.game.net.hash();m.hashes.set(m.frame,hash);for(const frame of m.hashes.keys())if(frame<m.frame-600)m.hashes.delete(frame);send({type:'hash',matchId:m.matchId,epoch:m.epoch,frame:m.frame,hash});}
       const G=m.game.G;if(G.scene==='fight'&&G.gph===1)m.fought=true;const phase=G.scene==='win'?'Finishing':G.scene==='fight'&&(G.gph===1||m.fought)?'Fighting':'Choosing fighters';
       if(m.phase!==phase){m.phase=phase;send({type:'phase',matchId:m.matchId,epoch:m.epoch,phase});}
+      if(!m.lineupSent&&G.scene==='fight'&&G.gph===1)m.lineupSent=send({type:'lineup',matchId:m.matchId,epoch:m.epoch,frame:m.frame,fighters:m.game.P.map(p=>p.fid)});
       if(G.scene==='win'&&G.st>=180){m.submitted=true;send({type:'result',matchId:m.matchId,epoch:m.epoch,winner:G.mw});m.game.render();ui.matchStatus.textContent='Recording the result…';return;}
     }
     if(!m.bot&&!m.frames.has(m.frame))m.accum=Math.min(m.accum,FRAME_MS);
@@ -118,7 +136,7 @@
         retry=0;if(message.identity)save('sf2-identity:'+ui.server.value,JSON.stringify(message.identity));
         tabSave('sf2-resume:'+ui.server.value,message.resumeToken);save('sf2-online-remember','yes');
         renderActive(message.activeGames||[]);self=message.id;players=message.players;ui.join.hidden=true;ui.join.disabled=false;ui.leave.hidden=false;ui.name.disabled=ui.server.disabled=true;
-        status('Connected as '+message.profile.name+'. Your identity and record are remembered on this browser.');renderPlayers();
+        $('player-identity-label').textContent='Playing as '+message.profile.name;status('Connected as '+message.profile.name+' · Your player and progress are remembered.');renderPlayers();requestRecent();
         if(message.match){if(!match||match.matchId!==message.match.matchId||message.match.started)await prepareMatch(message.match);}
         else if(match)cleanupMatch(message.lastEnded?'Your previous match has ended. Your record is up to date.':'Lobby restored.');
         if(message.challenge)showChallenge(message.challenge);else clearChallenge();break;
@@ -126,7 +144,8 @@
       case 'resync':if(self&&match?.matchId===message.matchId)await prepareMatch(message);break;
       case 'resume-inputs':await replayChunk(message);break;
       case 'resume-start':if(match?.epoch===message.epoch)startMatch(message);break;
-      case 'presence':renderActive(message.activeGames||[]);players=message.players;renderPlayers();break;
+      case 'presence':renderActive(message.activeGames||[]);players=message.players;renderPlayers();requestRecent();if(!self)status('Viewing live lobby · Join to play. No account needed.');break;
+      case 'history':renderRecent(message.games||[]);break;
       case 'challenge':showChallenge(message);break;
       case 'challenge-ended':if(challenge?.id===message.id){clearChallenge();status('Invitation '+message.reason+'.');}break;
       case 'match':await prepareMatch(message);break;
@@ -142,25 +161,25 @@
     try{const response=await fetch('build.json',{cache:'no-store'});if(response.ok)return await response.json();}catch{}
     return {version:'local',commit:'local-development'};
   }
-  function connect(){
+  function connect(viewOnly=false){
     if(!build)return;
     let endpoint;try{endpoint=new URL(ui.server.value.trim());if(!['wss:','ws:'].includes(endpoint.protocol))throw Error();if(location.protocol==='https:'&&endpoint.protocol!=='wss:')throw Error();}catch{status('A secure online server address is needed.',true);$('connection-settings').open=true;return;}
-    const name=ui.name.value.trim().slice(0,20);if(!name)return;
-    ui.server.value=endpoint.href;$('history-link').href='history.html?server='+encodeURIComponent(endpoint.href);save('sf2-online-name',name);save('sf2-online-server',endpoint.href);
-    explicitLeave=false;clearTimeout(reconnectTimer);const old=socket,ws=new WebSocket(endpoint.href);socket=ws;if(old)old.close();status('Connecting to the online lobby…');ui.join.disabled=true;
-    ws.addEventListener('open',()=>{if(socket!==ws)return;let identity;try{identity=JSON.parse(saved('sf2-identity:'+endpoint.href)||'null');}catch{}send({type:'hello',protocol:3,name,build:build.commit,identity,resumeToken:tabSaved('sf2-resume:'+endpoint.href)});clearInterval(heartbeat);heartbeat=setInterval(()=>send({type:'ping'}),15000);});
+    const name=ui.name.value.trim().slice(0,20);if(!viewOnly&&!name)return;
+    ui.server.value=endpoint.href;updateHistoryLinks();if(!viewOnly)save('sf2-online-name',name);save('sf2-online-server',endpoint.href);
+    explicitLeave=false;clearTimeout(reconnectTimer);const old=socket,ws=new WebSocket(endpoint.href);socket=ws;if(old)old.close();status(viewOnly?'Opening the live room…':'Joining the online room…');ui.join.disabled=!viewOnly;
+    ws.addEventListener('open',()=>{if(socket!==ws)return;let identity;try{identity=JSON.parse(saved('sf2-identity:'+endpoint.href)||'null');}catch{}if(viewOnly){send({type:'observe'});requestRecent();}else send({type:'hello',protocol:3,name,build:build.commit,identity,resumeToken:tabSaved('sf2-resume:'+endpoint.href)});clearInterval(heartbeat);heartbeat=setInterval(()=>send({type:'ping'}),15000);});
     ws.addEventListener('message',event=>{if(socket===ws)receive(event);});
     ws.addEventListener('close',event=>{
       if(socket!==ws)return;clearInterval(heartbeat);socket=null;
       if(match){match.paused=true;if(raf)cancelAnimationFrame(raf);raf=0;ui.matchStatus.textContent='Connection lost · match paused while reconnecting…';}
-      if(!explicitLeave&&event.code!==4001){status('Reconnecting your player and existing match…');reconnectTimer=setTimeout(connect,Math.min(10000,500*2**retry++));return;}
-      self=null;players=[];clearChallenge();ui.join.hidden=false;ui.join.disabled=false;ui.leave.hidden=true;ui.name.disabled=ui.server.disabled=false;
-      if(match)cleanupMatch();status(event.code===4001?'This connection was replaced by your refreshed tab.':'You left the lobby. Your saved identity and record are retained.');renderPlayers();
+      if(!explicitLeave&&event.code!==4001){status(viewOnly?'Reconnecting to the live room…':'Reconnecting your player and existing match…');reconnectTimer=setTimeout(()=>connect(viewOnly),Math.min(10000,500*2**retry++));return;}
+      self=null;players=[];$('player-identity-label').textContent='Guest play available';clearChallenge();ui.join.hidden=false;ui.join.disabled=false;ui.leave.hidden=true;ui.name.disabled=ui.server.disabled=false;
+      if(match)cleanupMatch();status(event.code===4001?'This connection was replaced by your refreshed tab.':'You left the lobby. Your saved identity and record are retained.');renderPlayers();if(event.code!==4001)setTimeout(()=>connect(true),0);
     });
     ws.addEventListener('error',()=>{if(socket===ws)status('The server could not be reached. Retrying your saved player…',true);});
   }
   ui.form.addEventListener('submit',event=>{event.preventDefault();connect();});
   ui.leave.addEventListener('click',()=>{explicitLeave=true;save('sf2-online-remember','');clearTimeout(reconnectTimer);send({type:'bye'});socket?.close();});ui.back.addEventListener('click',()=>exitMatch());
   ui.accept.addEventListener('click',()=>challenge&&send({type:'accept',id:challenge.id}));ui.decline.addEventListener('click',()=>challenge&&send({type:'decline',id:challenge.id}));ui.cancel.addEventListener('click',()=>challenge&&send({type:'cancel',id:challenge.id}));
-  loadBuild().then(value=>{$('history-link').href='history.html?server='+encodeURIComponent(ui.server.value);build=value;$('build-version').textContent=value.version==='local'?'Local development':'Version '+value.version+' ('+value.commit.slice(0,8)+')';if(saved('sf2-online-remember')==='yes'&&ui.name.value)connect();else status('Enter your name to join. Your player identity and record are saved on this browser.');});
+  loadBuild().then(value=>{updateHistoryLinks();build=value;$('build-version').textContent=value.version==='local'?'Local development':'Version '+value.version+' ('+value.commit.slice(0,8)+')';if(saved('sf2-online-remember')==='yes'&&ui.name.value)connect();else connect(true);});
 })();
