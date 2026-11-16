@@ -64,6 +64,7 @@
   function waitFor(test,timeout=40000){return new Promise((resolve,reject)=>{const start=performance.now();const check=()=>{try{const value=test();if(value){resolve(value);return;}}catch{}if(performance.now()-start>timeout){reject(new Error('Game loading timed out'));return;}setTimeout(check,50);};check();});}
   async function prepareMatch(message){
     if(raf)cancelAnimationFrame(raf);raf=0;
+    ui.frame.style.visibility='hidden';ui.frame.setAttribute('aria-busy','true');
     clearChallenge();if(message.build!==build.commit){status('Your existing match uses an earlier build and is paused. Return to its original tab, or leave the match before starting a new one.',true);ui.match.hidden=false;ui.matchStatus.textContent='Earlier-build match preserved · cannot restore in this build';match={...message,paused:true};return;}
     match={...message,frames:new Map(),hashes:new Map(),frame:0,started:false,delay:4,last:0,accum:0,lastAdvance:performance.now()};const current=match;
     ui.lobby.hidden=true;ui.match.hidden=false;ui.matchStatus.textContent='Loading the same game build for both players…';
@@ -81,7 +82,7 @@
       const doc=ui.frame.contentDocument,lines=doc.querySelectorAll('body > div'),label=doc.getElementById('build-version')?.textContent||'Local development';
       if(lines[0])lines[0].textContent='Online controls: arrows + A S D (punch) Z X C (kick) · Enter confirms · F fullscreen · M mute';
       if(lines[1])lines[1].textContent=label+' · Esc returns to the lobby';
-      current.game=S;if(message.started)S.net.replaying=true;
+      current.game=S;if(message.started)S.net.replaying=true;else{ui.frame.style.visibility='visible';ui.frame.setAttribute('aria-busy','false');}
       ui.frame.contentWindow.addEventListener('keydown',event=>{if(event.code==='Escape'){event.preventDefault();exitMatch();}});
       ui.matchStatus.textContent='You are Player '+(message.slot+1)+' · Waiting for '+message.peer.name+'…';
       if(message.started){current.paused=true;current.target=message.target;requestReplay(current);}else send({type:'ready',matchId:message.matchId});
@@ -89,6 +90,7 @@
   }
   function startMatch(message){
     if(!match||match.matchId!==message.matchId||!match.game)return;
+    ui.frame.style.visibility='visible';ui.frame.setAttribute('aria-busy','false');
     if(raf)cancelAnimationFrame(raf);match.game.net.replaying=false;match.epoch=message.epoch??0;match.paused=false;match.started=true;match.frame=message.startFrame||0;match.accum=0;match.submitted=false;match.delay=Math.max(2,Math.min(12,message.delayFrames||message.inputDelay||4));match.last=performance.now();match.lastAdvance=match.last;
     if(!match.bot)for(let frame=match.frame;frame<match.frame+match.delay;frame++)send({type:'input',matchId:match.matchId,epoch:match.epoch,frame,keys:0});
     ui.frame.focus();ui.frame.contentWindow.focus();raf=requestAnimationFrame(tick);

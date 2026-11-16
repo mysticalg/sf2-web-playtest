@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.106",
-  "commit": "2495cb82b9265d55d06b54ba6a2efd81c78ae8b5",
-  "builtAt": "2026-11-16T13:45:14.659618+00:00",
+  "version": "0.1.107",
+  "commit": "6c197302d95631645952c072cf405f338b3540d2",
+  "builtAt": "2026-11-16T15:29:35.570423+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 7250,
-      "sha256": "1df11995c45c22e6b02e2912a4074d6c8f08a12a1d7fc97536a536699373606d"
+      "bytes": 7425,
+      "sha256": "04031d6aa9ea6a189da9a06b2e16092a26fef7efacb247166fe2a5b14959ffc4"
     },
     {
       "file": "game.js",
-      "bytes": 162933,
-      "sha256": "0c0005fb2dbf85ea7378cf1cdf4d06666d941443f2ee37b832d586d81f042189"
+      "bytes": 163643,
+      "sha256": "de827cdb2c1dd0285f8f0ec77f0468639aac1f5aa307f97e757536eef772a546"
     },
     {
       "file": "assets.js",
@@ -46,8 +46,8 @@
     },
     {
       "file": "screens_ce.js",
-      "bytes": 628226,
-      "sha256": "f55045ac26d252499a9381e221834c9f39096cafc329c8615faf20f8b64e1d16"
+      "bytes": 440104,
+      "sha256": "38eb470fa3a6e740ae04c342b801ce96aa07e2730946824454346f9eca545fd0"
     },
     {
       "file": "endings.js",
@@ -226,13 +226,23 @@
     },
     {
       "file": "ce_stage_animations_data.js",
-      "bytes": 573461,
-      "sha256": "a252975d268622ccef7aca9b21069792062488c5ebd5305577daff04c32fa3cd"
+      "bytes": 602772,
+      "sha256": "81f638d89b57beb336536cb1b9ae326d175ee5af098ed8316b83ce2a5b0ff682"
     },
     {
       "file": "ce_stage_animations.js",
-      "bytes": 4637,
-      "sha256": "c283c024c1e9432fa2a7a7d0859f3924b12369f864984d87e5742b8cc7716848"
+      "bytes": 7691,
+      "sha256": "7f6f5e0206455d91595007544b75e9b4166eab6d550383a295d14547daff9bcd"
+    },
+    {
+      "file": "ce_stage_scroll_data.js",
+      "bytes": 503280,
+      "sha256": "c087e1445a78980bc358809e822cc9497d3fe8d79ab8881548c2e3f48cb40b8c"
+    },
+    {
+      "file": "ce_stage_scroll.js",
+      "bytes": 2223,
+      "sha256": "12d6b6981e2091365ee016d50846d9a78bb814ea9e95f5534f8fece2244e9e26"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -317,7 +327,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "cf5b833b17ce4e1ee287016ab7c8e09e9df1ada8842c7eb076a2a63ff36860b1"
+      "sha256": "679544c1c154e5edffb20872e65582338a7e4601894f53c8965669995378b3b2"
     },
     {
       "file": "lobby.css",
@@ -326,13 +336,13 @@
     },
     {
       "file": "netplay.js",
-      "bytes": 21675,
-      "sha256": "56ce6b29307bebf6dde4f328f088f0fd14e3fa780cfb8d98cfc3a626e8c151d3"
+      "bytes": 21926,
+      "sha256": "aee3a0068d0925721662a9b8516045624e07f98d2e6394848e180916ab0953a1"
     },
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "371979ea7e634177d5e33e309230feab4a4bc0ab58f69caa4582c92faf6be5b7"
+      "sha256": "35cdfcdc02e21d2f203f4b712055381bf64decc23df6534071065b13f2c3ed53"
     },
     {
       "file": "history.js",
