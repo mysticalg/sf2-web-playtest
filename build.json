@@ -1,13 +1,13 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.100",
-  "commit": "61d43fbf3b6ae316118b9ec34c56289750cbbf6c",
-  "builtAt": "2026-11-16T09:11:43.942489+00:00",
+  "version": "0.1.101",
+  "commit": "2ecaa963c5a722f22b4dd57a8cde106f1e190268",
+  "builtAt": "2026-11-16T09:26:43.160262+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 6821,
-      "sha256": "9c92c9890fd0aded0dc94af716ffa647a4600019ba0fb60fde4157e0b2141f1c"
+      "bytes": 6910,
+      "sha256": "1c414bdd4d048a51ff48c15e5e6b6dd61ae2771f1caeae597207e487c8f47d80"
     },
     {
       "file": "game.js",
@@ -205,9 +205,14 @@
       "sha256": "d96d1d40106a7318ef2672b53556bfef3b5e8a55a71eb0b737cb5594f6208c1e"
     },
     {
+      "file": "ce_stage_spray_data.js",
+      "bytes": 3115,
+      "sha256": "f881d70a34b2ce0243347ad99a10a763d087ff1696e2b2438e95f28a13be1ba6"
+    },
+    {
       "file": "ce_stage_water.js",
-      "bytes": 3194,
-      "sha256": "bc44c2a30369a1fbbba1011d27888b7c551f4cdd793f2273f7432878720eb42d"
+      "bytes": 5380,
+      "sha256": "1ccae51493ddf0501492cd89dd4c5c6ad9a2fb997338ec993d7fc6b11fb9e7b3"
     },
     {
       "file": "ce_stage_animations_data.js",
@@ -292,7 +297,7 @@
     {
       "file": "lobby.html",
       "bytes": 3573,
-      "sha256": "0f6ff0e5adec16f50fc9b7991953cb0a34cad76146b5c01f209d61948072a262"
+      "sha256": "fa28876c80710084df9f1b038a5071a33c918ed88089b05a80a42aa213836f3f"
     },
     {
       "file": "lobby.css",
@@ -307,7 +312,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "163d69fbb48dacd3a17907c57e946e43007264e3e4ac01b8ddb1032590b5b531"
+      "sha256": "95d3129cbb971bceaeca769efafa48a909db169cc211058a1ed9abe5be9b915b"
     },
     {
       "file": "history.js",
