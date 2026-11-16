@@ -102,7 +102,7 @@
       case 'frame':if(match?.matchId===message.matchId&&Number.isInteger(message.frame)&&message.frame>=match.frame&&message.frame<match.frame+120&&Array.isArray(message.inputs))match.frames.set(message.frame,message.inputs);break;
       case 'hash':if(match?.matchId===message.matchId&&message.slot!==match.slot){const own=match.hashes.get(message.frame);if(own&&own!==message.hash)exitMatch('desync');}break;
       case 'ended':if(match?.matchId===message.matchId){const reason=message.reason;cleanupMatch(reason==='complete'?'Match recorded. Your record and match history are updated.':reason==='desync'?'Game state mismatch detected. The match stopped safely.':reason==='disconnected'?'The other player disconnected. You are back in the lobby.':'Match ended. You are back in the lobby.');}break;
-      case 'error':status(message.message||'The server could not complete that request.',true);break;
+      case 'error':if(message.code==='match'&&!match)break;status(message.message||'The server could not complete that request.',true);break;
     }
   }
   async function loadBuild(){
@@ -114,7 +114,7 @@
     event.preventDefault();if(!build)return;
     let endpoint;try{endpoint=new URL(ui.server.value.trim());if(!['wss:','ws:'].includes(endpoint.protocol))throw Error();if(location.protocol==='https:'&&endpoint.protocol!=='wss:')throw Error();}catch{status('A secure online server address is needed before you can join.',true);$('connection-settings').open=true;return;}
     const name=ui.name.value.trim().slice(0,20);if(!name)return;
-    ui.server.value=endpoint.href;save('sf2-online-name',name);save('sf2-online-server',endpoint.href);
+    ui.server.value=endpoint.href;$('history-link').href='history.html?server='+encodeURIComponent(endpoint.href);save('sf2-online-name',name);save('sf2-online-server',endpoint.href);
     if(socket)socket.close();status('Connecting to the online lobby…');ui.join.disabled=true;
     socket=new WebSocket(endpoint.href);
     socket.addEventListener('open',()=>{let identity;try{identity=JSON.parse(saved('sf2-identity:'+ui.server.value)||'null');}catch{}send({type:'hello',name,build:build.commit,identity});clearInterval(heartbeat);heartbeat=setInterval(()=>send({type:'ping'}),15000);});
