@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.96",
-  "commit": "352d233acb75a39aefd4ee1784a6d3e23203cbda",
-  "builtAt": "2026-11-16T05:08:04.236718+00:00",
+  "version": "0.1.97",
+  "commit": "84433c56d165b73a676281f6a712b3bd4b7d92fc",
+  "builtAt": "2026-11-16T07:05:03.475031+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 6486,
-      "sha256": "1688cf2fe065fa21d187790db40fe4d0652dfec511c88138bbb7636421914755"
+      "bytes": 6649,
+      "sha256": "5391ed595cc7c1a32e699a3dc49bc1a350c2cd2baea686346f9135620580cd03"
     },
     {
       "file": "game.js",
-      "bytes": 152272,
-      "sha256": "a7867730f08a0c352b1c7d5ca597c83030a532d0cd787d284ec2c26532690683"
+      "bytes": 154082,
+      "sha256": "90980ceca424091f133d3aed155fce95a15cd16aaa92bf27ce39e6302d816bf7"
     },
     {
       "file": "assets.js",
@@ -165,6 +165,16 @@
       "sha256": "a456b354102b0ba1111d4020e0a628fc1f965a1fcf967dfbf5d8269f2bbcb85d"
     },
     {
+      "file": "ce_camera_data.js",
+      "bytes": 67841,
+      "sha256": "c90ab68fc50f2b99d5416abe0560da09e25d68e59b87c9080720d97b4b0535c9"
+    },
+    {
+      "file": "ce_camera.js",
+      "bytes": 2773,
+      "sha256": "95b60964dd1f12fa6452e04922fcc8278abc49a317746132225128dacbd2943e"
+    },
+    {
       "file": "ce_stage_birds_data.js",
       "bytes": 4512,
       "sha256": "c3c23e09c34040c49676270bc4a33c6884d994fd45453daeb671716b5f789104"
@@ -176,8 +186,8 @@
     },
     {
       "file": "ce_ryu_stage.js",
-      "bytes": 9109,
-      "sha256": "0ec32b39dbe5de15450afeb0c2e1c928f58b9242950b79843224f7a85d3ee10f"
+      "bytes": 9194,
+      "sha256": "f83f2b7efef61c13e94ba8c90043451f309105f9f76a6b8a2e13d1235741f4b2"
     },
     {
       "file": "ce_stage_water_data.js",
@@ -196,8 +206,8 @@
     },
     {
       "file": "ce_stage_animations.js",
-      "bytes": 4226,
-      "sha256": "010f2f99662e57689a0667af18aab40bd5bd40fbce02ca4277891f1124da1372"
+      "bytes": 4637,
+      "sha256": "c283c024c1e9432fa2a7a7d0859f3924b12369f864984d87e5742b8cc7716848"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -211,13 +221,13 @@
     },
     {
       "file": "ce_stage_palettes_data.js",
-      "bytes": 253802,
-      "sha256": "8e65ce4ed7322e1af59d349d9da8c7fe54a5f57c8d2c5648778e72ff2cdaab78"
+      "bytes": 258548,
+      "sha256": "8e88c564dec5beaa36f2fb4426d912230e0539313b11b4a2c9e7e4caa92cae8c"
     },
     {
       "file": "ce_stage_palettes.js",
-      "bytes": 2663,
-      "sha256": "d2720d976dd71cd36e18762376ad52c4aea7ec1ca7e4a0c583d0a398c1498609"
+      "bytes": 2719,
+      "sha256": "f622886f960192639cb8d2d0bc6959cde99377e924978d8b454dc9d962fc30c2"
     },
     {
       "file": "ce_car.js",
@@ -272,7 +282,7 @@
     {
       "file": "lobby.html",
       "bytes": 3572,
-      "sha256": "c0f437ebe36ee95c1f238c809999667394a02f00cf4dc054072b7ad92b94426e"
+      "sha256": "6e54e7f4dc4707ebbb3c56e8c933e45500ecc18e1425a44dd3eeccca7a9e1229"
     },
     {
       "file": "lobby.css",
@@ -287,7 +297,7 @@
     {
       "file": "history.html",
       "bytes": 1336,
-      "sha256": "8e61556ec70400b0b3b4192d43a07685b3b1058f1eb767626a686d1de7a979d9"
+      "sha256": "512d45a189cabc7a34a613d5f265aaea54357360c1b53d7c78239aad848aa930"
     },
     {
       "file": "history.js",

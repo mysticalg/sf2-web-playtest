@@ -39,5 +39,6 @@
   actors.forEach((a,i)=>{if(a.bands?.length){for(const b of a.bands){ctx.clearRect(b.x,a.y+b.y0,a.width,b.y1-b.y0);ctx.drawImage(images[indices[i]],0,b.y0,a.width,b.y1-b.y0,b.x,a.y+b.y0,a.width,b.y1-b.y0);}}else{ctx.clearRect(a.x,a.y,a.width,a.height);ctx.drawImage(images[indices[i]],a.x,a.y);}});
   cache.set(index,{key,base,image:canvas});return canvas;
  }
- window.SF2CESTAGEANIMATIONS={ready,frameAt,reset,layer,elephantStep,data:D,scope:'57 scroll2/scroll3 idle loops and four conditional elephants. Remaining sprite props and result-dependent branches pending.'};
+ function top(stage,index,ctx,tick){for(const a of D.stages[stage]||[]){if(a.layer!==index||a.y>=0)continue;const s=frameAt(a,Math.max(0,tick-(origin??tick))),f=a.frames[s.index],id=f.paletteImages?f.paletteImages[1+(window.SF2CESTAGEPALETTES?.lampPhase(tick-origin)??-1)]:f.image,h=Math.min(a.height,-a.y);ctx.clearRect(a.x,a.y+32,a.width,h);ctx.drawImage(images[id],0,0,a.width,h,a.x,a.y+32,a.width,h);}}
+ window.SF2CESTAGEANIMATIONS={ready,frameAt,reset,layer,top,elephantStep,data:D,scope:'57 scroll2/scroll3 idle loops and four conditional elephants. Remaining sprite props and result-dependent branches pending.'};
 })();

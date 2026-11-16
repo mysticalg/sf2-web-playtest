@@ -17,7 +17,7 @@
  function draw(ctx,stage,index,cam,tick){
   if(stage!==D.stage)return false;const layer=layers.find(a=>a.index===index);if(!layer?.ready)return false;if(origin===null)origin=tick;
   const im=image(layer,tick-origin),camera=layer.cameras[Math.max(0,Math.min(384,cam|0))];
-  for(const[y0,y1,shift]of camera.rows){let sx=((camera.x+64+shift)%layer.width+layer.width)%layer.width,dx=0;while(dx<384){const width=Math.min(layer.width-sx,384-dx);ctx.drawImage(im,sx,y0,width,y1-y0,dx,y0,width,y1-y0);dx+=width;sx=0;}}
+  for(const[row0,y1,shift]of camera.rows){const y0=row0===0?-(layer.top||0):row0;let sx=((camera.x+64+shift)%layer.width+layer.width)%layer.width,dx=0;while(dx<384){const width=Math.min(layer.width-sx,384-dx);ctx.drawImage(im,sx,y0+(layer.top||0),width,y1-y0,dx,y0,width,y1-y0);dx+=width;sx=0;}}
   return true;
  }
  window.SF2CESTAGEPALETTES={ready,phaseAt,paletteAt,lampPhase:elapsed=>phaseAt(D.spainLamp,elapsed),reset,draw,data:D,scope:'Las Vegas14 native palette loops; captured neutral-cycle phase; original integer-camera domain0..384.'};
