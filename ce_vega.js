@@ -12,7 +12,7 @@
  function reprobe(p){const c=combatState(p),a=attackRecord(p);return !!c&&!!a&&a[5]!==c.hitGroup;}
  function combatRecord(p,d,region,random,a){
   // 0x9540a/0x95542: CE's default player handicap is16; preserve explicit overrides.
-  const level=p.CE_ATTACK_LEVEL??16,defense=d.CE_DEFENSE_LEVEL??16;
+  const level=p.CE_ATTACK_LEVEL??p.CE_HANDICAP??16,defense=d.CE_DEFENSE_LEVEL??d.CE_HANDICAP??16;
   let damage=COMBAT.damage[a[4]&63][level],weak=d.CE_WEAKNESS?.[region]||0;
   if(weak===2)damage+=damage>>1;else if(weak===4)damage*=2;else if(weak===6)damage*=3;else if(weak===8)damage+=damage>>2;
   damage=Math.max(1,damage+COMBAT.variation[a[p.HP>=60?9:10]][random()&31]);

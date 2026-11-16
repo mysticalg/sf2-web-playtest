@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.84",
-  "commit": "8ce47ab4594e88e6e2d4048dc6ff635cf7a93631",
-  "builtAt": "2026-11-15T21:13:46.425472+00:00",
+  "version": "0.1.86",
+  "commit": "53a3e20b20e8274d93ddd1cd9fe0b3f2df6bbc8b",
+  "builtAt": "2026-11-16T00:00:15.672465+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 4848,
-      "sha256": "1954c73624ef510dbbf300f33bd7c638a8bf3dcfd79e905ecba0dde2748b08d3"
+      "bytes": 5601,
+      "sha256": "ca45f15fd6bea66573f2aec23c3d3d5e7c95229d663d15d396d45f071c186c18"
     },
     {
       "file": "game.js",
-      "bytes": 139423,
-      "sha256": "241b3c08c7788109d313c88f86ce77ef07335c3aef8479cda4145e4efbcbda9f"
+      "bytes": 148612,
+      "sha256": "068e0500114bbaf34dab527a5dadbf6100dae4933b6184482691c6315ea48244"
     },
     {
       "file": "assets.js",
@@ -73,6 +73,31 @@
       "file": "ce_projectile_clash.js",
       "bytes": 3189,
       "sha256": "61572d8d5e05e647d5f2bfd19d00a44fe0891c66e06ec0961735c6aa7094688d"
+    },
+    {
+      "file": "ce_combat_data.js",
+      "bytes": 45566,
+      "sha256": "c08aa41d0cae2d89ce4c36087cdaf025e65f64501f5a1f7686c460771ac68b97"
+    },
+    {
+      "file": "ce_combat.js",
+      "bytes": 5053,
+      "sha256": "acd290f0df7a4c6308a0fd7e18a13cba100f3b8985f5a62f36baaf3fce4f6dae"
+    },
+    {
+      "file": "ce_cpu_handicap.js",
+      "bytes": 7055,
+      "sha256": "4f88d5476fd0fbb6d6d6d7cfbb8c9d825f46d8164cd2abb84f11dabca093a16c"
+    },
+    {
+      "file": "ce_reactions_data.js",
+      "bytes": 156174,
+      "sha256": "77bcbb94d4d6da34dc1106525da0574e29f1a489adeb7f8e285bb40fa71dc717"
+    },
+    {
+      "file": "ce_reactions.js",
+      "bytes": 8940,
+      "sha256": "f98f224073284efde9453b547fbb24587e3c4efe8c0fe5746d0f56a0254cfaeb"
     },
     {
       "file": "victory_ce.js",
@@ -146,13 +171,33 @@
     },
     {
       "file": "ce_car.js",
-      "bytes": 5492,
-      "sha256": "3b08a4d37effcc12cdede4b74889ab3cc3c83ab366dfffa1b3391617f495b259"
+      "bytes": 11234,
+      "sha256": "abc7bad9634ad23ca50a165ad73fb09548f80b3911e6644d885375e9695dcd34"
+    },
+    {
+      "file": "ce_barrel_data.js",
+      "bytes": 127642,
+      "sha256": "df13a55fcf7300c4adb1865646a9de354002e77f913c484daa1129115982b6ff"
+    },
+    {
+      "file": "ce_barrels.js",
+      "bytes": 12845,
+      "sha256": "490f0e7fa472ff3a5d32286b57e95b757434fda49ac4e4d5ae6e67f95238e362"
+    },
+    {
+      "file": "ce_barrel_player_data.js",
+      "bytes": 859296,
+      "sha256": "23b416b0c16a5fa0fb8d096347e5e57e5b307616807da8bb4ef525ec8b5c2adf"
+    },
+    {
+      "file": "ce_barrel_player.js",
+      "bytes": 7518,
+      "sha256": "ee1d3ffd849485288210d3644ce513a155dcb475c12e47e938e80e6544313ec5"
     },
     {
       "file": "ce_car_assets.js",
-      "bytes": 103889,
-      "sha256": "29de20291cc7773925ea18f196d72ae2a482be206f5b2ac9dbdb21cff75b024e"
+      "bytes": 150943,
+      "sha256": "adb823a5e9c0937acfa65c9c3a9a9c6cb741be02b78afd5ac6d84e4a77d897a9"
     },
     {
       "file": "ce_announcer.js",
@@ -177,7 +222,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "4298d77ec34257cf1287ee32e81296236b0d8e3a1aaf07754567f9166238f65f"
+      "sha256": "bc4ef53dd246e0e4d4a95fcbfbc18cdd21823f4bf9e33a3d5d412d15a20d491b"
     },
     {
       "file": "lobby.css",
@@ -216,8 +261,8 @@
     },
     {
       "file": "ce_vega.js",
-      "bytes": 17510,
-      "sha256": "9eee05334715cf7b6207192f63c172d42d77868fa7f9794141ae147ad9cb1cab"
+      "bytes": 17540,
+      "sha256": "ab418b75584f4338218626c3f951de38a50b8359a45c0ef05a21542147d45aee"
     },
     {
       "file": "vega_claw_ce.js",
