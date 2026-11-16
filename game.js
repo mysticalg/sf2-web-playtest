@@ -795,7 +795,7 @@ function step0(net){
   /* M13f: arcade input latency - the game acts on the joystick/buttons read one frame earlier (IDEL frames, default 1; ?delay=0 for none) */
   const ka=net?net[0]:rk(P1K)|pd[0].k|externalKey(0),kb=net?net[1]:rk(P2K)|pd[1].k|externalKey(1); IQ.push([ka,kb]); while(IQ.length>IDEL+1)IQ.shift(); const dq=IQ[0];
   P[0].KEYS=dq[0];
-  if(G.mode2p)P[1].KEYS=dq[1];else if(G.gph===1){if(isEvilKen(P[1])&&G.hfz>0){P[1].KEYS=P[1].FORCE=0;}else{const k=isEvilKen(P[1])?SF2AIEvilKen.cpu(P[1],false):null;if(k===null)ai(P[1]);else{P[1].KEYS=k;P[1].FORCE=0;}}}
+  if(G.mode2p&&!G.netBot)P[1].KEYS=dq[1];else if(G.gph===1){if(isEvilKen(P[1])&&G.hfz>0){P[1].KEYS=P[1].FORCE=0;}else{const k=isEvilKen(P[1])?SF2AIEvilKen.cpu(P[1],false):null;if(k===null)ai(P[1]);else{P[1].KEYS=k;P[1].FORCE=0;}}}
   if(aiEnabled()&&AICFG.prototype&&AICFG.training&&AICFG.dummy!=='cpu'){P[1].FORCE=0;P[1].KEYS=AICFG.dummy==='block'&&(P[0].ST===S_ATK||P[0].ST===S_SPEC||P[0].FBON)?(P[0].X<P[1].X?K_R:K_L):0;}
   if(aiEnabled()&&G.gph===1)P.forEach(aiInput);
   if(G.gph!==1){P[0].KEYS=P[1].KEYS=0;P[1].FORCE=0;}
@@ -1081,7 +1081,7 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
     break;}
   case 'map': {if(!G.mapSetup){G.mapSetup=true;break;}if(G.mapWait>0){G.mapWait--;break;}const m=SF2CEWORLDMAP.step(G.map);for(const code of m.sound)sfxc(code);if(m.done)go('vs');break;}
   case 'vs': if(G.st>=200||(G.st>40&&any))fightnext(); break;
-  case 'win': if(G.st>=240||(G.st>Math.max(60,VER.cur==='CE'&&G.mw>=0&&window.SF2CEFADE?SF2CEFADE.quotes[P[G.mw].fid].first+2*(SF2CEFADE.quotes[P[G.mw].fid].characters-1):0)&&any)){
+  case 'win': if(netActive)break;if(G.st>=240||(G.st>Math.max(60,VER.cur==='CE'&&G.mw>=0&&window.SF2CEFADE?SF2CEFADE.quotes[P[G.mw].fid].first+2*(SF2CEFADE.quotes[P[G.mw].fid].characters-1):0)&&any)){
       if(!G.arc){if(any&&G.st>60){const mode=G.mode2p;startfight(P[0].fid,P[1].fid);G.mode2p=mode;}else{go('select');G.selstep=0;}break;}
       if(G.mw===1){G.cont=9;go('cont');break;}
       G.mapFrom=G.stage;if(++G.li>=G.ladder.length)go('end'); else if(VER.cur==='CE'&&window.SF2BONUS&&!G.mode2p&&G.mw===0&&(G.li===3||G.li===6||G.li===9))bonusinit(G.li/3-1); else arcadeVs();} break;
@@ -1205,11 +1205,12 @@ SF2.net={
     CONTROL.paused=false;SF2.freeze=1;netActive=true;rng=(options.seed>>>0)||0x2545F491;
     for(const key of Object.keys(G))delete G[key];Object.assign(G,JSON.parse(JSON.stringify(NET_BASE_G)));
     Object.assign(G,{mode2p:1,arc:0,diff:1,ceDifficulty:3,rtime:[0,30,60,99].includes(options.time)?options.time:99,sel:[0,4],cep:[0,6],selstep:0});
+    if(options.bot){const d=Math.max(0,Math.min(2,options.bot.difficulty|0));G.netBot={difficulty:d,fighter:[0,4,5].includes(options.bot.fighter)?options.bot.fighter:0};G.diff=[0,1,3][d];G.ceDifficulty=[0,3,7][d];}
     down.clear();tapped.clear();IQ.length=0;IDEL=0;gprev=0;selprev=[0,0];
     setfighter(P[0],0);setfighter(P[1],4);P[0].SCORE=P[1].SCORE=0;resetmatch();go('select');render();
   },
   readInput(){const k=rk(P1K)|padRead(0).k|externalKey(0)|(held('Enter')||padRead(0).g&4?K_ATK:0);tapped.clear();return k&1023;},
-  advance(pair){if(!netActive||!Array.isArray(pair)||pair.length!==2)throw new Error('No active synchronized match');step(pair.map(k=>k&1023));},
+  advance(pair){if(!netActive||!Array.isArray(pair)||pair.length!==2)throw new Error('No active synchronized match');let inputs=pair.map(k=>k&1023);if(G.netBot){let key=0;if(G.scene==='select'&&G.selstep===1&&G.tick%2===0){const goal=G.netBot.fighter,c=G.sel[1];if(c===goal)key=K_ATK;else if(VER.cur==='CE'){const q=G.cep[1],target=CEGRID.indexOf(goal);key=(q/6|0)!==(target/6|0)?K_U:q%6!==target%6?K_R:K_ATK;}else key=(c/4|0)!==(goal/4|0)?K_U:c%4!==goal%4?K_R:K_ATK;}inputs=[inputs[0],key];}step(inputs);},
   hash(){const omit=new Set(['F','opp','anim','ft','AIPC']);const players=P.map(p=>Object.fromEntries(Object.entries(p).filter(([k])=>!omit.has(k))));
     const gs=Object.fromEntries(Object.entries(G).filter(([k])=>!['hisc','sndlog','muslog','cmdlog','endk'].includes(k)));
     const text=JSON.stringify([gs,players,rng,IQ,selprev],(key,value)=>{if(value===P[0]||value===P[1])return {player:value.i};if(key==='anim'||key==='F'||key==='ft')return undefined;return value;});let h=2166136261;for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return (h>>>0).toString(16).padStart(8,'0');},

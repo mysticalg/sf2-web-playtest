@@ -1,5 +1,5 @@
 /* Small-player-count online versus: real WSS presence and frame-paired lockstep.
-   No predicted or invented opponents; a missing input pauses both simulations. */
+   Human matches pair inputs; shared opponents run the existing CPU locally under a server lease. */
 'use strict';
 (()=>{
   const $=id=>document.getElementById(id), FRAME_MS=1000/59.637;
@@ -17,15 +17,16 @@
     if(!self){const p=document.createElement('p');p.className='empty';p.textContent='Join the lobby to see who is online.';ui.players.append(p);return;}
     if(players.length===1){const p=document.createElement('p');p.className='empty';p.textContent='You are the first player here. Share this lobby link with a friend.';ui.players.append(p);}
     for(const player of players){
-      const row=document.createElement('div');row.className='player';const info=document.createElement('div'),name=document.createElement('span'),state=document.createElement('span');
-      name.className='player-name';name.textContent=player.name+(player.id===self?' (you)':'');state.className='player-state';
-      const compatible=player.build===build.commit;state.textContent=!compatible?'Different preview build — refresh to play':player.status==='in-match'?'In a match':player.status==='challenged'?'Considering a challenge':'Available';
-      info.append(name,state);row.append(info);
+      const row=document.createElement('div');row.className='player';const info=document.createElement('div'),name=document.createElement('a'),state=document.createElement('span');
+      name.className='player-name';name.href='history.html?profile='+encodeURIComponent(player.profileId)+'&server='+encodeURIComponent(ui.server.value);name.textContent=player.name+(player.id===self?' (you)':'');state.className='player-state';
+      const compatible=!player.build||player.build===build.commit;state.textContent=!compatible?'Different preview build — refresh to play':player.status==='in-match'?'In a match':player.status==='challenged'?'Considering a challenge':'Available';
+      const stats=document.createElement('span');stats.className='player-state';stats.textContent=player.wins+' wins · '+player.losses+' losses · '+player.draws+' draws';info.append(name,state,stats);row.append(info);
       if(player.id!==self){const button=document.createElement('button');button.type='button';button.textContent='Challenge';button.disabled=!compatible||player.status!=='available'||!!challenge||!!match||players.find(p=>p.id===self)?.status!=='available';
         button.addEventListener('click',()=>send({type:'challenge',target:player.id,settings:{version:ui.version.value,time:99,delayFrames:4}}));row.append(button);}
       ui.players.append(row);
     }
   }
+  function renderActive(games){const root=$('active-games');root.replaceChildren();if(!games.length){const p=document.createElement('p');p.className='empty';p.textContent='No games in progress.';root.append(p);}for(const game of games){const row=document.createElement('div');row.className='player';const p=document.createElement('span');p.textContent=game.participants.map(p=>p.name).join(' vs ');const status=document.createElement('span');status.className='player-state';status.textContent=game.version+' · '+game.phase;row.append(p,status);root.append(row);}}
   function showChallenge(message){
     challenge=message.challenge;const incoming=challenge.to===self;
     ui.challenge.hidden=false;ui.challengeTitle.textContent=incoming?message.from.name+' challenges you':'Invitation sent';
@@ -54,7 +55,7 @@
       S.G.wantce=message.settings.version==='CE'?1:0;S.setver(message.settings.version);
       await Promise.all(S.FI.map(image=>image.decode()));
       if(match!==current)return;
-      S.net.begin({seed:message.seed,version:message.settings.version,time:message.settings.time});
+      S.net.begin({seed:message.seed,version:message.settings.version,time:message.settings.time,bot:message.bot});
       const doc=ui.frame.contentDocument,lines=doc.querySelectorAll('body > div'),label=doc.getElementById('build-version')?.textContent||'Local development';
       if(lines[0])lines[0].textContent='Online controls: arrows + A S D (punch) Z X C (kick) · Enter confirms · F fullscreen · M mute';
       if(lines[1])lines[1].textContent=label+' · Esc returns to the lobby';
@@ -67,20 +68,22 @@
   function startMatch(message){
     if(!match||match.matchId!==message.matchId||!match.game)return;
     match.started=true;match.delay=Math.max(2,Math.min(12,message.delayFrames||message.inputDelay||4));match.last=performance.now();match.lastAdvance=match.last;
-    for(let frame=0;frame<match.delay;frame++)send({type:'input',matchId:match.matchId,frame,keys:0});
+    if(!match.bot)for(let frame=0;frame<match.delay;frame++)send({type:'input',matchId:match.matchId,frame,keys:0});
     ui.frame.focus();ui.frame.contentWindow.focus();raf=requestAnimationFrame(tick);
   }
   function tick(now){
-    const m=match;if(!m?.started)return;
+    const m=match;if(!m?.started||m.submitted)return;
     m.accum=Math.min(4*FRAME_MS,m.accum+Math.min(100,now-m.last));m.last=now;
-    while(m.accum>=FRAME_MS&&m.frames.has(m.frame)){
-      const inputs=m.frames.get(m.frame);m.frames.delete(m.frame);m.game.net.advance(inputs);
-      send({type:'input',matchId:m.matchId,frame:m.frame+m.delay,keys:m.game.net.readInput()});
+    while(m.accum>=FRAME_MS&&(m.bot||m.frames.has(m.frame))){
+      const keys=m.game.net.readInput(),inputs=m.bot?[keys,0]:m.frames.get(m.frame);m.frames.delete(m.frame);m.game.net.advance(inputs);
+      send({type:'input',matchId:m.matchId,frame:m.bot?m.frame:m.frame+m.delay,keys});
       m.frame++;m.accum-=FRAME_MS;m.lastAdvance=now;
-      if(m.frame%120===0){const hash=m.game.net.hash();m.hashes.set(m.frame,hash);for(const frame of m.hashes.keys())if(frame<m.frame-600)m.hashes.delete(frame);send({type:'hash',matchId:m.matchId,frame:m.frame,hash});}
-      if(m.game.G.scene==='win'&&m.game.G.st>=180){send({type:'exit',matchId:m.matchId,reason:'match-complete'});cleanupMatch('Match complete. Challenge another player when you are ready.');return;}
+      if(!m.bot&&m.frame%120===0){const hash=m.game.net.hash();m.hashes.set(m.frame,hash);for(const frame of m.hashes.keys())if(frame<m.frame-600)m.hashes.delete(frame);send({type:'hash',matchId:m.matchId,frame:m.frame,hash});}
+      const G=m.game.G;if(G.scene==='fight'&&G.gph===1)m.fought=true;const phase=G.scene==='win'?'Finishing':G.scene==='fight'&&(G.gph===1||m.fought)?'Fighting':'Choosing fighters';
+      if(m.phase!==phase){m.phase=phase;send({type:'phase',matchId:m.matchId,phase});}
+      if(G.scene==='win'&&G.st>=180){m.submitted=true;send({type:'result',matchId:m.matchId,winner:G.mw});m.game.render();ui.matchStatus.textContent='Recording the result…';return;}
     }
-    if(!m.frames.has(m.frame))m.accum=Math.min(m.accum,FRAME_MS);
+    if(!m.bot&&!m.frames.has(m.frame))m.accum=Math.min(m.accum,FRAME_MS);
     m.game.render();
     if(now-m.lastAdvance>30000){exitMatch('timeout');status('Match connection timed out. You are back in the lobby.',true);return;}
     const G=m.game.G;
@@ -90,15 +93,15 @@
   async function receive(event){
     let message;try{message=JSON.parse(event.data);}catch{return;}
     switch(message.type){
-      case 'welcome':self=message.id;players=message.players;ui.join.hidden=true;ui.leave.hidden=false;ui.name.disabled=ui.server.disabled=true;status('Connected. Challenge an available player.');renderPlayers();break;
-      case 'presence':players=message.players;renderPlayers();break;
+      case 'welcome':if(message.identity)save('sf2-identity:'+ui.server.value,JSON.stringify(message.identity));renderActive(message.activeGames||[]);self=message.id;players=message.players;ui.join.hidden=true;ui.leave.hidden=false;ui.name.disabled=ui.server.disabled=true;status('Connected. Challenge an available player.');renderPlayers();break;
+      case 'presence':renderActive(message.activeGames||[]);players=message.players;renderPlayers();break;
       case 'challenge':showChallenge(message);break;
       case 'challenge-ended':if(challenge?.id===message.id){clearChallenge();status('Invitation '+message.reason+'.');}break;
       case 'match':await prepareMatch(message);break;
       case 'start':startMatch(message);break;
       case 'frame':if(match?.matchId===message.matchId&&Number.isInteger(message.frame)&&message.frame>=match.frame&&message.frame<match.frame+120&&Array.isArray(message.inputs))match.frames.set(message.frame,message.inputs);break;
       case 'hash':if(match?.matchId===message.matchId&&message.slot!==match.slot){const own=match.hashes.get(message.frame);if(own&&own!==message.hash)exitMatch('desync');}break;
-      case 'ended':if(match?.matchId===message.matchId){const reason=message.reason;cleanupMatch(reason==='desync'?'Game state mismatch detected. The match stopped safely.':reason==='disconnected'?'The other player disconnected. You are back in the lobby.':'Match ended. You are back in the lobby.');}break;
+      case 'ended':if(match?.matchId===message.matchId){const reason=message.reason;cleanupMatch(reason==='complete'?'Match recorded. Your record and match history are updated.':reason==='desync'?'Game state mismatch detected. The match stopped safely.':reason==='disconnected'?'The other player disconnected. You are back in the lobby.':'Match ended. You are back in the lobby.');}break;
       case 'error':status(message.message||'The server could not complete that request.',true);break;
     }
   }
@@ -111,15 +114,15 @@
     event.preventDefault();if(!build)return;
     let endpoint;try{endpoint=new URL(ui.server.value.trim());if(!['wss:','ws:'].includes(endpoint.protocol))throw Error();if(location.protocol==='https:'&&endpoint.protocol!=='wss:')throw Error();}catch{status('A secure online server address is needed before you can join.',true);$('connection-settings').open=true;return;}
     const name=ui.name.value.trim().slice(0,20);if(!name)return;
-    save('sf2-online-name',name);save('sf2-online-server',endpoint.href);
+    ui.server.value=endpoint.href;save('sf2-online-name',name);save('sf2-online-server',endpoint.href);
     if(socket)socket.close();status('Connecting to the online lobby…');ui.join.disabled=true;
     socket=new WebSocket(endpoint.href);
-    socket.addEventListener('open',()=>{send({type:'hello',name,build:build.commit});clearInterval(heartbeat);heartbeat=setInterval(()=>send({type:'ping'}),15000);});
+    socket.addEventListener('open',()=>{let identity;try{identity=JSON.parse(saved('sf2-identity:'+ui.server.value)||'null');}catch{}send({type:'hello',name,build:build.commit,identity});clearInterval(heartbeat);heartbeat=setInterval(()=>send({type:'ping'}),15000);});
     socket.addEventListener('message',receive);
     socket.addEventListener('close',()=>{clearInterval(heartbeat);self=null;players=[];challenge=null;ui.challenge.hidden=true;ui.join.hidden=false;ui.join.disabled=false;ui.leave.hidden=true;ui.name.disabled=ui.server.disabled=false;if(match)cleanupMatch();status('Disconnected from the online lobby.');renderPlayers();});
     socket.addEventListener('error',()=>status('The online server could not be reached. Check the connection settings and try again.',true));
   });
   ui.leave.addEventListener('click',()=>socket?.close());ui.back.addEventListener('click',()=>exitMatch());
   ui.accept.addEventListener('click',()=>challenge&&send({type:'accept',id:challenge.id}));ui.decline.addEventListener('click',()=>challenge&&send({type:'decline',id:challenge.id}));ui.cancel.addEventListener('click',()=>challenge&&send({type:'cancel',id:challenge.id}));
-  loadBuild().then(value=>{build=value;$('build-version').textContent=value.version==='local'?'Local development':'Version '+value.version+' ('+value.commit.slice(0,8)+')';status(ui.server.value?'Enter your name to join the online lobby.':'The online server is not configured yet. Single-player remains available.');});
+  loadBuild().then(value=>{$('history-link').href='history.html?server='+encodeURIComponent(ui.server.value);build=value;$('build-version').textContent=value.version==='local'?'Local development':'Version '+value.version+' ('+value.commit.slice(0,8)+')';status(ui.server.value?'Enter your name to join the online lobby.':'The online server is not configured yet. Single-player remains available.');});
 })();

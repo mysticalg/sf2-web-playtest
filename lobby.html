@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <link rel="icon" href="data:,">
   <title>Street Fighter II — online versus</title>
-  <script>window.SF2BUILD={"version":"0.1.91","commit":"190951eded021d7cd4ba78e8011f3eb260fd3e0d","builtAt":"2026-11-16T02:56:53.105070+00:00"};</script>
-  <link rel="stylesheet" href="lobby.css?v=190951eded021d7cd4ba78e8011f3eb260fd3e0d">
-  <script src="netplay.js?v=190951eded021d7cd4ba78e8011f3eb260fd3e0d" defer></script>
+  <script>window.SF2BUILD={"version":"0.1.92","commit":"af09569bb70a0eb9aab7ce301a76763ff13791ff","builtAt":"2026-11-16T03:19:26.255652+00:00"};</script>
+  <link rel="stylesheet" href="lobby.css?v=af09569bb70a0eb9aab7ce301a76763ff13791ff">
+  <script src="netplay.js?v=af09569bb70a0eb9aab7ce301a76763ff13791ff" defer></script>
 </head>
 <body>
   <header>
@@ -32,7 +32,9 @@
       <div class="lobby-heading"><h2>Players <span id="online-count">—</span></h2>
         <label class="compact">Game<select id="game-version"><option value="CE">Champion Edition</option><option value="WW">World Warrior</option></select></label>
       </div>
+      <p><a id="history-link" href="history.html">Match history and player records</a></p>
       <div id="players" class="players"><p class="empty">Join the lobby to see who is online.</p></div>
+      <h2 class="section-title">Games in progress</h2><div id="active-games" class="players" aria-live="polite"><p class="empty">Join the lobby to see active games.</p></div>
       <section id="challenge-panel" class="challenge" hidden aria-live="polite">
         <h2 id="challenge-title">Challenge</h2>
         <p id="challenge-description"></p>
