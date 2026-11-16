@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.94",
-  "commit": "4230e84d7376cec063e6cc603639d961c6340262",
-  "builtAt": "2026-11-16T04:23:14.662427+00:00",
+  "version": "0.1.95",
+  "commit": "1832a90b1afcd8c6542d6d8658c9f4d2ca2e969a",
+  "builtAt": "2026-11-16T04:57:27.767939+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 6140,
-      "sha256": "2b3abbc3a24e6c4d5d698f68a3f771479636fa0ddebba28e8d3bc95a19711590"
+      "bytes": 6313,
+      "sha256": "b3b08bb00344d914e5365a848ed65711f2957b4b1a29e7b36677a5dc135cbe35"
     },
     {
       "file": "game.js",
-      "bytes": 151846,
-      "sha256": "89519f8be53911abe621e30762376b5f68dfb4c2d9516b10733fd53c6291b998"
+      "bytes": 152129,
+      "sha256": "ab607d39a72386c66305e1e9beb4abf8bc611bf4d7bde882b6f87ebec04dd25b"
     },
     {
       "file": "assets.js",
@@ -170,14 +170,24 @@
       "sha256": "0ec32b39dbe5de15450afeb0c2e1c928f58b9242950b79843224f7a85d3ee10f"
     },
     {
+      "file": "ce_stage_water_data.js",
+      "bytes": 22644,
+      "sha256": "d96d1d40106a7318ef2672b53556bfef3b5e8a55a71eb0b737cb5594f6208c1e"
+    },
+    {
+      "file": "ce_stage_water.js",
+      "bytes": 3194,
+      "sha256": "bc44c2a30369a1fbbba1011d27888b7c551f4cdd793f2273f7432878720eb42d"
+    },
+    {
       "file": "ce_stage_animations_data.js",
-      "bytes": 318617,
-      "sha256": "a6e7885ef7ef6113f43c2060d7d1e82349693e28ba14830ad22e15d56aca59b3"
+      "bytes": 573461,
+      "sha256": "a252975d268622ccef7aca9b21069792062488c5ebd5305577daff04c32fa3cd"
     },
     {
       "file": "ce_stage_animations.js",
-      "bytes": 2345,
-      "sha256": "c22496c5999fc55ed67ef7ef7e44c31383d521e86164d85f1f1cf75624e6ccbf"
+      "bytes": 4226,
+      "sha256": "010f2f99662e57689a0667af18aab40bd5bd40fbce02ca4277891f1124da1372"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -252,7 +262,7 @@
     {
       "file": "lobby.html",
       "bytes": 3572,
-      "sha256": "ec98db61a2eb7ce5201b7ff4ef8f25517da99c036a85fd87a4a579b15ae78de9"
+      "sha256": "f69eb3fc3cdec4558726f0182e546182f8ba5d22358a77780a072eeab998c7a9"
     },
     {
       "file": "lobby.css",
@@ -267,7 +277,7 @@
     {
       "file": "history.html",
       "bytes": 1336,
-      "sha256": "1c08f84f924fea744a7bd1ed1d94538a9a0e5198a089c654277d04418cb87114"
+      "sha256": "79387b2e85c409b2bcdfc48a470d12a6050f5980cda5f38c60a2fc5a8752fc80"
     },
     {
       "file": "history.js",
