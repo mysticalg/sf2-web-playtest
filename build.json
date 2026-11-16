@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.102",
-  "commit": "37cc93def30b9ed7469cfc5623d5aac41cccaf5f",
-  "builtAt": "2026-11-16T11:28:41.041782+00:00",
+  "version": "0.1.103",
+  "commit": "ce483054fe8c3359009db264e0295fa69ba461ec",
+  "builtAt": "2026-11-16T12:08:26.649752+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 7071,
-      "sha256": "7d06397787f2e4b9811698fd47f93674b3cd5a2f5d3c6381981b2075eccf2c03"
+      "bytes": 7250,
+      "sha256": "f81703fb6508199e6fd765139aec3576127019d5595a1c84b7d97242f01b4156"
     },
     {
       "file": "game.js",
-      "bytes": 162018,
-      "sha256": "f3c6e5a8dce60a08d07c5d0ced281e0e63dfc4368a510f15d3e9f565de522bcc"
+      "bytes": 162310,
+      "sha256": "a413c35ed15a362d3ca43abd6a68f6568c6dae25e83f20715a38bd11568bf4b8"
     },
     {
       "file": "assets.js",
@@ -185,6 +185,16 @@
       "sha256": "00b2e6e508ae1be48b2cea76b7663ba4721ac63d9b8b5ccdcb9737016214a766"
     },
     {
+      "file": "ce_stage_cyclists_data.js",
+      "bytes": 230251,
+      "sha256": "9a94ecc9b794ba8a7834823479b229e09a27679b980748e975fff75d0d714a68"
+    },
+    {
+      "file": "ce_stage_cyclists.js",
+      "bytes": 3827,
+      "sha256": "204d01d3689a8ff81de4936e593b07f185da5a605031b9d31472c4c357226ff0"
+    },
+    {
       "file": "ce_stage_birds_data.js",
       "bytes": 4512,
       "sha256": "c3c23e09c34040c49676270bc4a33c6884d994fd45453daeb671716b5f789104"
@@ -307,7 +317,7 @@
     {
       "file": "lobby.html",
       "bytes": 3573,
-      "sha256": "e022534d702767182333750aed48a2c031103220202da3d9caed72307b92b00f"
+      "sha256": "5dc66a81eef79e699f15331bcd95ba87249e77609ff0bfe2a1887d19fe4eb059"
     },
     {
       "file": "lobby.css",
@@ -322,7 +332,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "5b7775b54b7e2eb037b8034e63127eb13487683d7b2a8f08450781378a3f2991"
+      "sha256": "c4ce34a8f02450a97dcd3c621b72e1d589fe9013d4f28bbc373248d0406bf44e"
     },
     {
       "file": "history.js",
