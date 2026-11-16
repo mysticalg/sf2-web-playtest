@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.87",
-  "commit": "1a99d77c1393b09466a0b873dfbb54c91772fab5",
-  "builtAt": "2026-11-16T00:26:35.080480+00:00",
+  "version": "0.1.88",
+  "commit": "bfcdf9d837d59906e6a1a8d6a9f14b3a50371f46",
+  "builtAt": "2026-11-16T00:50:13.531836+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 5784,
-      "sha256": "4c198c9032a00b912797c9021bc4488f8ca0c9c7e18c1f4162cabee43860ad72"
+      "bytes": 5963,
+      "sha256": "870a25dc90eacca74f449125a06d3378e36c7aeb0e6c2d1340a240ecd94c51c0"
     },
     {
       "file": "game.js",
-      "bytes": 148815,
-      "sha256": "6507a3fefa2e64402abbcfedf55120d84ea95747e40ea1e63da885ef17f5c182"
+      "bytes": 149071,
+      "sha256": "361e8e86aac40b4c5dbfa64364b1ba12b2e078b832bcd42ddf3be76b35381e1d"
     },
     {
       "file": "assets.js",
@@ -180,6 +180,16 @@
       "sha256": "3d10281505c9b7609805c8c6681837eb63a9866ee86708e51139813f984c59b9"
     },
     {
+      "file": "ce_stage_palettes_data.js",
+      "bytes": 252889,
+      "sha256": "1335dc31a01d0c77b5e432c933e76456b7d68d614435683f53e1d334b22a3c75"
+    },
+    {
+      "file": "ce_stage_palettes.js",
+      "bytes": 2615,
+      "sha256": "7a96e1c30f68da3870c65bc45643413f86bfd917471f9376f92dad34e491b4e1"
+    },
+    {
       "file": "ce_car.js",
       "bytes": 11234,
       "sha256": "abc7bad9634ad23ca50a165ad73fb09548f80b3911e6644d885375e9695dcd34"
@@ -232,7 +242,7 @@
     {
       "file": "lobby.html",
       "bytes": 3306,
-      "sha256": "114667a61fcc6286953c2442784195855d2bdb45eac0e8ce140ec2a93b2ad2bc"
+      "sha256": "dc15239ac6511896f180a74b630a2b78e408538c5aae956991b85900b3a155ea"
     },
     {
       "file": "lobby.css",

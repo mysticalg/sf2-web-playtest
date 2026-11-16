@@ -22,6 +22,7 @@ jobs:
       - name: Stage browser files only
         run: |
           mkdir _site
+          cp ce_stage_palettes_data.js ce_stage_palettes.js _site/
           cp ce_stage_animations_data.js ce_stage_animations.js _site/
           cp ce_projectile_clash.js ce_projectile_clash_data.js _site/
           cp ce_barrel_data.js ce_barrels.js ce_barrel_player_data.js ce_barrel_player.js _site/
