@@ -167,7 +167,7 @@ function resetp(p,x,face){Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSI
 // CE 0x38b2/0x38ca: native X 552/728, camera 448; browser world origin is native X 256.
 const CE_CAM_EXTENT=[40,56,53,40,40,36,46,40,40,44,40,40]; // ROM 0x394c, actor+0x1c2
 function resetround(){if(VER.cur==='CE')window.SF2CEPROJECTILES?.reset(P);G.ann=null;if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);for(const q of P)delete q.CE_HANDICAP;if(VER.edition==='ce'&&G.mode2p&&window.SF2CECOMBAT){const levels=SF2CECOMBAT.matchLevels(P[0].fid,P[1].fid,{wins:P.map(q=>q.WINS),random:rand});P.forEach((q,i)=>q.CE_HANDICAP=levels[i]);}G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;}
-function resetmatch(){P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
+function resetmatch(){if(VER.cur==='CE')window.SF2CESTAGEANIMATIONS?.reset();P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
 // ---- motion input buffer (sf2ua 0x2d58e) ----
 function mwin(){return WINTAB[rand()&31];}
 function motion(p,keys,nw,rel){
@@ -950,7 +950,7 @@ function tx(s,x,y,sz,fill,stroke,al){s=String(s);const k=Math.max(1,Math.round(s
   for(let i=0;i<s.length;i++){const c=s.charCodeAt(i)-32;if(c>0&&c<96)fimgKind('object',A,c*8,0,8,8,x0+i*8*k,y0,8*k,8*k);}}
 function txw(s,xr,y,fill,stroke,al){s=String(s);const A=fatlas(fill,stroke),aw=11.5;let x0=al==='left'?xr:xr-aw*s.length;cx.imageSmoothingEnabled=false;
   for(let i=0;i<s.length;i++){const c=s.charCodeAt(i)-32;if(c>0&&c<96)fimgKind('object',A,c*8,0,8,8,Math.round(x0+i*aw),y-8,11,9);}}
-function stagedraw(front){for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(CE_OBJECT_CONTEXT,layerIndex,G.cam,G.tick))continue;const kind=layerIndex>=3?'object':'scroll',im=STI[G.stage][layerIndex];
+function stagedraw(front){for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(CE_OBJECT_CONTEXT,layerIndex,G.cam,G.tick))continue;const kind=layerIndex>=3?'object':'scroll',base=STI[G.stage][layerIndex],im=VER.cur==='CE'&&window.SF2CESTAGEANIMATIONS?SF2CESTAGEANIMATIONS.layer(G.stage,layerIndex,base,G.tick):base;
     if(l.rows){for(const [y0,y1,A,B] of l.rows)fimgKind(kind,im,Math.round(A*G.cam+B),y0,W,y1-y0,0,y0,W,y1-y0);continue;} // scroll2 row scroll
     let x0=Math.round(l.a*G.cam+l.b+l.drift*G.tick);
     if(l.wrap){x0=((x0%l.w)+l.w)%l.w;for(let x=-x0;x<W;x+=l.w)fimgKind(kind,im,x,0);}else{fimgKind(kind,im,-x0,0); if(l.w>=500){const h=im.height; // stretch the edge column over any gap (was black bands)
@@ -1282,7 +1282,7 @@ window.SF2AI={
     for(let i=0;i<frames;i++)step(pair);return aiInfo();}}
 };
 resetmatch();
-Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...Object.values(CWIN||{}).flatMap(f=>Object.values(f))].map(i=>i.decode()).concat([window.SF2CEWORLDMAP?.ready,window.SF2CEFADE?.ready,window.SF2CEPROJECTILES?.ready,window.SF2CEBARRELPLAYER?.ready].filter(Boolean))).then(()=>{render();requestAnimationFrame(loop);});
+Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...Object.values(CWIN||{}).flatMap(f=>Object.values(f))].map(i=>i.decode()).concat([window.SF2CEWORLDMAP?.ready,window.SF2CEFADE?.ready,window.SF2CEPROJECTILES?.ready,window.SF2CEBARRELPLAYER?.ready,window.SF2CESTAGEANIMATIONS?.ready].filter(Boolean))).then(()=>{render();requestAnimationFrame(loop);});
 
 /* CE is the default version: start loading it at once (WW stays selectable on the title) */
 restoreEditionSettings('ce');G.wantce=1;loadce();
