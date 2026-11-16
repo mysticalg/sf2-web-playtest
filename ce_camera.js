@@ -17,7 +17,7 @@
   if(type===12&&!near)return (fixed&65535)|(main<<16);return fixed+delta*(rates[type]||0);
  }
  function step(stage,players,gates={}){const s=stages[stage];state.delta=0;controller(state,players.map(p=>40+(p.Y>>8)),players.map(p=>!!p.CECameraIgnore),gates,s);if(!gates.shake){state.near=parallax(state.near,s.types[0],state.delta,state.main,true);state.far=parallax(state.far,s.types[2],state.delta,state.main,false);}return state;}
- function offset(stage,index){const L=stages[stage].layers[index].nativeLayer;if(stage===0&&index===4)return state.far>>16;return L===1?state.near>>16:L===3?state.far>>16:state.main;}
+ function offset(stage,index){const L=stages[stage].layers[index].nativeLayer;if(stage===0&&index===4)return state.far>>16;return L===1?state.near>>16:L===3?(state.far>>16)+(stage===4?(window.SF2CESTAGEBOAT?.offset||0):0):state.main;}
  function pad(base,top,key,paint){let rows=pads.get(base);if(!rows){rows=new Map();pads.set(base,rows);}if(rows.has(key))return rows.get(key);if(!top.complete||!(base.width||base.naturalWidth))return base;const c=document.createElement('canvas');c.width=base.naturalWidth||base.width;c.height=256;const x=c.getContext('2d');x.drawImage(top,0,0);x.drawImage(base,0,32);if(paint)paint(x);rows.set(key,c);return c;}
  function image(stage,index,base,tick){return pad(base,stages[stage].layers[index].im,stage+':'+index,ctx=>window.SF2CESTAGEANIMATIONS?.top(stage,index,ctx,tick));}
  function padRyu(index,base){return pad(base,ryu[index-3].im,'ryu:'+index);}

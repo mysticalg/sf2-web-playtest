@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.98",
-  "commit": "e3dde5dd94c9e3f0699306445314234ebbb9049d",
-  "builtAt": "2026-11-16T08:12:50.195051+00:00",
+  "version": "0.1.99",
+  "commit": "52494b14dff003660d1221930dd8b97baefa159a",
+  "builtAt": "2026-11-16T08:55:52.639168+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 6649,
-      "sha256": "ba4e91e17d53fe957c631b13795f5c502d85cffb4d016564025f88b77f45843c"
+      "bytes": 6820,
+      "sha256": "dde328dab9d9a5167e5198092f2d53344489dcce077acd64a48d41fc834e3d42"
     },
     {
       "file": "game.js",
-      "bytes": 156032,
-      "sha256": "8bb71cd50945923614be112b5846544126013380b703319a5d2a0169fd33ef15"
+      "bytes": 156264,
+      "sha256": "5e99d13229abf328b994b75c4f59c1abd55699d1f35f807932265851fb96aede"
     },
     {
       "file": "assets.js",
@@ -171,8 +171,18 @@
     },
     {
       "file": "ce_camera.js",
-      "bytes": 2773,
-      "sha256": "95b60964dd1f12fa6452e04922fcc8278abc49a317746132225128dacbd2943e"
+      "bytes": 2824,
+      "sha256": "640953670cb557be263312320506aa11869b8c4e1f9b2db50855a83554fe82e1"
+    },
+    {
+      "file": "ce_stage_boat_data.js",
+      "bytes": 5075,
+      "sha256": "27d2e3f9b47c4fd11debb05e8c7352923e77a2e6647d1748c3895dd015c4fadc"
+    },
+    {
+      "file": "ce_stage_boat.js",
+      "bytes": 1215,
+      "sha256": "00b2e6e508ae1be48b2cea76b7663ba4721ac63d9b8b5ccdcb9737016214a766"
     },
     {
       "file": "ce_stage_birds_data.js",
@@ -282,7 +292,7 @@
     {
       "file": "lobby.html",
       "bytes": 3572,
-      "sha256": "95ba4f7fbd849a7292e575ad49b9c665149519a1d8b817c0df00394b1dfc3820"
+      "sha256": "ef632fb9f108615d390925c91da21926abe2c222123178dce9a1c7167824627c"
     },
     {
       "file": "lobby.css",
@@ -297,7 +307,7 @@
     {
       "file": "history.html",
       "bytes": 1336,
-      "sha256": "d01ad5a3521a8e638a1bb9aff976a0a30b558642f21f7b5463ba1550f13b162f"
+      "sha256": "5d5959529e8c7c64400a88c7b3891e49fae733c35dae35cff83bb73bed7357fd"
     },
     {
       "file": "history.js",

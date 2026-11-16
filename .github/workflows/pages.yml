@@ -24,6 +24,7 @@ jobs:
           mkdir _site
           cp history.html history.js _site/
           cp ce_stage_palettes_data.js ce_stage_palettes.js _site/
+          cp ce_stage_boat_data.js ce_stage_boat.js _site/
           cp ce_stage_birds_data.js ce_stage_birds.js _site/
           cp ce_camera_data.js ce_camera.js _site/
           cp ce_stage_water_data.js ce_stage_water.js _site/
