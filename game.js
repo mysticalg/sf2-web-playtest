@@ -238,7 +238,7 @@ function gravity(p){p.VX-=p.AX;p.VY-=p.AY;p.X+=p.VX;p.Y+=p.VY;
 /* CE sound: the CE 68000's own sound commands (latch 0x800181, traced per fighter/move in the box emulator, tools/ce_snd.json)
    go to the CE Z80 program on the worklet; WW (or before audio starts) keeps the direct OKI phrase ids */
 function sfxc(code,old,vol){ if(VER.cur!=='CE'||!code){if(old!=null)snd(old,vol);return;}
-  (G.cmdlog||(G.cmdlog=[])).push(code);if(G.cmdlog.length>512)G.cmdlog.shift(); if(SN)SN.port.postMessage({c:code}); else if(old!=null)snd(old,vol);}
+  (G.cmdlog||(G.cmdlog=[])).push(code);if(G.cmdlog.length>512)G.cmdlog.shift();if(netReplaying)return; if(SN)SN.port.postMessage({c:code}); else if(old!=null)snd(old,vol);}
 const XS=p=>VER.cur==='CE'&&p.F.sfx||null;
 function AI(p,n){const c=p.F._ai||(p.F._ai={});if(!(n in c)){c[n]=p.F.anims.findIndex(a=>a.name===n);if(c[n]<0&&isEvilKen(p))c[n]=SF2AIEvilKen.animation(p,n);}return c[n];}
 function btnof(n){for(const b of [AN_SLP,AN_CLP,AN_NEAR,AN_JD,AN_JU])if(n>=b&&n<b+6)return n-b;return -1;}
@@ -541,7 +541,11 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
   if(d.ST===S_FREE||d.ST===S_CR||d.ST===S_BLK){const back=dir>0?K_R:K_L; /* M13d: block away from the attacker's actual side (crossups) */
     if(reaction?.nativeBlocked??(!!(d.KEYS&back)&&(!low||(low>0)===!!(d.KEYS&K_D)))){ /* native posture admission is resolved before damage RNG */const c=d.KEYS&K_D?1:0;d.RETCR=c;setanim(d,c?AN_BLOCKC:AN_BLOCKS,0);d.ST=S_BLK;
       d.KB=PUSHKB[str]*dir;d.STUN=BSTUN[str]-(VER.cur==="CE"&&d.opp.MH2?2:0);if(!localStop)G.hfz=BFRZ; /* CE: 2nd blocked hit of a two-hit normal frees 2f sooner (ROM stun trace) */
-      if(chip){hpDamage(d,chip);if(!hpAlive(d)){d.CE_FatalHitPending={special:reaction?.reactionCode>=24&&reaction.reactionCode!==32};fallst(d,S_KO,dir);}}if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});return 'blk';}}
+      let lethalProjectileChip=false;
+      if(chip){hpDamage(d,chip);if(!hpAlive(d)){d.CE_FatalHitPending={special:reaction?.reactionCode>=24&&reaction.reactionCode!==32};fallst(d,S_KO,dir);
+        // CE0x951d8..0x95236 clears the block flags on underflow, then awards the KO command.
+        if(VER.edition==='ce'&&reaction?.profile?.projectile){lethalProjectileChip=true;if(G.mode2p||d.opp.i===0)ceBonusScore(reaction.koScoreCommand,d.opp.i);}
+      }}if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});return lethalProjectileChip?undefined:'blk';}}
   if(!localStop)G.hfz=HFRZ;
   const nativeScore=VER.edition==='ce'&&reaction?.scoreCommand!==undefined?SF2CECOMBAT.scoreAmount((VER.edition==='ce'?dmg>d.HP:dmg>=d.HP)?reaction.koScoreCommand:reaction.scoreCommand):null;
   if(VER.edition!=='ce'||G.mode2p||d.opp.i===0)d.opp.SCORE=nativeScore===null?(d.opp.SCORE||0)+dmg*100:Math.min(9999999,(d.opp.SCORE||0)+nativeScore);
@@ -722,7 +726,7 @@ function ai(p){if(p.AIJB&&p.ST===S_AIR&&--p.AIJT<=0){const b=p.AIJB;p.AIJB=0;ret
   if(!(r&0x8000000))return p.KEYS=btn; G.aipend=btn;G.aidelay=5;return p.KEYS=K_D;}
 // ---- input ----
 const IQ=[]; let IDEL=(()=>{try{const m=/[?&]delay=(\d)/.exec(location.search);return m?+m[1]:1;}catch(e){return 1;}})();
-let netActive=false;
+let netActive=false,netReplaying=false;
 const NET_BASE_G=JSON.parse(JSON.stringify(G));
 const CONTROL={paused:false,item:0,padPrev:[0,0],keyPrev:0,inputPrev:0,resumeGate:false};
 const down=new Set(); let gprev=0;
@@ -1078,8 +1082,8 @@ function musInit(oki){if(!window.SF2MUS||!SF2SND.z80||!AC.audioWorklet)return;
 // stage themes indexed by fid (= stage); scene jingles. Codes logged from the 68000's writes to the sound latch (0x800181).
 const STM=[0x01,0x02,0x03,0x05,0x04,0x06,0x07,0x08,0x0c,0x0b,0x09,0x0a];
 const MUSC={title:0x16,select:0x0e,vs:0x0f,win:0x14,lose:0x10,cont:0x11,over:0x13,end:0x0d,stop:0xf0};
-function music(c){if(c===MUS)return;MUS=c;(G.muslog||(G.muslog=[])).push(c);if(SN)SN.port.postMessage({c});else SNQ.push({c});}
-function snd(id,vol=0.6){(G.sndlog||(G.sndlog=[])).push(id);if(G.sndlog.length>64)G.sndlog.shift();
+function music(c){if(c===MUS)return;MUS=c;(G.muslog||(G.muslog=[])).push(c);if(netReplaying)return;if(SN)SN.port.postMessage({c});else SNQ.push({c});}
+function snd(id,vol=0.6){(G.sndlog||(G.sndlog=[])).push(id);if(G.sndlog.length>64)G.sndlog.shift();if(netReplaying)return;
   if(SN){SN.port.postMessage({o:[id,Math.max(0,Math.min(8,Math.round(-20*Math.log10(Math.max(vol,0.01))/3)))]});return;}if(!AC||!SB[id])return;const src=AC.createBufferSource(),g=AC.createGain();
   src.buffer=SB[id];g.gain.value=vol;src.connect(g).connect(MG);src.start();}
 // ---- title / select / VS / win / continue / ending (art from the game's own attract-mode VRAM, tools/screens.py) ----
@@ -1264,7 +1268,7 @@ SF2.net={
     CONTROL.paused=false;SF2.freeze=1;netActive=true;rng=(options.seed>>>0)||0x2545F491;
     for(const key of Object.keys(G))delete G[key];Object.assign(G,JSON.parse(JSON.stringify(NET_BASE_G)));
     Object.assign(G,{mode2p:1,arc:0,diff:1,ceDifficulty:3,rtime:[0,30,60,99].includes(options.time)?options.time:99,sel:[0,4],cep:[0,6],selstep:0});
-    if(options.bot){const d=Math.max(0,Math.min(2,options.bot.difficulty|0));G.netBot={difficulty:d,fighter:[0,4,5].includes(options.bot.fighter)?options.bot.fighter:0};G.diff=[0,1,3][d];G.ceDifficulty=[0,3,7][d];}
+    if(options.bot){const d=Math.max(0,Math.min(2,options.bot.difficulty|0));G.netBot={difficulty:d,fighter:Number.isInteger(options.bot.fighter)&&options.bot.fighter>=0&&options.bot.fighter<(options.version==='WW'?8:12)?options.bot.fighter:0};G.diff=[0,1,3][d];G.ceDifficulty=[0,3,7][d];}
     down.clear();tapped.clear();IQ.length=0;IDEL=0;gprev=0;selprev=[0,0];
     setfighter(P[0],0);setfighter(P[1],4);P[0].SCORE=P[1].SCORE=0;resetmatch();go('select');render();
   },
@@ -1273,6 +1277,7 @@ SF2.net={
   hash(){const omit=new Set(['F','opp','anim','ft','AIPC']);const players=P.map(p=>Object.fromEntries(Object.entries(p).filter(([k])=>!omit.has(k))));
     const gs=Object.fromEntries(Object.entries(G).filter(([k])=>!['hisc','sndlog','muslog','cmdlog','endk'].includes(k)));
     const text=JSON.stringify([gs,players,rng,IQ,selprev],(key,value)=>{if(value===P[0]||value===P[1])return {player:value.i};if(key==='anim'||key==='F'||key==='ft')return undefined;return value;});let h=2166136261;for(let i=0;i<text.length;i++)h=Math.imul(h^text.charCodeAt(i),16777619);return (h>>>0).toString(16).padStart(8,'0');},
+  set replaying(value){netReplaying=!!value;if(!netReplaying&&MUS>=0){if(SN)SN.port.postMessage({c:MUS});else SNQ=[{c:MUS}];}},
   get active(){return netActive;}
 };
 
