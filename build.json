@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.95",
-  "commit": "1832a90b1afcd8c6542d6d8658c9f4d2ca2e969a",
-  "builtAt": "2026-11-16T04:57:27.767939+00:00",
+  "version": "0.1.96",
+  "commit": "352d233acb75a39aefd4ee1784a6d3e23203cbda",
+  "builtAt": "2026-11-16T05:08:04.236718+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 6313,
-      "sha256": "b3b08bb00344d914e5365a848ed65711f2957b4b1a29e7b36677a5dc135cbe35"
+      "bytes": 6486,
+      "sha256": "1688cf2fe065fa21d187790db40fe4d0652dfec511c88138bbb7636421914755"
     },
     {
       "file": "game.js",
-      "bytes": 152129,
-      "sha256": "ab607d39a72386c66305e1e9beb4abf8bc611bf4d7bde882b6f87ebec04dd25b"
+      "bytes": 152272,
+      "sha256": "a7867730f08a0c352b1c7d5ca597c83030a532d0cd787d284ec2c26532690683"
     },
     {
       "file": "assets.js",
@@ -165,6 +165,16 @@
       "sha256": "a456b354102b0ba1111d4020e0a628fc1f965a1fcf967dfbf5d8269f2bbcb85d"
     },
     {
+      "file": "ce_stage_birds_data.js",
+      "bytes": 4512,
+      "sha256": "c3c23e09c34040c49676270bc4a33c6884d994fd45453daeb671716b5f789104"
+    },
+    {
+      "file": "ce_stage_birds.js",
+      "bytes": 2533,
+      "sha256": "033e3feeb60cff00bf833cd7635a1b7053e9c8fe88e651d84ec8b61ba6d34e38"
+    },
+    {
       "file": "ce_ryu_stage.js",
       "bytes": 9109,
       "sha256": "0ec32b39dbe5de15450afeb0c2e1c928f58b9242950b79843224f7a85d3ee10f"
@@ -262,7 +272,7 @@
     {
       "file": "lobby.html",
       "bytes": 3572,
-      "sha256": "f69eb3fc3cdec4558726f0182e546182f8ba5d22358a77780a072eeab998c7a9"
+      "sha256": "c0f437ebe36ee95c1f238c809999667394a02f00cf4dc054072b7ad92b94426e"
     },
     {
       "file": "lobby.css",
@@ -277,7 +287,7 @@
     {
       "file": "history.html",
       "bytes": 1336,
-      "sha256": "79387b2e85c409b2bcdfc48a470d12a6050f5980cda5f38c60a2fc5a8752fc80"
+      "sha256": "8e61556ec70400b0b3b4192d43a07685b3b1058f1eb767626a686d1de7a979d9"
     },
     {
       "file": "history.js",
