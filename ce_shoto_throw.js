@@ -54,7 +54,7 @@
    o.X=(p.X&~255)+((p.FACE?-row[0]:row[0])<<8)+(o.X&255);o.Y=(p.Y&~255)+(row[1]<<8)+(o.Y&255);o.FACE=p.FACE^((row[2]>>5)&1);o.ST=5;o.STUN=999;o.KB=0;
    // 0x3224..0x3282 clips the held actor by its original extent and
    // transfers the integer correction to its thrower (actor byte0x63).
-   const cam=window.SF2.G.cam,margin=EXTENT[o.fid],ox=o.X>>8,clipped=Math.max(cam+margin,Math.min(cam+384-margin,ox));
+   const room=window.SF2.edition==='ai'?SF2.aiRoom():{left:SF2.G.cam,right:SF2.G.cam+384},margin=EXTENT[o.fid],ox=o.X>>8,clipped=Math.max(room.left+margin,Math.min(room.right-margin,ox));
    const correction=(clipped-ox)<<8;o.X+=correction;p.X+=correction;
    const named=h.find(o,'thpose'+row[3]);h.anim(o,named>=0?named:h.find(o,'thpose0'),named>=0?0:row[3]);
   },

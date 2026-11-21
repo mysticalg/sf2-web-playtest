@@ -12,12 +12,12 @@
  function reset(){origin=null;lastStage=-1;}
  function advance(stage,tick){if(lastStage!==stage||origin===null||tick<origin){lastStage=stage;origin=tick;}}
  const camera=cam=>Math.max(0,Math.min(384,Math.floor(cam)));
- function draw(ctx,stage,index,cam,tick){
+ function draw(ctx,stage,index,cam,tick,width=384){
   const s=stages.get(stage);if(!s?.rows)return false;const c=camera(cam);advance(stage,tick);const age=Math.max(0,Math.floor(tick-origin));
   if(s.tail?.index===index){const t=s.tail;ctx.drawImage(t.im,t.x-t.cameras[c]+t.left,240-t.y+t.top);return true;}
   const l=s.layers.find(l=>l.index===index);if(!l)return false;
   const im=SF2CESTAGEANIMATIONS.nativeLayer(stage,index,l.im,tick,cam),rows=l.nativeLayer===2?s.rows[c]:[[-32,224,0]];
-  for(const[y0,y1,shift]of rows){let sx=((s.cameras[c][l.nativeLayer]+(s.wind?.layer===l.nativeLayer?s.wind.offsets[age%s.wind.period]-s.wind.offsets[s.wind.atCameraSample]:0)+64+shift)%l.width+l.width)%l.width,dx=0;while(dx<384){const w=Math.min(l.width-sx,384-dx);ctx.drawImage(im,sx,y0+32,w,y1-y0,dx,y0,w,y1-y0);dx+=w;sx=0;}}
+  for(const[y0,y1,shift]of rows){let sx=((s.cameras[c][l.nativeLayer]+(s.wind?.layer===l.nativeLayer?s.wind.offsets[age%s.wind.period]-s.wind.offsets[s.wind.atCameraSample]:0)+64+shift)%l.width+l.width)%l.width,dx=0;while(dx<width){const w=Math.min(l.width-sx,width-dx);ctx.drawImage(im,sx,y0+32,w,y1-y0,dx,y0,w,y1-y0);dx+=w;sx=0;}}
   return true;
  }
  window.SF2CESTAGESCROLL={ready,reset,advance,draw,data:D};

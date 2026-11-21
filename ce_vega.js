@@ -125,7 +125,7 @@
   if(c.phase>=10)return izuna(p,c,h,set,flags);
   if(c.phase===0){
    if(!(flags&255)){
-    const cam=h.cam,rel=(p.X>>8)-cam,keys=p.KEYS&3,target=keys?(keys&1?cam:cam+384):cam+(rel<192?0:384);
+    const room=window.SF2?.edition==='ai'?SF2.aiRoom():{left:h.cam,right:h.cam+384},mid=(room.left+room.right)/2,keys=p.KEYS&3,target=keys?(keys&1?room.left:room.right):((p.X>>8)<mid?room.left:room.right);
     c.vx=(target-(p.X>>8))*8;c.vy=(104-(p.Y>>8))*8;c.ay=0x400;c.descend=false;c.phase=1;c.airTime=0;
     p.FACE=c.vx>=0?1:0;
    }return true;
@@ -227,7 +227,7 @@
    const row=c.rows[c.indices[p.aidx]];if(!row)return;
    o.X=(p.X&~255)+((p.FACE?-row[0]:row[0])<<8)+(o.X&255);o.Y=(p.Y&~255)+(row[1]<<8)+(o.Y&255);
    o.FACE=p.FACE^((row[2]>>5)&1);o.ST=5;o.STUN=999;o.KB=0;
-   const margin=[40,56,53,40,40,36,46,40,40,44,40,40][o.fid],cam=window.SF2.G.cam,x=o.X>>8,clipped=Math.max(cam+margin,Math.min(cam+384-margin,x)),correction=(clipped-x)<<8;
+   const margin=[40,56,53,40,40,36,46,40,40,44,40,40][o.fid],room=window.SF2.edition==='ai'?SF2.aiRoom():{left:window.SF2.G.cam,right:window.SF2.G.cam+384},x=o.X>>8,clipped=Math.max(room.left+margin,Math.min(room.right-margin,x)),correction=(clipped-x)<<8;
    o.X+=correction;p.X+=correction;if(c.fresh){c.fresh=0;return;}const name=h.find(o,'thpose'+row[3]);h.anim(o,name>=0?name:h.find(o,'thpose0'),name>=0?0:row[3]);
   }
  };

@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.113",
-  "commit": "7f7ab95ffde8c6d30066a3de8d34a8d8b727d998",
-  "builtAt": "2026-11-21T13:58:29.102106+00:00",
+  "version": "0.1.114",
+  "commit": "959a313b28d219f975808a14b32aa3f18c46f03e",
+  "builtAt": "2026-11-21T14:09:24.505178+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 7611,
-      "sha256": "4018d479c505a59c0112fc87adddda1e35017c08f6f78473ef7ce09c8ac4451e"
+      "sha256": "0bcdfbea16cd5368e27945245d13f942ddf26d3608918e8b4d23c8c3adaa7a90"
     },
     {
       "file": "game.js",
-      "bytes": 165920,
-      "sha256": "f225288630425da0570593a8642d361503e82225cf7fab3527841e5ee020f4d5"
+      "bytes": 167449,
+      "sha256": "84280ac2abd3b1942e27ebf9a4ffc455e6f6f70515fab6fe148eb929a1946171"
     },
     {
       "file": "assets.js",
@@ -246,8 +246,8 @@
     },
     {
       "file": "ce_stage_scroll.js",
-      "bytes": 2223,
-      "sha256": "12d6b6981e2091365ee016d50846d9a78bb814ea9e95f5534f8fece2244e9e26"
+      "bytes": 2237,
+      "sha256": "5e3c6b777f51a1f9757e1dc2285c39f1df76a9a91c3c5c7eba694733fe2ff46b"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -266,8 +266,8 @@
     },
     {
       "file": "ce_stage_palettes.js",
-      "bytes": 2719,
-      "sha256": "f622886f960192639cb8d2d0bc6959cde99377e924978d8b454dc9d962fc30c2"
+      "bytes": 2757,
+      "sha256": "5a017e3c7e1628645f857d65d4c024a163949ba7b8d1da69eec138676b0b4c95"
     },
     {
       "file": "ce_car.js",
@@ -332,7 +332,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "58a3751e936f1190c9d5e21769cf0cfdba5fe216307bba701cd36c549ac7a49b"
+      "sha256": "de9264ff5ba3c1067588b72ff77d2d59e2a6e3eaaa78028d564dd52cad3b6365"
     },
     {
       "file": "lobby.css",
@@ -347,7 +347,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "bd6b70846d2486e2742b99ceaf8dc5df45cb68fc79e943b800fe7021a69dfcb9"
+      "sha256": "289d21d9ae010099ce15cbd01f415f117e9ef7cebdd087c9783a8509f8566de0"
     },
     {
       "file": "history.js",
@@ -376,8 +376,8 @@
     },
     {
       "file": "ce_shoto_throw.js",
-      "bytes": 9709,
-      "sha256": "cbeb15c369489b98d0274a66cf1f1481e53b850240979be5ff6242446156d089"
+      "bytes": 9778,
+      "sha256": "f91e2eeb691bf9c6fac1b4b3c0797fe12732560fc77bcb7727554dd43c696de0"
     },
     {
       "file": "ce_vega_ground_data.js",
@@ -386,8 +386,8 @@
     },
     {
       "file": "ce_vega.js",
-      "bytes": 23875,
-      "sha256": "86bf00da0b773698b5eb235a7a6e9a96756f48c5b218f179111850bd45e6f3ee"
+      "bytes": 23795,
+      "sha256": "1da89c6a4f72d474b8fdb6e115ef2d4e2e9462746448c5f69494d3290e89aa7f"
     },
     {
       "file": "vega_claw_ce.js",
