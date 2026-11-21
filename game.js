@@ -330,7 +330,7 @@ function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk
 
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 
-function resetp(p,x,face){Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
+function resetp(p,x,face){Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CEGI:null,CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
 
   if(VER.cur==='CE'){p.CEWALL=0;p.CEVSL=null;}else{delete p.CEWALL;delete p.CEVSL;}
 
@@ -394,14 +394,16 @@ function motion(p,keys,nw,rel){
 
   if(p.CBLW&&(dir&1)&&!(dir&2)&&kb)ev.push(['cbfl','K',low(kb)]);
 
+  const guileInput=VER.edition==='ce'&&p.fid===3&&window.SF2CEGUILEINPUT;
   const bisonInput=VER.cur==='CE'&&p.fid===8&&window.SF2BISONINPUT;
 
-  if(cbf){if(pb&&!bisonInput)ev.push(['cbf','P',low(pb)]);if(kb)ev.push(['cbf','K',low(kb)]);}
+  if(cbf&&!guileInput){if(pb&&!bisonInput)ev.push(['cbf','P',low(pb)]);if(kb)ev.push(['cbf','K',low(kb)]);}
 
   if(bisonInput){const event=bisonInput.step(p,dir,((nw|rel)>>4)&7,()=>rand());if(event)ev.push(event);}
 
-  if(cdu){if(pb)ev.push(['cdu','P',low(pb)]);if(kb)ev.push(['cdu','K',low(kb)]);}
+  if(cdu&&!guileInput){if(pb)ev.push(['cdu','P',low(pb)]);if(kb)ev.push(['cdu','K',low(kb)]);}
 
+  if(guileInput)ev.push(...guileInput.step(p,dir,nw|rel,()=>rand()));
   // mash: 3 presses of punch (or kick) buttons inside 30 ticks
 
   const chunLegs=VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS;
@@ -551,6 +553,8 @@ function update(p){p.X0=p.X;if(VER.edition==='ce'&&G.CERound){const h=ceRoundHoo
   const keys=p.KEYS, nw=keys&~p.PREV, rel=p.PREV&~keys; p.PREV=keys;p.HZK=keys;
 
   let ev=motion(p,keys,nw,rel); const force=p.FORCE; p.FORCE=0;
+  // Native intro actors recognize charge/input, but cannot walk, jump or attack.
+  if(VER.edition==='ce'&&G.scene==='fight'&&G.gph===0)return controls(p,{keys:0,nw:0,ev:[],force:0,rel:0});
 
   if(VER.edition==='ce'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)SF2CEBARRELPLAYER.facing(G.bon,p,{ready:G.st>=100,airborne:p.ST===S_AIR||G.bon.barrels?.player?.phase==='air'});
 
@@ -638,7 +642,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
 
   if(VER.cur==='CE'&&st===S_SPEC&&atk>=0&&atk<3&&p.MV&&p.MV.inp==='cdu'&&p.MV.kind==='rise'&&p.Y>(24<<8)&&bossair(p,dx))return end(p);
 
-  if((ev.length||force)&&(st===S_FREE||st===S_CR||st===S_UP||(VER.cur==='CE'&&window.SF2CEVEGA&&p.fid===11&&st===S_AIR&&(p.Y>>8)===0&&ev.some(e=>e[0]==='cdu'&&e[1]==='K'))||(st===S_ATK&&ev.some(e=>e[0]==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)||e[0]==='ppp'))||(st===S_SPEC&&p.MV&&p.MV.inp==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)))&&startspec(p,ev,force))return end(p);
+  if((ev.length||force)&&(st===S_FREE||st===S_CR||st===S_UP||(VER.cur==='CE'&&window.SF2CEVEGA&&p.fid===11&&st===S_AIR&&(p.Y>>8)===0&&ev.some(e=>e[0]==='cdu'&&e[1]==='K'))||(st===S_ATK&&VER.edition==='ce'&&p.fid===3&&ev.some(e=>e[0]==='cbf'||e[0]==='cdu'))||(st===S_ATK&&ev.some(e=>e[0]==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)||e[0]==='ppp'))||(st===S_SPEC&&p.MV&&p.MV.inp==='mash'&&!(VER.cur==='CE'&&p.fid===5&&window.SF2CHUNLEGS)))&&startspec(p,ev,force))return end(p);
 
   if(VER.edition==='ce'&&window.SF2CEREACTION&&[S_FREE,S_CR].includes(st)){
 
@@ -746,6 +750,7 @@ function startspec(p,ev,force){const mv=p.F.moves; let m=null,str=0;
 
   if(p.ST===S_SPEC&&p.MV===m){p.SCNT=Math.max(p.SCNT,24);const X=XS(p),q=X&&X.sp[mv.indexOf(m)];if(q&&q.length)sfxc(q[0][1]);return true;}   // mash extends the move
 
+  if(VER.edition==='ce'&&p.fid===3)window.SF2CEGUILEINPUT?.consume(p,m);
   Object.assign(p,{FBTK:0,SPEND:spend(p,mv.indexOf(m),str),MV:m,SPK:m.kind==='fb'?0:1,SPKD:m.kind==='rise'||m.kind==='dash'||m.kind==='tat',SPSTR:str,SPPH:0,RETCR:0,KB:0,SCNT:0,BSL:0});
 
   let n=m.a+(m.a<45&&m.kind!=='tat'?str:0);
@@ -1738,7 +1743,7 @@ function step0(net){
 
   if(aiEnabled()&&G.gph===1)P.forEach(aiInput);
 
-  if(G.gph!==1){P[0].KEYS=P[1].KEYS=0;P[1].FORCE=0;}
+  if(G.gph!==1){if(VER.edition!=='ce'||G.gph!==0)P[0].KEYS=P[1].KEYS=0;P[1].FORCE=0;}
 
   if(G.hfz>0){G.hfz--;for(const q of P){if(VER.cur==='CE')window.SF2CEVEGA?.inputFrozen(q,q.KEYS);const n=q.KEYS&~(q.HZK||0);q.HZK=q.KEYS;if(n&0x70)q.MQP.push(G.tick);if(n&0x380)q.MQK.push(G.tick);} /* mash taps made during hitstop still count (ROM keeps counting presses) */P[0].PREV=P[0].KEYS&P[0].PREV;P[1].PREV=P[1].KEYS&P[1].PREV;G.fr=false;camera();return;}
 

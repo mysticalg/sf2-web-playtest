@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.112",
-  "commit": "90404ce0fe942110fef751e2d44996079d913a89",
-  "builtAt": "2026-11-21T13:56:49.418058+00:00",
+  "version": "0.1.113",
+  "commit": "7f7ab95ffde8c6d30066a3de8d34a8d8b727d998",
+  "builtAt": "2026-11-21T13:58:29.102106+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 7550,
-      "sha256": "768b09568709e887963f35e963f63210d5458feac038e48ab57560a0406fd32f"
+      "bytes": 7611,
+      "sha256": "4018d479c505a59c0112fc87adddda1e35017c08f6f78473ef7ce09c8ac4451e"
     },
     {
       "file": "game.js",
-      "bytes": 168098,
-      "sha256": "cf777313cbd09bac6525cdeb19916f59ec9ca68c5d06710f8c539072312c3686"
+      "bytes": 165920,
+      "sha256": "f225288630425da0570593a8642d361503e82225cf7fab3527841e5ee020f4d5"
     },
     {
       "file": "assets.js",
@@ -123,6 +123,11 @@
       "file": "ce_bison_input.js",
       "bytes": 1593,
       "sha256": "16f9cf66afb7125a67ff4b3a0da905f3f838dc632652d454401c91b1b63ead56"
+    },
+    {
+      "file": "ce_guile_input.js",
+      "bytes": 1425,
+      "sha256": "4509e142bbc3c056b31610259971540cfe6fb14089d26c1326e5b7528429a300"
     },
     {
       "file": "ce_charge_specials.js",
@@ -327,7 +332,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "b496b8ff36f6e0539bf04bbab7818aa1229a7551fe7489b47994082537866b8c"
+      "sha256": "58a3751e936f1190c9d5e21769cf0cfdba5fe216307bba701cd36c549ac7a49b"
     },
     {
       "file": "lobby.css",
@@ -342,7 +347,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "7e84b131c69bc9f855d4f826210016647e10b23904567522f7e2e9e5e88b6ebb"
+      "sha256": "bd6b70846d2486e2742b99ceaf8dc5df45cb68fc79e943b800fe7021a69dfcb9"
     },
     {
       "file": "history.js",
