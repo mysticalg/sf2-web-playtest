@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.123",
-  "commit": "e22e2f26de45aa529337db157feb7d7fbc9818eb",
-  "builtAt": "2026-11-22T05:39:56.607464+00:00",
+  "version": "0.1.124",
+  "commit": "a7ae3734106f272827605e9bee6c956572b1788b",
+  "builtAt": "2026-11-22T06:25:47.692603+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 8583,
-      "sha256": "6d7c8fc3c90e1b358af2ff09e1ec58b14f8270fc3e636659375ea7d30edba0b1"
+      "sha256": "d961ac164f724b59e8c332dfe9dec35270a4f93f9d6ac807aa621f293057e187"
     },
     {
       "file": "game.js",
-      "bytes": 180985,
-      "sha256": "e51d28dbcffc222805b4f33ffa3eb16258e85e96a957cc3403ac101cd3d1d717"
+      "bytes": 181505,
+      "sha256": "5ca530185863d7953f5a075c13072516cb1409454b7db7a54459e075dc77cb69"
     },
     {
       "file": "assets.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "78c86a242f576f60739a5f1a92470cf0415778cc54215c011fa21309407d96b4"
+      "sha256": "8d41f009e80d52084f660b2fed720e97e09404b842985928c9c494c0d2bc5ede"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "6f8aa4d4b0b97de6a7eff039ecc0d06ae1de898071e6d9a1c24a14bf40c5a99b"
+      "sha256": "afb42dcc025e2f75ec6ee1cdb0919aa2d378378b64a757ad4b7874d71ec1d38d"
     },
     {
       "file": "history.js",
@@ -386,8 +386,18 @@
     },
     {
       "file": "ai_weather.js",
-      "bytes": 2551,
-      "sha256": "38add2e112b1598bc2dd5a3fb841c24fce1645e7919034a645b30b777b95779c"
+      "bytes": 9242,
+      "sha256": "9ead24447d0822182b5b27c30ac9c29df25d245db0a6260c5be3a8059dc5a65a"
+    },
+    {
+      "file": "ai-effects/particles-lights.png",
+      "bytes": 824389,
+      "sha256": "490045d1eeeae7cdd4f00e42333d7f844d1873b0938c311cefad3ebd85be391c"
+    },
+    {
+      "file": "ai-effects/ryu-skies.png",
+      "bytes": 1812669,
+      "sha256": "2961048ba2b0ada5cfcf000267211d77f33cd031821fbe9261546138c6cae080"
     },
     {
       "file": "ai_roster.js",

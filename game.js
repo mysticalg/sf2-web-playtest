@@ -1999,7 +1999,8 @@ let SCE=null; // CE select/VS art from the CE program's VRAM (screens_ce.js)
 
 function ceFadeState(){return VER.cur==='CE'&&window.SF2CEFADE?G.fade:null;}
 
-function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out)cx.drawImage(out,...args);}
+let aiSceneryLayer=-1;
+function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
 
 function fimg(im,...args){fimgKind('scroll',im,...args);}
 
@@ -2060,8 +2061,8 @@ function txw(s,xr,y,fill,stroke,al){s=String(s);const A=fatlas(fill,stroke),aw=1
 const AI_STAGE_LIGHTS=[{name:'DAYLIGHT',filter:'none'},{name:'SUNSET',filter:'sepia(0.35) saturate(1.15) hue-rotate(335deg) brightness(0.85)'},{name:'NIGHT',filter:'sepia(0.4) saturate(0.8) hue-rotate(155deg) brightness(0.6)'}];
 function aiStageLight(){return AI_STAGE_LIGHTS[Math.max(0,Math.min(2,(G.round||1)-1))];}
 function aiWeather(){return SF2AIWEATHER.sample(G.stage,G.round,G.AIMatchSeed,G.tick-(G.AIWeatherStart??G.tick));}
-function stagedraw(front){cx.save();if(aiEnabled()){cx.filter=aiStageLight().filter;const flash=aiWeather().flash;if(flash)cx.filter=(cx.filter==='none'?'':cx.filter+' ')+'brightness('+(1+flash)+')';}try{for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;const dy=VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.offset(G.stage,layerIndex):0;cx.save();cx.translate(0,dy);try{stageLayer(layerIndex,l,aiViewWidth());if(VER.cur==='CE'&&G.stage===4&&layerIndex===4)window.SF2CESTAGEBOAT?.drawAt(CE_OBJECT_CONTEXT,G.cam);}finally{cx.restore();}}}finally{cx.restore();}}
-function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){if(VER.cur==='CE'&&window.SF2CESTAGECYCLISTS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEWATER?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEDANCERS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEPALETTES?.draw(CE_SCROLL_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock(),viewWidth))return;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(CE_OBJECT_CONTEXT,layerIndex,G.cam,ceStageClock())){if(layerIndex===4){cx.save();cx.translate(0,window.SF2CECAMERA?SF2CECAMERA.state.main-SF2CECAMERA.offset(G.stage,layerIndex):0);window.SF2CESTAGEBIRDS?.draw(CE_OBJECT_CONTEXT,G.cam,ceStageClock());cx.restore();}return;}
+function stagedraw(front){cx.save();if(aiEnabled()){cx.filter=aiStageLight().filter;const flash=aiWeather().flash;if(flash)cx.filter=(cx.filter==='none'?'':cx.filter+' ')+'brightness('+(1+flash)+')';}try{for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;const dy=VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.offset(G.stage,layerIndex):0;cx.save();cx.translate(0,dy);const previousSceneryLayer=aiSceneryLayer;aiSceneryLayer=layerIndex;try{stageLayer(layerIndex,l,aiViewWidth());if(VER.cur==='CE'&&G.stage===4&&layerIndex===4)window.SF2CESTAGEBOAT?.drawAt(CE_OBJECT_CONTEXT,G.cam);}finally{aiSceneryLayer=previousSceneryLayer;cx.restore();}}}finally{cx.restore();}}
+function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){if(aiEnabled()&&G.stage===0&&layerIndex===0){SF2AIWEATHER.sky(cx,aiWeather(),G.cam,viewWidth);return;}if(VER.cur==='CE'&&window.SF2CESTAGECYCLISTS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEWATER?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEDANCERS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEPALETTES?.draw(CE_SCROLL_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock(),viewWidth))return;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(CE_OBJECT_CONTEXT,layerIndex,G.cam,ceStageClock())){if(layerIndex===4){cx.save();cx.translate(0,window.SF2CECAMERA?SF2CECAMERA.state.main-SF2CECAMERA.offset(G.stage,layerIndex):0);if(!aiEnabled()||G.round>=3)window.SF2CESTAGEBIRDS?.draw(CE_OBJECT_CONTEXT,G.cam,ceStageClock());cx.restore();}return;}
   if(VER.cur==='CE'&&window.SF2CESTAGESCROLL?.draw(layerIndex>=3?CE_OBJECT_CONTEXT:CE_SCROLL_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock(),viewWidth))return;
   const width=viewWidth,kind=layerIndex>=3?'object':'scroll',base=VER.cur==='CE'&&window.SF2CESTAGEWATER?SF2CESTAGEWATER.layer(G.stage,layerIndex,STI[G.stage][layerIndex],ceStageClock()):STI[G.stage][layerIndex],raw=VER.cur==='CE'&&window.SF2CESTAGEANIMATIONS?SF2CESTAGEANIMATIONS.layer(G.stage,layerIndex,base,ceStageClock()):base,pad=VER.cur==='CE'&&window.SF2CECAMERA?32:0,im=pad?SF2CECAMERA.image(G.stage,layerIndex,raw,ceStageClock()):raw;
   if(l.rows){for(const [row0,y1,A,B] of l.rows){const y0=row0===0?-pad:row0;fimgKind(kind,im,Math.round(A*G.cam+B),y0+pad,width,y1-y0,0,y0,width,y1-y0);}return;}
@@ -2090,7 +2091,7 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
 
   if(VER.cur==='CE')window.SF2CEPROJECTILES?.drawEffects(cx,ground,c,{image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});
 
-  stagedraw(true);if(aiEnabled())SF2AIWEATHER.rain(cx,aiWeather(),G.AIMatchSeed,G.cam,aiViewWidth());}finally{if(aiDestination)aiWorldEnd(aiDestination,aiZoom);}bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
+  stagedraw(true);if(aiEnabled()){SF2AIWEATHER.rain(cx,aiWeather(),G.AIMatchSeed,G.cam,aiViewWidth(),ground);SF2AIWEATHER.atmosphere(cx,aiWeather(),G.AIMatchSeed,G.cam,aiViewWidth(),ground);}}finally{if(aiDestination)aiWorldEnd(aiDestination,aiZoom);}bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
   {const R='#ee6644',B='#0044aa';txw('1P',6,9,R,B,'left');txw(P[0].SCORE||0,113,9,R,B);txw(G.hisc=Math.max(G.hisc||RK[0].s,P[0].SCORE||0,P[1].SCORE||0),247,9,R,B);txw('2P',268,9,R,B,'left');if(G.mode2p||P[1].SCORE)txw(P[1].SCORE||0,377,9,R,B);}
 
   if(!(G.gph===2&&G.ko&&(G.tick>>3)&1))fimg(KOI,176,19);const t=Math.max(0,G.timer);
@@ -2564,6 +2565,7 @@ async function setEdition(id,options={}){
 
   if(!['ww','ce','ai'].includes(id))throw new Error('Unknown edition');
 
+  if(id==='ai')await SF2AIWEATHER.ready;
   if(id==='ai'&&!aiAllowedFids().length)throw new Error('AI roster registry is unavailable');
 
   if(netActive)throw new Error('Leave the online match before changing edition');
