@@ -71,6 +71,7 @@
  }
  function objects(G,P,h){const s=G.CEObjects||beginWorld(G);G.CEObjectSerial++;O.traverse(s,8,a=>{
   a.draw=false;
+  if(a.kind===0x3a){SF2CEWINNER.objectStep(a,s,P,h);return;}
   if(a.kind===34){ui(a,s);return;}
   if(a.kind===53){if(a.main===0){a.main=2;a.dustX=a.x>>>16;a.dustY=a.y>>>16;a.dustIndex=0;}else if(a.main===2){const q=D.dust[a.dustIndex++];if(!q||q[2]<0)a.main=4;else{a.x=(((a.dustX+(a.subtype?q[0]:-q[0]))&65535)<<16)>>>0;a.y=(((a.dustY+q[1])&65535)<<16)>>>0;a.dustDraw=q[2];}}else O.release(s,a);return;}
   if(a.kind===17){const B=window.SF2CESTAGEBIRDS;
