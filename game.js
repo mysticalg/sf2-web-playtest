@@ -36,7 +36,7 @@ function hpDamage(p,amount){return p.HP=Math.max(VER.edition==='ce'?-1:0,p.HP-am
 
 // Explicit per-player identity; base fid remains 0 for inherited CE tables.
 
-const AICFG={configured:false,prototype:false,selectedProfiles:[null,null],profiles:['ryu','ryu'],training:true,mode:'versus',dummy:'stand'};
+const AICFG={configured:false,prototype:false,selectedProfiles:[null,null],colors:[null,null],profiles:['ryu','ryu'],training:true,mode:'versus',dummy:'stand'};
 
 const AI_PROFILES={ken:{key:'ce:ken',name:'Ken',maxHP:144,baseFighterId:4},'evil-ken':{key:'ai:evil-ken',name:'Evil Ken',maxHP:136,baseFighterId:4},ryu:{key:'ce:ryu',name:'Ryu',maxHP:144},'evil-ryu':{key:'ai:evil-ryu',name:'Evil Ryu',maxHP:136}};
 
@@ -82,7 +82,7 @@ function evilKenSelected(slot,fid){return aiEnabled()&&fid===4&&(AICFG.prototype
 
 function selectedProfileLabel(slot,fid){return evilRyuSelected(slot,fid)?'EVIL RYU PROTOTYPE':evilKenSelected(slot,fid)?'EVIL KEN':D.fighters[fid].name.toUpperCase();}
 
-function ryuVariantStrip(){return aiEnabled()&&!AICFG.prototype&&G.scene==='select'&&(G.sel[G.selstep]===0&&evilRyuSelectable()||G.sel[G.selstep]===4&&evilKenSelectable());}
+function ryuVariantStrip(){return aiEnabled()&&!AICFG.prototype&&G.scene==='select'&&!G.AIColor&&(G.sel[G.selstep]===0&&evilRyuSelectable()||G.sel[G.selstep]===4&&evilKenSelectable());}
 
 function aiAllowedFids(){const roster=window.SF2AI_ROSTER?.baseRoster;return Array.isArray(roster)?roster.filter(f=>f.ready===true&&Number.isInteger(f.fighterId)&&f.fighterId>=0&&f.fighterId<12&&typeof f.key==='string'&&f.key.startsWith('ce:')).map(f=>f.fighterId):[];}
 
@@ -114,7 +114,7 @@ function aiSetProfile(p,fid){
 
 function aiResetPlayer(p){if(!aiEnabled()){aiClearProfile(p);return;}
 
-  delete p.AIButtons;delete p.AIAir;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i;p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
+  delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i;p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,AICFG.colors[p.i]);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
   p.AICombo={active:false,id:0,hits:0,damage:0,riftUsed:false};
 
   p.AIMetrics={riftStarts:0,riftCancels:0,riftCost:0,riftRejected:0,groundHits:0,blockedNormals:0,maxCombo:0,lastRift:null};
@@ -337,7 +337,7 @@ function resetp(p,x,face){delete p.CEHHSInput;delete p.CEHHSEdges;delete p.CEHHS
 const CE_CAM_EXTENT=[40,56,53,40,40,36,46,40,40,44,40,40]; // ROM 0x394c, actor+0x1c2
 
 function resetround(){if(VER.cur==='CE'){window.SF2CECAMERA?.reset();window.SF2CEPROJECTILES?.reset(P);}G.ann=null;if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);for(const q of P)delete q.CE_HANDICAP;if(VER.edition==='ce'&&G.mode2p&&window.SF2CECOMBAT){const levels=SF2CECOMBAT.matchLevels(P[0].fid,P[1].fid,{wins:P.map(q=>q.WINS),random:rand});P.forEach((q,i)=>q.CE_HANDICAP=levels[i]);}if(aiEnabled())G.AIViewWidth=W;else delete G.AIViewWidth;G.CERound=null;G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.CECameraShake=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;if(ce&&G.scene==='fight'){window.SF2CESTAGESCROLL?.advance(G.stage,ceStageClock());window.SF2CESTAGEANIMATIONS?.advanceNative(G.stage,G.cam,ceStageClock(),{main:0,far:0});}}
-function resetmatch(){if(aiEnabled()){G.AIMatchSerial=(G.AIMatchSerial||0)+1;G.AIMatchSeed=SF2AIRULES.hash(rng,G.AIMatchSerial+':'+P.map(p=>p.fighterKey).join(':'));}G.CEStageTick=0;if(VER.cur==='CE'){window.SF2CESTAGECYCLISTS?.reset();window.SF2CESTAGEBOAT?.reset();window.SF2CESTAGEBIRDS?.reset();window.SF2CESTAGEWATER?.reset();window.SF2CESTAGEDANCERS?.reset();window.SF2CESTAGEANIMATIONS?.reset();window.SF2CESTAGESCROLL?.reset();window.SF2CESTAGEPALETTES?.reset();}P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
+function resetmatch(){if(aiEnabled()){G.AIMatchSerial=(G.AIMatchSerial||0)+1;G.AIMatchSeed=G.AINextMatchSeed??SF2AIRULES.hash(rng,G.AIMatchSerial+':'+P.map(p=>p.fighterKey).join(':'));delete G.AINextMatchSeed;}G.CEStageTick=0;if(VER.cur==='CE'){window.SF2CESTAGECYCLISTS?.reset();window.SF2CESTAGEBOAT?.reset();window.SF2CESTAGEBIRDS?.reset();window.SF2CESTAGEWATER?.reset();window.SF2CESTAGEDANCERS?.reset();window.SF2CESTAGEANIMATIONS?.reset();window.SF2CESTAGESCROLL?.reset();window.SF2CESTAGEPALETTES?.reset();}P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
 // ---- motion input buffer (sf2ua 0x2d58e) ----
 
 function mwin(){return WINTAB[rand()&31];}
@@ -1521,7 +1521,7 @@ function nativeSelect(){
 
 }
 
-function nativeBack(){
+function nativeBack(){if(aiEnabled()&&G.scene==='select'&&G.AIColor){delete G.AIColor;clearinput();return;}
 
   if(G.scene==='fight'){if(CONTROL.paused)resumeGame();else pauseGame(1);}
 
@@ -1571,6 +1571,8 @@ function pointCommand(x,y){
 
   if(G.scene==='select'){
 
+    if(aiEnabled()&&G.AIColor){const action=SF2AICOLORS.point(G.AIColor,x,y);if(action==='back'){delete G.AIColor;clearinput();}return action==='confirm'?G.selstep+1:0;}
+
     const who=G.selstep;
 
     if(ryuVariantStrip()&&y>=64&&y<124&&x>=96&&x<288)return {slot:who,keys:x<192?K_ATK:K_ATK<<3};
@@ -1599,7 +1601,7 @@ function localCommands(pd,k1,k2){
 
   for(let i=0;i<2;i++){
 
-    const bits=pd[i].menu||0,edge=bits&~CONTROL.padPrev[i],variantKick=ryuVariantStrip()&&i===G.selstep,allowKick=variantKick||!CONTROL.paused&&(G.scene!=='title'&&(G.scene!=='select'||G.arc));CONTROL.padPrev[i]=bits;
+    const bits=pd[i].menu||0,edge=bits&~CONTROL.padPrev[i],variantKick=ryuVariantStrip()&&i===G.selstep,allowKick=!(aiEnabled()&&G.AIColor)&&(variantKick||!CONTROL.paused&&(G.scene!=='title'&&(G.scene!=='select'||G.arc)));CONTROL.padPrev[i]=bits;
 
     if(edge&8)commands.push(G.scene==='fight'?'pause':'confirm');
 
@@ -2242,6 +2244,8 @@ function matchend(){const w=P[0].WINS>=2&&P[0].WINS>P[1].WINS?0:P[1].WINS>=2&&P[
 
 function startfight(a,b){G.arc=0;setfighter(P[0],a);setfighter(P[1],b);G.sel=[a,b];G.stage=b;G.scene='fight';G.selstep=0;resetmatch();}
 
+function aiColorDone(){const c=G.AIColor;AICFG.colors[c.slot]={clothing:c.clothing,skin:c.skin};delete G.AIColor;sfxc(0x22,SN_BLOCK,0.4);if(!G.mode2p&&G.arc){startarcade(G.sel[0]);return;}if(++G.selstep>=2){G.selstep=0;go('vs');}}
+function aiColorDraw(){const c=G.AIColor,p=P[c.slot],mirror=p.i===1&&P[0].fighterKey===p.fighterKey,image=isEvilKen(p)?(mirror?p.AIAtlasAlt:p.AIAtlas):p.AIAtlas||(['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===p.fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate=image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu',palette=alternate?p.F.pal2:p.F.pal;SF2AICOLORS.draw(cx,c,p,image,palette,G.AINextMatchSeed,tx);}
 function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[k1,k2];G.st++;
 
   const ok=(n1&CONF)||(ng&4), any=ok||(n2&CONF);
@@ -2254,9 +2258,9 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
 
     if(G.menu>=2&&G.menu<4&&n1&(K_L|K_R)){const d=n1&K_R?1:-1; if(G.menu===2)changeDifficulty(d); else {const i=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(i+d+4)%4];} saveEditionSettings();sfxc(0x21,SN_BLOCK,0.3);}
 
-    if(ok&&G.st>20&&G.menu<2&&!(G.wantce&&VER.cur!=='CE')){sfxc(0x20,SN_BLOCK,0.4);G.mode2p=G.menu;G.arc=G.menu?0:1;if(aiEnabled())AICFG.selectedProfiles=[null,null];G.selstep=0;G.sel=[0,4];if(VER.cur==='CE'){G.cep=[0,6];}go('select');} break;
+    if(ok&&G.st>20&&G.menu<2&&!(G.wantce&&VER.cur!=='CE')){sfxc(0x20,SN_BLOCK,0.4);G.mode2p=G.menu;G.arc=G.menu?0:1;if(aiEnabled()){AICFG.selectedProfiles=[null,null];AICFG.colors=[null,null];delete G.AIColor;delete G.AINextMatchSeed;}G.selstep=0;G.sel=[0,4];if(VER.cur==='CE'){G.cep=[0,6];}go('select');} break;
 
-  case 'select': {if(!G.cep)G.cep=[0,6];const i=G.selstep, who=i===1&&G.mode2p?n2:n1, n=G.mode2p?12:8; let c=G.sel[i];
+  case 'select': {if(!G.cep)G.cep=[0,6];const i=G.selstep, who=i===1&&G.mode2p?n2:n1, n=G.mode2p?12:8; let c=G.sel[i];if(aiEnabled()&&G.AIColor){if(SF2AICOLORS.step(G.AIColor,who))aiColorDone();break;}
 
     if(VER.cur==='CE'){let q=G.cep[i];if(who&K_L)q=q%6?q-1:q+5; if(who&K_R)q=q%6===5?q-5:q+1; if(who&(K_U|K_D))q=(q+6)%12;if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))q=G.cep[i];G.cep[i]=q;c=CEGRID[q];}
 
@@ -2268,7 +2272,7 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
 
     if(aiEnabled()&&!aiAllowedFids().includes(G.sel[i]))break;
 
-    if((who&CONF)||(i===0&&(ng&4))){if(aiEnabled()){AICFG.selectedProfiles[i]=G.sel[i]===0&&evilRyuSelectable()?(who&0x380?'evil-ryu':'ryu'):G.sel[i]===4&&evilKenSelectable()?(who&0x380?'evil-ken':'ken'):null;}sfxc(0x22,SN_BLOCK,0.4);
+    if((who&CONF)||(i===0&&(ng&4))){if(aiEnabled()){AICFG.selectedProfiles[i]=G.sel[i]===0&&evilRyuSelectable()?(who&0x380?'evil-ryu':'ryu'):G.sel[i]===4&&evilKenSelectable()?(who&0x380?'evil-ken':'ken'):null;}sfxc(0x22,SN_BLOCK,0.4);if(aiEnabled()){setfighter(P[i],G.sel[i]);G.AINextMatchSeed??=SF2AIRULES.hash(rng,'selection:'+G.tick);G.AIColor=SF2AICOLORS.create(i,AICFG.colors[i]);break;}
 
       if(!G.mode2p&&G.arc){startarcade(G.sel[0]);break;}
 
@@ -2414,7 +2418,7 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 
     break;
 
-  case 'select': {if(VER.cur==='CE'){selce();break;} if(SELI)fimg(SELI,0,0);
+  case 'select': {if(aiEnabled()&&G.AIColor){aiColorDraw();break;}if(VER.cur==='CE'){selce();break;} if(SELI)fimg(SELI,0,0);
 
     if(G.mode2p){cx.fillStyle=BLUE;cx.fillRect(126,100,132,42);for(let j=8;j<12;j++){const [x,y]=cell(j),F=D.fighters[j],r=F.frames[F.anims[0].ents[0][0]],s=Math.min(36/r[3],30/r[2]);
 
@@ -2569,7 +2573,7 @@ async function setEdition(id,options={}){
 
   if(!options.prototype){try{localStorage.setItem('sf2:edition:v1',id);}catch{}}
 
-  VER.edition=id;G.wantce=id!=='ww';AICFG.selectedProfiles=[null,null];AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
+  VER.edition=id;G.wantce=id!=='ww';AICFG.selectedProfiles=[null,null];AICFG.colors=[null,null];delete G.AIColor;delete G.AINextMatchSeed;AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
 
   for(const p of P)aiClearProfile(p);
 
