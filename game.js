@@ -352,7 +352,7 @@ function motion(p,keys,nw,rel){
 
   const pb=(nw>>4)&7, kb=(nw>>7)&7, T=G.tick;
 
-  const nativeHuman=VER.edition==='ce'&&(G.mode2p||p.i===0);
+  const nativeHuman=VER.edition==='ce'&&(p.i===0||(G.mode2p&&!G.netBot));
   if(nativeHuman&&[0,4].includes(p.fid))return SF2CESHOTOINPUT.step(p,dir,nw,rel,mwin,(name)=>(G.scene==='fight'?G.gph===1:G.scene==='bonus'&&G.st>=100)&&[S_FREE,S_CR,S_UP].includes(p.ST)&&!(name==='qcf'&&p.FBON));
 
   if(VER.cur==='CE'&&window.SF2CEVEGA){const e=SF2CEVEGA.input(p,dir);if(e)ev.push(e);}
