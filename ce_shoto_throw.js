@@ -10,7 +10,7 @@
   //0x35c0..0x35e2: lethal throws mark KO immediately; other damage waits for impact.
   if(native&&native.damage>p.HP){p.HP=-1;p.CETHV.dmg=0;p.CEKO_THROW=true;p.ST=8;}
  }
- function finish(p,h){const face=p.FACE^1,y=p.Y;p.CETH=null;h.idle(p);p.FACE=face;p.Y=y;}
+ function finish(p,h){const face=p.FACE^1,y=p.Y;p.CETH=null;h.idle(p);p.FACE=face;if(window.SF2.edition==='ce')p.CEPriorFace=face;p.Y=y;}
  function move(p,c){p.X+=c.vx;p.Y+=c.vy;c.vy-=0x20;if(c.vy<0&&p.Y<0){p.Y&=255;return true;}return false;}
  window.SF2CETHROWS={...prior,
   init(p,atk,h){

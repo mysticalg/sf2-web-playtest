@@ -323,7 +323,7 @@ function crn(p,atk){const t=VER.cur==='CE'&&CNTHR_CE[p.fid]&&CNTHR_CE[p.fid][atk
 
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 
-function resetp(p,x,face){window.SF2CEDIZZY?.reset(p);delete p.CEDizzyPrev;delete p.CEHHPush;delete p.CEHHPushSide;delete p.CEHHDesired;delete p.CEHH;delete p.CEHHV;delete p.CEHHRecovery;delete p.CEHHVLAND;delete p.CEHHPrevKeys;delete p.CEHHSInput;delete p.CEHHSEdges;delete p.CEHHSCancel;Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CEGI:null,CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
+function resetp(p,x,face){delete p.CEPriorFace;if(VER.edition==='ce'&&[0,4].includes(p.fid))p.CEPriorFace=face;window.SF2CEDIZZY?.reset(p);delete p.CEDizzyPrev;delete p.CEHHPush;delete p.CEHHPushSide;delete p.CEHHDesired;delete p.CEHH;delete p.CEHHV;delete p.CEHHRecovery;delete p.CEHHVLAND;delete p.CEHHPrevKeys;delete p.CEHHSInput;delete p.CEHHSEdges;delete p.CEHHSCancel;Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CEGI:null,CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   if(VER.cur==='CE'){p.CEWALL=0;p.CEVSL=null;}else{delete p.CEWALL;delete p.CEVSL;}
 
   delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;delete p.CER;delete p.CERSTOP;delete p.CEGUARD;delete p.CESHAKE;delete p.CERHOSTTICK;delete p.CERRESUME;delete p.CE_DAMAGE_TRACE;delete p.CEVLAND;delete p.CEVBB;delete p.CEVNSTART;delete p.CENORMALINIT;delete p.CECameraIgnore;delete p.CEKO_THROW;delete p.CEKO;delete p.CEWin;delete p.CEKOOwnerStop;delete p.CEKO_GROUND;delete p.CEKO_DIR;
@@ -1370,7 +1370,8 @@ function ceStageClock(){return VER.edition==='ce'?(G.CEStageTick??G.tick):G.tick
 
 function ceVictorySelect(p){let n=AN_WIN;if([0,4].includes(p.fid)&&([0x1082,0xef7d][Math.min(1,p.WINS-1)]&(1<<(rand()&15)))){const q=AI(p,'win2');if(q>=0)n=q;}setanim(p,n,0);const a=p.anim;if(a.nativeDurations)p.anim={...a,ents:a.ents.map((e,i)=>{const q=e.slice();q[1]=a.nativeDurations[i];return q;})};p.Y&=255;p.VX=p.VY=0;p.ST=S_WIN;if([0,4,7,8,9].includes(p.fid))p.FACE=p.opp.X>p.X?1:0;if(p.fid===7){p.CECameraIgnore=true;p.CEWin.variant=SF2CEROUND.data.dhalsimSources.indexOf(p.anim.source);p.CEWin.floatIndex=0;}if([0,4,7,9,10].includes(p.fid))animstep(p);}
 
-const ceRoundHooks=()=>({find:AI,anim:setanim,tick:animstep,sound:sfxc,victory:ceVictorySelect,random:()=>rand()&255,winnerState:()=>G.CERound});
+function cePriorFacing(){const dx=(P[1].X>>8)-(P[0].X>>8);if(Math.abs(dx)>24)for(const p of P)if([0,4].includes(p.fid))p.CEPriorFace=p.i===0?(dx>=0?1:0):(dx>=0?0:1); }
+const ceRoundHooks=()=>({find:AI,anim:setanim,tick:animstep,sound:sfxc,victory:ceVictorySelect,random:()=>rand()&255,winnerState:()=>G.CERound,winnerContext:()=>({finalArcade:!!G.arc&&G.li===G.ladder.length-1})});
 
 function ceEndRound(m,preActors){
 
@@ -1784,7 +1785,7 @@ function step0(net){
 
   if(VER.cur==='CE')window.SF2CEPROJECTILES?.stepEffects({tick:G.tick});
 
-  update(P[0]);update(P[1]);if(VER.edition==='ce'&&G.CERound)for(const p of P)if(hpAlive(p)&&p.ST===S_FREE&&!p.CEWin&&!p.CEKO)SF2CEROUND.admit(p,G.CERound.draw||p.i!==G.CERound.winner,false,ceRoundHooks());if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));fbmove(P[0]);fbmove(P[1]);fbclash();if(VER.edition==='ce'&&!G.CEHHContactDelay)window.SF2CEHONDAHOLD?.facing(P);push();
+  update(P[0]);update(P[1]);if(VER.edition==='ce'&&G.CERound)for(const p of P)if(hpAlive(p)&&p.ST===S_FREE&&!p.CEWin&&!p.CEKO)SF2CEROUND.admit(p,G.CERound.draw||p.i!==G.CERound.winner,false,ceRoundHooks());if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));if(VER.edition==='ce'&&!G.CEHHContactDelay)cePriorFacing();;fbmove(P[0]);fbmove(P[1]);fbclash();if(VER.edition==='ce'&&!G.CEHHContactDelay)window.SF2CEHONDAHOLD?.facing(P);push();
   {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);const fbOrder=VER.cur==='CE'&&window.SF2CEPROJECTILES?P.slice().sort((a,b)=>(b.FBSLOT||0)-(a.FBSLOT||0)):P;fbOrder.forEach(fbafter);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);if(!ceTimedOut)phase();if(VER.edition==='ce')window.SF2CEHONDAHOLD?.physical(P);}
 /* ---- bonus stages (CE arcade ladder: car after fight 3, barrels after 6, drums after 9).
 
@@ -2032,7 +2033,7 @@ function cetimes(F){for(const f of F)for(const a of f.anims)if(a.name==='win'||a
 
 function loadce(){if(VER.loading)return;VER.loading=1;const sc=document.createElement('script');sc.src=asseturl('assets_ce.js');
 
-  sc.onload=()=>{const F=window.SF2CE.fighters;cetimes(F);if(window.SF2CEREACTION)F.forEach((f,fid)=>SF2CEREACTION.preregister(f,fid));if(window.SF2CEVEGA)F.forEach((F,fid)=>SF2CEVEGA.registerTurn({F,fid}));F.forEach((F,fid)=>{const p={F,fid};SF2CEDIZZY.register(p);SF2CEROUND.register(p);if(fid===1){SF2CEHONDAHOLD.register(p);SF2CEHONDAHANDS.register(p);}if([1,11].includes(fid))SF2CEWINNER.register(p);});const fi=F.map(f=>img(f.img));const st=SF2CE.stages||D.stages;VER.ce={f:F,fi,fia:F.map((f,i)=>altatlas(f,fi[i])),st,sti:SF2CE.stages?st.map(ls=>ls.map(l=>img(l.img))):STI,z80:SF2CE.z80||null};Promise.all([window.SF2CEDIZZY?.ready,window.SF2CEWINNER?.ready]).then(()=>{VER.loading=2;if(G.wantce)setver('CE',true);},()=>{VER.loading=3;});};
+  sc.onload=()=>{const F=window.SF2CE.fighters;cetimes(F);if(window.SF2CEREACTION)F.forEach((f,fid)=>SF2CEREACTION.preregister(f,fid));if(window.SF2CEVEGA)F.forEach((F,fid)=>SF2CEVEGA.registerTurn({F,fid}));F.forEach((F,fid)=>{const p={F,fid};SF2CEDIZZY.register(p);SF2CEROUND.register(p);if(fid===1){SF2CEHONDAHOLD.register(p);SF2CEHONDAHANDS.register(p);}if([0,1,4,11].includes(fid))SF2CEWINNER.register(p);});const fi=F.map(f=>img(f.img));const st=SF2CE.stages||D.stages;VER.ce={f:F,fi,fia:F.map((f,i)=>altatlas(f,fi[i])),st,sti:SF2CE.stages?st.map(ls=>ls.map(l=>img(l.img))):STI,z80:SF2CE.z80||null};Promise.all([window.SF2CEDIZZY?.ready,window.SF2CEWINNER?.ready]).then(()=>{VER.loading=2;if(G.wantce)setver('CE',true);},()=>{VER.loading=3;});};
 
   sc.onerror=()=>{VER.loading=3;};document.head.appendChild(sc);
 

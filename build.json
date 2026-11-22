@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.137",
-  "commit": "1513b07abd6cd7612e2cdb861b940783c5fd17f5",
-  "builtAt": "2026-11-22T17:19:45.257988+00:00",
+  "version": "0.1.138",
+  "commit": "458e9df0fc9c4218f6551ec0da94453deef8437b",
+  "builtAt": "2026-11-22T17:53:24.902327+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 9654,
-      "sha256": "d1ea23ae64845a66e3a372377f302f3b78cec1742181328980c9da7aa912608c"
+      "sha256": "7ef52c214462a0271aeebc3aad92f0feb717725109da926ffdf6b74c4d483326"
     },
     {
       "file": "game.js",
-      "bytes": 191801,
-      "sha256": "bf2c6b322571ff7d3d1dee424ab3225b011d395eb92fd132825805f1f96a56da"
+      "bytes": 194991,
+      "sha256": "8fc46b4b89f7b94941361e09350279f8e10eb031fe06332cfb4d7e76ef4df698"
     },
     {
       "file": "assets.js",
@@ -351,18 +351,18 @@
     },
     {
       "file": "ce_round.js",
-      "bytes": 6565,
-      "sha256": "6a46467a298fddd4add217cded8df3f0433af79b81ed7dbb1872ab083c851006"
+      "bytes": 6567,
+      "sha256": "7532be52e1f59e53c135eea0775ea522287c5cec032cfb3825f661bb6c6355d2"
     },
     {
       "file": "ce_winner_data.js",
-      "bytes": 107763,
-      "sha256": "98a7013d88c40e1769d103bb416e71ee9dbbdfe4ad800e2a56de1d03e93a4467"
+      "bytes": 111404,
+      "sha256": "13c18df318fe94258f1eaaa95d011dd0dc090514f016677805879b97e824d30f"
     },
     {
       "file": "ce_winner.js",
-      "bytes": 3116,
-      "sha256": "a527a0aa1a64a168ab5d42a7ac4607ce346bddbf64c117448232cdf55238c149"
+      "bytes": 3994,
+      "sha256": "edc7f926721bf5b75898f01e03931b10b57d34fdb32bb95a05af3bc888bbf36e"
     },
     {
       "file": "ce_announcer.js",
@@ -387,7 +387,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "efd2bce4869b2cfd1102634b288d65666201d17dfb4643329cbfef612a54665c"
+      "sha256": "bd098ef039af64e3790ea3671d509e0e2fdb6efd8d2d839c1ea59096fd82ddbc"
     },
     {
       "file": "lobby.css",
@@ -402,7 +402,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "97adbfe32d43533da1bf8a88d80520d0343d08701f3eb295b56c0339f476ec24"
+      "sha256": "7200737bc33c9e646a03fa997d470c324c0f717dea115e8a31774ca4b8fc1ab2"
     },
     {
       "file": "history.js",
@@ -536,8 +536,8 @@
     },
     {
       "file": "ce_shoto_throw.js",
-      "bytes": 9778,
-      "sha256": "f91e2eeb691bf9c6fac1b4b3c0797fe12732560fc77bcb7727554dd43c696de0"
+      "bytes": 9900,
+      "sha256": "ad6b113defdb1601f70f0a36a4123892b3c9a8865962a88db76b4fba78342507"
     },
     {
       "file": "ce_vega_ground_data.js",

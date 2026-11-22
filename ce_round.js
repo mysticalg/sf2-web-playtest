@@ -29,7 +29,7 @@
   if(c.phase===6){if(!--c.wait){c.phase=8;if(c.loss){c.ready=true;p.ST=9;select(p,0x3c,0,h);}}return true;}
   if(p.fid===7){if(c.extra===null){c.extra=60;return true;}if(--c.extra)return true;}
   else if([0,4,9].includes(p.fid)&&!c.handshake){c.handshake=2;return true;}
-  if(!c.loss&&[1,11].includes(p.fid)){c.nativeWinner=SF2CEWINNER.create(p);return SF2CEWINNER.step(p,h);}
+  if(!c.loss&&SF2CEWINNER.handles(p,h)){c.nativeWinner=SF2CEWINNER.create(p);return SF2CEWINNER.step(p,h);}
   c.ready=true;h.victory(p);return true;
  }
  function create({ko,draw,time,winner,human,vitality,round}){return {ko,draw,time,winner,human,vitality,round,finalRound:round===4,pendingGate:ko,gate:0,divider:3,period:3,actorUpdates:0,ui:null,bonus:[],bonusMask:0,counting:false,total:0,done:false};}
