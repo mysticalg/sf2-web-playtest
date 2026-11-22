@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.134",
-  "commit": "cfae99493e30265408c915697d422aa76fc04ee8",
-  "builtAt": "2026-11-22T14:06:13.140240+00:00",
+  "version": "0.1.135",
+  "commit": "33f944349c49406e1f9e537b58209442819b8ead",
+  "builtAt": "2026-11-22T15:45:43.136004+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 9140,
-      "sha256": "899daa3bd6daee21aac19fb6aadb41bd44dcece5028445e1f24a7b9bc7f48a68"
+      "bytes": 9491,
+      "sha256": "87a68ae031e2e75a043c3687b9ae072b811f4807c3a7c99060da31c96e112dc5"
     },
     {
       "file": "game.js",
-      "bytes": 189117,
-      "sha256": "b1fdab48bdc9618e03a67ad3798473d03aea8f309c9a1243e953ace51b6ce3d8"
+      "bytes": 194174,
+      "sha256": "9dbb599ebe085cc5bc9f01b18b535e9278779b5a6d643c99060871a1b939b7fc"
     },
     {
       "file": "assets.js",
@@ -98,6 +98,26 @@
       "file": "ce_reactions.js",
       "bytes": 8945,
       "sha256": "4b87b96072c38de1e203cd082eab67cde70c5d84706ea76e11851cf2abf4ce8b"
+    },
+    {
+      "file": "ce_dizzy_data.js",
+      "bytes": 424370,
+      "sha256": "acdf7318bd97cc9b460d596d26dfc3522e4dad7e6fde79845d85284bb3cb0b08"
+    },
+    {
+      "file": "ce_dizzy_core.js",
+      "bytes": 5577,
+      "sha256": "dc7a49a6b3bb0e1f71578133cbfccd5198b7aff106062f3e7d47713dc4760332"
+    },
+    {
+      "file": "ce_objects.js",
+      "bytes": 1810,
+      "sha256": "77d91be71b2090e225f7999bfe53031599afcbb98ab347b0926720ed10db1736"
+    },
+    {
+      "file": "ce_dizzy.js",
+      "bytes": 10289,
+      "sha256": "655f8727a03123381716d2413ca635df8f7b59c3c7dddc013c82de95e5004e77"
     },
     {
       "file": "victory_ce.js",
@@ -357,7 +377,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "1c5dd2aa4a1d311ce739ecd8a525accb7c8505297070e80511b775de1716af1c"
+      "sha256": "74612621d227cb525a9e482dd29e7e3fff128874e395bbd40329fac405eeaec4"
     },
     {
       "file": "lobby.css",
@@ -372,7 +392,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "7a483c1e7c92f8c0d7e98254903943f1e62d75eb016ac134fb473ef4417c02d4"
+      "sha256": "bd44c37776e472cbe601d029c814f302be0ccfef69efdaa77ab822d8ba0e8cb4"
     },
     {
       "file": "history.js",
