@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.115",
-  "commit": "5a01e0a93bce8430e70996ea55c9de044c260566",
-  "builtAt": "2026-11-22T02:03:13.552113+00:00",
+  "version": "0.1.116",
+  "commit": "7b5c8d6993de85c628c811f8462f3cc69e10e385",
+  "builtAt": "2026-11-22T02:33:37.241428+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 8050,
-      "sha256": "8c9fd5c2af066dd54481f0e97e649b030b95813695adf270f2d9838e7eea397b"
+      "bytes": 8255,
+      "sha256": "b1fda238a1f89c5ed8748d75e87c8e720562f80e3da38188a77bd914e18863ec"
     },
     {
       "file": "game.js",
-      "bytes": 171775,
-      "sha256": "9bb3b4f5e03bba96d153457698f9c04c225b9aab00a7d5f95439b8605389e3a0"
+      "bytes": 172657,
+      "sha256": "fb15fa7a6ba214c553afc1d7ff90b15a633f082f8aee202b70c2ad7a287536a3"
     },
     {
       "file": "assets.js",
@@ -143,6 +143,16 @@
       "file": "ce_chun_throw.js",
       "bytes": 1833,
       "sha256": "da676b98c2466bb960c3909afea853adf9cb4d8f4064d65b9bc0df66166b2d88"
+    },
+    {
+      "file": "ce_honda_hands_data.js",
+      "bytes": 379655,
+      "sha256": "723130e380bd889433d6fdbdf07c04f78f0c5026dd405e8a6e09ca7e318fcb96"
+    },
+    {
+      "file": "ce_honda_hands.js",
+      "bytes": 2686,
+      "sha256": "b70aba7ffb57f32e02855977dde4629280b4d9b2470e76a5aa2e52a8960db2b4"
     },
     {
       "file": "ce_chun_legs.js",
@@ -332,7 +342,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "bfd616dda6893f1e998981c6b98a04e1d17288843eb01c6af1ba2aee03d978d5"
+      "sha256": "c667d093689f0162a9378cd4eb582a5c5b1f97d02eef0387e1af20cd8dc6002a"
     },
     {
       "file": "lobby.css",
@@ -347,7 +357,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "27e4f7e97c87233b3368bc7ef738cd05a7a9c7a7c6e6f8a2a90f9c5afd186860"
+      "sha256": "0c2d4f060424fc77560c45a107919443cbb2f7136ea1a3781754efa5c60e9136"
     },
     {
       "file": "history.js",
