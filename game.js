@@ -430,7 +430,7 @@ function motion(p,keys,nw,rel){
 
 function carMode(p){return VER.cur==='CE'&&G.scene==='bonus'&&G.bon?.kind===0&&p===P[0]&&!!window.SF2CECAR;}
 
-function ceBarrelMode(){return VER.edition==='ce'&&G.scene==='bonus'&&G.bon?.kind===1&&!!window.SF2CEBARRELS&&!!window.SF2CEBARRELPLAYER;}
+function ceBarrelMode(){return VER.cur==='CE'&&G.scene==='bonus'&&G.bon?.kind===1&&!!window.SF2CEBARRELS&&!!window.SF2CEBARRELPLAYER;}
 
 function ceBonusScore(command,side=0){const amount=window.SF2CECOMBAT?.scoreAmount(command);if(amount!==null&&amount!==undefined)P[side].SCORE=Math.min(9999999,(P[side].SCORE||0)+amount);}
 
@@ -546,7 +546,7 @@ function update(p){if(aiEnabled()&&p.AIAir&&p.ST!==S_SPEC){delete p.AIAir;p.CES=
   const aiFrame=aiEnabled()?SF2AIRULES.controls(p):null;
   // Native intro actors recognize charge/input, but cannot walk, jump or attack.
   if(G.scene==='fight'&&G.gph===0)return controls(p,{keys:0,nw:0,ev:[],force:0,rel:0});
-  if(VER.edition==='ce'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)SF2CEBARRELPLAYER.facing(G.bon,p,{ready:G.st>=100,airborne:p.ST===S_AIR||G.bon.barrels?.player?.phase==='air'});
+  if(VER.cur==='CE'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)SF2CEBARRELPLAYER.facing(G.bon,p,{ready:G.st>=100,airborne:p.ST===S_AIR||G.bon.barrels?.player?.phase==='air'});
 
   if(ceBarrelMode()&&SF2CEBARRELPLAYER.actor(G.bon,p,{tick:animstep,idle:toidle,frame:G.tick,pressed:nw,random:rand,sound:sfxc,intro:G.st<100,airborne:p.ST===S_AIR}))return;
 
@@ -605,7 +605,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
 
   if(st===S_FREE||st===S_CR)p.EVB=null;
 
-  if((st===S_FREE||st===S_CR)&&!isEvilKen(p)){if(VER.edition==='ce'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)p.FACE=G.bon.nativeDesiredFacing??1;else{const ox=p.opp.X; if(ox>p.X)p.FACE=1; else if(ox<p.X)p.FACE=0;}}
+  if((st===S_FREE||st===S_CR)&&!isEvilKen(p)){if(VER.cur==='CE'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)p.FACE=G.bon.nativeDesiredFacing??1;else{const ox=p.opp.X; if(ox>p.X)p.FACE=1; else if(ox<p.X)p.FACE=0;}}
 
   let dx=(keys&K_R?1:0)-(keys&K_L?1:0); if(!p.FACE)dx=-dx;
 
@@ -658,7 +658,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
 
     if(VER.cur==='CE'&&p.fid===3&&atk===5&&dx>0&&(Math.abs(p.opp.X-p.X)>>8)<=GFHK_CE[p.opp.fid]&&AI(p,'fHK')>0){setanim(p,AI(p,'fHK'),0);p.RETCR=0;p.ST=S_ATK;break;}
 
-    if(atk>=0){const cd=Math.abs(p.opp.X-p.X)>>8,nativeClose=VER.edition==='ce'&&carMode(p)?SF2CECAR.closeNormal(G.bon,p,atk):ceBarrelMode()?SF2CEBARRELS.closeNormal(G.bon,p,atk):null;setanim(p,((nativeClose??(cd<NTHR[p.fid][atk]))&&p.F.anims[AN_NEAR+atk]?AN_NEAR:AN_SLP)+atk,0);p.RETCR=0;p.ST=S_ATK;break;}
+    if(atk>=0){const cd=Math.abs(p.opp.X-p.X)>>8,nativeClose=VER.cur==='CE'&&carMode(p)?SF2CECAR.closeNormal(G.bon,p,atk):ceBarrelMode()?SF2CEBARRELS.closeNormal(G.bon,p,atk):null;setanim(p,((nativeClose??(cd<NTHR[p.fid][atk]))&&p.F.anims[AN_NEAR+atk]?AN_NEAR:AN_SLP)+atk,0);p.RETCR=0;p.ST=S_ATK;break;}
 
     if(!(VER.edition==='ce'&&window.SF2CEREACTION)&&dx<0&&proxblk(p)){wantanim(p,AN_BLOCKS);break;}
 
@@ -1760,7 +1760,7 @@ function bonusinit(kind){if(VER.cur==='CE')window.SF2CEPROJECTILES?.reset(P);con
 
   setfighter(p,G.sel[0]);setfighter(d,G.sel[0]);resetp(p,(kind===0?60:kind===1?192:104)<<8,1);resetp(d,300<<8,0);d.ST=S_KO;d.HP=0;G.cam=0;G.gph=1;G.slow=0;IQ.length=0;
 
-  if(kind===1&&VER.edition==='ce'&&window.SF2CEBARRELS&&window.SF2CEBARRELPLAYER){SF2CEBARRELS.init(B,p,rand,bim);SF2CEBARRELPLAYER.init(B,p);d.X=280<<8;}
+  if(kind===1&&VER.cur==='CE'&&window.SF2CEBARRELS&&window.SF2CEBARRELPLAYER){SF2CEBARRELS.init(B,p,rand,bim);SF2CEBARRELPLAYER.init(B,p);d.X=280<<8;}
 
   if(kind===0){B.dmg=0;B.fr=0;B.rr=0;if(VER.cur==='CE'&&window.SF2CECAR)SF2CECAR.init(B,p,rand,bim);}
 
@@ -1818,7 +1818,7 @@ function bonusstep(k){const B=G.bon,p=P[0],d=P[1];G.st++;if(G.slow>0)G.slow--;
   p.KEYS=G.st<60?0:k;
 
   if(aiEnabled()){if(G.st<60)SF2AIRULES.block(p,p.KEYS);else SF2AIRULES.sample(p,p.KEYS,G.tick,G.hfz>0||G.bon.car?.heroStop>0);aiInput(p);}
-  if(VER.edition==='ce'&&carMode(p)){if(G.st>=100&&++B.tk>=40){B.tk=0;if(B.time>0)B.time--;else bonusend();}}
+  if(VER.cur==='CE'&&carMode(p)){if(G.st>=100&&++B.tk>=40){B.tk=0;if(B.time>0)B.time--;else bonusend();}}
 
   else if(!ceBarrelMode()&&G.st>=60&&++B.tk>=52){B.tk=0;if(--B.time<=0)bonusend();}
 
@@ -1918,7 +1918,7 @@ function bonusrender(){const B=G.bon,S=window.SF2BONUS,p=P[0];cx.fillStyle='#000
 
   if(nativeBarrels){SF2CEBARRELS.draw(cx,B,bim,'back');if(p.FBON)drawfb(p,BG0,0);SF2CEBARRELS.draw(cx,B,bim,'middle');if(window.SF2CESHADOW){const f=SF2CESHADOW.frame(p,13);if(f)fimgKind('object',f.image,(p.X>>8)+f.x,BG0+f.y);}}
 
-  const supplement=nativeBarrels?SF2CEBARRELPLAYER.draw(cx,B,p,p.X>>8,BG0,bim):null;
+  const supplement=nativeBarrels?SF2CEBARRELPLAYER.draw(cx,B,p,p.X>>8,BG0,bim,im=>aiEnabled()?SF2AIRULES.sprite(p,im,VER.ce.f[p.fid].pal,true):im):null;
 
   const handsArt=VER.cur==='CE'?window.SF2CEHONDAHANDS?.art(p,false):null;if(!supplement?.body)spr(aiSprite(p,handsArt?.image||(isEvilKen(p)?p.AIAtlas:aiEnabled()&&p.AIAtlas?p.AIAtlas:FI[p.fid]),false),handsArt?.rect||p.F.frames[ent(p)[0]],(p.X>>8),BG0-(p.Y>>8),p.FACE);
   if(VER.cur==='CE'&&window.SF2CEVEGACLAW){if(!supplement?.claw)SF2CEVEGACLAW.draw(CE_OBJECT_CONTEXT,p,p.X>>8,BG0-(p.Y>>8),false);SF2CEVEGACLAW.drawDrops(cx,[p],0,BG0);}
@@ -1947,7 +1947,7 @@ function bonusrender(){const B=G.bon,S=window.SF2BONUS,p=P[0];cx.fillStyle='#000
 
 // ---- render ----
 
-const cv=document.getElementById('c'),nativeSurface=window.SF2Graphics?SF2Graphics.attach(cv,W,H):cv,cx=nativeSurface.getContext('2d');cx.imageSmoothingEnabled=false;
+const cv=document.getElementById('c'),nativeSurface=window.SF2Graphics?SF2Graphics.attach(cv,W,H):cv;let cx=nativeSurface.getContext('2d');cx.imageSmoothingEnabled=false;
 
 const img=s=>{const i=new Image();i.src=s;return i;};
 
@@ -2073,7 +2073,10 @@ function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){if(VER.cur==='CE'&&win
 }
 
 function aiSprite(p,image,alternate){if(!aiEnabled())return image;const alt=alternate||image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu'&&image===p.AIAtlas;return SF2AIRULES.sprite(p,image,alt?p.F.pal2:p.F.pal);}
-function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();if(VER.cur==='CE'&&G.stage===4)window.SF2CESTAGEBOAT?.advance(ceStageClock());const c=G.cam,ground=GROUND+(VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.state.main:0),view=VER.cur==='CE'&&window.SF2CECAMERA?.poses||P;cx.fillStyle='#000';cx.fillRect(0,0,W,H);const aiZoom=W/aiViewWidth();if(aiEnabled()){cx.save();cx.translate(0,GROUND*(1-aiZoom));cx.scale(aiZoom,aiZoom);}stagedraw(false);
+const aiWorldSurface=document.createElement('canvas');
+function aiWorldBegin(width){const destination=cx,w=Math.ceil(width);if(aiWorldSurface.width!==w||aiWorldSurface.height!==H+64){aiWorldSurface.width=w;aiWorldSurface.height=H+64;}cx=aiWorldSurface.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.imageSmoothingEnabled=false;cx.fillStyle='#000';cx.fillRect(0,0,w,H+64);cx.translate(0,32);return destination;}
+function aiWorldEnd(destination,zoom){cx=destination;cx.save();cx.translate(0,GROUND*(1-zoom));cx.scale(zoom,zoom);cx.drawImage(aiWorldSurface,0,-32);cx.restore();}
+function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();if(VER.cur==='CE'&&G.stage===4)window.SF2CESTAGEBOAT?.advance(ceStageClock());const c=aiEnabled()?Math.floor(G.cam):G.cam,ground=GROUND+(VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.state.main:0),view=VER.cur==='CE'&&window.SF2CECAMERA?.poses||P;cx.fillStyle='#000';cx.fillRect(0,0,W,H);const aiZoom=W/aiViewWidth(),aiDestination=aiEnabled()?aiWorldBegin(aiViewWidth()):null;try{stagedraw(false);
   if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of view){const f=isEvilKen(p)?SF2AIEvilKen.shadow(p,G.stage):SF2CESHADOW.frame(p,G.stage);if(f)fimgKind('object',f.image,(p.X>>8)-c+f.x,ground+f.y);}
 
   const drawp=p=>{const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;spr(aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),extra?.rect||p.F.frames[ent(p)[0]],(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p):0),ground-(p.Y>>8),p.FACE);
@@ -2089,7 +2092,7 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
 
   if(VER.cur==='CE')window.SF2CEPROJECTILES?.drawEffects(cx,ground,c,{image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});
 
-  stagedraw(true);if(aiEnabled())cx.restore();bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
+  stagedraw(true);}finally{if(aiDestination)aiWorldEnd(aiDestination,aiZoom);}bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
   {const R='#ee6644',B='#0044aa';txw('1P',6,9,R,B,'left');txw(P[0].SCORE||0,113,9,R,B);txw(G.hisc=Math.max(G.hisc||RK[0].s,P[0].SCORE||0,P[1].SCORE||0),247,9,R,B);txw('2P',268,9,R,B,'left');if(G.mode2p||P[1].SCORE)txw(P[1].SCORE||0,377,9,R,B);}
 
   if(!(G.gph===2&&G.ko&&(G.tick>>3)&1))fimg(KOI,176,19);const t=Math.max(0,G.timer);
@@ -2370,9 +2373,10 @@ function drawResultProfiles(w,l){
 
 
 
+function arcadeDefeated(){return G.arc&&!G.mode2p?[...new Set(G.ladder.slice(0,G.li))]:[];}
 function selce(){const bl=(G.tick>>4)&1;
 
-  if(SCE&&SCE.bg.complete){if(!window.SF2CEWORLDMAP?.drawSelectBackground(cx,{image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im}))fimg(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
+  if(SCE&&SCE.bg.complete){if(!window.SF2CEWORLDMAP?.drawSelectBackground(cx,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im}))fimg(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
 
     dimg(a.flag,0,false,'object');dimg(a.selL);dimg(a.name,0,false,'object');if(two){dimg(b.flag,0,false,'object');if(G.sel[0]===G.sel[1])dimg(b.selR);else dimg(b.selL,0,true);dimg(b.name2,0,false,'object');}
 
@@ -2440,7 +2444,7 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 
     tx('Esc: title   Tab: '+(G.mode2p?'2P':'1P'),W/2,222,7,'#aaa');break;}
 
-  case 'map': SF2CEWORLDMAP.draw(cx,G.map,{image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});drawSelectionProfiles();break;
+  case 'map': SF2CEWORLDMAP.draw(cx,G.map,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});drawSelectionProfiles();break;
 
   case 'vs': {const a=G.sel[0],b=G.arc?G.ladder[G.li]:G.sel[1],s=Math.min(1,t/20);
 

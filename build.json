@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.119",
-  "commit": "48cb4a2a930cc48048572c90bcec8e6c1dddd51d",
-  "builtAt": "2026-11-22T03:18:41.773844+00:00",
+  "version": "0.1.120",
+  "commit": "0366758b0f22c8c2a28ec85b84f5d27a7ff2824a",
+  "builtAt": "2026-11-22T04:24:04.647084+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 8332,
-      "sha256": "80b1718023d944628a8ce7c0e73e6af15f43df620375caca5776ac5641cc3abc"
+      "sha256": "5429eefc774ae6e00b85b7b657c193fe7f9852ee8f4e2291bacf60f1ed62e12b"
     },
     {
       "file": "game.js",
-      "bytes": 174083,
-      "sha256": "e0be75916b6eaf23d379e753c3a7238e08d84534d9be81192d5d32f533ca6211"
+      "bytes": 174937,
+      "sha256": "c8d66e5dcb6d89991d1c5757bd3afce0ec8de7c28039053b4465ab0d0e13d90f"
     },
     {
       "file": "assets.js",
@@ -46,8 +46,8 @@
     },
     {
       "file": "screens_ce.js",
-      "bytes": 440104,
-      "sha256": "38eb470fa3a6e740ae04c342b801ce96aa07e2730946824454346f9eca545fd0"
+      "bytes": 635973,
+      "sha256": "b6559001fb4d1fc07fca60e66ce8f31de4f2059ec8f8fcf77ef52750e2f10ddc"
     },
     {
       "file": "endings.js",
@@ -186,8 +186,8 @@
     },
     {
       "file": "ce_camera.js",
-      "bytes": 2824,
-      "sha256": "640953670cb557be263312320506aa11869b8c4e1f9b2db50855a83554fe82e1"
+      "bytes": 2971,
+      "sha256": "802fda04b9a796639cb8fa6113a7b1de1d38dbf20868f413385d6bfdccd61bb9"
     },
     {
       "file": "ce_stage_boat_data.js",
@@ -251,13 +251,13 @@
     },
     {
       "file": "ce_stage_scroll_data.js",
-      "bytes": 503280,
-      "sha256": "c087e1445a78980bc358809e822cc9497d3fe8d79ab8881548c2e3f48cb40b8c"
+      "bytes": 545457,
+      "sha256": "fd3aed2ee772471742566b43d8bb8a749aacf5d152f6aad2eb142ac1126f23d7"
     },
     {
       "file": "ce_stage_scroll.js",
-      "bytes": 2237,
-      "sha256": "5e3c6b777f51a1f9757e1dc2285c39f1df76a9a91c3c5c7eba694733fe2ff46b"
+      "bytes": 2753,
+      "sha256": "53901175a4014f17534abf0bdcb8e17c7142afc19a9f52da932da91ff26900c5"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -301,8 +301,8 @@
     },
     {
       "file": "ce_barrel_player.js",
-      "bytes": 7518,
-      "sha256": "ee1d3ffd849485288210d3644ce513a155dcb475c12e47e938e80e6544313ec5"
+      "bytes": 7702,
+      "sha256": "9cd026ad9247d0d340c9b4d2d6acc7bc4e8a5efd0f17ad5f75261bbd222c644b"
     },
     {
       "file": "ce_car_assets.js",
@@ -331,18 +331,18 @@
     },
     {
       "file": "world_map_ce.js",
-      "bytes": 69213,
-      "sha256": "b9aabd000ee8fcc02d704f01a3239afeb30fc80fd6abec17797deec8974964a3"
+      "bytes": 98789,
+      "sha256": "17d62393b407c005fe9d147e253e5dd80153c6543b642f88181c942327fff726"
     },
     {
       "file": "ce_world_map.js",
-      "bytes": 3457,
-      "sha256": "54b74aa8e603e84a6feb1bb8111dc3b52ace48ff21fcbe15037dffd172082ecf"
+      "bytes": 3975,
+      "sha256": "3ea54f701ca9fdad84aa3b6d26ac3c52a9a135ab66841960a5a7981b7cceb9a0"
     },
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "120d19d0153045eb03192f1655dd8b197dfd0ededa36192479e97a35fe54a9b3"
+      "sha256": "8e17dbd24f879e2447f74bacea1a6e73034c2c72d377f0dcdfbef696dce89fa6"
     },
     {
       "file": "lobby.css",
@@ -357,7 +357,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "91e3019ff9bc1d773425f77dcd209d6783683815fdb44e9095a48f243f52ce3c"
+      "sha256": "6ee7818c581a1462f197f68f52434c89254119cf925d94a90e554eede027f9da"
     },
     {
       "file": "history.js",
@@ -366,8 +366,8 @@
     },
     {
       "file": "ai_rules.js",
-      "bytes": 8740,
-      "sha256": "51a8ff1fd4fcb67e9bdaf3d0c5a99738cb5e28819ac30db2d3041d7ae73f4dd7"
+      "bytes": 8878,
+      "sha256": "ea4dda1f08e85fb5d46f24dea8661d37deedf12ac35b54c267fe0414ea0f4b3a"
     },
     {
       "file": "ai_colors.js",

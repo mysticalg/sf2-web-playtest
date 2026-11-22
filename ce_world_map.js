@@ -5,6 +5,7 @@
  const cache=new Map(),pending=[];
  function image(url){if(cache.has(url))return cache.get(url);const i=new Image();i.src=url;cache.set(url,i);pending.push(i.decode());return i;}
  for(const v of [D.background,D.backgroundObjects,D.selectBackground,D.selectObjects,...D.planes,D.marker,D.cursor,D.corners].filter(Boolean))image(v.img);
+ for(const h of D.heads||[]){image(h.normal);image(h.defeated);}
  const ready=Promise.all(pending);
  function angle(dx,dy){
   if(dy===0)return dx<0?192:64;
@@ -40,15 +41,16 @@
  }
  function part(ctx,v,x=0,y=0,kind='object',filter=i=>i){if(!v)return;const i=image(v.img);if(i.complete&&i.naturalWidth){const painted=filter(i,kind);if(painted)ctx.drawImage(painted,x+(v.x||0),y+(v.y||0));}}
  const GRID=[0,1,2,3,10,11,4,5,6,7,9,8];
- function draw(ctx,s,{selection=true,image:filter=i=>i}={}){
+ function drawDefeated(ctx,defeated=[],activeFids=[],filter=i=>i){const done=new Set(defeated);for(const h of D.heads||[])if(done.has(h.fid)&&!activeFids.includes(h.fid))part(ctx,{img:h.defeated,x:h.x,y:h.y},0,0,'scroll',filter);}
+ function draw(ctx,s,{selection=true,image:filter=i=>i,defeated=[],activeFids=[s.playerFid]}={}){
   part(ctx,D.background,0,0,'scroll',filter);
-  part(ctx,D.backgroundObjects,0,0,'object',filter);
+  part(ctx,D.backgroundObjects,0,0,'object',filter);drawDefeated(ctx,defeated,activeFids,filter);
   if(selection){const f=window.SF2SCRCE?.f?.[s.playerFid];if(f){part(ctx,f.selL,0,0,'scroll',filter);part(ctx,f.name,0,0,'object',filter);part(ctx,f.flag,0,0,'object',filter);}
    part(ctx,D.corners,0,0,'object',filter);const pos=GRID.indexOf(s.playerFid);part(ctx,D.cursor,96+(pos%6)*32,128+Math.floor(pos/6)*32,'object',filter);
    const [x,y]=D.positions[s.playerFid];part(ctx,D.marker,x,240-y,'object',filter);
   }
   if(s.visible&&s.from!==s.to)part(ctx,D.planes[s.orientation],s.X>>8,240-(s.Y>>8),'object',filter);
  }
- function drawSelectBackground(ctx,{image:filter=i=>i}={}){if(!D.selectBackground||!D.selectObjects)return false;part(ctx,D.selectBackground,0,0,'scroll',filter);part(ctx,D.selectObjects,0,0,'object',filter);return true;}
- window.SF2CEWORLDMAP={init,step,draw,drawSelectBackground,ready,angle,direction,data:D,source:D.source};
+ function drawSelectBackground(ctx,{image:filter=i=>i,defeated=[],activeFids=[]}={}){if(!D.selectBackground||!D.selectObjects)return false;part(ctx,D.selectBackground,0,0,'scroll',filter);part(ctx,D.selectObjects,0,0,'object',filter);drawDefeated(ctx,defeated,activeFids,filter);return true;}
+ window.SF2CEWORLDMAP={init,step,draw,drawDefeated,drawSelectBackground,ready,angle,direction,data:D,source:D.source};
 })();

@@ -5,7 +5,7 @@ window.SF2CEBARRELPLAYER=(()=>{
  const D=window.SF2CEBARRELPLAYERDATA,NAMES=['fall','lie','getup','turn','cturn','airfall','land'];
  const images=(D?.art||[]).map(a=>{const i=new Image();i.src=a.image;return i;});
  const ready=Promise.all(images.map(i=>i.decode()));
- const enabled=B=>B?.kind===1&&(!window.SF2||SF2.edition==='ce');
+ const enabled=B=>B?.kind===1&&(!window.SF2||['ce','ai'].includes(SF2.edition));
  function state(B,p){return B.barrels.player||init(B,p);}
  function init(B,p){
   if(!enabled(B))return null;
@@ -31,7 +31,7 @@ window.SF2CEBARRELPLAYER=(()=>{
   options.sound?.(0x2c);return true;
  }
  function facing(B,p,options={}){
-  if(![0,1].includes(B?.kind)||(window.SF2&&SF2.edition!=='ce'))return p.FACE;
+  if(![0,1].includes(B?.kind)||(window.SF2&&!['ce','ai'].includes(SF2.edition)))return p.FACE;
   if(B.nativeDesiredFacing!==0&&B.nativeDesiredFacing!==1)B.nativeDesiredFacing=1;
   const airborne=options.airborne??p.ST===2;
   if(options.ready!==false&&!airborne){if(p.KEYS&1)B.nativeDesiredFacing=0;else if(p.KEYS&2)B.nativeDesiredFacing=1;}
@@ -111,13 +111,13 @@ window.SF2CEBARRELPLAYER=(()=>{
   }
   throw Error('Unknown native barrel-player phase '+c.phase);
  }
- function draw(ctx,B,p,screenX,groundY,bim){
+ function draw(ctx,B,p,screenX,groundY,bim,paint=im=>im){
   if(!enabled(B))return {body:false,claw:false};
   const c=B?.barrels?.player;if(!c?.phase||!p.anim?.supplement)return {body:false,claw:false};
   const views=p.anim.supplement[p.aidx],parts=p.anim.claw[p.aidx],face=p.FACE?1:0;
-  const part=v=>{if(!v)return;const art=D.art[v[0]],im=bim?bim(art.image):images[v[0]];if(im?.complete&&im.naturalWidth)ctx.drawImage(im,screenX+v[1],groundY-(p.Y>>8)+v[2]);};
+  const part=v=>{if(!v)return;const art=D.art[v[0]],im=bim?bim(art.image):images[v[0]];if(im?.complete&&im.naturalWidth)ctx.drawImage(paint(im),screenX+v[1],groundY-(p.Y>>8)+v[2]);};
   if(views)part(views[face]);if(parts)part(parts[face]);
   return {body:!!views,claw:!!parts};
  }
- return {init,begin,actor,stop,facing,bonusFacing:facing,draw,ready,data:D,contract:{direction:'world sign -1/+1, native FACE1 pushes right',frame:'actor hook after input bookkeeping, exactly once per G.tick incl freeze',facing:'facing(B,p,{ready,airborne}) is shared bonus37b40 last grounded horizontal input, stored B.nativeDesiredFacing; no opponent/NPC target',draw:'groundY is ground baseline; helper subtracts integer playerY; returns independent body/claw ownership',scope:'fall/draw faithful CE barrel bonus only; facing callable for native CE car/barrel, primary palettes, no AI custom art',random:'supply random:rand; helper consumes the one native getup RNG344 call and masks low5bits',contactSound:0x2c}};
+ return {init,begin,actor,stop,facing,bonusFacing:facing,draw,ready,data:D,contract:{direction:'world sign -1/+1, native FACE1 pushes right',frame:'actor hook after input bookkeeping, exactly once per G.tick incl freeze',facing:'facing(B,p,{ready,airborne}) is shared bonus37b40 last grounded horizontal input, stored B.nativeDesiredFacing; no opponent/NPC target',draw:'groundY is ground baseline; helper subtracts integer playerY; returns independent body/claw ownership',scope:'native CE barrel bonus and AI Edition; facing shared by car/barrel; optional palette-only paint callback for AI body/claw parts',random:'supply random:rand; helper consumes the one native getup RNG344 call and masks low5bits',contactSound:0x2c}};
 })();
