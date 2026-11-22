@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.125",
-  "commit": "05953fdebd07199d65c0b114f0d160faf6e1ba1d",
-  "builtAt": "2026-11-22T07:22:57.466935+00:00",
+  "version": "0.1.126",
+  "commit": "e9c509d6090fe861345db1e226aaab184a92f079",
+  "builtAt": "2026-11-22T07:57:27.817828+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 8741,
-      "sha256": "b98140b56cb640bc83be31334f87fb1ad1201dd22e200618a8b70b656a459cac"
+      "bytes": 8824,
+      "sha256": "17e6f0cba5bff0e296d7094c6fe2f0d830a3eabed449626011d2cf6a01ae7699"
     },
     {
       "file": "game.js",
-      "bytes": 184280,
-      "sha256": "29af561bceeb1659dbf0054cc9bcb11980f39e0c33603f48511a74fb7c85a601"
+      "bytes": 184941,
+      "sha256": "317746c4a3ee338d00eb87f16fda6f6afe57e7398af7d5fc48dd7175cdd643ae"
     },
     {
       "file": "assets.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "7bfe55bf9475bd0a5649704101b263848c091edc09079336243dd59ce7608310"
+      "sha256": "38456eed5f00dc792002f0aa53da9038ca50fd68d6a8814f56f5a851e46243ce"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "844ac2069efcb4e3f08adcba949a5c55b281c493d5a64a9f0d18a6b8cb116879"
+      "sha256": "eab14fbdf393b0110e8b8e5aaf87dc174eb7bd9915b14eb6146a89eac8ac114d"
     },
     {
       "file": "history.js",
@@ -386,8 +386,8 @@
     },
     {
       "file": "ai_weather.js",
-      "bytes": 10181,
-      "sha256": "9e0f8f99c5c7bf36b515ab48a666d7005d47670737d7706f8afa1b2f53360357"
+      "bytes": 10245,
+      "sha256": "35f6b3426f16b47226e815089bd1c42a00bfcf64dd4fe80127478f34add02a50"
     },
     {
       "file": "ai_shadows.js",
@@ -398,6 +398,26 @@
       "file": "ai_scene.js",
       "bytes": 2243,
       "sha256": "ccd92b21df368de22ee261675f904f155147aea0380bd00a4b5720ef23371a67"
+    },
+    {
+      "file": "ai_atmosphere.js",
+      "bytes": 4371,
+      "sha256": "3ac1cf18a061d07612fe247c15d960d5d070412d077dae14869088c181771b18"
+    },
+    {
+      "file": "ai-effects/cherry-petals.png",
+      "bytes": 226370,
+      "sha256": "25eb1c47820d5b991b8d575e1da2290a8bad2b3d9a66331dc8252ec872f9333d"
+    },
+    {
+      "file": "ai-effects/rose-petals.png",
+      "bytes": 461796,
+      "sha256": "30526a341ce1df916adae3bb2db3ab7baaaee35029f1c8444123d8eb66fda0ae"
+    },
+    {
+      "file": "ai-effects/cloud-mist.png",
+      "bytes": 545510,
+      "sha256": "78165dc643380e1abf90018ced3fa1c096a9fc19bc447c46ffb578130bea595e"
     },
     {
       "file": "ai-effects/room-extensions.png",

@@ -2,7 +2,7 @@
 'use strict';
 window.SF2AIWEATHER=(()=>{
  const outdoors=new Set([0,2,3,4,5,8,9,10]);
- const names=['CLEAR','RAIN','THUNDERSTORM','SNOW'];
+ const names=['CLEAR','RAIN','THUNDERSTORM','SNOW','MIST','CLOUDY','WIND'];
  const cold=new Set([3]);
  const lightCache=new Map();
  const images={};
@@ -18,13 +18,13 @@ window.SF2AIWEATHER=(()=>{
  let last=null,active=null;
  const buffers=new WeakMap();
  function sample(stage,round,seed,tick){
-  const level=Math.max(0,Math.min(2,(round||1)-1)),kind=outdoors.has(stage)?(cold.has(stage)&&level===2?3:level):0;
+  const level=Math.max(0,Math.min(2,(round||1)-1)),kind=SF2AIRULES.hash(seed||0,'match-weather-v2')%names.length;
   const offset=SF2AIRULES.hash(seed||0,'weather:'+stage)%90,clock=Math.max(0,tick|0),phase=(clock+offset)%600;
   const flash=kind===2?(phase>=180&&phase<184?0.22:phase>=190&&phase<196?0.12:0):0;
-  return{stage,kind,name:names[kind],level,clock,phase,flash,wind:Math.sin(clock/180+offset)*0.7+0.9,strike:Math.floor((clock+offset)/600),thunder:kind===2&&phase===212};
+  return{stage,kind,name:names[kind],level,clock,phase,flash,wind:(Math.sin(clock/180+offset)*0.7+0.9)*(kind===6?2.1:1),strike:Math.floor((clock+offset)/600),thunder:kind===2&&phase===212};
  }
  function rain(ctx,s,seed,cam,width,ground=200,top=0,height=224){
-  if(!s.kind)return;
+  if(![1,2,3].includes(s.kind))return;
   if(s.kind===3){snow(ctx,s,seed,cam,width,ground,top,height);return;}
   ctx.save();ctx.beginPath();ctx.rect(0,top,width,height);ctx.clip();ctx.globalAlpha=s.kind===2?0.65:0.5;ctx.fillStyle='#b7dcf0';
   const count=s.kind===2?224:128,stroke=Math.max(1,Math.ceil(width/384));
@@ -130,5 +130,5 @@ window.SF2AIWEATHER=(()=>{
   source.connect(filter);filter.connect(gain);gain.connect(master);active=source;
   source.onended=()=>{source.disconnect();filter.disconnect();gain.disconnect();if(active===source)active=null;};source.start();return true;
  }
- return{outdoors,cold,ready,sample,rain,snow,sky,lightLayers,paintLights,atmosphere,sound,stop};
+ return{outdoors,cold,names,ready,sample,rain,snow,sky,lightLayers,paintLights,atmosphere,sound,stop};
 })();
