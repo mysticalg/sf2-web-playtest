@@ -1171,7 +1171,7 @@ function fbadvance(p){if(!p.FBON)return;if((ceShotoProjectile(p)||ceBoundProject
 
   }else if(G.fr)p.FBT++;
 
-  const x=(p.FBX>>8)-G.cam,edge=p.FBDEF?64:48;if(x<-edge||x>aiViewWidth()+edge)p.FBON=0;}
+  const edge=p.FBDEF?64:48;if(aiEnabled()&&G.scene==='fight'){const room=aiRoom(),x=p.FBX>>8;if(x<room.left-edge||x>room.right+edge)p.FBON=0;}else{const x=(p.FBX>>8)-G.cam;if(x<-edge||x>aiViewWidth()+edge)p.FBON=0;}}
 function fbbox(p){if(!p.FBDEF)return [p.FBX>>8,p.FBY>>8,14,12];const b=p.FBAN.entries[p.FBI][2];
 
   return b&&[(p.FBX>>8)+(p.FBVX>0?-b[0]:b[0]),(p.FBY>>8)+b[1],b[2],b[3]];}
@@ -1254,23 +1254,23 @@ function camera(){
     const predictedAirOuter=airBounds.length?Math.max(0,room.left-futureLeft,futureRight-room.right):0;
     const target=Math.min(span,Math.max(needed,predicted*W/(GROUND-64),futureRight-futureLeft+24));
     follow.target=Math.max(W,Math.min(span,follow.target));
-    if(target>follow.target+4){follow.target=target;follow.hold=10;}
+    if(target>follow.target+4){follow.target=target;follow.hold=20;}
     else if(follow.hold>0)follow.hold--;
-    else if(target<follow.target-8)follow.target=target;
-    else follow.target+=(target-follow.target)*.04;
+    else if(target<follow.target-14)follow.target=target;
+    else follow.target+=(target-follow.target)*.025;
     const spring=(value,velocity,target,rate)=>{const d=value-target,c=velocity+rate*d,e=Math.exp(-rate);return[target+(d+c)*e,(velocity-rate*c)*e];};
-    let [width,velocity]=spring(G.AIViewWidth||W,follow.velocity,follow.target,follow.target>(G.AIViewWidth||W)?.24:.12);
+    let [width,velocity]=spring(G.AIViewWidth||W,follow.velocity,follow.target,follow.target>(G.AIViewWidth||W)?.13:.075);
     if(width<needed){width=needed;velocity=Math.max(0,velocity);}
     if(width>span){width=span;velocity=Math.min(0,velocity);}
     if(width<W+.05&&Math.abs(velocity)<.05){width=W;velocity=0;}
     G.AIViewWidth=width;follow.velocity=velocity;
     const desired=(xs[0]+xs[1])/2+P.reduce((n,p)=>n+(p.VX||0)/256,0)*2;
-    [follow.centre,follow.centreVelocity]=spring(follow.centre,follow.centreVelocity,desired,.22);
+    [follow.centre,follow.centreVelocity]=spring(follow.centre,follow.centreVelocity,desired,.13);
     // A soft centre follows movement, with the original room/pose guards.
     G.cam=width>=span?room.left:Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
     const base=follow.centre-width/2,futureLo=futureRight-width+12,futureHi=futureLeft-12;
     const aim=futureLo<=futureHi?Math.max(futureLo,Math.min(futureHi,base)):base;
-    [follow.pan,follow.panVelocity]=spring(follow.pan||0,follow.panVelocity||0,aim-base,.24);
+    [follow.pan,follow.panVelocity]=spring(follow.pan||0,follow.panVelocity||0,aim-base,.13);
     // Predict towards a comfortable margin, but only enforce two world pixels
     // immediately. A newly extended hand/claw need not snap back to a12px pad.
     const lo=right-width+2,hi=left-2,visual=lo<=hi?Math.max(lo,Math.min(hi,base+follow.pan)):base+follow.pan;
