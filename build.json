@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.142",
-  "commit": "787f7cf6501bfc793b3cbea7dda60465afaec052",
-  "builtAt": "2026-11-22T21:47:20.129633+00:00",
+  "version": "0.1.143",
+  "commit": "4d04fbd2ac38573d0f7573ef83542f5c4fc9a233",
+  "builtAt": "2026-11-22T22:21:31.905547+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 9819,
-      "sha256": "319d9f4ca7e59616d48df4890d862f64372e9ec2f9b406ee0a4c8a8612ec568a"
+      "sha256": "9e8b00c638c616ae5d49bd23c46a1e36541f5fe4f518bd2feefacbd8e091ef29"
     },
     {
       "file": "game.js",
-      "bytes": 197257,
-      "sha256": "d84a7b51022f61377f8da93b9c9995df6241932e1a427c1c2d856929720085a8"
+      "bytes": 197490,
+      "sha256": "24ce203231a816771385749023a55d22586784276fdb191ff697c9843685ee46"
     },
     {
       "file": "assets.js",
@@ -221,8 +221,8 @@
     },
     {
       "file": "ce_normals.js",
-      "bytes": 900,
-      "sha256": "a456b354102b0ba1111d4020e0a628fc1f965a1fcf967dfbf5d8269f2bbcb85d"
+      "bytes": 1945,
+      "sha256": "05820a21fd8a7c21437f08e8635343dce6c94ac1545ad4fb31e7c5ba2d179eea"
     },
     {
       "file": "ce_camera_data.js",
@@ -397,7 +397,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "2ddf15b0a10a0a26458068425cd916c74bfa31789644e6efaa3a2b8af8f432e0"
+      "sha256": "b48ff0a951ea719601e42596e41d970d8ae0f73b87149f4e6311cf6745fc372f"
     },
     {
       "file": "lobby.css",
@@ -412,7 +412,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "b505643c4b5c9bb506cc626a3a06f74d4b2eedfb88a3fbfd426c8568cca2746d"
+      "sha256": "31c8f3718027300aa237825e0405e3fe3c67ae53b01964d14d6b778b71e9dd3f"
     },
     {
       "file": "history.js",
