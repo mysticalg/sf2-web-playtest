@@ -114,7 +114,7 @@ function aiSetProfile(p,fid){
 
 function aiResetPlayer(p){if(!aiEnabled()){aiClearProfile(p);return;}
 
-  delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i;p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,AICFG.colors[p.i]);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
+  delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i+':'+(p.AIColorChoice?.clothing??-1)+':'+(p.AIColorChoice?.skin??-1);p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,AICFG.colors[p.i]);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
   p.AICombo={active:false,id:0,hits:0,damage:0,riftUsed:false};
 
   p.AIMetrics={riftStarts:0,riftCancels:0,riftCost:0,riftRejected:0,groundHits:0,blockedNormals:0,maxCombo:0,lastRift:null};
@@ -2053,6 +2053,22 @@ function dimg(e,dx=0,flip=false,kind='scroll'){if(!e||!e.im.complete)return;if(!
 
   cx.save();cx.translate(W-e.x+dx,e.y);cx.scale(-1,1);fimgKind(kind,e.im,0,0);cx.restore();}
 
+function aiPortraitIdentity(slot,fid){const id=evilRyuSelected(slot,fid)?'evil-ryu':evilKenSelected(slot,fid)?'evil-ken':CE_KEYS[fid];return{id,key:(id.startsWith('evil-')?'ai:':'ce:')+id};}
+function aiPortraitPacket(slot,fid,choiceOverride){
+  const live=['win','fight'].includes(G.scene)&&P[slot].fid===fid,p=P[slot],identity=live?{id:p.aiProfile,key:p.fighterKey}:aiPortraitIdentity(slot,fid),otherSlot=1-slot;
+  const otherFid=live?P[otherSlot].fid:otherSlot===1&&G.arc&&G.scene!=='select'&&G.ladder?.[G.li]!==undefined?G.ladder[G.li]:G.sel[otherSlot],other=live?{id:P[otherSlot].aiProfile,key:P[otherSlot].fighterKey}:aiPortraitIdentity(otherSlot,otherFid);
+  const F=p.fid===fid&&p.fighterKey===identity.key?p.F:identity.id==='evil-ken'?SF2AIEvilKen.fighter:D.fighters[fid],choice=choiceOverride||(live?p.AIColorChoice:AICFG.colors[slot])||{clothing:-1,skin:-1},seed=live?G.AIMatchSeed:G.AINextMatchSeed??G.AIMatchSeed??SF2AIRULES.hash(rng,'portrait-preview');
+  const mirror=slot===1&&fid===otherFid,shoto=['ryu','ken'].includes(identity.id)&&(AICFG.prototype||other.id==='evil-'+identity.id);
+  const alternate=identity.id==='evil-ryu'||identity.id==='evil-ken'&&slot===1&&identity.key===other.key||!identity.id.startsWith('evil-')&&mirror&&!shoto;
+  return{i:slot,fid,F,fighterKey:identity.key,aiProfile:identity.id,AIColorChoice:choice,AIPalette:live&&!choiceOverride&&p.AIPalette?p.AIPalette:SF2AIRULES.colors(F.pal,seed,identity.key,slot,choice),sourcePalette:alternate?F.pal2:F.pal};
+}
+function aiPortraitImage(im,slot,fid,kind,choice){return aiEnabled()?SF2AIPORTRAITS.image(im,fid,kind,aiPortraitPacket(slot,fid,choice)):im;}
+function aiPortraitEntry(e,slot,fid,kind,dx=0,flip=false){
+  if(!aiEnabled()){dimg(e,dx,flip);return;}if(!e?.im.complete)return;
+  const im=aiPortraitImage(e.im,slot,fid,kind);if(!flip){fimgKind('scroll',im,e.x+dx,e.y);return;}
+  cx.save();cx.translate(W-e.x+dx,e.y);cx.scale(-1,1);fimgKind('scroll',im,0,0);cx.restore();
+}
+
 const CEGRID=[0,1,2,3,10,11,4,5,6,7,9,8]; // arcade CE select: Ryu Honda Blanka Guile Balrog Vega / Ken Chun Zangief Dhalsim Sagat Bison
 
 function spr(im,r,x,y,flip){const [sx,sy,w,h,l,t]=r; if(!flip)fimgKind('object',im,sx,sy,w,h,x+l,y+t,w,h);
@@ -2111,7 +2127,8 @@ function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){if(aiEnabled()&&G.stag
   if(l.wrap){x0=((x0%l.w)+l.w)%l.w;for(let x=-x0;x<width;x+=l.w)fimgKind(kind,im,x,-pad);}else{fimgKind(kind,im,-x0,-pad);if(l.w>=500&&(VER.cur!=='CE'||kind==='scroll')){const h=im.height;if(x0<0)fimgKind(kind,im,0,0,1,h,0,-pad,-x0,h);const r=l.w-x0;if(r<width)fimgKind(kind,im,l.w-1,0,1,h,r,-pad,width-r,h);}}
 }
 
-function aiSprite(p,image,alternate){if(!aiEnabled())return image;const alt=alternate||image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu'&&image===p.AIAtlas;return SF2AIRULES.sprite(p,image,alt?p.F.pal2:p.F.pal);}
+function aiSpriteReference(p,image,palette){return image===FIA[p.fid]&&palette.some((rgb,i)=>palette.slice(0,i).some(q=>q.every((v,c)=>v===rgb[c])))?{image:FI[p.fid],palette:p.F.pal}:null;}
+function aiSprite(p,image,alternate){if(!aiEnabled())return image;const alt=alternate||image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu'&&image===p.AIAtlas,palette=alt?p.F.pal2:p.F.pal;return SF2AIRULES.sprite(p,image,palette,false,aiSpriteReference(p,image,palette));}
 function fighterBounds(p){
   const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate),rect=extra?.rect||p.F.frames[ent(p)[0]],w=rect[2],h=rect[3],l=rect[4],t=rect[5];
   const b={left:p.FACE?-l-w:l,right:p.FACE?-l:l+w,top:t,bottom:t+h};
@@ -2270,7 +2287,7 @@ function sceneMusic(sc){const m=sc==='fight'?STM[G.stage]:sc==='win'?(VER.cur===
 
 function goNow(sc,withMusic=true){G.scene=sc;G.st=0;if(withMusic)sceneMusic(sc);}
 
-function go(sc){G.fade=null;if(VER.cur==='CE'&&window.SF2CEFADE){const route=G.scene==='map'&&sc==='vs'&&G.map?.initial?'select>vs':G.scene+'>'+sc,state=SF2CEFADE.begin(route);if(state){state.target=sc;state.entered=false;G.fade=state;return;}}goNow(sc);}
+function go(sc){if(aiEnabled()&&G.AINextMatchSeed===undefined){if(sc==='select')G.AINextMatchSeed=SF2AIRULES.hash(rng,'selection:'+G.tick);else if(sc==='vs'){const fids=[G.sel[0],G.arc?G.ladder[G.li]:G.sel[1]],keys=fids.map((fid,i)=>aiPortraitIdentity(i,fid).key);G.AINextMatchSeed=SF2AIRULES.hash(rng,((G.AIMatchSerial||0)+1)+':'+keys.join(':'));}}G.fade=null;if(VER.cur==='CE'&&window.SF2CEFADE){const route=G.scene==='map'&&sc==='vs'&&G.map?.initial?'select>vs':G.scene+'>'+sc,state=SF2CEFADE.begin(route);if(state){state.target=sc;state.entered=false;G.fade=state;return;}}goNow(sc);}
 
 function startarcade(){if(VER.cur==='CE')loadendce();return startarcade0.apply(this,arguments);}
 
@@ -2295,7 +2312,7 @@ function matchend(){const w=P[0].WINS>=2&&P[0].WINS>P[1].WINS?0:P[1].WINS>=2&&P[
 function startfight(a,b){G.arc=0;setfighter(P[0],a);setfighter(P[1],b);G.sel=[a,b];G.stage=b;G.scene='fight';G.selstep=0;resetmatch();}
 
 function aiColorDone(){const c=G.AIColor;AICFG.colors[c.slot]={clothing:c.clothing,skin:c.skin};delete G.AIColor;sfxc(0x22,SN_BLOCK,0.4);if(!G.mode2p&&G.arc){startarcade(G.sel[0]);return;}if(++G.selstep>=2){G.selstep=0;go('vs');}}
-function aiColorDraw(){const c=G.AIColor,p=P[c.slot],mirror=p.i===1&&P[0].fighterKey===p.fighterKey,image=isEvilKen(p)?(mirror?p.AIAtlasAlt:p.AIAtlas):p.AIAtlas||(['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===p.fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate=image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu',palette=alternate?p.F.pal2:p.F.pal;SF2AICOLORS.draw(cx,c,p,image,palette,G.AINextMatchSeed,tx);}
+function aiColorDraw(){const c=G.AIColor,p=P[c.slot],mirror=p.i===1&&P[0].fighterKey===p.fighterKey,image=isEvilKen(p)?(mirror?p.AIAtlasAlt:p.AIAtlas):p.AIAtlas||(['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===p.fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate=image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu',palette=alternate?p.F.pal2:p.F.pal;SF2AICOLORS.draw(cx,c,p,image,palette,G.AINextMatchSeed,tx,aiPortraitImage(SCE.f[p.fid].vsL.im,c.slot,p.fid,'vsL',{clothing:c.clothing,skin:c.skin}),aiSpriteReference(p,image,palette));}
 function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[k1,k2];G.st++;
 
   const ok=(n1&CONF)||(ng&4), any=ok||(n2&CONF);
@@ -2425,7 +2442,7 @@ function selce(){const bl=(G.tick>>4)&1;
 
   if(SCE&&SCE.bg.complete){if(!window.SF2CEWORLDMAP?.drawSelectBackground(cx,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im}))fimg(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
 
-    dimg(a.flag,0,false,'object');dimg(a.selL);dimg(a.name,0,false,'object');if(two){dimg(b.flag,0,false,'object');if(G.sel[0]===G.sel[1])dimg(b.selR);else dimg(b.selL,0,true);dimg(b.name2,0,false,'object');}
+    dimg(a.flag,0,false,'object');aiPortraitEntry(a.selL,0,G.sel[0],'selL');dimg(a.name,0,false,'object');if(two){dimg(b.flag,0,false,'object');if(G.sel[0]===G.sel[1])aiPortraitEntry(b.selR,1,G.sel[1],'selR');else aiPortraitEntry(b.selL,1,G.sel[1],'selL',0,true);dimg(b.name2,0,false,'object');}
 
     for(const i of (two?[0,1]:[0])){if(i>G.selstep)continue;const [x,y]=cecell(G.cep[i]),c=SCE.cur[i?'2':'1'];if(i===G.selstep&&bl)continue;
 
@@ -2497,7 +2514,7 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 
     if(VER.cur==='CE'&&SCE){ceFill(SCE.vsb,0,0,W,H);const A=SCE.f[a],B=SCE.f[b],o=Math.round((1-s)*200);
 
-      dimg(A.vsL,-o);if(a===b)dimg(B.vsR,o);else dimg(B.vsL,o,true);dimg(A.vsname,0,false,'object');dimg(B.vsname2,0,false,'object');if(t>20)dimg(SCE.logo);
+      aiPortraitEntry(A.vsL,0,a,'vsL',-o);if(a===b)aiPortraitEntry(B.vsR,1,b,'vsR',o);else aiPortraitEntry(B.vsL,1,b,'vsL',o,true);dimg(A.vsname,0,false,'object');dimg(B.vsname2,0,false,'object');if(t>20)dimg(SCE.logo);
 
       tx(HOME[a],A.vsname?A.vsname.x+A.vsname.im.width/2:96,184,8,'#fff','#000');tx(HOME[b],B.vsname2?B.vsname2.x+B.vsname2.im.width/2:288,184,8,'#fff','#000');
 
@@ -2521,7 +2538,7 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 
     if(VER.cur==='CE'&&G.mw>=0&&CWIN&&CWIN[wf]&&CWIN[lf]){const a=CWIN[wf],b=CWIN[lf];
 
-      if(a.win.complete&&a.win.naturalWidth&&b.lose.complete&&b.lose.naturalWidth&&a.quote.complete&&a.quote.naturalWidth){cx.fillStyle='#000';cx.fillRect(0,0,W,H);if(w===1){cx.save();cx.translate(W,0);cx.scale(-1,1);}if(window.SF2CEFADE){SF2CEFADE.drawPortrait(cx,SF2CEFADE.mirrorWinner?.(w,wf,lf)||a.win,ceFadeState(),0,0,16,wf);SF2CEFADE.drawPortrait(cx,SF2CEFADE.mirrorLoser(w,wf,lf)||b.lose,ceFadeState(),1,192,16,lf);}else{fimg(a.win,0,16);fimg(b.lose,192,16);}if(w===1)cx.restore();{const quote=ceFadeState()?SF2CEFADE.image(a.quote,G.fade,'object'):a.quote;if(quote){if(!window.SF2CEFADE?.drawQuote(cx,quote,wf,G.st))fimgKind('object',a.quote,0,160);}}drawResultProfiles(w,l);break;}}
+      if(a.win.complete&&a.win.naturalWidth&&b.lose.complete&&b.lose.naturalWidth&&a.quote.complete&&a.quote.naturalWidth){cx.fillStyle='#000';cx.fillRect(0,0,W,H);if(w===1){cx.save();cx.translate(W,0);cx.scale(-1,1);}if(window.SF2CEFADE){SF2CEFADE.drawPortrait(cx,aiPortraitImage(SF2CEFADE.mirrorWinner?.(w,wf,lf)||a.win,w,wf,'win'),ceFadeState(),0,0,16,wf);SF2CEFADE.drawPortrait(cx,aiPortraitImage(SF2CEFADE.mirrorLoser(w,wf,lf)||b.lose,l,lf,'lose'),ceFadeState(),1,192,16,lf);}else{fimg(aiPortraitImage(a.win,w,wf,'win'),0,16);fimg(aiPortraitImage(b.lose,l,lf,'lose'),192,16);}if(w===1)cx.restore();{const quote=ceFadeState()?SF2CEFADE.image(a.quote,G.fade,'object'):a.quote;if(quote){if(!window.SF2CEFADE?.drawQuote(cx,quote,wf,G.st))fimgKind('object',a.quote,0,160);}}drawResultProfiles(w,l);break;}}
 
     port(wf,24,40,false,false,1.5);port(lf,W-192,40,true,true,1.5);drawResultProfiles(w,l);
 

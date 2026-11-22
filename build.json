@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.130",
-  "commit": "ef2ea681fb05ab4f317934da7406bcb480428c2e",
-  "builtAt": "2026-11-22T10:45:11.646844+00:00",
+  "version": "0.1.132",
+  "commit": "44306f8b698a1b48ebb1d415a446f6c557f732af",
+  "builtAt": "2026-11-22T12:23:41.823930+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 8912,
-      "sha256": "b0bf5589a0ce4144605888ae20ab6a5d18ed6bc4c92a4350b660fc101bc07596"
+      "bytes": 9083,
+      "sha256": "291e783b180cd384deb42e18bf94231b86044a6f7800beddb3f36ad48736c64a"
     },
     {
       "file": "game.js",
-      "bytes": 188569,
-      "sha256": "66d0dd3fdb67ea3756c1269412b37cbb08f0aad46ef79077786cc7142fbafe28"
+      "bytes": 191591,
+      "sha256": "b41eb86e738591efe04b4cc2831f17bca6481d150670c02363617259c8516dd3"
     },
     {
       "file": "assets.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "3fdc54bdd940ca98f8eab660d130dbda9e7b8c7fb6d17fcfac2c9976060a0593"
+      "sha256": "795ea75fcccac05ff353c372377a540481296c2e66847179081496dd74d69bed"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "a4b68e91f54a5668d186cce8ef30da4db258b2e86df471176b3ea3776de3deb6"
+      "sha256": "adda4535ee2323559aaa0a489587cc8bb4d2b19e92263063d33d09b6d8111b1a"
     },
     {
       "file": "history.js",
@@ -376,13 +376,23 @@
     },
     {
       "file": "ai_rules.js",
-      "bytes": 8878,
-      "sha256": "ea4dda1f08e85fb5d46f24dea8661d37deedf12ac35b54c267fe0414ea0f4b3a"
+      "bytes": 9974,
+      "sha256": "1cafff902bb4b7f62972669539e4e644af76eaba70fb368a5169a6db68a5b571"
     },
     {
       "file": "ai_colors.js",
-      "bytes": 3302,
-      "sha256": "2a6bfb4a9be6752f805467e4a1d29c00e7b03e41d6ab0905c10ec26c694d04f5"
+      "bytes": 3528,
+      "sha256": "4b9f3db340086bd2771e0187a18af2468a7dde7dc1d9e094f71aa7ae7f176b90"
+    },
+    {
+      "file": "ai_portraits.js",
+      "bytes": 2398,
+      "sha256": "91e8bb5f8f37a151e360d507c5b642234428ca35df286962fb81ec7a8de35478"
+    },
+    {
+      "file": "ai_portraits_data.js",
+      "bytes": 500685,
+      "sha256": "bfc5cef33244967680bd5c245f2b57a77cb96c5255bd1ad2f597a15851957497"
     },
     {
       "file": "ai_weather.js",
