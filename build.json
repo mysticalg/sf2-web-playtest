@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.140",
-  "commit": "2f05249e2e7b393fcc470a8389861f44730ef927",
-  "builtAt": "2026-11-22T20:18:44.820653+00:00",
+  "version": "0.1.141",
+  "commit": "cef69c259647baa0a810a8ce204fcf465ba9d610",
+  "builtAt": "2026-11-22T21:16:46.779211+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 9654,
-      "sha256": "78c468e1a7a0b1e754c625eb26a9d60b10f71ad5e24ecfc1c658803c2069ecfe"
+      "bytes": 9819,
+      "sha256": "1fb279e946ed9bfc0f4c68ad4de5db4dd6b35c448cc5480608a80b56c60117eb"
     },
     {
       "file": "game.js",
-      "bytes": 195471,
-      "sha256": "b964c7dd372732e3636372eb823dcf8616f7c6f8adc106330403339b7f539c60"
+      "bytes": 197127,
+      "sha256": "691ff6907d09a69f5293e61d4ae4bd5db686ec451bcf89a24fc1d8079f362681"
     },
     {
       "file": "assets.js",
@@ -183,6 +183,16 @@
       "file": "ce_honda_hold.js",
       "bytes": 6666,
       "sha256": "daff020bd687f5c2b35cbeae32ffcda5fc41ae771d599ee0289921d31f618b9b"
+    },
+    {
+      "file": "ce_dhalsim_data.js",
+      "bytes": 81157,
+      "sha256": "4d1d107a5cc52060906eb832ab438989367578646a615656edd952b09d73ab61"
+    },
+    {
+      "file": "ce_dhalsim.js",
+      "bytes": 6235,
+      "sha256": "7f56323bbf78ce031c4924d3f93bd83d9c0bbc807b7fd42e094bc34afd5bba77"
     },
     {
       "file": "ce_honda_hold_data.js",
@@ -387,7 +397,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "3ade4de602e944c436ce77b66ed6c74997acea3f184c84ac17f35fbd2b06f9ed"
+      "sha256": "aaa3fc4a45055a5c4301c00d2e9d26395005ad9cc39fc04afe01127ceb58567a"
     },
     {
       "file": "lobby.css",
@@ -402,7 +412,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "108ae063afafa3fdecc322772c37fd29d18f8ec426c8796862c863f04b892404"
+      "sha256": "c453527a7f171b619a94318c5ca0a39a0027b9cddeec4196b2665c5a8e45ff33"
     },
     {
       "file": "history.js",
