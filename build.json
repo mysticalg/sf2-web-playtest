@@ -1,13 +1,13 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.129",
-  "commit": "d69f025026f2cab2791b65ea78ea1b944b525011",
-  "builtAt": "2026-11-22T10:15:16.628165+00:00",
+  "version": "0.1.130",
+  "commit": "ef2ea681fb05ab4f317934da7406bcb480428c2e",
+  "builtAt": "2026-11-22T10:45:11.646844+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 8824,
-      "sha256": "5f2ed93f781170f2467e7d8bc3591f629da22c343e41d592ae4f62d5f4adede1"
+      "bytes": 8912,
+      "sha256": "b0bf5589a0ce4144605888ae20ab6a5d18ed6bc4c92a4350b660fc101bc07596"
     },
     {
       "file": "game.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "e81be63b00563d0d3614142961c8cb6b26629079ee8f6379472758b6b3982b54"
+      "sha256": "3fdc54bdd940ca98f8eab660d130dbda9e7b8c7fb6d17fcfac2c9976060a0593"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "e758aa0ba3ac6f6a4df3baffcea6f6bbdbf9976938ce64ab5fece374ad60ec12"
+      "sha256": "a4b68e91f54a5668d186cce8ef30da4db258b2e86df471176b3ea3776de3deb6"
     },
     {
       "file": "history.js",
@@ -396,8 +396,23 @@
     },
     {
       "file": "ai_scene.js",
-      "bytes": 6801,
-      "sha256": "966504ca7ffbbee391c28c3c6fe98457284360d1d07b8941247322f97e70ca5d"
+      "bytes": 11255,
+      "sha256": "7d3eb630e4fd7a144f2064ea417c650783e4b43f36c0659008c463e9bb227a0a"
+    },
+    {
+      "file": "ai_stage_materials.js",
+      "bytes": 1394,
+      "sha256": "66cec404191a2fe52f8484c0bd9b667442a9a69b009d7935bebb343ab6e85215"
+    },
+    {
+      "file": "ai-effects/china-foreground.png",
+      "bytes": 694119,
+      "sha256": "c59942a0e771de9ef027c92d5ebed5e928a82f6a3f9f677267ead5c286dd3c8b"
+    },
+    {
+      "file": "ai-effects/china-far.png",
+      "bytes": 276335,
+      "sha256": "8508c09851c7e775114a562ed7f05eecd4dfe5cad0bd1723cc2fd2daa2198a8d"
     },
     {
       "file": "ai_atmosphere.js",
