@@ -1223,7 +1223,8 @@ function camera(){
     const left=Math.min(...bounds.map(({p,b})=>p.X/256+b.left)),right=Math.max(...bounds.map(({p,b})=>p.X/256+b.right));
     const high=Math.max(...bounds.map(({p,b})=>p.Y/256-b.top-main+8));
     const span=room.right-room.left;
-    const needed=Math.min(4096,Math.max(W,Math.min(span,Math.abs(xs[1]-xs[0])+128),right-left+24,high*W/(GROUND-52)));
+    const airBounds=bounds.filter(({p})=>p.Y>0||p.CES?.kind==='vegawall'&&p.CES.phase>0),airOuter=airBounds.length?Math.max(0,...airBounds.map(({p,b})=>Math.max(room.left-p.X/256-b.left,p.X/256+b.right-room.right))):0;
+    const needed=Math.min(4096,Math.max(W,Math.min(span,Math.abs(xs[1]-xs[0])+128),right-left+24,high*W/(GROUND-52),airOuter>0?span+2*(airOuter+2):0));
     const follow=G.AICamera||(G.AICamera={velocity:0,centre:(xs[0]+xs[1])/2,centreVelocity:0,target:W,hold:0});
     // Anticipate rising motion; leave extra headroom before the hard visibility
     // boundary. This removes the frame-by-frame zoom chase during ascent.
@@ -1232,7 +1233,8 @@ function camera(){
     const predicted=Math.max(...future.map(({p,b})=>p.Y/256-b.top-main+8+Math.max(0,motionVelocity(p).y)*8));
     const futureLeft=Math.min(...future.map(({p,b})=>p.X/256+b.left+Math.min(0,motionVelocity(p).x)*8)),futureRight=Math.max(...future.map(({p,b})=>p.X/256+b.right+Math.max(0,motionVelocity(p).x)*8));
     follow.last=P.map(p=>({x:p.X,y:p.Y}));
-    const target=Math.min(4096,Math.max(needed,predicted*W/(GROUND-64),futureRight-futureLeft+24));
+    const predictedAirOuter=airBounds.length?Math.max(0,room.left-futureLeft,futureRight-room.right):0;
+    const target=Math.min(4096,Math.max(needed,predicted*W/(GROUND-64),futureRight-futureLeft+24,predictedAirOuter>0?span+2*(predictedAirOuter+12):0));
     if(target>follow.target+4){follow.target=target;follow.hold=10;}
     else if(follow.hold>0)follow.hold--;
     else if(target<follow.target-8)follow.target=target;
@@ -1253,7 +1255,10 @@ function camera(){
     // Predict towards a comfortable margin, but only enforce two world pixels
     // immediately. A newly extended hand/claw need not snap back to a12px pad.
     const lo=right-width+2,hi=left-2,visual=lo<=hi?Math.max(lo,Math.min(hi,base+follow.pan)):base+follow.pan;
-    follow.inset=G.cam-visual;
+    // A normal view must stay inside the actual room. A taller view contains
+    // that entire room; surplus width is zoom padding, never extra scrolling.
+    const edgeLo=width<=span?room.left:room.right-width,edgeHi=width<=span?room.right-width:room.left;
+    follow.inset=G.cam-Math.max(edgeLo,Math.min(edgeHi,visual));
     return;
   }
   if(VER.cur!=='CE'){const m=(P[0].X+P[1].X)>>9;G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));return;}
