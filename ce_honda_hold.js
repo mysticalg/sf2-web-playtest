@@ -1,0 +1,33 @@
+/* Honda HP headbutt/HK knee hold: CE 0x3e72a..0x3e7d8, shared input 0x40b4..0x420c. */
+'use strict';
+window.SF2CEHONDAHOLD=(()=>{
+ const D=window.SF2CEHONDAHOLDDATA,slots=new WeakMap();
+ function register(p){let s=slots.get(p.F);if(s)return s;s={};for(const [name,a]of Object.entries(D.poses)){let n=p.F.anims.findIndex(q=>q.ceHondaHold&&q.source===a.source);if(n<0){n=p.F.anims.length;p.F.anims.push({...a,ents:a.ents.map(e=>e.map(v=>Array.isArray(v)?v.slice():v)),flags:a.flags.slice()});}s[name]=n;}slots.set(p.F,s);Object.assign(window.SF2CESHADOWDATA.selectors,D.shadows);return s;}
+ function attach(p,h){const c=p.CEHH,o=p.opp,row=D.rows[o.fid][p.anim.attachIndices[p.aidx]];if(!row)return;o.X=(p.X&~255)+((p.FACE?-row[0]:row[0])<<8)+(o.X&255);o.Y=(p.Y&~255)+(row[1]<<8)+(o.Y&255);const extent=h.extent(o),lo=h.camera()+extent,hi=h.camera()+384-extent,x=o.X>>8,clipped=Math.max(lo,Math.min(hi,x));if(clipped!==x){const dx=(clipped-x)*256;o.X+=dx;p.X+=dx;}o.FACE=p.FACE^((row[2]>>5)&1);const n=h.find(o,'thpose'+row[3]);if(n>=0)h.anim(o,n,0);o.ST=5;o.STUN=999;o.KB=0;}
+ function inputAmount(p,kind,h){if(h.human(p)){const previous=p.CEHHPrevKeys??p.PREV??0,pressed=p.KEYS&~previous;return(!(previous&15)&&pressed&15?3:0)+(pressed&1008?1:0);}const level=Math.max(0,Math.min(31,p.CE_HANDICAP??16)),mask=D.cpuMasks[kind][level];return mask&(1<<(h.rand()&31))?D[kind==='escape'?'cpuEscape':'cpuSqueeze'][p.fid]:0;}
+ function finish(p,h){h.contactDelay(29);const o=p.opp,c=p.CEHH;o.CEHHV={phase:0,dir:p.FACE?1:-1,wait:0};o.ST=5;o.STUN=999;o.KB=0;if(!window.SF2.health.alive(o)){o.CEHHV=null;h.dead(o,p,p.FACE?1:-1);}else if(p.i===1){victim(o,h);o.acc=0;}const face=h.facing(p);p.CEHHDesired=face;p.CEHH=null;p.MV=null;if(face!==p.FACE){p.FACE=face;p.CEHHRecovery="turn";p.ST=0;h.anim(p,window.SF2CEVEGA.registerTurn(p),0);p.acc=-1;}else{h.idle(p);p.CEHHRecovery="idle";}}
+ function init(p,atk,h){if(p.fid!==1||![2,5].includes(atk))return false;const o=p.opp,s=register(p);p.CEHH={init:true,time:130,escape:35+D.random.escape[h.rand()&31],squeeze:0,initialSqueeze:0,damageCode:8,hits:0};const c=p.CEHH;c.squeeze=c.initialSqueeze=12+D.random.squeeze[h.rand()&31];p.CEHHPrevKeys=p.PREV;o.CEHHPrevKeys=o.PREV;p.ST=11;p.MV={kind:'hondahold'};p.CES=p.THV=null;p.KB=p.RETCR=0;p.hitdone=1;p.SPK=p.SPKD=0;const previous={cur:p.cur,anim:p.anim,aidx:p.aidx,acc:p.acc,adone:p.adone};h.anim(p,s[atk===2?'hondaHP':'hondaHK'],0);p.CEHH.pose={cur:p.cur,anim:p.anim,aidx:p.aidx,acc:p.acc,adone:p.adone};o.CEHHV={phase:-1,fresh:true};o.ST=5;o.STUN=999;o.KB=0;attach(p,h);if(p.i===0)o.acc--;return true;}
+ function recovery(p,h){if(!p.CEHHRecovery)return false;if(p.ST!==0){p.CEHHRecovery=false;return false;}const buttons=p.KEYS&1008;if(buttons||p.KEYS&15){p.CEHHRecovery=false;return false;}let face=p.CEHHDesired??p.FACE;if(p.CEHHRecovery==='idle'&&face!==p.FACE){p.FACE=face;p.CEHHRecovery='turn';h.anim(p,window.SF2CEVEGA.registerTurn(p),0);p.acc=-1;}else{h.tick(p);p.acc--;if(p.CEHHRecovery==='turn'&&p.anim.flags[p.aidx]&0x8000){face=h.facing(p);p.CEHHDesired=face;if(face!==p.FACE){p.FACE=face;h.anim(p,window.SF2CEVEGA.registerTurn(p),0);p.acc=-1;}else{p.CEHHRecovery='idle';h.idle(p);}}}return true;}
+ function step(p,h){const c=p.CEHH;if(!c)return false;const o=p.opp;if(c.init){Object.assign(p,c.pose);delete c.pose;c.init=false;h.sound(0x23);p.acc=1;c.time--;}
+  c.time--;c.escape-=inputAmount(o,'escape',h);c.squeeze-=inputAmount(p,'squeeze',h);if(c.squeeze<0){c.squeeze=c.initialSqueeze;p.acc=p.anim.ents[p.aidx][1]-1;}
+  if(!c.time||c.escape<0||h.roundOver()||!window.SF2.health.alive(o)){finish(p,h);return true;}
+  const marker=p.anim.flags[p.aidx]&255;if(marker){const damage=window.SF2CECOMBAT.throwDamage(p,o,c.damageCode);window.SF2.health.damage(o,damage.damage);c.damageCode=10;c.hits++;h.freeze(12);h.sound(0x47);if(!window.SF2.health.alive(o)){finish(p,h);return true;}}
+  h.tick(p);p.acc--;attach(p,h);return true;
+ }
+ function victim(o,h){const c=o.CEHHV;if(!c)return false;if(c.phase===-1){if(c.fresh){c.fresh=false;return false;}if(!o.opp.CEHH||o.opp.ST!==11){o.opp.CEHH=null;o.CEHHV={phase:0,dir:o.opp.FACE?1:-1};return victim(o,h);}o.acc--;return true;}
+  if(c.phase===0){c.phase=1;o.FACE=c.dir>0?0:1;h.anim(o,h.find(o,'bitetoss'),0);o.acc=-1;return true;}
+  if(c.phase===1){c.phase=2;c.vx=c.dir*0x200;c.vy=0x5c0;c.pause=0;c.ignore=false;c.recoilIndex=0;o.Y+=16*256;o.acc--;return true;}
+  if(c.pause>0){c.ignore=true;if(--c.pause>0){o.acc--;return true;}}c.vy-=0x48;o.X+=c.vx;o.Y+=c.vy;const extent=h.extent(o),lo=h.camera()+extent,hi=h.camera()+384-extent,x=o.X>>8,wall=o.CEWALL||0;if(wall&&!c.ignore){c.pause=12;c.vx=0;if(c.vy>=0)c.vy=0;}const recoil=[6,6,6,5,5,5,4,4,3,3,2,1,1,1,1,1][c.recoilIndex++]||0;if(wall===(c.dir>0?2:1))o.opp.X-=c.dir*recoil*256;if(c.vy<0&&o.Y<0){o.Y&=255;o.CEHHV=null;h.release(o);return true;}return true;
+ }
+ function desired(p,players){const delta=(players[1].X>>8)-(players[0].X>>8);let left=delta>=0?1:0;if(Math.abs(delta)<=24&&players[0].CEHHPush)left=players[0].CEHHPushSide?0:1;return p.i===0?left:1-left;}
+ function push(players,boxes){const [a,b]=players;const A=boxes(a),B=boxes(b);a.CEHHPush=b.CEHHPush=false;if(!A||!B)return;const dx=A[0]-B[0],w=A[2]+B[2],dy=A[1]-B[1];if(Math.abs(dx)>w||Math.abs(dy)>A[3]+B[3])return;const depth=dx+(dx>=0?-w:w);a.CEHHPush=b.CEHHPush=depth!==0;let half=depth<0?-Math.floor(-depth/2):Math.floor(depth/2),odd=depth-half*2;
+  const air=q=>!!q.CEHHV&&q.CEHHV.phase>=2||q.Y>256;const wa=a.CEWALL||0,wb=b.CEWALL||0;let shiftA=-half,shiftB=half,equalGround=false;
+  if(air(a)||air(b)){let d=depth;if(d< -8)d=-8;if(wa||wb){if(wa&&wb){if(wa!==wb)return;if((a.Y>>8)>=(b.Y>>8)){d=wa===1?Math.abs(d):-Math.abs(d);shiftA=-d;shiftB=0;}else{d=wa===1?-Math.abs(d):Math.abs(d);shiftA=0;shiftB=d;}}else if(wb){d=wb===1?-Math.abs(d):Math.abs(d);shiftA=-d;shiftB=0;}else{d=wa===1?Math.abs(d):-Math.abs(d);shiftA=0;shiftB=d;}}
+   else{half=d>>1;shiftA=-half;shiftB=half;}
+  }else{const va=Math.abs((a.X-(a.X0??a.X))<<16>>16),vb=Math.abs((b.X-(b.X0??b.X))<<16>>16);equalGround=va===vb;if(vb>va)shiftB+=odd;else if(va>vb)shiftA-=odd;}
+  a.X+=shiftA*256;b.X+=shiftB*256;a.CEHHPushSide=(air(a)||air(b))&&(wa||wb)?(shiftA!==0?(depth<0?0:1):(shiftB<0?1:0)):equalGround?1:half<0?1:0;b.CEHHPushSide=1-a.CEHHPushSide;
+ }
+ function physical(players){if(!players.some(p=>p.fid===1))return;for(const p of players)p.CEHHPrevKeys=p.KEYS;}
+ function facing(players){if(!players.some(p=>p.fid===1))return;for(const p of players)if(Math.abs(p.opp.X-p.X)>24*256)p.CEHHDesired=p.opp.X>p.X?1:0;}
+ return{register,init,step,victim,recovery,physical,facing,desired,push,data:D};
+})();
