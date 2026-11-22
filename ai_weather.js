@@ -80,10 +80,13 @@ window.SF2AIWEATHER=(()=>{
    if(glow){const c=glow.getContext('2d');c.save();c.translate(x,y);c.scale(1,flat);const g=c.createRadialGradient(0,0,1,0,0,r);g.addColorStop(0,'rgba(255,214,119,0.65)');g.addColorStop(0.35,'rgba(255,169,61,0.22)');g.addColorStop(1,'rgba(255,140,30,0)');c.fillStyle=g;c.fillRect(-r,-r,r*2,r*2);c.restore();}
    if(fixture){const c=fixture.getContext('2d');sprite(c,stage===0?(level?0:1):2,x-8,y-21,16,24);}
   }
-  const result={glow,props:fixture,margin,lamps,pad,level};lightCache.set(key,result);if(lightCache.size>16)lightCache.delete(lightCache.keys().next().value);return result;
+  const result={stage,glow,props:fixture,margin,lamps,pad,level};lightCache.set(key,result);if(lightCache.size>16)lightCache.delete(lightCache.keys().next().value);return result;
  }
  function paintLights(ctx,layers,args,tick){
   if(!layers)return;const m=layers.margin;
+  // India's floor uses many one-row native draw calls. Those rows cannot
+  // contain its high wall lamps; avoid repainting transparent light crops.
+  if(layers.stage===7&&args.length===8&&!layers.lamps.some(([u,v,r,flat=1])=>{const rx=Math.max(48,r),ry=Math.max(48,r*flat),y=v+layers.pad;return args[0]<u+rx&&args[0]+args[2]>u-rx&&args[1]<y+ry&&args[1]+args[3]>y-ry;}))return;
   const draw=im=>{if(args.length===2)ctx.drawImage(im,args[0]-m,args[1]-m);else if(args.length===8)ctx.drawImage(im,args[0]+m,args[1]+m,...args.slice(2));};
   ctx.save();ctx.filter='none';if(layers.props)draw(layers.props);if(layers.glow){ctx.globalCompositeOperation='screen';ctx.globalAlpha=0.9+Math.sin(tick/19)*0.06;draw(layers.glow);}ctx.restore();
   if(!layers.level)return;

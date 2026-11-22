@@ -336,7 +336,7 @@ function resetp(p,x,face){delete p.CEHHPush;delete p.CEHHPushSide;delete p.CEHHD
 
 const CE_CAM_EXTENT=[40,56,53,40,40,36,46,40,40,44,40,40]; // ROM 0x394c, actor+0x1c2
 
-function resetround(){if(VER.edition==='ce'&&P.some(p=>p.fid===1))G.CEHHContactDelay=0;else delete G.CEHHContactDelay;if(VER.cur==='CE'){window.SF2CECAMERA?.reset();window.SF2CEPROJECTILES?.reset(P);}G.ann=null;if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);for(const q of P)delete q.CE_HANDICAP;if(VER.edition==='ce'&&G.mode2p&&window.SF2CECOMBAT){const levels=SF2CECOMBAT.matchLevels(P[0].fid,P[1].fid,{wins:P.map(q=>q.WINS),random:rand});P.forEach((q,i)=>q.CE_HANDICAP=levels[i]);}if(aiEnabled()){G.AIViewWidth=W;G.AIWeatherStart??=G.tick;SF2AIWEATHER.stop();}else{delete G.AIViewWidth;delete G.AIWeatherStart;window.SF2AIWEATHER?.stop();}G.CERound=null;G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.CECameraShake=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;if(ce&&G.scene==='fight'){window.SF2CESTAGESCROLL?.advance(G.stage,ceStageClock());window.SF2CESTAGEANIMATIONS?.advanceNative(G.stage,G.cam,ceStageClock(),{main:0,far:0});}}
+function resetround(){if(VER.edition==='ce'&&P.some(p=>p.fid===1))G.CEHHContactDelay=0;else delete G.CEHHContactDelay;if(VER.cur==='CE'){window.SF2CECAMERA?.reset();window.SF2CEPROJECTILES?.reset(P);}G.ann=null;if(G.scene==='fight'){MUS=-1;music(STM[G.stage]);}const r=CAMR[G.stage],ce=VER.cur==='CE',c=Math.max(r[0],Math.min(r[1],ce?192:OFS));resetp(P[0],((ce?104:110)+c)<<8,1);resetp(P[1],((ce?280:210)+c)<<8,0);for(const q of P)delete q.CE_HANDICAP;if(VER.edition==='ce'&&G.mode2p&&window.SF2CECOMBAT){const levels=SF2CECOMBAT.matchLevels(P[0].fid,P[1].fid,{wins:P.map(q=>q.WINS),random:rand});P.forEach((q,i)=>q.CE_HANDICAP=levels[i]);}if(aiEnabled()){G.AIViewWidth=W;delete G.AICamera;G.AIWeatherStart??=G.tick;SF2AIWEATHER.stop();}else{delete G.AIViewWidth;delete G.AICamera;delete G.AIWeatherStart;window.SF2AIWEATHER?.stop();}G.CERound=null;G.timer=G.rtime||99;G.tick60=0;G.hfz=0;G.CECameraShake=0;G.gph=0;G.gt=0;G.cam=c;G.bann='';G.ko=0;G.slow=0;if(ce&&G.scene==='fight'){window.SF2CESTAGESCROLL?.advance(G.stage,ceStageClock());window.SF2CESTAGEANIMATIONS?.advanceNative(G.stage,G.cam,ceStageClock(),{main:0,far:0});}}
 function resetmatch(){if(aiEnabled()){G.AIMatchSerial=(G.AIMatchSerial||0)+1;G.AIMatchSeed=G.AINextMatchSeed??SF2AIRULES.hash(rng,G.AIMatchSerial+':'+P.map(p=>p.fighterKey).join(':'));delete G.AINextMatchSeed;G.AIWeatherStart=G.tick;}G.CEStageTick=0;if(VER.cur==='CE'){window.SF2CESTAGECYCLISTS?.reset();window.SF2CESTAGEBOAT?.reset();window.SF2CESTAGEBIRDS?.reset();window.SF2CESTAGEWATER?.reset();window.SF2CESTAGEDANCERS?.reset();window.SF2CESTAGEANIMATIONS?.reset();window.SF2CESTAGESCROLL?.reset();window.SF2CESTAGEPALETTES?.reset();}P[0].WINS=P[1].WINS=0;G.round=1;resetround();}
 // ---- motion input buffer (sf2ua 0x2d58e) ----
 
@@ -1222,10 +1222,39 @@ function camera(){
     const room=aiRoom(),xs=P.map(p=>p.X/256),poses=P.concat(window.SF2CECAMERA?.poses||[]),bounds=poses.map(p=>({p,b:fighterBounds(p)})),main=window.SF2CECAMERA?.state.main||0;
     const left=Math.min(...bounds.map(({p,b})=>p.X/256+b.left)),right=Math.max(...bounds.map(({p,b})=>p.X/256+b.right));
     const high=Math.max(...bounds.map(({p,b})=>p.Y/256-b.top-main+8));
-    const needed=Math.min(4096,Math.max(W,Math.min(room.right-room.left,Math.abs(xs[1]-xs[0])+128),right-left+24,high*W/(GROUND-52)));
-    // Expand immediately to retain both actors; return smoothly when they approach.
-    const width=G.AIViewWidth=Math.max(needed,(G.AIViewWidth||W)-6);
-    G.cam=width>room.right-room.left?room.left:Math.max(room.left,Math.min(room.right-width,(xs[0]+xs[1]-width)/2));return;
+    const span=room.right-room.left;
+    const needed=Math.min(4096,Math.max(W,Math.min(span,Math.abs(xs[1]-xs[0])+128),right-left+24,high*W/(GROUND-52)));
+    const follow=G.AICamera||(G.AICamera={velocity:0,centre:(xs[0]+xs[1])/2,centreVelocity:0,target:W,hold:0});
+    // Anticipate rising motion; leave extra headroom before the hard visibility
+    // boundary. This removes the frame-by-frame zoom chase during ascent.
+    const motionVelocity=p=>{const last=follow.last?.[p.i];return{x:Math.abs(p.VX||0)>0?(p.VX||0)/256:last?(p.X-last.x)/256:0,y:Math.max((p.VY||0)/256,last?(p.Y-last.y)/256:0)};};
+    const future=bounds.flatMap(({p,b})=>{const out=[{p,b}];let ticks=0;for(let i=p.aidx+1;i<Math.min(p.anim.ents.length,p.aidx+4)&&ticks<8;i++){ticks+=p.anim.ents[i-1][1]||1;out.push({p,b:fighterBounds({...p,aidx:i})});}return out;});
+    const predicted=Math.max(...future.map(({p,b})=>p.Y/256-b.top-main+8+Math.max(0,motionVelocity(p).y)*8));
+    const futureLeft=Math.min(...future.map(({p,b})=>p.X/256+b.left+Math.min(0,motionVelocity(p).x)*8)),futureRight=Math.max(...future.map(({p,b})=>p.X/256+b.right+Math.max(0,motionVelocity(p).x)*8));
+    follow.last=P.map(p=>({x:p.X,y:p.Y}));
+    const target=Math.min(4096,Math.max(needed,predicted*W/(GROUND-64),futureRight-futureLeft+24));
+    if(target>follow.target+4){follow.target=target;follow.hold=10;}
+    else if(follow.hold>0)follow.hold--;
+    else if(target<follow.target-8)follow.target=target;
+    else follow.target+=(target-follow.target)*.04;
+    const spring=(value,velocity,target,rate)=>{const d=value-target,c=velocity+rate*d,e=Math.exp(-rate);return[target+(d+c)*e,(velocity-rate*c)*e];};
+    let [width,velocity]=spring(G.AIViewWidth||W,follow.velocity,follow.target,follow.target>(G.AIViewWidth||W)?.24:.12);
+    if(width<needed){width=needed;velocity=Math.max(0,velocity);}
+    if(width>4096){width=4096;velocity=Math.min(0,velocity);}
+    if(width<W+.05&&Math.abs(velocity)<.05){width=W;velocity=0;}
+    G.AIViewWidth=width;follow.velocity=velocity;
+    const desired=(xs[0]+xs[1])/2+P.reduce((n,p)=>n+(p.VX||0)/256,0)*2;
+    [follow.centre,follow.centreVelocity]=spring(follow.centre,follow.centreVelocity,desired,.22);
+    // A soft centre follows movement, with the original room/pose guards.
+    G.cam=width>=span?room.left:Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
+    const base=follow.centre-width/2,futureLo=futureRight-width+12,futureHi=futureLeft-12;
+    const aim=futureLo<=futureHi?Math.max(futureLo,Math.min(futureHi,base)):base;
+    [follow.pan,follow.panVelocity]=spring(follow.pan||0,follow.panVelocity||0,aim-base,.24);
+    // Predict towards a comfortable margin, but only enforce two world pixels
+    // immediately. A newly extended hand/claw need not snap back to a12px pad.
+    const lo=right-width+2,hi=left-2,visual=lo<=hi?Math.max(lo,Math.min(hi,base+follow.pan)):base+follow.pan;
+    follow.inset=G.cam-visual;
+    return;
   }
   if(VER.cur!=='CE'){const m=(P[0].X+P[1].X)>>9;G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));return;}
 
@@ -2003,7 +2032,7 @@ let SCE=null; // CE select/VS art from the CE program's VRAM (screens_ce.js)
 function ceFadeState(){return VER.cur==='CE'&&window.SF2CEFADE?G.fade:null;}
 
 let aiSceneryLayer=-1;
-function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
+function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){const shade=aiEnabled()&&G.stage===7&&aiSceneryLayer>=0&&cx.filter!=='none'?SF2AISCENE.nativeShade(out,cx.filter):null;if(shade){cx.save();cx.filter='none';cx.drawImage(shade,...args);cx.restore();}else cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
 
 function fimg(im,...args){fimgKind('scroll',im,...args);}
 
@@ -2087,7 +2116,7 @@ function fighterBounds(p){
 function fighterArt(p){const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],alternate};}
 const aiWorldSurface=document.createElement('canvas');
 let aiWorldTop=-32,aiHorizontalInset=0;
-function aiWorldBegin(width){const destination=cx,w=Math.ceil(width),zoom=W/width,h=Math.ceil(H/zoom)+64,room=aiRoom();aiHorizontalInset=Math.max(0,(width-(room.right-room.left))/2);aiWorldTop=Math.floor(GROUND-GROUND/zoom)-32;if(aiWorldSurface.width!==w||aiWorldSurface.height!==h){aiWorldSurface.width=w;aiWorldSurface.height=h;}cx=aiWorldSurface.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,w,h);cx.imageSmoothingEnabled=false;cx.translate(0,-aiWorldTop);SF2AISCENE.draw(cx,G.stage,G.cam-aiHorizontalInset,w,aiWorldTop,h,room,aiStageFilter());if(G.stage===0){SF2AIWEATHER.sky(cx,aiWeather(),G.cam,w,aiWorldTop,SF2CECAMERA.offset(0,0),aiHorizontalInset);cx.save();cx.translate(0,SF2CECAMERA.state.main);cx.filter=aiStageFilter();SF2AISCENE.ryuFloor(cx,G.cam-aiHorizontalInset,w);cx.restore();}SF2AIATMOSPHERE.clouds(cx,aiAtmosphereFrame(GROUND+(SF2CECAMERA?.state.main||0)),'far');cx.translate(aiHorizontalInset,0);return destination;}
+function aiWorldBegin(width){const destination=cx,w=Math.ceil(width),zoom=W/width,h=Math.ceil(H/zoom)+64,room=aiRoom();aiHorizontalInset=G.AICamera?.inset??Math.max(0,(width-(room.right-room.left))/2);aiWorldTop=Math.floor(GROUND-GROUND/zoom)-32;if(aiWorldSurface.width!==w||aiWorldSurface.height!==h){aiWorldSurface.width=w;aiWorldSurface.height=h;}cx=aiWorldSurface.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,w,h);cx.imageSmoothingEnabled=false;cx.translate(0,-aiWorldTop);SF2AISCENE.draw(cx,G.stage,G.cam-aiHorizontalInset,w,aiWorldTop,h,room,aiStageFilter(),{camera:G.cam,inset:aiHorizontalInset,y:SF2CECAMERA.offset(G.stage,0)});if(G.stage===0){SF2AIWEATHER.sky(cx,aiWeather(),G.cam,w,aiWorldTop,SF2CECAMERA.offset(0,0),aiHorizontalInset);cx.save();cx.translate(0,SF2CECAMERA.state.main);cx.filter=aiStageFilter();SF2AISCENE.ryuFloor(cx,G.cam-aiHorizontalInset,w);cx.restore();}SF2AIATMOSPHERE.clouds(cx,aiAtmosphereFrame(GROUND+(SF2CECAMERA?.state.main||0)),'far');cx.translate(aiHorizontalInset,0);return destination;}
 function aiWorldEnd(destination,zoom){cx=destination;cx.save();cx.translate(0,GROUND*(1-zoom));cx.scale(zoom,zoom);cx.drawImage(aiWorldSurface,0,aiWorldTop);cx.restore();}
 function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();if(VER.cur==='CE'&&G.stage===4)window.SF2CESTAGEBOAT?.advance(ceStageClock());const c=aiEnabled()?Math.floor(G.cam):G.cam,ground=GROUND+(VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.state.main:0),view=VER.cur==='CE'&&window.SF2CECAMERA?.poses||P;cx.fillStyle='#000';cx.fillRect(0,0,W,H);const aiZoom=W/aiViewWidth(),aiDestination=aiEnabled()?aiWorldBegin(aiViewWidth()):null;try{stagedraw(false);if(aiEnabled()){cx.save();cx.translate(-aiHorizontalInset,0);const f=aiAtmosphereFrame(ground);SF2AIATMOSPHERE.clouds(cx,f,'near');SF2AIATMOSPHERE.mist(cx,f,'back');cx.restore();}
   if(aiEnabled()){for(const p of view){const art=fighterArt(p);SF2AISHADOW.draw(cx,art.image,art.rect,p,(p.X>>8)-c,ground,G.round,p.fid===11&&p.CECLAW?.equipped!==false?{bounds:fighterBounds(p),paint:g=>SF2CEVEGACLAW.draw(g,p,0,0,art.alternate)}:null);}}else if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of view){const f=isEvilKen(p)?SF2AIEvilKen.shadow(p,G.stage):SF2CESHADOW.frame(p,G.stage);if(f)fimgKind('object',f.image,(p.X>>8)-c+f.x,ground+f.y);}
@@ -2584,7 +2613,7 @@ async function setEdition(id,options={}){
 
   if(netActive)throw new Error('Leave the online match before changing edition');
 
-  const oldAI=aiEnabled(),wasPrototype=AICFG.prototype;if(!options.prototype)AICFG.seed=null;if(id!=='ai'){delete G.AIMatchSeed;delete G.AIMatchSerial;delete G.AIViewWidth;}
+  const oldAI=aiEnabled(),wasPrototype=AICFG.prototype;if(!options.prototype)AICFG.seed=null;if(id!=='ai'){delete G.AIMatchSeed;delete G.AIMatchSerial;delete G.AIViewWidth;delete G.AICamera;}
   captureEditionSettings();
 
   restoreEditionSettings(id);

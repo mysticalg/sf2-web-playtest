@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.126",
-  "commit": "e9c509d6090fe861345db1e226aaab184a92f079",
-  "builtAt": "2026-11-22T07:57:27.817828+00:00",
+  "version": "0.1.128",
+  "commit": "466e59efa4b321102cba28def1f368813b616f50",
+  "builtAt": "2026-11-22T09:26:53.752763+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 8824,
-      "sha256": "17e6f0cba5bff0e296d7094c6fe2f0d830a3eabed449626011d2cf6a01ae7699"
+      "sha256": "48ea2b4804b9c6f07e3a28ef99bc92eedf4c6abef18f60e884d332c511fd6db4"
     },
     {
       "file": "game.js",
-      "bytes": 184941,
-      "sha256": "317746c4a3ee338d00eb87f16fda6f6afe57e7398af7d5fc48dd7175cdd643ae"
+      "bytes": 187862,
+      "sha256": "de72f611810206c2e434347f34d1eb4e6fda387f4e24ae1e72f2f70d4b8921c2"
     },
     {
       "file": "assets.js",
@@ -266,8 +266,8 @@
     },
     {
       "file": "ce_stage_scroll.js",
-      "bytes": 2753,
-      "sha256": "53901175a4014f17534abf0bdcb8e17c7142afc19a9f52da932da91ff26900c5"
+      "bytes": 3167,
+      "sha256": "fe075c9c58ce07c7381879823e8ced69b92fe75c108011943a8fb7124af30946"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "38456eed5f00dc792002f0aa53da9038ca50fd68d6a8814f56f5a851e46243ce"
+      "sha256": "70d52e079deee79bc5584c9ea3df0ae91101ac801739dda2bf4aae72194fd7ee"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "eab14fbdf393b0110e8b8e5aaf87dc174eb7bd9915b14eb6146a89eac8ac114d"
+      "sha256": "43e97e143fe5084e24f2708e579398b70bac306f9ece72e412610faa94b7f412"
     },
     {
       "file": "history.js",
@@ -386,8 +386,8 @@
     },
     {
       "file": "ai_weather.js",
-      "bytes": 10245,
-      "sha256": "35f6b3426f16b47226e815089bd1c42a00bfcf64dd4fe80127478f34add02a50"
+      "bytes": 10630,
+      "sha256": "ff5315dff52f4eb8d10ad273a03cdcb406b91ec33f5f3ec96ff4cee84e54d792"
     },
     {
       "file": "ai_shadows.js",
@@ -396,8 +396,8 @@
     },
     {
       "file": "ai_scene.js",
-      "bytes": 2243,
-      "sha256": "ccd92b21df368de22ee261675f904f155147aea0380bd00a4b5720ef23371a67"
+      "bytes": 6801,
+      "sha256": "966504ca7ffbbee391c28c3c6fe98457284360d1d07b8941247322f97e70ca5d"
     },
     {
       "file": "ai_atmosphere.js",
@@ -418,6 +418,16 @@
       "file": "ai-effects/cloud-mist.png",
       "bytes": 545510,
       "sha256": "78165dc643380e1abf90018ced3fa1c096a9fc19bc447c46ffb578130bea595e"
+    },
+    {
+      "file": "ai-effects/india-wall.png",
+      "bytes": 3053896,
+      "sha256": "d89f22830edff235d003b08b2194a8f842d9ac0d0452e665b578221b7445d025"
+    },
+    {
+      "file": "ai-effects/india-native-top.png",
+      "bytes": 2487,
+      "sha256": "065732843316d612b67620ab38de541cbdb2b938b75cda27987e0a3fbb0a8b93"
     },
     {
       "file": "ai-effects/room-extensions.png",

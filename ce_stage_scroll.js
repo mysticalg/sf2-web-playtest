@@ -12,6 +12,11 @@
  function reset(){origin=null;lastStage=-1;}
  function advance(stage,tick){if(lastStage!==stage||origin===null||tick<origin){lastStage=stage;origin=tick;}}
  const camera=cam=>Math.max(0,Math.min(384,Math.floor(cam)));
+ function mapX(stage,index,cam,y=-32){
+  const s=stages.get(stage),l=s?.layers.find(l=>l.index===index);if(!s?.rows||!l)return null;
+  const c=camera(cam),row=l.nativeLayer===2?s.rows[c].find(r=>y>=r[0]&&y<r[1]):null;
+  return((s.cameras[c][l.nativeLayer]+64+(row?.[2]||0))%l.width+l.width)%l.width;
+ }
  function draw(ctx,stage,index,cam,tick,width=384){
   const s=stages.get(stage);if(!s?.rows)return false;const c=camera(cam);advance(stage,tick);const age=Math.max(0,Math.floor(tick-origin));
   if(stage===2&&index>=3&&s.props.length){if(index===3){const view=window.SF2CECAMERA?.state,outer=window.SF2CECAMERA?.offset(stage,index)||0,wide=window.SF2?.edition==='ai';for(const p of s.props){if(!wide&&!p.visible[c])continue;const dy=(p.mode===4?(view?.far||0)>>16:p.mode===2?(view?.near||0)>>16:view?.main||0)-outer;ctx.drawImage(p.im,p.x-p.cameras[c]+p.left,240-p.y+p.top+dy);}}return true;}
@@ -22,5 +27,6 @@
   for(const[y0,y1,shift]of rows){let sx=((s.cameras[c][l.nativeLayer]+(s.wind?.layer===l.nativeLayer?s.wind.offsets[age%s.wind.period]-s.wind.offsets[s.wind.atCameraSample]:0)+64+shift)%l.width+l.width)%l.width,dx=0;while(dx<width){const w=Math.min(l.width-sx,width-dx);ctx.drawImage(im,sx,y0+32,w,y1-y0,dx,y0,w,y1-y0);dx+=w;sx=0;}}
   return true;
  }
- window.SF2CESTAGESCROLL={ready,reset,advance,draw,data:D};
+ const layerImage=(stage,index)=>stages.get(stage)?.layers.find(l=>l.index===index)?.im;
+ window.SF2CESTAGESCROLL={ready,reset,advance,draw,mapX,layerImage,data:D};
 })();
