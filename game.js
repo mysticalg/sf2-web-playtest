@@ -352,9 +352,12 @@ function motion(p,keys,nw,rel){
 
   const pb=(nw>>4)&7, kb=(nw>>7)&7, T=G.tick;
 
+  const nativeHuman=VER.edition==='ce'&&(G.mode2p||p.i===0);
+  if(nativeHuman&&[0,4].includes(p.fid))return SF2CESHOTOINPUT.step(p,dir,nw,rel,mwin,(name)=>(G.scene==='fight'?G.gph===1:G.scene==='bonus'&&G.st>=100)&&[S_FREE,S_CR,S_UP].includes(p.ST)&&!(name==='qcf'&&p.FBON));
+
   if(VER.cur==='CE'&&window.SF2CEVEGA){const e=SF2CEVEGA.input(p,dir);if(e)ev.push(e);}
 
-  for(let m=0;m<3;m++){const s=SEQ[m]; const bp=(btn>>4)&7, bk=(btn>>7)&7; let [idx,t]=p.MSEQ[m];
+  if(!(nativeHuman&&p.fid===3))for(let m=0;m<3;m++){const s=SEQ[m]; const bp=(btn>>4)&7, bk=(btn>>7)&7; let [idx,t]=p.MSEQ[m];
 
     if(idx===0){ if(dir===s[0]){idx=1;t=mwin();} }
 
