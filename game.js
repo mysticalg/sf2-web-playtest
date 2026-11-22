@@ -1219,10 +1219,13 @@ function camera(){
 
   if(aiEnabled()&&G.scene==='fight'){
     window.SF2CECAMERA?.step(G.stage,P,{throw:P.some(p=>p.THV),shake:!!G.CECameraShake});
-    const room=aiRoom(),xs=P.map(p=>p.X/256),needed=Math.min(room.right-room.left,Math.max(W,Math.abs(xs[1]-xs[0])+128));
+    const room=aiRoom(),xs=P.map(p=>p.X/256),poses=P.concat(window.SF2CECAMERA?.poses||[]),bounds=poses.map(p=>({p,b:fighterBounds(p)})),main=window.SF2CECAMERA?.state.main||0;
+    const left=Math.min(...bounds.map(({p,b})=>p.X/256+b.left)),right=Math.max(...bounds.map(({p,b})=>p.X/256+b.right));
+    const high=Math.max(...bounds.map(({p,b})=>p.Y/256-b.top-main+8));
+    const needed=Math.min(4096,Math.max(W,Math.min(room.right-room.left,Math.abs(xs[1]-xs[0])+128),right-left+24,high*W/(GROUND-52)));
     // Expand immediately to retain both actors; return smoothly when they approach.
     const width=G.AIViewWidth=Math.max(needed,(G.AIViewWidth||W)-6);
-    G.cam=Math.max(room.left,Math.min(room.right-width,(xs[0]+xs[1]-width)/2));return;
+    G.cam=width>room.right-room.left?room.left:Math.max(room.left,Math.min(room.right-width,(xs[0]+xs[1]-width)/2));return;
   }
   if(VER.cur!=='CE'){const m=(P[0].X+P[1].X)>>9;G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));return;}
 
@@ -1901,7 +1904,7 @@ function bonusrender(){const B=G.bon,S=window.SF2BONUS,p=P[0];cx.fillStyle='#000
 
   const nativeBarrels=ceBarrelMode(),K=[S.car,S.barrel,S.drum][B.kind],im=bim(K.bg);if(nativeBarrels)SF2CEBARRELS.drawBackground(cx,B,bim);else if(!(nativeCar&&SF2CECAR.drawBackground(cx,B,bim))&&im.width)fimg(im,0,0);
 
-  if(!nativeBarrels&&VER.cur==='CE'&&window.SF2CESHADOW){const f=SF2CESHADOW.frame(p,12+B.kind);if(f)fimgKind('object',f.image,(p.X>>8)+f.x,BG0+f.y);}
+  if(aiEnabled()&&!nativeBarrels){const art=fighterArt(p);SF2AISHADOW.draw(cx,art.image,art.rect,p,p.X>>8,BG0,G.round,p.fid===11&&p.CECLAW?.equipped!==false?{bounds:fighterBounds(p),paint:g=>SF2CEVEGACLAW.draw(g,p,0,0,false)}:null);}else if(!nativeBarrels&&VER.cur==='CE'&&window.SF2CESHADOW){const f=SF2CESHADOW.frame(p,12+B.kind);if(f)fimgKind('object',f.image,(p.X>>8)+f.x,BG0+f.y);}
 
   const shake=G.slow>0?((G.tick&2)?2:-2):0;
 
@@ -2061,24 +2064,34 @@ function txw(s,xr,y,fill,stroke,al){s=String(s);const A=fatlas(fill,stroke),aw=1
 const AI_STAGE_LIGHTS=[{name:'DAYLIGHT',filter:'none'},{name:'SUNSET',filter:'sepia(0.35) saturate(1.15) hue-rotate(335deg) brightness(0.85)'},{name:'NIGHT',filter:'sepia(0.4) saturate(0.8) hue-rotate(155deg) brightness(0.6)'}];
 function aiStageLight(){return AI_STAGE_LIGHTS[Math.max(0,Math.min(2,(G.round||1)-1))];}
 function aiWeather(){return SF2AIWEATHER.sample(G.stage,G.round,G.AIMatchSeed,G.tick-(G.AIWeatherStart??G.tick));}
-function stagedraw(front){cx.save();if(aiEnabled()){cx.filter=aiStageLight().filter;const flash=aiWeather().flash;if(flash)cx.filter=(cx.filter==='none'?'':cx.filter+' ')+'brightness('+(1+flash)+')';}try{for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;const dy=VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.offset(G.stage,layerIndex):0;cx.save();cx.translate(0,dy);const previousSceneryLayer=aiSceneryLayer;aiSceneryLayer=layerIndex;try{stageLayer(layerIndex,l,aiViewWidth());if(VER.cur==='CE'&&G.stage===4&&layerIndex===4)window.SF2CESTAGEBOAT?.drawAt(CE_OBJECT_CONTEXT,G.cam);}finally{aiSceneryLayer=previousSceneryLayer;cx.restore();}}}finally{cx.restore();}}
-function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){if(aiEnabled()&&G.stage===0&&layerIndex===0){SF2AIWEATHER.sky(cx,aiWeather(),G.cam,viewWidth);return;}if(VER.cur==='CE'&&window.SF2CESTAGECYCLISTS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEWATER?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEDANCERS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEPALETTES?.draw(CE_SCROLL_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock(),viewWidth))return;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(CE_OBJECT_CONTEXT,layerIndex,G.cam,ceStageClock())){if(layerIndex===4){cx.save();cx.translate(0,window.SF2CECAMERA?SF2CECAMERA.state.main-SF2CECAMERA.offset(G.stage,layerIndex):0);if(!aiEnabled()||G.round>=3)window.SF2CESTAGEBIRDS?.draw(CE_OBJECT_CONTEXT,G.cam,ceStageClock());cx.restore();}return;}
+function aiStageFilter(){const filter=aiStageLight().filter,flash=aiWeather().flash;return flash?(filter==='none'?'':filter+' ')+'brightness('+(1+flash)+')':filter;}
+function stagedraw(front){cx.save();if(aiEnabled())cx.filter=aiStageFilter();try{for(const [layerIndex,l] of D.stages[G.stage].entries()){if(l.front!==front)continue;const dy=VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.offset(G.stage,layerIndex):0;cx.save();cx.translate(0,dy);const previousSceneryLayer=aiSceneryLayer;aiSceneryLayer=layerIndex;try{stageLayer(layerIndex,l,aiEnabled()?Math.min(aiViewWidth(),aiRoom().right-aiRoom().left):W);if(VER.cur==='CE'&&G.stage===4&&layerIndex===4)window.SF2CESTAGEBOAT?.drawAt(CE_OBJECT_CONTEXT,G.cam);}finally{aiSceneryLayer=previousSceneryLayer;cx.restore();}}}finally{cx.restore();}}
+function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){if(aiEnabled()&&G.stage===0&&layerIndex===0)return;if(VER.cur==='CE'&&window.SF2CESTAGECYCLISTS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEWATER?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEDANCERS?.draw(CE_OBJECT_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock()))return;if(VER.cur==='CE'&&window.SF2CESTAGEPALETTES?.draw(CE_SCROLL_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock(),viewWidth))return;if(VER.cur==='CE'&&G.stage===0&&window.SF2CERYUSTAGE?.draw(CE_OBJECT_CONTEXT,layerIndex,G.cam,ceStageClock())){if(layerIndex===4){cx.save();cx.translate(0,window.SF2CECAMERA?SF2CECAMERA.state.main-SF2CECAMERA.offset(G.stage,layerIndex):0);if(!aiEnabled()||G.round>=3)window.SF2CESTAGEBIRDS?.draw(CE_OBJECT_CONTEXT,G.cam,ceStageClock());cx.restore();}return;}
   if(VER.cur==='CE'&&window.SF2CESTAGESCROLL?.draw(layerIndex>=3?CE_OBJECT_CONTEXT:CE_SCROLL_CONTEXT,G.stage,layerIndex,G.cam,ceStageClock(),viewWidth))return;
   const width=viewWidth,kind=layerIndex>=3?'object':'scroll',base=VER.cur==='CE'&&window.SF2CESTAGEWATER?SF2CESTAGEWATER.layer(G.stage,layerIndex,STI[G.stage][layerIndex],ceStageClock()):STI[G.stage][layerIndex],raw=VER.cur==='CE'&&window.SF2CESTAGEANIMATIONS?SF2CESTAGEANIMATIONS.layer(G.stage,layerIndex,base,ceStageClock()):base,pad=VER.cur==='CE'&&window.SF2CECAMERA?32:0,im=pad?SF2CECAMERA.image(G.stage,layerIndex,raw,ceStageClock()):raw;
+  if(aiEnabled()&&G.stage===0&&layerIndex===2)SF2AISCENE.ryuCrest(cx,97-Math.round(l.a*G.cam+l.b+l.drift*ceStageClock()));
   if(l.rows){for(const [row0,y1,A,B] of l.rows){const y0=row0===0?-pad:row0;fimgKind(kind,im,Math.round(A*G.cam+B),y0+pad,width,y1-y0,0,y0,width,y1-y0);}return;}
-  let x0=Math.round(l.a*G.cam+l.b+l.drift*ceStageClock());
+  let x0=Math.round(l.a*G.cam+l.b+l.drift*ceStageClock());if(aiEnabled()&&G.stage===0&&layerIndex===1)SF2AISCENE.ryuRoof(cx,x0);
 
   if(l.wrap){x0=((x0%l.w)+l.w)%l.w;for(let x=-x0;x<width;x+=l.w)fimgKind(kind,im,x,-pad);}else{fimgKind(kind,im,-x0,-pad);if(l.w>=500&&(VER.cur!=='CE'||kind==='scroll')){const h=im.height;if(x0<0)fimgKind(kind,im,0,0,1,h,0,-pad,-x0,h);const r=l.w-x0;if(r<width)fimgKind(kind,im,l.w-1,0,1,h,r,-pad,width-r,h);}}
 }
 
 function aiSprite(p,image,alternate){if(!aiEnabled())return image;const alt=alternate||image===FIA[p.fid]||image===p.AIAtlasAlt||p.aiProfile==='evil-ryu'&&image===p.AIAtlas;return SF2AIRULES.sprite(p,image,alt?p.F.pal2:p.F.pal);}
+function fighterBounds(p){
+  const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate),rect=extra?.rect||p.F.frames[ent(p)[0]],w=rect[2],h=rect[3],l=rect[4],t=rect[5];
+  const b={left:p.FACE?-l-w:l,right:p.FACE?-l:l+w,top:t,bottom:t+h};
+  if(p.fid===11&&p.CECLAW?.equipped!==false){const data=window.SF2VEGACLAWDATA,ref=data?.poses[p.anim.source+24*p.aidx]?.[(alternate?2:0)+(p.FACE?1:0)],frame=ref&&data.frames[ref[0]];if(frame){b.left=Math.min(b.left,ref[1]);b.right=Math.max(b.right,ref[1]+frame.w);b.top=Math.min(b.top,ref[2]);b.bottom=Math.max(b.bottom,ref[2]+frame.h);}}
+  return b;
+}
+function fighterArt(p){const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],alternate};}
 const aiWorldSurface=document.createElement('canvas');
-function aiWorldBegin(width){const destination=cx,w=Math.ceil(width);if(aiWorldSurface.width!==w||aiWorldSurface.height!==H+64){aiWorldSurface.width=w;aiWorldSurface.height=H+64;}cx=aiWorldSurface.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.imageSmoothingEnabled=false;cx.fillStyle='#000';cx.fillRect(0,0,w,H+64);cx.translate(0,32);return destination;}
-function aiWorldEnd(destination,zoom){cx=destination;cx.save();cx.translate(0,GROUND*(1-zoom));cx.scale(zoom,zoom);cx.drawImage(aiWorldSurface,0,-32);cx.restore();}
+let aiWorldTop=-32,aiHorizontalInset=0;
+function aiWorldBegin(width){const destination=cx,w=Math.ceil(width),zoom=W/width,h=Math.ceil(H/zoom)+64,room=aiRoom();aiHorizontalInset=Math.max(0,(width-(room.right-room.left))/2);aiWorldTop=Math.floor(GROUND-GROUND/zoom)-32;if(aiWorldSurface.width!==w||aiWorldSurface.height!==h){aiWorldSurface.width=w;aiWorldSurface.height=h;}cx=aiWorldSurface.getContext('2d');cx.setTransform(1,0,0,1,0,0);cx.clearRect(0,0,w,h);cx.imageSmoothingEnabled=false;cx.translate(0,-aiWorldTop);SF2AISCENE.draw(cx,G.stage,G.cam-aiHorizontalInset,w,aiWorldTop,h,room,aiStageFilter());if(G.stage===0){SF2AIWEATHER.sky(cx,aiWeather(),G.cam,w,aiWorldTop,SF2CECAMERA.offset(0,0),aiHorizontalInset);cx.save();cx.translate(0,SF2CECAMERA.state.main);cx.filter=aiStageFilter();SF2AISCENE.ryuFloor(cx,G.cam-aiHorizontalInset,w);cx.restore();}cx.translate(aiHorizontalInset,0);return destination;}
+function aiWorldEnd(destination,zoom){cx=destination;cx.save();cx.translate(0,GROUND*(1-zoom));cx.scale(zoom,zoom);cx.drawImage(aiWorldSurface,0,aiWorldTop);cx.restore();}
 function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fight')return scenerender();if(VER.cur==='CE'&&G.stage===4)window.SF2CESTAGEBOAT?.advance(ceStageClock());const c=aiEnabled()?Math.floor(G.cam):G.cam,ground=GROUND+(VER.cur==='CE'&&window.SF2CECAMERA?SF2CECAMERA.state.main:0),view=VER.cur==='CE'&&window.SF2CECAMERA?.poses||P;cx.fillStyle='#000';cx.fillRect(0,0,W,H);const aiZoom=W/aiViewWidth(),aiDestination=aiEnabled()?aiWorldBegin(aiViewWidth()):null;try{stagedraw(false);
-  if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of view){const f=isEvilKen(p)?SF2AIEvilKen.shadow(p,G.stage):SF2CESHADOW.frame(p,G.stage);if(f)fimgKind('object',f.image,(p.X>>8)-c+f.x,ground+f.y);}
+  if(aiEnabled()){for(const p of view){const art=fighterArt(p);SF2AISHADOW.draw(cx,art.image,art.rect,p,(p.X>>8)-c,ground,G.round,p.fid===11&&p.CECLAW?.equipped!==false?{bounds:fighterBounds(p),paint:g=>SF2CEVEGACLAW.draw(g,p,0,0,art.alternate)}:null);}}else if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of view){const f=isEvilKen(p)?SF2AIEvilKen.shadow(p,G.stage):SF2CESHADOW.frame(p,G.stage);if(f)fimgKind('object',f.image,(p.X>>8)-c+f.x,ground+f.y);}
 
-  const drawp=p=>{const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;spr(aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),extra?.rect||p.F.frames[ent(p)[0]],(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p):0),ground-(p.Y>>8),p.FACE);
+  const drawp=p=>{const art=fighterArt(p),alternate=art.alternate;spr(art.image,art.rect,(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p):0),ground-(p.Y>>8),p.FACE);
     if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.draw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p,true):0),ground-(p.Y>>8),p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready);if(VER.edition==='ce')window.SF2CEROUND?.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);
 
     if(p.DIZZY===2){cx.fillStyle='#ffe000';for(let i=0;i<3;i++){const a=G.tick/12+i*2.09;cx.fillRect((p.X>>8)-c+Math.cos(a)*14-2,ground-(p.Y>>8)-100+Math.sin(a)*4,4,4);}}};
@@ -2091,7 +2104,7 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
 
   if(VER.cur==='CE')window.SF2CEPROJECTILES?.drawEffects(cx,ground,c,{image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});
 
-  stagedraw(true);if(aiEnabled()){SF2AIWEATHER.rain(cx,aiWeather(),G.AIMatchSeed,G.cam,aiViewWidth(),ground);SF2AIWEATHER.atmosphere(cx,aiWeather(),G.AIMatchSeed,G.cam,aiViewWidth(),ground);}}finally{if(aiDestination)aiWorldEnd(aiDestination,aiZoom);}bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
+  stagedraw(true);if(aiEnabled()){cx.save();cx.translate(-aiHorizontalInset,0);SF2AIWEATHER.rain(cx,aiWeather(),G.AIMatchSeed,G.cam-aiHorizontalInset,aiViewWidth(),ground,aiWorldTop,aiWorldSurface.height);SF2AIWEATHER.atmosphere(cx,aiWeather(),G.AIMatchSeed,G.cam-aiHorizontalInset,aiViewWidth(),ground);cx.restore();}}finally{if(aiDestination)aiWorldEnd(aiDestination,aiZoom);}bar(32,P[0].HP,0,P[0].HPD,aiMax(P[0]));bar(208,P[1].HP,1,P[1].HPD,aiMax(P[1]));
   {const R='#ee6644',B='#0044aa';txw('1P',6,9,R,B,'left');txw(P[0].SCORE||0,113,9,R,B);txw(G.hisc=Math.max(G.hisc||RK[0].s,P[0].SCORE||0,P[1].SCORE||0),247,9,R,B);txw('2P',268,9,R,B,'left');if(G.mode2p||P[1].SCORE)txw(P[1].SCORE||0,377,9,R,B);}
 
   if(!(G.gph===2&&G.ko&&(G.tick>>3)&1))fimg(KOI,176,19);const t=Math.max(0,G.timer);
@@ -2565,7 +2578,7 @@ async function setEdition(id,options={}){
 
   if(!['ww','ce','ai'].includes(id))throw new Error('Unknown edition');
 
-  if(id==='ai')await SF2AIWEATHER.ready;
+  if(id==='ai'){const artwork=await Promise.all([SF2AIWEATHER.ready,SF2AISCENE.ready]);if(artwork.some(ok=>!ok))throw new Error('AI scenery artwork could not load');}
   if(id==='ai'&&!aiAllowedFids().length)throw new Error('AI roster registry is unavailable');
 
   if(netActive)throw new Error('Leave the online match before changing edition');

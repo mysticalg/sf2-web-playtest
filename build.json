@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.124",
-  "commit": "a7ae3734106f272827605e9bee6c956572b1788b",
-  "builtAt": "2026-11-22T06:25:47.692603+00:00",
+  "version": "0.1.125",
+  "commit": "05953fdebd07199d65c0b114f0d160faf6e1ba1d",
+  "builtAt": "2026-11-22T07:22:57.466935+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 8583,
-      "sha256": "d961ac164f724b59e8c332dfe9dec35270a4f93f9d6ac807aa621f293057e187"
+      "bytes": 8741,
+      "sha256": "b98140b56cb640bc83be31334f87fb1ad1201dd22e200618a8b70b656a459cac"
     },
     {
       "file": "game.js",
-      "bytes": 181505,
-      "sha256": "5ca530185863d7953f5a075c13072516cb1409454b7db7a54459e075dc77cb69"
+      "bytes": 184280,
+      "sha256": "29af561bceeb1659dbf0054cc9bcb11980f39e0c33603f48511a74fb7c85a601"
     },
     {
       "file": "assets.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "8d41f009e80d52084f660b2fed720e97e09404b842985928c9c494c0d2bc5ede"
+      "sha256": "7bfe55bf9475bd0a5649704101b263848c091edc09079336243dd59ce7608310"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "afb42dcc025e2f75ec6ee1cdb0919aa2d378378b64a757ad4b7874d71ec1d38d"
+      "sha256": "844ac2069efcb4e3f08adcba949a5c55b281c493d5a64a9f0d18a6b8cb116879"
     },
     {
       "file": "history.js",
@@ -386,8 +386,33 @@
     },
     {
       "file": "ai_weather.js",
-      "bytes": 9242,
-      "sha256": "9ead24447d0822182b5b27c30ac9c29df25d245db0a6260c5be3a8059dc5a65a"
+      "bytes": 10181,
+      "sha256": "9e0f8f99c5c7bf36b515ab48a666d7005d47670737d7706f8afa1b2f53360357"
+    },
+    {
+      "file": "ai_shadows.js",
+      "bytes": 2399,
+      "sha256": "f07e17756cd0d140dee6e1099686dc3f929c87343298d16be1547e9b5ff4a8bd"
+    },
+    {
+      "file": "ai_scene.js",
+      "bytes": 2243,
+      "sha256": "ccd92b21df368de22ee261675f904f155147aea0380bd00a4b5720ef23371a67"
+    },
+    {
+      "file": "ai-effects/room-extensions.png",
+      "bytes": 2941781,
+      "sha256": "246f284f46c2f4e41447150812e0344dc011ceb1a0eb9f9a2eee546663afb2dd"
+    },
+    {
+      "file": "ai-effects/ryu-roof.png",
+      "bytes": 1425232,
+      "sha256": "4bd0ce89496a2e42a2740c49a64a30e6e5ca0f3663485d0eb25d2db7ebeed1f1"
+    },
+    {
+      "file": "ai-effects/ryu-crest.png",
+      "bytes": 1506900,
+      "sha256": "89bcd98ed681559857c394308e215ce2e2741a4041ad68ec84f2d1920a9f89d4"
     },
     {
       "file": "ai-effects/particles-lights.png",
