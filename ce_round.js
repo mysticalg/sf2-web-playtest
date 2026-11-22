@@ -22,13 +22,14 @@
   c.vx-=c.ax;if(c.vx*c.dir<0)c.vx=0;p.X+=c.vx;if(!c.vx||p.CEWALL)c.ready=true;h.tick(p);return true;
  }
  function admit(p,loss=false,fresh=false,h){if(p.CEWin||p.CEKO)return;h.anim(p,0,0);p.CEWin={phase:0,wait:0,loss,fresh,ready:false,handshake:0,extra:null};}
- function winStep(p,blocked,h){const c=p.CEWin;if(!c)return false;if(c.ready){if(p.fid!==7||c.loss)return false;const flags=p.anim.flags[p.aidx];if(c.variant===0){if(flags&255)p.FACE^=1;h.tick(p);}else if(!flags)h.tick(p);else{p.Y+=D.dhalsimFloat[c.floatIndex||0];c.floatIndex=((c.floatIndex||0)+1)&31;}return true;}if(c.fresh){c.fresh=false;return true;}
+ function winStep(p,blocked,h){const c=p.CEWin;if(!c)return false;if(c.nativeWinner)return SF2CEWINNER.step(p,h);if(c.ready){if(p.fid!==7||c.loss)return false;const flags=p.anim.flags[p.aidx];if(c.variant===0){if(flags&255)p.FACE^=1;h.tick(p);}else if(!flags)h.tick(p);else{p.Y+=D.dhalsimFloat[c.floatIndex||0];c.floatIndex=((c.floatIndex||0)+1)&31;}return true;}if(c.fresh){c.fresh=false;return true;}
   if(c.phase===0){c.phase=2;c.wait=5;return true;}
   if(c.phase===2){if(!--c.wait)c.phase=4;return true;}
   if(c.phase===4){if(!blocked){c.phase=6;c.wait=40;}return true;}
   if(c.phase===6){if(!--c.wait){c.phase=8;if(c.loss){c.ready=true;p.ST=9;select(p,0x3c,0,h);}}return true;}
   if(p.fid===7){if(c.extra===null){c.extra=60;return true;}if(--c.extra)return true;}
   else if([0,4,9].includes(p.fid)&&!c.handshake){c.handshake=2;return true;}
+  if(!c.loss&&[1,11].includes(p.fid)){c.nativeWinner=SF2CEWINNER.create(p);return SF2CEWINNER.step(p,h);}
   c.ready=true;h.victory(p);return true;
  }
  function create({ko,draw,time,winner,human,vitality,round}){return {ko,draw,time,winner,human,vitality,round,finalRound:round===4,pendingGate:ko,gate:0,divider:3,period:3,actorUpdates:0,ui:null,bonus:[],bonusMask:0,counting:false,total:0,done:false};}

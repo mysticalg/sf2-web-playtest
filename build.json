@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.135",
-  "commit": "33f944349c49406e1f9e537b58209442819b8ead",
-  "builtAt": "2026-11-22T15:45:43.136004+00:00",
+  "version": "0.1.136",
+  "commit": "114498cd41df48166f5fd8fc006a395cb860905d",
+  "builtAt": "2026-11-22T17:03:08.966821+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 9491,
-      "sha256": "87a68ae031e2e75a043c3687b9ae072b811f4807c3a7c99060da31c96e112dc5"
+      "bytes": 9654,
+      "sha256": "8e2314b511f0aa4c6d5294f757f5e2c4d08f01933bf247089dd4f973b3c625b3"
     },
     {
       "file": "game.js",
-      "bytes": 194174,
-      "sha256": "9dbb599ebe085cc5bc9f01b18b535e9278779b5a6d643c99060871a1b939b7fc"
+      "bytes": 194594,
+      "sha256": "57fe1fb6eceb6ce3b576fb5b16cb55f1407af7a0b94bf8d9549c4e64ef94a5d5"
     },
     {
       "file": "assets.js",
@@ -351,8 +351,18 @@
     },
     {
       "file": "ce_round.js",
-      "bytes": 6411,
-      "sha256": "600276cf9d8702f58ff753289cfb7f47fe1960153094208f82222c81c3b6c1bd"
+      "bytes": 6565,
+      "sha256": "6a46467a298fddd4add217cded8df3f0433af79b81ed7dbb1872ab083c851006"
+    },
+    {
+      "file": "ce_winner_data.js",
+      "bytes": 107763,
+      "sha256": "98a7013d88c40e1769d103bb416e71ee9dbbdfe4ad800e2a56de1d03e93a4467"
+    },
+    {
+      "file": "ce_winner.js",
+      "bytes": 3116,
+      "sha256": "a527a0aa1a64a168ab5d42a7ac4607ce346bddbf64c117448232cdf55238c149"
     },
     {
       "file": "ce_announcer.js",
@@ -377,7 +387,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "74612621d227cb525a9e482dd29e7e3fff128874e395bbd40329fac405eeaec4"
+      "sha256": "e5419631308e14d1c2511b5775f290154a5b3b4531a02482fce1fb03ca87dbd2"
     },
     {
       "file": "lobby.css",
@@ -392,7 +402,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "bd44c37776e472cbe601d029c814f302be0ccfef69efdaa77ab822d8ba0e8cb4"
+      "sha256": "de96637441bde90f1467d92cf792fde1a11d6ed7125e0329f8aa722075d1e0b2"
     },
     {
       "file": "history.js",
