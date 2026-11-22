@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.127",
-  "commit": "dfde4926399aa87fdb487ece1babe55a520a1d7b",
-  "builtAt": "2026-11-22T08:31:23.886201+00:00",
+  "version": "0.1.126",
+  "commit": "e9c509d6090fe861345db1e226aaab184a92f079",
+  "builtAt": "2026-11-22T07:57:27.817828+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 8824,
-      "sha256": "389574648eecd00e8de79407348ffd53837847ef0af92675d02f6955bcdcd040"
+      "sha256": "17e6f0cba5bff0e296d7094c6fe2f0d830a3eabed449626011d2cf6a01ae7699"
     },
     {
       "file": "game.js",
-      "bytes": 185024,
-      "sha256": "33b89765c471e92e77a9a78dfcb562424795ae97d690768167da1b66e041bab1"
+      "bytes": 184941,
+      "sha256": "317746c4a3ee338d00eb87f16fda6f6afe57e7398af7d5fc48dd7175cdd643ae"
     },
     {
       "file": "assets.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "7f914a7090240bb7a39a8a610ae7557c8e5ac383286148dd0dda4d5015ce4769"
+      "sha256": "38456eed5f00dc792002f0aa53da9038ca50fd68d6a8814f56f5a851e46243ce"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "f63b9aa507da65c5f0f80b93502489673c36d9fc7e1d73ed77d11e730b538226"
+      "sha256": "eab14fbdf393b0110e8b8e5aaf87dc174eb7bd9915b14eb6146a89eac8ac114d"
     },
     {
       "file": "history.js",
@@ -396,8 +396,8 @@
     },
     {
       "file": "ai_scene.js",
-      "bytes": 4489,
-      "sha256": "c8c3696c5c757696d4a6d256695e1de2ca7d236fc7a29c8be68a1873553386ab"
+      "bytes": 2243,
+      "sha256": "ccd92b21df368de22ee261675f904f155147aea0380bd00a4b5720ef23371a67"
     },
     {
       "file": "ai_atmosphere.js",
