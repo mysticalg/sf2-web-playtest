@@ -72,7 +72,7 @@ function commands(state,frame){
   const h=state.heat,q=state.motion,d=frame.direction||5;
   if(h.tick>q.expires)q.stage=0;
   if(d!==q.lastDir){
-    if(d===2){q.stage=1;q.expires=h.tick+18;}
+    if(d===2){q.stage=1;q.expires=h.tick+18+(frame.buffered||0);}
     else if(q.stage===1&&d===3)q.stage=2;
     else if(q.stage===2&&d===6)q.stage=3;
     else if(d!==5&&d!==6)q.stage=0;
@@ -100,7 +100,7 @@ function pose(manifest,phaseMap,id,elapsed,facingRight){
 function step(state,frame,context,manifest,phaseMap){
   if(context.hitstop)return {events:[],pose:null,attack:null,heat:state.heat.heat,
     overheated:state.heat.overheated,handled:!!state.heat.move,suppressNativeSpecial:!!state.heat.move,frozen:true};
-  const input=commands(state,frame);
+  const input=[...commands(state,frame),...(frame.commands||[])];
   const events=Controller.step(state.heat,{commands:input,canAct:context.canAct===true,
     airborne:context.airborne===true,interrupted:context.interrupted===true,
     roundReset:context.roundReset===true,contact:context.contact});
@@ -203,15 +203,16 @@ else globalThis.SF2EvilKenAdapter=API;
  function update(p,frame,h){
   const state=p.AIEvilKen;if(!state)return false;
   if(state.standingEnd){state.standingEnd=false;h.idle(p);}
-  const moving=!!state.adapter.heat.move;
+  const moving=!!state.adapter.heat.move,airStart=p.ST===2&&!p.PJ&&p.Y>0;
   const pressed={LP:!!(frame.pressed&16),MP:!!(frame.pressed&32),HP:!!(frame.pressed&64),LK:!!(frame.pressed&128),MK:!!(frame.pressed&256),HK:!!(frame.pressed&512)};
-  const result=A.step(state.adapter,{direction:direction(frame.keys,!!p.FACE),pressed},{canAct:p.Y===0&&[0,3,4].includes(p.ST),airborne:moving&&(p.Y>0||p.ST===2),interrupted:moving&&(p.ST!==11||p.MV?.kind!=='evil-ken-heat'),contact:state.contact,facingRight:!!p.FACE},pack.character,pack.phaseMap);
+  const result=A.step(state.adapter,{direction:direction(frame.keys,!!p.FACE),pressed,commands:frame.commands,buffered:moving?0:(window.SF2AIRULES?.WINDOW||0)},{canAct:[0,3,4,2].includes(p.ST)&&!(p.ST===2&&p.PJ),airborne:moving&&!p.AIAir&&(p.Y>0||p.ST===2),interrupted:moving&&(p.ST!==11||p.MV?.kind!=='evil-ken-heat'),contact:state.contact,facingRight:!!p.FACE},pack.character,pack.phaseMap);
   state.contact=null;state.attack=result.attack;state.pose=result.pose;
   for(const event of result.events){
    if(event.type==='start'){state.metrics.starts++;if(event.id==='cinder-break')state.metrics.finisherSpends++;p.hitdone=0;h.sound(event.id==='cinder-break'?p.F.sfx.sp[2][0][1]:p.F.sfx.wh[5]);}
    if(event.type==='end'&&event.reason==='interrupted')state.metrics.interrupts++;
   }
   if(result.pose){
+   if(airStart&&!p.AIAir)p.AIAir={base:p.Y,vx:p.VX,vy:p.VY,ay:p.AY,jan:p.JAN};
    state.turn=null;
    const pose=result.pose,id=result.events.find(e=>e.type==='pose').id,slot=slots[id],a=p.F.anims[slot];
    let local=result.events.find(e=>e.type==='pose').elapsed,index=0;

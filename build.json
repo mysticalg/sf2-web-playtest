@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.114",
-  "commit": "959a313b28d219f975808a14b32aa3f18c46f03e",
-  "builtAt": "2026-11-21T14:09:24.505178+00:00",
+  "version": "0.1.115",
+  "commit": "5a01e0a93bce8430e70996ea55c9de044c260566",
+  "builtAt": "2026-11-22T02:03:13.552113+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 7611,
-      "sha256": "0bcdfbea16cd5368e27945245d13f942ddf26d3608918e8b4d23c8c3adaa7a90"
+      "bytes": 8050,
+      "sha256": "8c9fd5c2af066dd54481f0e97e649b030b95813695adf270f2d9838e7eea397b"
     },
     {
       "file": "game.js",
-      "bytes": 167449,
-      "sha256": "84280ac2abd3b1942e27ebf9a4ffc455e6f6f70515fab6fe148eb929a1946171"
+      "bytes": 171775,
+      "sha256": "9bb3b4f5e03bba96d153457698f9c04c225b9aab00a7d5f95439b8605389e3a0"
     },
     {
       "file": "assets.js",
@@ -332,7 +332,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "de9264ff5ba3c1067588b72ff77d2d59e2a6e3eaaa78028d564dd52cad3b6365"
+      "sha256": "bfd616dda6893f1e998981c6b98a04e1d17288843eb01c6af1ba2aee03d978d5"
     },
     {
       "file": "lobby.css",
@@ -347,12 +347,17 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "289d21d9ae010099ce15cbd01f415f117e9ef7cebdd087c9783a8509f8566de0"
+      "sha256": "27e4f7e97c87233b3368bc7ef738cd05a7a9c7a7c6e6f8a2a90f9c5afd186860"
     },
     {
       "file": "history.js",
       "bytes": 3307,
       "sha256": "7d8bdc4bdd0f26c362ac356ed0955bf98b8303108dec04a77b7987f5a2000b15"
+    },
+    {
+      "file": "ai_rules.js",
+      "bytes": 6454,
+      "sha256": "39aa57d196b8c8c198cdab565307e83d1ed08a56e7486c8916a6f6a6ee537096"
     },
     {
       "file": "ai_roster.js",
@@ -361,8 +366,8 @@
     },
     {
       "file": "ai_evil_ken.js",
-      "bytes": 17204,
-      "sha256": "86ee4ae7cf71f97fe0142f9c26c53b7de069c3f6fdd235f8518de389080b0a89"
+      "bytes": 17459,
+      "sha256": "3bf4fb8c848955dbf7ccfee7c58e08cc488f7f23741b56fcbb0e89f775bd9cc5"
     },
     {
       "file": "ai_evil_ken_data.js",
@@ -386,8 +391,8 @@
     },
     {
       "file": "ce_vega.js",
-      "bytes": 23795,
-      "sha256": "1da89c6a4f72d474b8fdb6e115ef2d4e2e9462746448c5f69494d3290e89aa7f"
+      "bytes": 23892,
+      "sha256": "63c28c077e28c9c37f7e44331277082622e56ca3fb2481909ff748d8ad709d92"
     },
     {
       "file": "vega_claw_ce.js",

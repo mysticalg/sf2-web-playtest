@@ -35,7 +35,7 @@
   // Native0x4577a: back edge, then another within20 ticks; a forward edge cancels.
   if(!c.phase){if(edge&2){c.phase=1;c.time=20;}return null;}
   if(--c.time===0||edge&1){c.phase=0;return null;}
-  if(edge&2){c.phase=0;return !blocked&&[0,3,4].includes(p.ST)?['bb','',0]:null;}return null;
+  if(edge&2){c.phase=0;return !blocked&&([0,3,4].includes(p.ST)||window.SF2?.edition==='ai'&&p.ST===2&&!p.PJ)?['bb','',0]:null;}return null;
  }
  function flip(p,c,h){
   if(c.sound){h.sound?.(c.sound);c.sound=0;} // Native sound latch consumes the queued command next tick.
@@ -77,7 +77,7 @@
  }
  function grab(p,c){
   const o=p.opp,[width,center]=COMBAT.grabTargets[o.fid];
-  if(!(p.KEYS&15)||!window.SF2.health.alive(o)||![0,1,2,3,4].includes(o.ST)||invulnerable(o))return false;
+  if(!(p.KEYS&15)||!window.SF2.health.alive(o)||!([0,1,2,3,4].includes(o.ST)||window.SF2?.edition==='ai'&&o.ST===11&&o.AIAir)||invulnerable(o))return false;
   if(Math.abs((p.X>>8)-(o.X>>8))>53+width||Math.abs((p.Y>>8)+49-(o.Y>>8)-center)>48)return false;
   c.phase=10;c.invulnerable=false;p.hitdone=1;
   p.CETH={kind:'vegaizuna',rows:COMBAT.izunaRows[o.fid],indices:COMBAT.izunaIndices,fresh:1};
