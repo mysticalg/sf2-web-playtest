@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.122",
-  "commit": "16fbc855d58a6f3ecdc0504c2fdda6c7f4e1ea30",
-  "builtAt": "2026-11-22T05:19:31.980176+00:00",
+  "version": "0.1.123",
+  "commit": "e22e2f26de45aa529337db157feb7d7fbc9818eb",
+  "builtAt": "2026-11-22T05:39:56.607464+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 8503,
-      "sha256": "ea830bfb4a6328187fde1b848b8fdeaee90b8d98994118bc7840d1031d20668d"
+      "bytes": 8583,
+      "sha256": "6d7c8fc3c90e1b358af2ff09e1ec58b14f8270fc3e636659375ea7d30edba0b1"
     },
     {
       "file": "game.js",
-      "bytes": 180464,
-      "sha256": "f5aa6a6ce1df11aeafe0f795726068a63fb0a638a5d4dd70d2ee3712797305f8"
+      "bytes": 180985,
+      "sha256": "e51d28dbcffc222805b4f33ffa3eb16258e85e96a957cc3403ac101cd3d1d717"
     },
     {
       "file": "assets.js",
@@ -352,7 +352,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "cb342c4a777b162d9d92b5765c7f81e3b7929e64927c4f87cb8f0c75fc7e62a4"
+      "sha256": "78c86a242f576f60739a5f1a92470cf0415778cc54215c011fa21309407d96b4"
     },
     {
       "file": "lobby.css",
@@ -367,7 +367,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "4642043fa1aff205ff2fdf5e7a91c76cafbab0ec89457fcd5759e191c81c2136"
+      "sha256": "6f8aa4d4b0b97de6a7eff039ecc0d06ae1de898071e6d9a1c24a14bf40c5a99b"
     },
     {
       "file": "history.js",
@@ -383,6 +383,11 @@
       "file": "ai_colors.js",
       "bytes": 3302,
       "sha256": "2a6bfb4a9be6752f805467e4a1d29c00e7b03e41d6ab0905c10ec26c694d04f5"
+    },
+    {
+      "file": "ai_weather.js",
+      "bytes": 2551,
+      "sha256": "38add2e112b1598bc2dd5a3fb841c24fce1645e7919034a645b30b777b95779c"
     },
     {
       "file": "ai_roster.js",
