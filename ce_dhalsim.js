@@ -35,7 +35,7 @@
  throw Error('Unknown source flame main '+a.main);
 }};
  const images=D.images.map(src=>{const im=new Image();im.src=src;return im;}),ready=Promise.all(images.map(im=>im.decode())),registered=new WeakMap();
- function register(p){if(p.fid!==7)return null;Object.assign(SF2CESHADOWDATA.selectors,D.shadows);Object.assign(SF2CEREACTIONDATA.postures,D.postures);if(registered.has(p.F))return registered.get(p.F);const poses={},slots=[];for(const a of D.parents){slots.push(p.F.anims.length);p.F.anims.push({...a,ents:a.ents.map(e=>e.map(v=>Array.isArray(v)?v.slice():v)),flags:a.flags.slice()});for(let i=0;i<a.ents.length;i++)poses[a.source+24*i]=[slots[slots.length-1],i];}const q={poses,slots};registered.set(p.F,q);return q;}
+ function register(p){if(p.fid!==7)return null;Object.assign(SF2CESHADOWDATA.selectors,D.shadows);Object.assign(SF2CEREACTIONDATA.postures,D.postures);const combat=SF2CECOMBATDATA.fighters[7];for(const key of["frames","postures","criticalBoxes"])Object.assign(combat[key],D.drillCombat[key]);if(registered.has(p.F))return registered.get(p.F);const poses={},slots=[];for(const a of[...D.parents,...D.drills]){slots.push(p.F.anims.length);p.F.anims.push({...a,ents:a.ents.map(e=>e.map(v=>Array.isArray(v)?v.slice():v)),flags:a.flags.slice()});for(let i=0;i<a.ents.length;i++)poses[a.source+24*i]=[slots[slots.length-1],i];}const q={poses,slots};registered.set(p.F,q);return q;}
  const nativePos=p=>({x:((((p.X>>8)+256)<<16)|((p.X&255)<<8))>>>0,y:((((p.Y>>8)+40)<<16)|((p.Y&255)<<8))>>>0});
  function reset(G,P){delete G.CEYogaObjects;for(const p of P){delete p.CEYogaLink;delete p.CEYogaMetrics;}if(window.SF2.edition==='ai'&&P.some(p=>p.fid===7))G.CEYogaObjects={pools:{4:O.create().pools[4]},task:0};}
  const pool=G=>G.CEObjects||G.CEYogaObjects;

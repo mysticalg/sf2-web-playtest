@@ -635,7 +635,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
 
   let ceWhiff=null;
 
-  if(atk>=0&&(st===S_FREE||st===S_CR||st===S_AIR&&!p.JA&&!p.PJ)){const X=XS(p),args=[X&&(st===S_CR||keys&K_D?X.whc:X.wh)[atk],SN_WHIFF,0.35];if(VER.cur==='CE'&&!isEvilKen(p)&&[S_FREE,S_CR].includes(st)&&([0,4].includes(p.fid)||p.fid===11&&atk===0))ceWhiff=args;else sfxc(...args);}
+  if(atk>=0&&!(VER.cur==='CE'&&p.fid===7&&st===S_AIR)&&(st===S_FREE||st===S_CR||st===S_AIR&&!p.JA&&!p.PJ)){const X=XS(p),args=[X&&(st===S_CR||keys&K_D?X.whc:X.wh)[atk],SN_WHIFF,0.35];if(VER.cur==='CE'&&!isEvilKen(p)&&[S_FREE,S_CR].includes(st)&&([0,4,7].includes(p.fid)||p.fid===11&&atk===0))ceWhiff=args;else sfxc(...args);}
 
   if(VER.cur==='CE'&&st===S_SPEC&&atk>=0&&atk<3&&p.MV&&p.MV.inp==='cdu'&&p.MV.kind==='rise'&&p.Y>(24<<8)&&bossair(p,dx))return end(p);
 
@@ -694,6 +694,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
   case S_GETUP: if(ad){ if(p.DIZZY===1){p.DIZZY=2;setanim(p,AN_HITL+1,0);p.ST=S_HIT;p.STUN=DIZT;p.RETCR=0;} else toidle(p);} break;
 
   case S_AIR: if(p.PJ>0){p.PJ--;break;}
+    if(VER.cur==='CE'&&SF2CENORMALS.air(p,atk,keys,{tick:animstep,idle:toidle,sound:code=>sfxc(code)}))break;
 
     if(VER.cur==='CE'&&window.SF2CHUNAIR&&SF2CHUNAIR.step(p,G.cam))break;
 
@@ -938,7 +939,7 @@ function spec0(p,input){const m=p.MV;if(VER.edition==='ce'&&window.SF2CEHONDAHOL
 
 // ---- boxes / hits ----
 
-function boxw(p,k){if(isEvilKen(p)&&p.cur>=92&&p.cur<=94&&k===4&&!p.AIEvilKen.attack)return null;if(aiEnabled()&&k===4&&p.AIRift)return null;if(VER.cur==='CE'&&k===4&&window.SF2BISONHEAD?.attackBox){const b=SF2BISONHEAD.attackBox(p);if(b!==undefined)return b;}const raw=VER.cur==='CE'&&window.SF2CEVEGACLAW?SF2CEVEGACLAW.box(p,k):undefined,b=raw!==undefined?raw:ent(p)[2+k];if(!b||!b[2])return null;return [(p.FACE?-b[0]:b[0])+(p.X>>8),b[1]+(p.Y>>8),b[2],b[3]];}
+function boxw(p,k){if(isEvilKen(p)&&p.cur>=92&&p.cur<=94&&k===4&&!p.AIEvilKen.attack)return null;if(aiEnabled()&&k===4&&p.AIRift)return null;if(VER.cur==='CE'&&k===4&&window.SF2BISONHEAD?.attackBox){const b=SF2BISONHEAD.attackBox(p);if(b!==undefined)return b;}const raw=VER.cur==='CE'&&window.SF2CEVEGACLAW?SF2CEVEGACLAW.box(p,k):undefined,b=raw!==undefined?raw:ent(p)[2+k];if(!b||!b[2])return null;const attack=VER.cur==='CE'&&k===4?window.SF2CECOMBAT?.record(p):null,dx=attack&&(attack[5]&128)?-attack[5]:b[0];return [(p.FACE?-dx:dx)+(p.X>>8),b[1]+(p.Y>>8),b[2],b[3]];}
 
 function push(){if(VER.edition==='ce'&&G.CEHHContactDelay>0){if(G.CEHHContactDelay<29)for(const q of P)q.CEHHPush=false;G.CEHHContactDelay--;return;}if(VER.edition==='ce'&&P.some(p=>p.CEKO))return;if(VER.cur==='CE'&&P.some(p=>p.CETH||p.CETHV||p.CEBV||p.CEB&&p.CEB.phase===0))return;if(VER.edition==='ce'&&P.some(p=>p.fid===1)&&!P.some(p=>p.CEHH||p.CEHHV&&p.CEHHV.phase<2)){P.forEach(clampx);SF2CEHONDAHOLD.push(P,q=>boxw(q,3));for(const q of P)q.CEHHPostPush=true;return;}if(VER.cur==='CE'&&P.some(p=>p.CEHH||p.CEHHV&&p.CEHHV.phase<2||p.CETH||p.CETHV||p.CEBV||p.CEB&&p.CEB.phase===0))return;const a=boxw(P[0],3),b=boxw(P[1],3); if(!a||!b)return;
   if(Math.abs(a[1]-b[1])>=a[3]+b[3])return; const ov=a[2]+b[2]-Math.abs(a[0]-b[0]); if(ov<=0)return;
