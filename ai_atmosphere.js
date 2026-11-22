@@ -5,31 +5,28 @@ window.SF2AIATMOSPHERE=(()=>{
  const rects={
   'cherry-petals':[[236,240,206,210],[835,243,200,200],[286,840,114,191],[826,859,186,162]],
   'rose-petals':[[117,140,402,372],[724,168,429,324],[241,720,132,423],[737,777,394,298]],
-  'cloud-mist':[[69,295,494,102],[697,267,500,142],[69,901,484,113],[723,878,446,136]]
+  'cloud-bank':[[0,0,2172,724]],
+  'mist-bank':[[0,300,2172,410]]
  };
  const ready=Promise.all(Object.keys(rects).map(name=>new Promise(resolve=>{const im=sheets[name]=new Image();im.onload=()=>resolve(true);im.onerror=()=>{console.error('AI atmosphere artwork failed to load',im.src);resolve(false);};im.src='ai-effects/'+name+'.png?v='+(window.SF2BUILD?.commit||'126');}))).then(a=>a.every(Boolean));
- const depths={farCloud:.15,nearCloud:.35,backMist:.75,frontMist:1.1,petals:1};
+ const depths={farCloud:.12,nearCloud:.35,backMist:.62,frontMist:1.08,petals:1};
  const wrap=(x,n)=>(x%n+n)%n;
  function windTravel(f){const phase=SF2AIRULES.hash(f.seed||0,'weather:'+f.s.stage)%90,t=f.s.clock;return(.45*t+44.1*(Math.cos(phase)-Math.cos(t/180+phase)))*(f.s.kind===6?2.1:1);}
- function sprite(ctx,sheet,index,x,y,w,h,alpha=1){const im=sheets[sheet],r=rects[sheet]?.[index];if(!r||!im?.complete||!im.naturalWidth)return;ctx.save();ctx.globalAlpha*=alpha;ctx.drawImage(im,...r,x,y,w,h);ctx.restore();}
+ function sprite(ctx,sheet,index,x,y,w,h,alpha=1){const im=sheets[sheet],r=rects[sheet]?.[index];if(!r||!im?.complete||!im.naturalWidth)return;const shade=ctx.filter&&ctx.filter!=='none'&&window.SF2AISCENE?SF2AISCENE.nativeShade(im,ctx.filter):null;ctx.save();ctx.globalAlpha*=alpha;if(shade)ctx.filter='none';ctx.drawImage(shade||im,...r,x,y,w,h);ctx.restore();}
  function clouds(ctx,f,pass){
   const strength=[0,.30,.48,.25,.17,.42,.20][f.s.kind]||0;if(!strength)return;
-  const far=pass==='far',depth=far?depths.farCloud:depths.nearCloud,effective=f.cam*depth-f.inset,period=1536,t=windTravel(f)*(far?.07:.13);
-  ctx.save();ctx.filter=f.s.kind===2?(f.filter==='none'?'':f.filter+' ')+'brightness(0.65)':f.filter;ctx.beginPath();ctx.rect(0,f.top,f.width,Math.min(114-f.top,f.height));ctx.clip();
-  for(let i=0;i<5;i++){
-   const h=SF2AIRULES.hash(f.seed||0,'cloud:'+pass+':'+i),base=wrap(i*period/5+(h%160)-80+t,period),y0=far?-230+(h>>>12)%275:-12+(h>>>12)%70,w=far?150+(h%70):210+(h%95),height=far?26:40;
-   for(let band=Math.floor((f.top-y0-height)/512);y0+band*512<114;band++)for(let tile=Math.floor(effective/period)*period-period;tile<effective+f.width+period;tile+=period){const x=base+tile-effective,y=y0+band*512;if(x+w>=0&&x<=f.width&&y+height>=f.top)sprite(ctx,'cloud-mist',far?0:1,x,y,w,height,strength*(f.s.level===2?.6:1));}
-  }
+  const far=pass==='far',depth=far?depths.farCloud:depths.nearCloud,effective=f.cam*depth-f.inset,period=far?1700:2100,travel=windTravel(f)*(far?.35:.65);
+  const h=SF2AIRULES.hash(f.seed||0,'cloud-bank:'+pass),width=far?1200:1500,height=width/3,base=wrap(h%period+travel,period),y=(far?-340:-430)+(h>>>12)%32;
+  ctx.save();ctx.filter=f.s.kind===2?(f.filter==='none'?'':f.filter+' ')+'brightness(0.65)':f.filter;ctx.beginPath();ctx.rect(0,f.top,f.width,Math.max(0,Math.min(114-f.top,f.height)));ctx.clip();
+  for(let tile=Math.floor(effective/period)*period-period;tile<effective+f.width+period;tile+=period){const x=base+tile-effective;if(x+width<0||x>f.width)continue;sprite(ctx,'cloud-bank',0,x,y,width,height,strength*(far?.65:.8)*(f.s.level===2?.7:1));}
   ctx.restore();
  }
  function mist(ctx,f,pass){
   const alpha=[0,.045,.06,.04,.14,.03,0][f.s.kind]||0;if(!alpha)return;
-  const front=pass==='front',depth=front?depths.frontMist:depths.backMist,effective=f.cam*depth-f.inset,period=1024,t=windTravel(f)*(front?.11:.06);
+  const front=pass==='front',depth=front?depths.frontMist:depths.backMist,effective=f.cam*depth-f.inset,period=front?1450:1250,travel=windTravel(f)*(front?.45:.25),width=front?1800:1500,height=width*410/2172;
+  const phase=SF2AIRULES.hash(f.seed||0,'mist-bank:'+pass),base=wrap(phase%period+travel,period),y=f.ground-(front?78:135)+Math.sin(f.s.clock/180+(phase%40))*4;
   ctx.save();ctx.filter=f.filter;ctx.beginPath();ctx.rect(0,f.top,f.width,f.height);ctx.clip();
-  for(let i=0;i<4;i++){
-   const h=SF2AIRULES.hash(f.seed||0,'mist:'+pass+':'+i),base=wrap(h%period+t,period),y=f.ground-(front?17:29)+Math.sin(f.s.clock/83+i)*2;
-   for(let tile=Math.floor(effective/period)*period-period;tile<effective+f.width+period;tile+=period){const x=base+tile-effective,w=front?320:280;if(x+w>=0&&x<=f.width)sprite(ctx,'cloud-mist',front?3:2,x,y,w,front?25:31,alpha*(front?1:0.8));}
-  }
+  for(let tile=Math.floor(effective/period)*period-period;tile<effective+f.width+period;tile+=period){const x=base+tile-effective;if(x+width<0||x>f.width)continue;sprite(ctx,'mist-bank',0,x,y,width,height,alpha*(front?.55:.8));}
   ctx.restore();
  }
  function petals(ctx,f){

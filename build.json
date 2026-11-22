@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.139",
-  "commit": "1da0c049fc6a82a91a618e1c7597d660d2a6d176",
-  "builtAt": "2026-11-22T18:57:42.438259+00:00",
+  "version": "0.1.140",
+  "commit": "2f05249e2e7b393fcc470a8389861f44730ef927",
+  "builtAt": "2026-11-22T20:18:44.820653+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 9654,
-      "sha256": "95b72ebba55be971d4ce8d580f858a0d3af7375c26f608de2c25161400664cfa"
+      "sha256": "78c468e1a7a0b1e754c625eb26a9d60b10f71ad5e24ecfc1c658803c2069ecfe"
     },
     {
       "file": "game.js",
-      "bytes": 195106,
-      "sha256": "2baef3315b89ac2da90da2403e80a704669d3d4b76d72022c9db1211ad608dec"
+      "bytes": 195471,
+      "sha256": "b964c7dd372732e3636372eb823dcf8616f7c6f8adc106330403339b7f539c60"
     },
     {
       "file": "assets.js",
@@ -241,8 +241,8 @@
     },
     {
       "file": "ce_stage_cyclists.js",
-      "bytes": 3827,
-      "sha256": "204d01d3689a8ff81de4936e593b07f185da5a605031b9d31472c4c357226ff0"
+      "bytes": 4258,
+      "sha256": "76d5e1feb384639a299bbc1f3eb69a6eb32e2c0a67ec69f25cbcc203bda87386"
     },
     {
       "file": "ce_stage_birds_data.js",
@@ -291,8 +291,8 @@
     },
     {
       "file": "ce_stage_scroll.js",
-      "bytes": 3167,
-      "sha256": "fe075c9c58ce07c7381879823e8ced69b92fe75c108011943a8fb7124af30946"
+      "bytes": 4432,
+      "sha256": "0791883d394051a15fe0b30305a29bfbfa671f035459ff876849412ea55b9845"
     },
     {
       "file": "ce_stage_dancers_data.js",
@@ -387,7 +387,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "239fa3b3baf757c1b6c8a0e17a98a3f4ac8e5a8ea7542d434b8694a5de138614"
+      "sha256": "3ade4de602e944c436ce77b66ed6c74997acea3f184c84ac17f35fbd2b06f9ed"
     },
     {
       "file": "lobby.css",
@@ -402,7 +402,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "809a3dc5c62850e2876f9b91078c3a29ca9bcc1644eda3ebfa33a1a50ce2bd2c"
+      "sha256": "108ae063afafa3fdecc322772c37fd29d18f8ec426c8796862c863f04b892404"
     },
     {
       "file": "history.js",
@@ -441,8 +441,8 @@
     },
     {
       "file": "ai_scene.js",
-      "bytes": 11255,
-      "sha256": "7d3eb630e4fd7a144f2064ea417c650783e4b43f36c0659008c463e9bb227a0a"
+      "bytes": 11855,
+      "sha256": "2afbf861139ee3d26d94ea751c164ff57bb5c91cddfa0929e5553d36c4899f5c"
     },
     {
       "file": "ai_stage_materials.js",
@@ -461,8 +461,8 @@
     },
     {
       "file": "ai_atmosphere.js",
-      "bytes": 4371,
-      "sha256": "3ac1cf18a061d07612fe247c15d960d5d070412d077dae14869088c181771b18"
+      "bytes": 4464,
+      "sha256": "6e2cce3b60ff6ea725d0d40bf6b6710ba8a2479739df3978d9ab9b067916d8cd"
     },
     {
       "file": "ai-effects/cherry-petals.png",
@@ -478,6 +478,16 @@
       "file": "ai-effects/cloud-mist.png",
       "bytes": 545510,
       "sha256": "78165dc643380e1abf90018ced3fa1c096a9fc19bc447c46ffb578130bea595e"
+    },
+    {
+      "file": "ai-effects/cloud-bank.png",
+      "bytes": 1545801,
+      "sha256": "a1585905f01a8560eb75d575a63a06e2cc6fd25e95ac9a26043e4f9b6e04243d"
+    },
+    {
+      "file": "ai-effects/mist-bank.png",
+      "bytes": 1115426,
+      "sha256": "1ae5660346f37583739aecff7c089eda10a88529559843993f1633b6dc1b05ea"
     },
     {
       "file": "ai-effects/india-wall.png",

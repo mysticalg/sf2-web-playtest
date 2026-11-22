@@ -61,22 +61,22 @@ window.SF2AISCENE=(()=>{
   if(!im?.complete||!im.naturalWidth||height<=0)return;
   ctx.save();ctx.translate(x,y);ctx.fillStyle=ctx.createPattern(im,'repeat');ctx.fillRect(left-x,top-y,width,height);ctx.restore();
  }
- function chinaFloor(ctx,cam,inset,width,top,height,dy){
+ function chinaFloor(ctx,cam,inset,width,top,height,dy,coverageInset=inset,panorama=false){
   const map=SF2CESTAGESCROLL,source=map.layerImage(5,2),filter=ctx.filter;
   if(!source?.complete)return;
   const im=filter==='none'?source:nativeShade(source,filter),rate=(map.mapX(5,2,cam,223)-map.mapX(5,2,cam,215))/8;
   ctx.save();ctx.filter='none';
   // Native scroll2 paving is completely opaque from160 through223. Only
   // exposed zoom padding and rows below that original crop need an underlay.
-  const start=Math.max(top,160+dy),end=Math.min(top+height,224+dy),nativeRight=inset+Math.min(width,768);
+  const start=Math.max(top,160+dy),end=Math.min(top+height,224+dy),nativeRight=coverageInset+Math.min(width,768);
   ctx.beginPath();ctx.rect(0,Math.max(top,224+dy),width,Math.max(0,top+height-Math.max(top,224+dy)));
-  if(end>start){if(inset>0)ctx.rect(0,start,inset,end-start);if(nativeRight<width)ctx.rect(Math.max(0,nativeRight),start,width-Math.max(0,nativeRight),end-start);}ctx.clip();
+  if(end>start){if(coverageInset>0)ctx.rect(0,start,coverageInset,end-start);if(nativeRight<width)ctx.rect(Math.max(0,nativeRight),start,width-Math.max(0,nativeRight),end-start);}ctx.clip();
   for(let y=Math.max(top,Math.ceil(160+dy));y<top+height;y++){
-   if(y<224+dy&&inset<=0&&nativeRight>=width)continue;
+   if(y<224+dy&&coverageInset<=0&&nativeRight>=width)continue;
    const depth=y-dy,sourceDepth=206+((Math.floor(depth)-224)%16+16)%16,scale=(depth-128)/(sourceDepth-128);
    const sx=depth<=223?map.mapX(5,2,cam,Math.floor(depth)):map.mapX(5,2,cam,223)+rate*(depth-223);
-   const left=512-sx+inset-512*scale,right=left+1024*scale,tile=64*scale;
-   ctx.drawImage(im,0,sourceDepth+32,1024,1,left,y,1024*scale,1);
+   const viewScale=panorama?map.view(5,2,cam,width,Math.min(223,Math.floor(depth))).scale:1,left=(512-sx-512*scale)*viewScale+inset,right=left+1024*scale*viewScale,tile=64*scale*viewScale;
+   ctx.drawImage(im,0,sourceDepth+32,1024,1,left,y,1024*scale*viewScale,1);
    for(let x=left-tile;x+tile>0;x-=tile)ctx.drawImage(im,0,sourceDepth+32,64,1,x,y,tile,1);
    for(let x=right;x<width;x+=tile)ctx.drawImage(im,960,sourceDepth+32,64,1,x,y,tile,1);
   }
@@ -90,17 +90,17 @@ window.SF2AISCENE=(()=>{
   // never a second room, carpet, temple, storefront or enlarged landmark.
   materialFill(ctx,d.images.wall,-cam,dy,0,top,width,Math.min(top+height,d.floorY+dy)-top);
   materialFill(ctx,d.images.ceiling,-cam,dy+(d.source.ceiling?.y||0),0,top,width,Math.min(top+height,-32+dy)-top);
-  if(stage===5)chinaFloor(ctx,logical,inset,width,top,height,dy);
+  if(stage===5)chinaFloor(ctx,logical,inset+(registration?.viewOffset||0),width,top,height,dy,inset,registration?.panorama);
   else materialFill(ctx,d.images.floor,-cam,dy+d.floorY,0,Math.max(top,d.floorY+dy),width,top+height-Math.max(top,d.floorY+dy));
   if(stage===5){
    const map=window.SF2CESTAGESCROLL,farY=SF2CECAMERA.offset(5,1),frontY=SF2CECAMERA.offset(5,2);
    // The receding lane follows native layer3, not the foreground's row scroll.
-   const far=256-map.mapX(5,1,logical,-32)+inset,front=-map.mapX(5,2,logical,-32)+inset;
+   const sampleInset=inset+(registration?.viewOffset||0),farView=registration?.panorama?map.view(5,1,logical,width,-32):null,frontView=registration?.panorama?map.view(5,2,logical,width,-32):null,farScale=farView?.scale||1,frontScale=frontView?.scale||1,far=(256-(farView?.source??map.mapX(5,1,logical,-32)))*farScale+sampleInset,front=-(frontView?.source??map.mapX(5,2,logical,-32))*frontScale+sampleInset;
    const filter=ctx.filter,farFrame=filter==='none'?chinaFar:nativeShade(chinaFar,filter),frontFrame=filter==='none'?chinaFront:nativeShade(chinaFront,filter);
-   ctx.save();ctx.filter='none';ctx.beginPath();ctx.rect(0,top,width,Math.max(0,d.floorY+frontY-top));ctx.clip();ctx.drawImage(farFrame,far,-768+farY,1024,1024);ctx.restore();
+   ctx.save();ctx.filter='none';ctx.beginPath();ctx.rect(0,top,width,Math.max(0,d.floorY+frontY-top));ctx.clip();ctx.drawImage(farFrame,far,-768+farY,1024*farScale,1024);ctx.restore();
    // Admit only new roof caps above the source cut. Existing people, signs,
    // pole, original facades and paving always come from the native planes.
-   ctx.save();ctx.filter='none';ctx.beginPath();ctx.rect(0,top,width,Math.max(0,-48+frontY-top));ctx.clip();ctx.drawImage(frontFrame,front,-768+frontY,1024,1024);ctx.restore();ctx.drawImage(d.images.top,front,-48+frontY,1024,16);
+   ctx.save();ctx.filter='none';ctx.beginPath();ctx.rect(0,top,width,Math.max(0,-48+frontY-top));ctx.clip();ctx.drawImage(frontFrame,front,-768+frontY,1024*frontScale,1024);ctx.restore();ctx.drawImage(d.images.top,front,-48+frontY,1024*frontScale,16);
   }
  }
  function draw(ctx,stage,cam,width,top,height,room,filter,registration){
