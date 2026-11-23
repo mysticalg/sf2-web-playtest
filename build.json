@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.145",
-  "commit": "03501de09fd48f3f603a4376d83461a123681bbd",
-  "builtAt": "2026-11-23T01:09:44.837905+00:00",
+  "version": "0.1.146",
+  "commit": "ad4f131c65d55afb83ed356db3f4ffadb2d5e9cb",
+  "builtAt": "2026-11-23T02:52:16.540331+00:00",
   "files": [
     {
       "file": "index.html",
-      "bytes": 9819,
-      "sha256": "56c820ce78000c75d172e61e70687129745a844d0d913ea3ad8e9a3e39b4b6c1"
+      "bytes": 10008,
+      "sha256": "e0baa8c5264e2c6f39418835ba282c118c054bbe87b983d864ac09931021f642"
     },
     {
       "file": "game.js",
-      "bytes": 199065,
-      "sha256": "2aa4ae0dcc70c361791c538ffaac06db529d5a7e6c41300bdb1acc17b90ce33a"
+      "bytes": 200655,
+      "sha256": "ae9fc34d98ffb0a90f191a5be390ba0cebea512c6aa1b6c54afcbc5b39e8dcb0"
     },
     {
       "file": "assets.js",
@@ -116,8 +116,18 @@
     },
     {
       "file": "ce_dizzy.js",
-      "bytes": 10513,
-      "sha256": "9669a96fb15a3273979ccc50696ab873f7bcf07bf70c529d2b5e828dfe1428d6"
+      "bytes": 10603,
+      "sha256": "e0e1254c9abb0e011c51c4d30de44b4f08c2dcdbad0671cdbae452c2e8c15127"
+    },
+    {
+      "file": "ce_special_reactions_data.js",
+      "bytes": 236352,
+      "sha256": "53a26bd912a2a56fbadd1472f7b182bb553426457cd758209a0822f60567ee76"
+    },
+    {
+      "file": "ce_special_reactions.js",
+      "bytes": 12511,
+      "sha256": "f7f6c31593e51cb0d10fc423c13f392c460c6f7afe8d7567267758fab76e532c"
     },
     {
       "file": "victory_ce.js",
@@ -397,7 +407,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "7a8e0c98a55f0792ebe91687263f30885e3fbb4b0e64e8a1f1a8a86e4e492981"
+      "sha256": "65fd17bc36a8da684f7f577dd0d95142e11ab0ab80d12fd7d0652e1e844cda68"
     },
     {
       "file": "lobby.css",
@@ -412,7 +422,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "7ce853bc1d9fa70378176dd0289b0663a4c66057a2101d2517237809fa2bf2ef"
+      "sha256": "991e230241e9619014019631baf175828dfcd9523e04a7530d19645321165519"
     },
     {
       "file": "history.js",

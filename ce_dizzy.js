@@ -71,6 +71,7 @@
  }
  function objects(G,P,h){const s=G.CEObjects||beginWorld(G);G.CEObjectSerial++;O.traverse(s,8,a=>{
   a.draw=false;
+  if(a.kind===56){if(SF2CESPECIAL.gateObject(a,P,h))O.release(s,a);return;}
   if(a.kind===32&&a.yogaImpact){SF2CEDHALSIM.effectStep(a,s,h);return;}
   if(a.kind===0x3a){SF2CEWINNER.objectStep(a,s,P,h);return;}
   if(a.kind===34){ui(a,s);return;}
@@ -82,7 +83,7 @@
   }
   if(a.kind===35&&a.child===4){const p=P[a.parent===0x83be?0:1],c=p.CEDizzy;
    if(a.main===4||a.main===6){O.release(s,a);return;}
-   const draw=a.main===2;CORE.stars.step(a,{fid:p.fid,face:p.FACE,x:((p.X>>8)+256)&65535,y:((p.Y>>8)+40)&65535,activeDizzy:h.alive(p)?c?.activeDizzy||0:0,state:c?.fall?0x0e:0},h.clock,D.stars,pc=>h.random(pc,p));a.draw=draw;
+   const draw=a.main===2;CORE.stars.step(a,{fid:p.fid,face:p.FACE,x:((p.X>>8)+256)&65535,y:((p.Y>>8)+40)&65535,activeDizzy:h.alive(p)?c?.activeDizzy||0:0,state:c?.fall||p.CESpecial?0x0e:0},h.clock,D.stars,pc=>h.random(pc,p));a.draw=draw;
   }
  });}
  function drawStars(ctx,G,cam,ground,front=false){for(const a of G.CEObjects?.pools[8].slots||[]){if(!a.used||a.kind!==35||a.child!==4||!a.draw||front!==(a.camera===0))continue;const pal=a.variant?14:a.palette,f=D.starArt[a.source+':'+pal+':'+a.face];if(!f)continue;ctx.drawImage(images[f.image],(a.x>>>16)-256-cam+f.x,ground-((a.y>>>16)-40)+f.y);}}
