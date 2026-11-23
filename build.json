@@ -1,18 +1,18 @@
 {
   "status": "work-in-progress",
-  "version": "0.1.144",
-  "commit": "b99c7a480409ae39d5df6e585fb49eeefe5b45e5",
-  "builtAt": "2026-11-22T23:57:17.254130+00:00",
+  "version": "0.1.145",
+  "commit": "03501de09fd48f3f603a4376d83461a123681bbd",
+  "builtAt": "2026-11-23T01:09:44.837905+00:00",
   "files": [
     {
       "file": "index.html",
       "bytes": 9819,
-      "sha256": "2c3eafbd8ba6cbdf97fcaca850af08363bd758b4b1b61d08954963d4efbdd19e"
+      "sha256": "56c820ce78000c75d172e61e70687129745a844d0d913ea3ad8e9a3e39b4b6c1"
     },
     {
       "file": "game.js",
-      "bytes": 197754,
-      "sha256": "602359ba0f2e07e460eec752d475d6ede16c34787f5b5053d25e35e771650b17"
+      "bytes": 199065,
+      "sha256": "2aa4ae0dcc70c361791c538ffaac06db529d5a7e6c41300bdb1acc17b90ce33a"
     },
     {
       "file": "assets.js",
@@ -116,8 +116,8 @@
     },
     {
       "file": "ce_dizzy.js",
-      "bytes": 10440,
-      "sha256": "427a6d720ce0c0484591c305a9a0ed5f70b04665ec8824490d80be7a94be8854"
+      "bytes": 10513,
+      "sha256": "9669a96fb15a3273979ccc50696ab873f7bcf07bf70c529d2b5e828dfe1428d6"
     },
     {
       "file": "victory_ce.js",
@@ -186,13 +186,13 @@
     },
     {
       "file": "ce_dhalsim_data.js",
-      "bytes": 138642,
-      "sha256": "8f53253975616ccacd1113b2a54daee4bde6e40c71ef15758b0ac8f655ce300f"
+      "bytes": 168449,
+      "sha256": "7e5860f29e23fee513f996363f6ca417893acfc9fcd3112c1a4b6a34886db0d9"
     },
     {
       "file": "ce_dhalsim.js",
-      "bytes": 6392,
-      "sha256": "5dcc79922bfbc4b6359e36fbd256d77a649d2a79bbc6a6b1b7dbe5ddd7a4a259"
+      "bytes": 10121,
+      "sha256": "4c4a6885bf9b2507416e0ca6e98ed6f434e8a5f903c5b6095e6e1bb71c35c6da"
     },
     {
       "file": "ce_honda_hold_data.js",
@@ -397,7 +397,7 @@
     {
       "file": "lobby.html",
       "bytes": 4592,
-      "sha256": "3e8534acd2aee63e152d7b5673c53006a7ff638a42ccf617582ee48afd450d32"
+      "sha256": "7a8e0c98a55f0792ebe91687263f30885e3fbb4b0e64e8a1f1a8a86e4e492981"
     },
     {
       "file": "lobby.css",
@@ -412,7 +412,7 @@
     {
       "file": "history.html",
       "bytes": 1337,
-      "sha256": "0bf0472b65b39054ba91db504444310f6c8eb694962837b6af60caa8788e2215"
+      "sha256": "7ce853bc1d9fa70378176dd0289b0663a4c66057a2101d2517237809fa2bf2ef"
     },
     {
       "file": "history.js",
