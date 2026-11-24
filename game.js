@@ -184,7 +184,7 @@ function aiClothesArt(p,art){
   return{...art,image,rect:[0,0,frame.w,frame.h,art.rect[4],art.rect[5]]};
 }
 const AI_FACE_IMAGES=new WeakMap();
-function aiFaceInjuryLevel(p){return !aiEnabled()||p.HP>=aiMax(p)*.2?0:p.HP<aiMax(p)*.1?2:1;}
+function aiFaceInjuryLevel(p){const ratio=p.HP/aiMax(p);return !aiEnabled()||ratio>=.2?0:Math.min(10,1+Math.floor((.2-Math.max(0,ratio))/.02));}
 function aiFaceRegion(p,art){
   const r=art.rect,head=boxw(p,0);
   if(head)return{x:(head[0]-p.X/256)*(p.FACE?-1:1)-r[4]-head[2]*.22,y:p.Y/256-head[1]-r[5]+head[3]*.22,rx:Math.max(4,head[2]*.7),ry:Math.max(4,head[3]*.65)};
@@ -192,18 +192,19 @@ function aiFaceRegion(p,art){
   if(!point)return null;return{x:point[0]-1,y:point[1]-3,rx:5,ry:4};
 }
 function aiFaceInjuryArt(p,art,base){
-  const level=aiFaceInjuryLevel(p);if(!level)return art;const face=aiFaceRegion(p,base),frame=face&&aiClothFrame(p,base);if(!frame?.skinPixels.length)return art;
+  const level=aiFaceInjuryLevel(p);if(!level)return art;const region=aiFaceRegion(p,base),severity=(level-1)/9,face=region?{...region,rx:region.rx*(.9+.3*severity),ry:region.ry*(.9+.25*severity)}:null,frame=face&&aiClothFrame(p,base);if(!frame?.skinPixels.length)return art;
   let cache=AI_FACE_IMAGES.get(art.image);if(!cache){cache=new Map();AI_FACE_IMAGES.set(art.image,cache);}
   const key=[...art.rect,level,face.x,face.y,face.rx,face.ry].join(':');let image=cache.get(key);
   if(!image){image=document.createElement('canvas');image.width=frame.w;image.height=frame.h;const ctx=image.getContext('2d');ctx.drawImage(art.image,...art.rect.slice(0,4),0,0,frame.w,frame.h);
     const data=ctx.getImageData(0,0,frame.w,frame.h),original=new Uint8ClampedArray(data.data);
-    for(const i of frame.skinPixels){const x=i%frame.w,y=Math.floor(i/frame.w),dx=(x-face.x)/face.rx,dy=(y-face.y)/face.ry,d=dx*dx+dy*dy;if(d>1)continue;
+    for(const i of frame.skinPixels){const x=i%frame.w,y=Math.floor(i/frame.w),dx=(x-face.x)/face.rx,dy=(y-face.y)/face.ry,eye=(dx+.08)**2/.42**2+(dy+.25)**2/.34**2,mouth=(dx+.28)**2/.3**2+(dy-.44)**2/.22**2,d=Math.min(eye,mouth);if(d>1)continue;
       const at=i*4;if(original[at]>130&&original[at+1]<45&&original[at+2]<70)continue;
-      const weight=(.45+.4*(1-d))*(level===2?1:.8),light=(original[at]+original[at+1]+original[at+2])/765;
-      const bruise=[48+light*30,18+light*15,75+light*30];for(let c=0;c<3;c++)data.data[at+c]=Math.round(original[at+c]*(1-weight)+bruise[c]*weight);
-      // Puff the exposed cheek by one or two pixels; eyes, hair and clothes
+      const mottling=((x*3+y*5)%7)/35,weight=Math.min(.95,(.6+.32*(1-d)+mottling)*(.75+.25*severity)),light=(original[at]+original[at+1]+original[at+2])/765;
+      const bruise=[70+light*25-35*severity,18+light*12-8*severity,93+light*28-22*severity];for(let c=0;c<3;c++)data.data[at+c]=Math.round(original[at+c]*(1-weight)+bruise[c]*weight);
+      // Keep damage in two small patches: around one eye and at the mouth.
+      // Swelling grows at the lip/cheek edge. Eyes, hair and clothes
       // keep their original pixels, and no combat boxes are altered.
-      if(dy>-.25&&dx<-.15)for(let n=1;n<=level;n++){const nx=x-n;if(nx<0)continue;const q=(y*frame.w+nx)*4;if(original[q+3])continue;data.data[q]=data.data[at];data.data[q+1]=data.data[at+1];data.data[q+2]=data.data[at+2];data.data[q+3]=255;}
+      if(mouth<=1&&dx<-.15)for(let n=1;n<=1+Math.floor((level-1)/4);n++){const nx=x-n;if(nx<0)continue;const q=(y*frame.w+nx)*4;if(original[q+3])continue;data.data[q]=data.data[at];data.data[q+1]=data.data[at+1];data.data[q+2]=data.data[at+2];data.data[q+3]=255;}
     }
     ctx.putImageData(data,0,0);cache.set(key,image);if(cache.size>64)cache.delete(cache.keys().next().value);
   }
