@@ -58,27 +58,39 @@ jobs:
             if (!Number.isSafeInteger(artifactId) || artifactId <= 0) {
               throw new Error('Pages upload did not return a valid artifact ID');
             }
-            const oidcToken = await core.getIDToken();
-            core.setSecret(oidcToken);
-            const {data: deployment} = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
-              ...context.repo,
-              artifact_id: artifactId,
-              pages_build_version: context.sha,
-              oidc_token: oidcToken
-            });
-            core.setOutput('page_url', deployment.page_url);
-            for (let attempt = 0; attempt < 120; attempt++) {
-              const {data} = await github.request('GET /repos/{owner}/{repo}/pages/deployments/{deployment_id}', {
+            const wait = ms => new Promise(resolve => setTimeout(resolve, ms));
+            // Artifact metadata can become visible before Pages can read its content.
+            await wait(15000);
+            for (let publish = 0; publish < 3; publish++) {
+              const oidcToken = await core.getIDToken();
+              core.setSecret(oidcToken);
+              const {data: deployment} = await github.request('POST /repos/{owner}/{repo}/pages/deployments', {
                 ...context.repo,
-                deployment_id: deployment.id
+                artifact_id: artifactId,
+                pages_build_version: context.sha,
+                oidc_token: oidcToken
               });
-              if (data.status === 'succeed') {
-                core.info('Pages deployment succeeded');
-                return;
+              core.setOutput('page_url', deployment.page_url);
+              let retry = false;
+              for (let attempt = 0; attempt < 120; attempt++) {
+                await wait(5000);
+                const {data} = await github.request('GET /repos/{owner}/{repo}/pages/deployments/{deployment_id}', {
+                  ...context.repo,
+                  deployment_id: deployment.id
+                });
+                if (data.status === 'succeed') {
+                  core.info('Pages deployment succeeded');
+                  return;
+                }
+                if (['deployment_failed', 'deployment_lost'].includes(data.status) && publish < 2) {
+                  core.warning('Pages deployment failed; retrying the uploaded artifact');
+                  retry = true;
+                  break;
+                }
+                if (['deployment_failed', 'deployment_content_failed', 'deployment_cancelled', 'deployment_lost', 'deployment_artifact_expired'].includes(data.status)) {
+                  throw new Error('Pages deployment failed: ' + data.status);
+                }
               }
-              if (['deployment_failed', 'deployment_content_failed', 'deployment_cancelled', 'deployment_lost', 'deployment_artifact_expired'].includes(data.status)) {
-                throw new Error('Pages deployment failed: ' + data.status);
-              }
-              await new Promise(resolve => setTimeout(resolve, 5000));
+              if (!retry) throw new Error('Timed out waiting for Pages deployment');
+              await wait(10000);
             }
-            throw new Error('Timed out waiting for Pages deployment');
