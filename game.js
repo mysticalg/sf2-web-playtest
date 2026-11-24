@@ -338,7 +338,7 @@ function aiEnabled(){return VER.edition==='ai';}
 function isEvilKen(p){return aiEnabled()&&p.aiProfile==='evil-ken'&&window.SF2AIEvilKen?.ready;}
 
 function isDamnd(p){return aiEnabled()&&p.aiProfile==='damnd';}
-function damndSelected(slot,fid){return aiEnabled()&&fid===10&&(AICFG.prototype?AICFG.profiles[slot]:AICFG.selectedProfiles[slot])==='damnd';}
+function damndSelected(slot,fid){return aiEnabled()&&fid===10&&(G.scene==='select'&&!G.AIColor?G.cep?.[slot]===12:(AICFG.prototype?AICFG.profiles[slot]:AICFG.selectedProfiles[slot])==='damnd');}
 function damndSelectable(){return !!window.SF2AIDamnd?.loaded;}
 function evilRyuSelectable(){return window.SF2AI_ROSTER?.developmentProfiles?.some(p=>p.key==='ai:evil-ryu'&&p.baseFighterId===0&&p.selectablePrototype===true);}
 
@@ -350,7 +350,7 @@ function evilKenSelected(slot,fid){return aiEnabled()&&fid===4&&(AICFG.prototype
 
 function selectedProfileLabel(slot,fid){return damndSelected(slot,fid)?'DAMND':evilRyuSelected(slot,fid)?'EVIL RYU PROTOTYPE':evilKenSelected(slot,fid)?'EVIL KEN':D.fighters[fid].name.toUpperCase();}
 
-function ryuVariantStrip(){return aiEnabled()&&!AICFG.prototype&&G.scene==='select'&&!G.AIColor&&(G.sel[G.selstep]===0&&evilRyuSelectable()||G.sel[G.selstep]===4&&evilKenSelectable()||G.sel[G.selstep]===10&&damndSelectable());}
+function ryuVariantStrip(){return aiEnabled()&&!AICFG.prototype&&G.scene==='select'&&!G.AIColor&&(G.sel[G.selstep]===0&&evilRyuSelectable()||G.sel[G.selstep]===4&&evilKenSelectable());}
 
 function aiAllowedFids(){const roster=window.SF2AI_ROSTER?.baseRoster;return Array.isArray(roster)?roster.filter(f=>f.ready===true&&Number.isInteger(f.fighterId)&&f.fighterId>=0&&f.fighterId<12&&typeof f.key==='string'&&f.key.startsWith('ce:')).map(f=>f.fighterId):[];}
 
@@ -880,7 +880,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
 
   if(st===S_FREE||st===S_CR)p.EVB=null;
 
-  if((st===S_FREE||st===S_CR)&&!isEvilKen(p)&&!isDamnd(p)){if(VER.cur==='CE'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)p.FACE=G.bon.nativeDesiredFacing??1;else{const ox=p.opp.X; if(ox>p.X)p.FACE=1; else if(ox<p.X)p.FACE=0;}}
+  if((st===S_FREE||st===S_CR)&&!isEvilKen(p)){if(VER.cur==='CE'&&G.scene==='bonus'&&G.bon.kind<2&&window.SF2CEBARRELPLAYER)p.FACE=G.bon.nativeDesiredFacing??1;else{const ox=p.opp.X; if(ox>p.X)p.FACE=1; else if(ox<p.X)p.FACE=0;}}
 
   let dx=(keys&K_R?1:0)-(keys&K_L?1:0); if(!p.FACE)dx=-dx;
 
@@ -1638,7 +1638,7 @@ function phase(){
 
     if(VER.cur==='CE'&&(p.fid===0||p.fid===4)&&([0x1082,0xef7d][Math.min(1,p.WINS-1)]&(1<<(rand()&15)))){const a=AI(p,'win2');if(a>=0)n=a;}
 
-    setanim(p,n,0);p.Y=p.VX=p.VY=0;p.ST=S_WIN;if(VER.edition==='ce'&&p.fid===7)p.CECameraIgnore=true;}
+    setanim(p,n,0);p.Y=p.VX=p.VY=0;p.ST=S_WIN;if(isDamnd(p)&&!muted&&!netReplaying&&AC&&MG)SF2AIDamnd.laugh(AC,MG);if(VER.edition==='ce'&&p.fid===7)p.CECameraIgnore=true;}
 
     if(G.gt===96+victoryHold&&G.winmask!==3){const w=G.winmask&1?0:1;G.bann=(VER.cur==='CE'||G.mode2p||!G.arc?aiName(P[w]).toUpperCase()+' WIN':w?'YOU LOSE':'YOU WIN')+(P[w].HP===aiMax(P[w])?'  PERFECT':'');if(VER.cur==='CE'&&window.SF2CEANNOUNCER){G.ann=SF2CEANNOUNCER.init(isDamnd(P[w])?(G.mode2p||w===0?12:13):G.mode2p?P[w].fid:w?13:12);for(const code of SF2CEANNOUNCER.step(G.ann))sfxc(code);}}
 
@@ -1885,7 +1885,7 @@ function nativeSelect(){
 
   if(aiEnabled())for(const p of P)setfighter(p,p.fid);
 
-  G.arc=0;G.selstep=0;G.sel=[P[0].fid,P[1].fid];G.cep=G.sel.map(fid=>Math.max(0,CEGRID.indexOf(fid)));go('select');clearinput();
+  G.arc=0;G.selstep=0;G.sel=[P[0].fid,P[1].fid];G.cep=G.sel.map((fid,i)=>aiEnabled()&&P[i].aiProfile==='damnd'?12:Math.max(0,CEGRID.indexOf(fid)));go('select');clearinput();
 
 }
 
@@ -1947,7 +1947,7 @@ function pointCommand(x,y){
 
     if(VER.cur==='CE'){
 
-      for(let q=0;q<12;q++){const [a,b]=cecell(q);if(x>=a&&x<a+32&&y>=b&&y<b+32){if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))return 0;G.cep[who]=q;G.sel[who]=CEGRID[q];if(aiEnabled()&&(CEGRID[q]===0&&evilRyuSelectable()||CEGRID[q]===4&&evilKenSelectable()||CEGRID[q]===10&&damndSelectable()))return 0;return who+1;}}
+      for(let q=0;q<ceSelectGrid().length;q++){const [a,b]=cecell(q);if(x>=a&&x<a+32&&y>=b&&y<b+32){if(aiEnabled()&&!aiAllowedFids().includes(ceSelectGrid()[q]))return 0;G.cep[who]=q;G.sel[who]=ceSelectGrid()[q];if(aiEnabled())AICFG.selectedProfiles[who]=q===12?'damnd':null;if(aiEnabled()&&(CEGRID[q]===0&&evilRyuSelectable()||CEGRID[q]===4&&evilKenSelectable()))return 0;return who+1;}}
 
     }else for(let fid=0;fid<(G.mode2p?12:8);fid++){const [a,b]=cell(fid);if(x>=a&&x<a+32&&y>=b&&y<b+40){G.sel[who]=fid;return who+1;}}
 
@@ -2395,7 +2395,7 @@ function aiPortraitIdentity(slot,fid){const id=damndSelected(slot,fid)?'damnd':e
 function aiPortraitPacket(slot,fid,choiceOverride){
   const live=['win','fight'].includes(G.scene)&&P[slot].fid===fid,p=P[slot],identity=live?{id:p.aiProfile,key:p.fighterKey}:aiPortraitIdentity(slot,fid),otherSlot=1-slot;
   const otherFid=live?P[otherSlot].fid:otherSlot===1&&G.arc&&G.scene!=='select'&&G.ladder?.[G.li]!==undefined?G.ladder[G.li]:G.sel[otherSlot],other=live?{id:P[otherSlot].aiProfile,key:P[otherSlot].fighterKey}:aiPortraitIdentity(otherSlot,otherFid);
-  const F=p.fid===fid&&p.fighterKey===identity.key?p.F:identity.id==='damnd'?SF2AIDamnd.fighter||D.fighters[fid]:identity.id==='evil-ken'?SF2AIEvilKen.fighter:D.fighters[fid],choice=choiceOverride||(live?p.AIColorChoice:AICFG.colors[slot])||{clothing:-1,skin:-1},seed=live?G.AIMatchSeed:G.AINextMatchSeed??G.AIMatchSeed??SF2AIRULES.hash(rng,'portrait-preview');
+  const F=p.fid===fid&&p.fighterKey===identity.key?p.F:identity.id==='damnd'?SF2AIDamnd.fighter||D.fighters[fid]:identity.id==='evil-ken'?SF2AIEvilKen.fighter:D.fighters[fid],choice=choiceOverride||(live?p.AIColorChoice:AICFG.colors[slot])||(identity.id==='damnd'?{clothing:-2,skin:-2}:{clothing:-1,skin:-1}),seed=live?G.AIMatchSeed:G.AINextMatchSeed??G.AIMatchSeed??SF2AIRULES.hash(rng,'portrait-preview');
   const mirror=slot===1&&fid===otherFid,shoto=['ryu','ken'].includes(identity.id)&&(AICFG.prototype||other.id==='evil-'+identity.id);
   const alternate=identity.id==='evil-ryu'||identity.id==='evil-ken'&&slot===1&&identity.key===other.key||!identity.id.startsWith('evil-')&&mirror&&!shoto;
   return{i:slot,fid,F,fighterKey:identity.key,aiProfile:identity.id,AIColorChoice:choice,AIPalette:live&&!choiceOverride&&p.AIPalette?p.AIPalette:SF2AIRULES.colors(F.pal,seed,identity.key,slot,choice),sourcePalette:alternate?F.pal2:F.pal};
@@ -2594,7 +2594,7 @@ function aiSpecialKOEcho(owner,effect){
 }
 function audioInit(){if(AC){if(AC.state==='suspended')AC.resume().catch(()=>{});return;}if(!window.SF2SND)return;try{AC=new (window.AudioContext||window.webkitAudioContext)();}catch(e){return;}
 
-  MG=AC.createGain();MG.gain.value=muted?0:1;MG.connect(AC.destination);
+  MG=AC.createGain();MG.gain.value=muted?0:1;MG.connect(AC.destination);window.SF2AIDamnd?.prepareSound(AC);
 
   musInit();if(MUS===-1)music(G.scene==='title'?MUSC.title:G.scene==='fight'?STM[G.stage]:MUSC[G.scene]);}
 
@@ -2730,7 +2730,7 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
 
   case 'select': {if(!G.cep)G.cep=[0,6];const i=G.selstep, who=i===1&&G.mode2p?n2:n1, n=G.mode2p?12:8; let c=G.sel[i];if(aiEnabled()&&G.AIColor){if(SF2AICOLORS.step(G.AIColor,who))aiColorDone();break;}
 
-    if(VER.cur==='CE'){let q=G.cep[i];if(who&K_L)q=q%6?q-1:q+5; if(who&K_R)q=q%6===5?q-5:q+1; if(who&(K_U|K_D))q=(q+6)%12;if(aiEnabled()&&!aiAllowedFids().includes(CEGRID[q]))q=G.cep[i];G.cep[i]=q;c=CEGRID[q];}
+    if(VER.cur==='CE'){let q=G.cep[i];if(aiEnabled()&&damndSelectable()&&(who&(K_L|K_R|K_U|K_D))){if(q===12)q=who&K_L?11:who&K_R?6:who&K_U?8:2;else if(who&K_U)q=q<6?12:q-6;else if(who&K_D)q=q>=6?12:q+6;else if(who&K_L)q=q%6?q-1:q+5;else if(who&K_R)q=q%6===5?q-5:q+1;}else{if(who&K_L)q=q%6?q-1:q+5;if(who&K_R)q=q%6===5?q-5:q+1;if(who&(K_U|K_D))q=(q+6)%12;}if(aiEnabled()&&!aiAllowedFids().includes(ceSelectGrid()[q]))q=G.cep[i];G.cep[i]=q;c=ceSelectGrid()[q];if(aiEnabled())AICFG.selectedProfiles[i]=q===12?'damnd':c===10?'balrog':AICFG.selectedProfiles[i];}
 
     else{if(who&K_L)c=c%4?c-1:c+3; if(who&K_R)c=c%4===3?c-3:c+1;
 
@@ -2740,7 +2740,7 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
 
     if(aiEnabled()&&!aiAllowedFids().includes(G.sel[i]))break;
 
-    if((who&CONF)||(i===0&&(ng&4))){if(aiEnabled()){AICFG.selectedProfiles[i]=G.sel[i]===0&&evilRyuSelectable()?(who&0x380?'evil-ryu':'ryu'):G.sel[i]===4&&evilKenSelectable()?(who&0x380?'evil-ken':'ken'):G.sel[i]===10&&damndSelectable()?(who&0x380?'damnd':'balrog'):null;}sfxc(0x22,SN_BLOCK,0.4);if(aiEnabled()){setfighter(P[i],G.sel[i]);G.AINextMatchSeed??=SF2AIRULES.hash(rng,'selection:'+G.tick);G.AIColor=SF2AICOLORS.create(i,AICFG.colors[i]||(damndSelected(i,G.sel[i])?{clothing:-2,skin:-2}:null));break;}
+    if((who&CONF)||(i===0&&(ng&4))){if(aiEnabled()){AICFG.selectedProfiles[i]=G.sel[i]===0&&evilRyuSelectable()?(who&0x380?'evil-ryu':'ryu'):G.sel[i]===4&&evilKenSelectable()?(who&0x380?'evil-ken':'ken'):G.cep[i]===12&&damndSelectable()?'damnd':null;}sfxc(0x22,SN_BLOCK,0.4);if(aiEnabled()){setfighter(P[i],G.sel[i]);G.AINextMatchSeed??=SF2AIRULES.hash(rng,'selection:'+G.tick);G.AIColor=SF2AICOLORS.create(i,AICFG.colors[i]||(damndSelected(i,G.sel[i])?{clothing:-2,skin:-2}:null));break;}
 
       if(!G.mode2p&&G.arc){startarcade(G.sel[0]);break;}
 
@@ -2790,7 +2790,8 @@ function port(f,x,y,flip,dim,sc,alt){sc=sc||1;const FIM=alt&&FIA[f]&&FIA[f]!==FI
 
   cx.restore();}
 
-function cecell(q){return SCE?[96+32*(q%6),144+32*((q/6)|0)]:[96+32*(q%6),132+42*((q/6)|0)];}
+function ceSelectGrid(){return aiEnabled()&&damndSelectable()?[...CEGRID,10]:CEGRID;}
+function cecell(q){if(aiEnabled()&&damndSelectable())return q===12?[176,192]:[96+32*(q%6),128+32*((q/6)|0)];return SCE?[96+32*(q%6),144+32*((q/6)|0)]:[96+32*(q%6),132+42*((q/6)|0)];}
 
 
 
@@ -2845,6 +2846,15 @@ function selce(){const bl=(G.tick>>4)&1;
   if(SCE&&SCE.bg.complete){if(!window.SF2CEWORLDMAP?.drawSelectBackground(cx,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im}))fimg(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
 
     dimg(a.flag,0,false,'object');aiPortraitEntry(a.selL,0,G.sel[0],'selL');aiSelectionName(a.name,0,G.sel[0]);if(two){dimg(b.flag,0,false,'object');if(G.sel[0]===G.sel[1])aiPortraitEntry(b.selR,1,G.sel[1],'selR');else aiPortraitEntry(b.selL,1,G.sel[1],'selL',0,true);aiSelectionName(b.name2,1,G.sel[1]);}
+
+    if(aiEnabled()&&damndSelectable()){
+      ceFill(BLUE,96,128,192,96,'object');
+      CEGRID.forEach((fid,q)=>{const [x,y]=cecell(q);fimgKind('object',SCE.bg,96+32*(q%6),144+32*((q/6)|0),32,32,x,y,32,32);});
+      const [x,y]=cecell(12),tile=SF2AIDamnd.portrait({width:32,height:32},'tile');
+      ceFill('#17264c',x,y,32,32,'object');fimgKind('object',tile,x,y,32,32);
+      cx.strokeStyle='#ffe000';cx.lineWidth=1;cx.strokeRect(x+.5,y+.5,31,31);
+      tx('DAMND',x+40,y+20,8,'#ffe000','#000','left');
+    }
 
     for(const i of (two?[0,1]:[0])){if(i>G.selstep)continue;const [x,y]=cecell(G.cep[i]),c=SCE.cur[i?'2':'1'];if(i===G.selstep&&bl)continue;
 
