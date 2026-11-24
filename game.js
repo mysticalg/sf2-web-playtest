@@ -49,11 +49,12 @@ function aiSKOView(){
   return weight>0?{slot:AI_SKO_VIEW.slot,weight}:null;
 }
 const AI_BLOOD={particles:[],stains:[],lastTick:-1,drips:[0,0],clothes:[0,0],serial:0};
+const AI_RETCH=[null,null];
 const AI_SPECIAL_VOICES=[null,null];
-function aiBloodReset(){AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;AI_BLOOD.lastTick=-1;AI_BLOOD.drips=[0,0];AI_BLOOD.clothes=[0,0];AI_BLOOD.serial=0;AI_SPECIAL_VOICES.fill(null);aiEchoStop();}
+function aiBloodReset(){AI_RETCH.fill(null);AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;AI_BLOOD.lastTick=-1;AI_BLOOD.drips=[0,0];AI_BLOOD.clothes=[0,0];AI_BLOOD.serial=0;AI_SPECIAL_VOICES.fill(null);aiEchoStop();}
 function aiFXHash(seed,id){let h=SF2AIRULES.hash(seed,id);h^=h>>>16;h=Math.imul(h,0x7feb352d);h^=h>>>15;h=Math.imul(h,0x846ca68b);return(h^(h>>>16))>>>0;}
 function aiBloodAdd(particles,owner){
-  for(const p of particles){const id=AI_BLOOD.serial++;p.depth=SF2AIRULES.hash(id,'blood-floor')%7;p.life=140;p.landed=false;p.owner=owner;p.clothEligible=aiFXHash(id,'cloth')%3===0;AI_BLOOD.particles.push(p);}
+  for(const p of particles){const id=AI_BLOOD.serial++;p.depth=SF2AIRULES.hash(id,'blood-floor')%7;p.life=140;p.landed=false;p.owner=owner;p.clothEligible=p.clothEligible??(aiFXHash(id,'cloth')%3===0);AI_BLOOD.particles.push(p);}
   if(AI_BLOOD.particles.length>192)AI_BLOOD.particles.splice(0,AI_BLOOD.particles.length-192);
 }
 function aiBloodBurst(p,strength=1,drip=false){
@@ -62,9 +63,26 @@ function aiBloodBurst(p,strength=1,drip=false){
   const particles=Array.from({length:drip?1:6+strength*3},(_,i)=>{const h=aiFXHash(seed,i),r=(h&65535)/65535,q=(h>>>16)/65535;return{x:mouth.x,y:mouth.y,vx:drip?dir*.12:dir*(1+r*2.8),vy:drip?-.2:1+q*2.8,size:drip?1:1+(h%2),tick:G.tick,color:['#b20b22','#d3132b','#ed263c'][i%3]};});
   aiBloodAdd(particles,p.i);if(!drip)aiClothesStain(p,1);
 }
+// A short mouth stream accompanies the existing body-hit/knockdown recoil.
+// Cosmetic only: it never holds a fighter in hitstun or changes combat RNG.
+function aiRetchBegin(p,strength,region,damage){
+  if(!aiEnabled()||G.scene!=='fight'||damage<=0||strength<2)return;
+  if(region!==1&&p.HP>aiMax(p)*.2)return;
+  AI_RETCH[p.i]={start:G.tick,bloody:p.HP<aiMax(p)*.35,last:-1};
+}
+function aiRetchStep(){
+  for(const p of P){const r=AI_RETCH[p.i];if(!r)continue;const age=G.tick-r.start;
+    if(age>32||age>2&&![S_HIT,S_DOWN,S_KO].includes(p.ST)){AI_RETCH[p.i]=null;continue;}
+    if(age>24||age%2||r.last===G.tick)continue;r.last=G.tick;
+    const mouth=aiMouth(p);if(!mouth)continue;const dir=p.FACE?1:-1,seed=aiFXHash(r.start,p.i+':retch:'+age),pulse=1+Math.sin(age/3)*.3;
+    const particles=Array.from({length:4},(_,i)=>{const h=aiFXHash(seed,i),q=(h&65535)/65535;
+      return{x:mouth.x,y:mouth.y,vx:dir*(1.7+q*2.3)*pulse,vy:-.25+q*.8,size:2,tick:G.tick,retch:true,clothEligible:false,color:(r.bloody?['#e71b30','#b80a20','#ff3347']:['#eee497','#bfc36a','#e4d482'])[i%3]};});
+    aiBloodAdd(particles,p.i);
+  }
+}
 function aiBloodStep(){
   if(!aiEnabled()||G.scene!=='fight'){AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;aiEchoStop();return;}
-  if(AI_BLOOD.lastTick===G.tick)return;AI_BLOOD.lastTick=G.tick;
+  if(AI_BLOOD.lastTick===G.tick)return;AI_BLOOD.lastTick=G.tick;aiRetchStep();
   if(G.gph===1)for(const p of P){
     if(hpAlive(p)&&p.HP<aiMax(p)*.2){if(G.tick>=AI_BLOOD.drips[p.i]){aiBloodBurst(p,0,true);AI_BLOOD.drips[p.i]=G.tick+24+SF2AIRULES.hash(G.tick,'drip:'+p.i)%13;}}
     else AI_BLOOD.drips[p.i]=G.tick+12;
@@ -94,7 +112,7 @@ function aiBloodDraw(camera,ground,stains=false){
     else if(h%3===1)cx.fillRect(x-1,y,Math.min(4,Math.ceil(s.size)),1);
     else{cx.fillRect(x,y,1,2);if(s.size>2)cx.fillRect(x-1,y+1,2,1);}
   }}else for(const p of AI_BLOOD.particles){const t=G.tick-p.tick;if(p.landed||t>=p.life)continue;const x=Math.floor(p.x+p.vx*t)-camera,y=ground-Math.floor(p.y+p.vy*t-.13*t*t),vy=p.vy-.26*t,speed=Math.hypot(p.vx,vy);cx.fillStyle=p.color;
-    if(speed>2){const length=Math.min(3,Math.floor(speed/1.5));cx.globalAlpha=.55;for(let n=1;n<=length;n++)cx.fillRect(x-Math.round(p.vx/speed*n),y+Math.round(vy/speed*n),1,1);}
+    if(speed>2){const length=Math.min(p.retch?5:3,Math.floor(speed/1.5));cx.globalAlpha=p.retch?.9:.55;for(let n=1;n<=length;n++)cx.fillRect(x-Math.round(p.vx/speed*n),y+Math.round(vy/speed*n),1,1);}
     cx.globalAlpha=.98;cx.fillRect(x,y,Math.min(2,p.size),1+(p.size>1?1:0));
   }
   cx.restore();
@@ -1277,7 +1295,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
   if(VER.edition!=='ce'||G.mode2p||d.opp.i===0)d.opp.SCORE=nativeScore===null?(d.opp.SCORE||0)+dmg*100:Math.min(9999999,(d.opp.SCORE||0)+nativeScore);
 
-  SF2CESPECIAL.interrupt(d);hpDamage(d,dmg,{special:specialKO,projectile:specialAttack===true||!!reaction?.profile?.projectile});if(aiEnabled()&&(region===0||str===2||!specialAttack&&[S_ATK,S_AIR].includes(d.opp.ST)&&btnof(d.opp.cur)%3===2)&&hpAlive(d))aiBloodBurst(d,str);if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});if(!hpAlive(d)){if(VER.edition==='ce'&&d.CEDizzy){d.CEDizzy.activeDizzy=d.CEDizzy.dizzy=0;d.CEDizzy.fall=d.CEDizzy.pending=null;d.DIZZY=0;}if(specialReaction&&!localStop)G.hfz=HFRZ;if(specialReaction){G.hfz=0;SF2CESPECIAL.start(d,reaction,dir,ceDizzyHooks(),true);return;}d.CE_FatalHitPending={special:reaction?.reactionCode>=24&&reaction.reactionCode!==32};return fallst(d,S_KO,dir);}
+  SF2CESPECIAL.interrupt(d);hpDamage(d,dmg,{special:specialKO,projectile:specialAttack===true||!!reaction?.profile?.projectile});aiRetchBegin(d,str,region,dmg);if(aiEnabled()&&(region===0||str===2||!specialAttack&&[S_ATK,S_AIR].includes(d.opp.ST)&&btnof(d.opp.cur)%3===2)&&hpAlive(d))aiBloodBurst(d,str);if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});if(!hpAlive(d)){if(VER.edition==='ce'&&d.CEDizzy){d.CEDizzy.activeDizzy=d.CEDizzy.dizzy=0;d.CEDizzy.fall=d.CEDizzy.pending=null;d.DIZZY=0;}if(specialReaction&&!localStop)G.hfz=HFRZ;if(specialReaction){G.hfz=0;SF2CESPECIAL.start(d,reaction,dir,ceDizzyHooks(),true);return;}d.CE_FatalHitPending={special:reaction?.reactionCode>=24&&reaction.reactionCode!==32};return fallst(d,S_KO,dir);}
 
   /* ROM-measured (CE emu, P2 struct +0x5d timer/+0x5f points): timer += 40/60/80 per L/M/H hit, ticks down 1/frame,
 
@@ -2943,6 +2961,7 @@ function cycleEdition(direction){const ids=['ww','ce','ai'];setEdition(ids[(ids.
 
 function aiInfo(){return {
 
+  retching:AI_RETCH.map(r=>r?{bloody:r.bloody,age:G.tick-r.start}:null),
   cinematic:aiSKOView(),
   blood:{clothes:AI_BLOOD.clothes.slice(),particles:AI_BLOOD.particles.length,stains:AI_BLOOD.stains.length,marks:AI_BLOOD.stains.map(s=>({...s}))},
   deathEffects:AI_DEATH_FX.map(f=>({slot:f.slot,trailSlot:f.trailSlot,special:f.special,emitter:'mouth',mouth:f.mouth?{...f.mouth}:null,age:G.tick-f.start,trails:f.trails.length,particles:f.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life).length})),
