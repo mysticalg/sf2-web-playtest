@@ -103,6 +103,24 @@ window.SF2AISCENE=(()=>{
    ctx.save();ctx.filter='none';ctx.beginPath();ctx.rect(0,top,width,Math.max(0,-48+frontY-top));ctx.clip();ctx.drawImage(frontFrame,front,-768+frontY,1024*frontScale,1024);ctx.restore();ctx.drawImage(d.images.top,front,-48+frontY,1024*frontScale,16);
   }
  }
+ const kenSkyCaps=new WeakMap();
+ function kenHarbour(ctx,cam,width,top,registration){
+  const base=window.SF2?.VER.ce?.sti[4][1];if(!base?.complete)return;
+  const im=SF2CECAMERA.image(4,1,base,0),dy=SF2CECAMERA.offset(4,1),edge=-16+dy;
+  const logical=Math.max(0,Math.min(384,registration?.camera??cam));
+  // The recovered sky/sea plane spans source X132..695. Frame that complete
+  // harbour as one panorama at wide zoom, including its single distant boat.
+  // Dock paving retains its original row scroll in stageLayer.
+  const sourceWidth=Math.min(width,564),source=Math.min(696-sourceWidth,Math.round(132+logical/384*(564-sourceWidth)));
+  ctx.drawImage(im,source,16,sourceWidth,176,0,edge,width,176);
+  if(top<edge){
+   // Reflect the matching sky edge, removing the distant flag from the cap
+   // so the added headroom never contains an upside-down second boat/flag.
+   let sky=kenSkyCaps.get(im);if(!sky){sky=document.createElement('canvas');sky.width=564;sky.height=48;const g=sky.getContext('2d');g.drawImage(im,132,16,564,48,0,0,564,48);g.clearRect(456,0,44,48);g.drawImage(im,460,16,44,48,456,0,44,48);kenSkyCaps.set(im,sky);}
+   ctx.save();ctx.translate(0,edge);ctx.scale(1,-1);
+   ctx.drawImage(sky,source-132,0,sourceWidth,48,0,0,width,edge-top);ctx.restore();
+  }
+ }
  function guileSky(ctx,cam,width,top,registration){
   const map=window.SF2CESTAGESCROLL,im=map?.layerImage(3,0);
   if(!im?.complete||!im.naturalWidth)return;
@@ -127,6 +145,7 @@ window.SF2AISCENE=(()=>{
    if(top<origin)ctx.drawImage(image,sx+1,sy+1,sw-2,1,dx,top,span,origin-top);
    if(top+height>bottom)ctx.drawImage(image,sx+1,sy+sh-2,sw-2,1,dx,bottom,span,top+height-bottom);
   }
+  if(stage===4)kenHarbour(ctx,cam,width,top,registration);
   if(stage===3)guileSky(ctx,cam,width,top,registration);
   ctx.restore();
  }

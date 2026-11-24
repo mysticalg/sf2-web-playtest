@@ -2149,7 +2149,7 @@ function stageLayer(layerIndex,l,viewWidth=aiViewWidth()){const projection=aiSce
   if(VER.cur==='CE'&&window.SF2CESTAGESCROLL?.draw(layerIndex>=3?CE_OBJECT_CONTEXT:CE_SCROLL_CONTEXT,G.stage,layerIndex,projection.camera,ceStageClock(),viewWidth,projection.offset,projection.panorama))return;
   const width=viewWidth,kind=layerIndex>=3?'object':'scroll',base=VER.cur==='CE'&&window.SF2CESTAGEWATER?SF2CESTAGEWATER.layer(G.stage,layerIndex,STI[G.stage][layerIndex],ceStageClock()):STI[G.stage][layerIndex],raw=VER.cur==='CE'&&window.SF2CESTAGEANIMATIONS?SF2CESTAGEANIMATIONS.layer(G.stage,layerIndex,base,ceStageClock()):base,pad=VER.cur==='CE'&&window.SF2CECAMERA?32:0,im=pad?SF2CECAMERA.image(G.stage,layerIndex,raw,ceStageClock()):raw;
   if(aiEnabled()&&G.stage===0&&layerIndex===2)SF2AISCENE.ryuCrest(cx,97-Math.round(l.a*G.cam+l.b+l.drift*ceStageClock()));
-  if(l.rows){for(const [row0,y1,A,B] of l.rows){const y0=row0===0?-pad:row0;fimgKind(kind,im,Math.round(A*G.cam+B),y0+pad,width,y1-y0,0,y0,width,y1-y0);}return;}
+  if(l.rows){for(const [row0,y1,A,B] of l.rows){if(aiEnabled()&&G.stage===4&&layerIndex===1&&row0<160)continue;const y0=row0===0?-pad:row0;fimgKind(kind,im,Math.round(A*G.cam+B),y0+pad,width,y1-y0,0,y0,width,y1-y0);}return;}
   let x0=Math.round(l.a*G.cam+l.b+l.drift*ceStageClock());if(aiEnabled()&&G.stage===0&&layerIndex===1)SF2AISCENE.ryuRoof(cx,x0);
 
   if(l.wrap){x0=((x0%l.w)+l.w)%l.w;for(let x=-x0;x<width;x+=l.w)fimgKind(kind,im,x,-pad);}else{fimgKind(kind,im,-x0,-pad);if(l.w>=500&&(VER.cur!=='CE'||kind==='scroll')){const h=im.height;if(x0<0)fimgKind(kind,im,0,0,1,h,0,-pad,-x0,h);const r=l.w-x0;if(r<width)fimgKind(kind,im,l.w-1,0,1,h,r,-pad,width-r,h);}}
