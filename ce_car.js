@@ -117,6 +117,7 @@ window.SF2CECAR=(()=>{
         c.hits++;B.hits=(B.hits||0)+1;c.health[hit.pool]=Math.max(-1,c.health[hit.pool]-damage);h.sound(0x33);
         if(c.health[hit.pool]<0){c.scoreCount=Math.min(14,c.scoreCount+1);h.score(scores[c.scoreCount]);if(c.scoreCount===14)spawnDebris(c);}else{h.score(100);const event=c.scoreCount;if(event>=1&&event<=3||event>=7)spawnChunks(c,3,event<=3?0:1,0,0,Math.floor((box[0]+hit.box[0])/2),Math.floor((box[1]+hit.box[1])/2));}
       }
+      h.contact?.(!isProjectile,blocked);
       // 0x95bd6 -> 0x95910. NPCs allocate after the generic effect pass:
       // initialize next tick, then first draw the tick after initialization.
       const f=fxdata(),type=p.FBDEF&&f?.boxes[p.FBAN?.source+24*p.FBI]?.type;

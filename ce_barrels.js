@@ -122,8 +122,8 @@ window.SF2CEBARRELS=(()=>{
   for(const o of [...s.slots,...s.debris]){const fragment=Object.hasOwn(o,'small');if(!o.visible||o.blink||!o.animation||layer==='back'&&(fragment||o.priority===2)||layer==='middle'&&(fragment||o.priority!==2)||layer==='front'&&!fragment)continue;const f=D.frames[entry(o).views[o.face?1:0]],im=image(f.image,bim);if(im.width)ctx.drawImage(im,(o.X>>16)+f.x,240-(o.Y>>16)+f.y);}
  }
  function digits(ctx,value,count,x,y,bim,palette=13){const text=Math.max(0,value).toString().padStart(count,'0').slice(-count);for(let i=0;i<count;i++){const im=image((palette===14?D.counterWarningDigits:D.counterDigits)[+text[i]],bim);if(im.width)ctx.drawImage(im,x+16*i,y);}}
- function drawHUD(ctx,B,bim,{tick:worldTick=B.barrels?.tick||0,resultReady=false,nameAlternate=false}={}){
-  const s=B.barrels;if(!s)return;const name=D.fighterNames?.[s.fighterId],label=name?.views[nameAlternate?1:0];if(label){const im=image(label.image,bim);if(im.width)ctx.drawImage(im,name.x,name.y);}digits(ctx,s.remaining,2,176,32,bim,s.counterPalette||13);digits(ctx,s.points[0],5,48,16,bim);
+ function drawHUD(ctx,B,bim,{tick:worldTick=B.barrels?.tick||0,resultReady=false,nameAlternate=false,skipName=false}={}){
+  const s=B.barrels;if(!s)return;const name=D.fighterNames?.[s.fighterId],label=name?.views[nameAlternate?1:0];if(label&&!skipName){const im=image(label.image,bim);if(im.width)ctx.drawImage(im,name.x,name.y);}digits(ctx,s.remaining,2,176,32,bim,s.counterPalette||13);digits(ctx,s.points[0],5,48,16,bim);
   for(let i=0;i<4;i++){const side=i>>1;if(!resultReady&&((worldTick&1)!==side))continue;const value=s.kills[side],digit=i&1?value%10:Math.floor(value/10)%10,f=D.frames[D.ledDigits[digit][s.ledDark[i]?1:0]],im=image(f.image,bim);if(im.width)ctx.drawImage(im,D.ledPositions[i]+f.x,76+f.y);}
  }
  function payout(B,h={}){const s=B.barrels;if(s.payoutRemaining==null)s.payoutRemaining=s.points[0];let units=0;for(let i=0;i<2;i++){if(s.payoutRemaining<100)break;s.payoutRemaining-=100;units++;h.scoreCommand?.(0x2002,0);}if(units&&!((h.tick??s.tick)&3))h.sound?.(0x24);return {remaining:s.payoutRemaining,units,done:s.payoutRemaining===0};}

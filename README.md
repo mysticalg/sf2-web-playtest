@@ -34,8 +34,14 @@ Damnd uses Dhalsim’s CE jump height, horizontal speed and gravity, including b
 
 ## AI Edition six-button chains
 
-On a confirmed grounded normal hit, tap any attack button not yet used in the current six-button cycle to cancel directly into that normal. Order and strength are unrestricted: HK → HP → MK → MP → LK → LP, or any other order. After all six buttons connect, all six become available again. Down is retained for buffered crouching attacks. Inputs during hit pause are buffered; simultaneous special chords and deliberate motion commands keep their existing priority. Special moves and throws retain their own controls.
+On a confirmed grounded normal hit, tap any attack button not yet used in the current six-button cycle to cancel directly into that normal. Order and strength are unrestricted: HK → HP → MK → MP → LK → LP, or any other order. After all six buttons connect, all six become available again. Down is retained for buffered crouching attacks. Inputs during hit pause are buffered; simultaneous special chords and deliberate motion commands keep their existing priority. Confirmed normals can also cancel into specials using the usual motion or two-button shortcut. Specials keep their own controls; throws remain separate.
 
 CPU opponents use longer confirmed chains at higher difficulties; Damnd prefers short punch chains to preserve his punch-and-throw style. Used buttons dim under the hit counter. Misses and blocks do not grant a cancel. Defender recovery, taking damage and round reset clear the chain. Small follow-up steps, reduced normal-hit pushback, a stable combo hurtbox and startup-length hitstun keep short attacks connected after heavy hits. A normal knockdown can be caught by the next confirmed follow-up. WW and CE retain their original combat.
 
 Run `node tests/ai-chain.test.cjs` for all 720 six-button permutations across two cycles and the rejection/reset/input-priority checks.
+
+## Timed special breakers and bonus chains
+
+After the second connected hit and each later hit, the grounded defender has an eight-frame window to enter a valid special. Both normal special motions and the AI Edition two-button shortcuts work. A successful breaker ends the attacking chain, launches the chosen special and grants twelve frames of startup protection. A COMBO BREAK notice confirms success. Late presses, buttons held before the hit, ordinary attack taps and unavailable specials do not break a combo. Harder CPU opponents can attempt timed breakers too.
+
+The six-button and special-cancel rules also apply to confirmed bonus-object contacts on the car, barrel and drum stages. Car clanks do not count as hits. The bonus chain clears after eighty frames without an object contact or on reset. Damnd retains his own body artwork and name during bonus stages. AI drum spacing allows short follow-up strikes to reach the objects; faithful WW/CE spacing stays unchanged.
