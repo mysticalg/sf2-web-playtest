@@ -49,9 +49,9 @@ function aiSKOView(){
   return weight>0?{slot:AI_SKO_VIEW.slot,weight}:null;
 }
 const AI_BLOOD={particles:[],stains:[],lastTick:-1,drips:[0,0],clothes:[0,0],serial:0};
-const AI_RETCH=[null,null],AI_TEETH=[null,null];
+const AI_RETCH=[null,null],AI_TEETH=[null,null],AI_FLOOR_COUGHS=[null,null];
 const AI_SPECIAL_VOICES=[null,null];
-function aiBloodReset(){AI_RETCH.fill(null);AI_TEETH.fill(null);AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;AI_BLOOD.lastTick=-1;AI_BLOOD.drips=[0,0];AI_BLOOD.clothes=[0,0];AI_BLOOD.serial=0;AI_SPECIAL_VOICES.fill(null);aiEchoStop();}
+function aiBloodReset(){AI_RETCH.fill(null);AI_TEETH.fill(null);AI_FLOOR_COUGHS.fill(null);AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;AI_BLOOD.lastTick=-1;AI_BLOOD.drips=[0,0];AI_BLOOD.clothes=[0,0];AI_BLOOD.serial=0;AI_SPECIAL_VOICES.fill(null);aiEchoStop();}
 function aiFXHash(seed,id){let h=SF2AIRULES.hash(seed,id);h^=h>>>16;h=Math.imul(h,0x7feb352d);h^=h>>>15;h=Math.imul(h,0x846ca68b);return(h^(h>>>16))>>>0;}
 function aiBloodAdd(particles,owner){
   for(const p of particles){const id=AI_BLOOD.serial++;p.depth=SF2AIRULES.hash(id,'blood-floor')%7;p.life=140;p.landed=false;p.owner=owner;p.clothEligible=p.clothEligible??(aiFXHash(id,'cloth')%3===0);AI_BLOOD.particles.push(p);}
@@ -103,7 +103,7 @@ function aiRetchDraw(camera,ground,view){
 }
 function aiBloodStep(){
   if(!aiEnabled()||G.scene!=='fight'){AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;aiEchoStop();return;}
-  if(AI_BLOOD.lastTick===G.tick)return;AI_BLOOD.lastTick=G.tick;aiRetchStep();
+  if(AI_BLOOD.lastTick===G.tick)return;AI_BLOOD.lastTick=G.tick;aiRetchStep();aiFloorCoughStep();
   SF2CEPROJECTILES.stepContactEffects(G.tick);
   if(G.gph===1)for(const p of P){
     if(hpAlive(p)&&p.HP<aiMax(p)*.2){if(G.tick>=AI_BLOOD.drips[p.i]){aiBloodBurst(p,0,true);AI_BLOOD.drips[p.i]=G.tick+24+SF2AIRULES.hash(G.tick,'drip:'+p.i)%13;}}
@@ -183,6 +183,32 @@ function aiClothesArt(p,art){
   }
   return{...art,image,rect:[0,0,frame.w,frame.h,art.rect[4],art.rect[5]]};
 }
+const AI_FACE_IMAGES=new WeakMap();
+function aiFaceInjuryLevel(p){return !aiEnabled()||p.HP>=aiMax(p)*.2?0:p.HP<aiMax(p)*.1?2:1;}
+function aiFaceRegion(p,art){
+  const r=art.rect,head=boxw(p,0);
+  if(head)return{x:(head[0]-p.X/256)*(p.FACE?-1:1)-r[4]-head[2]*.22,y:p.Y/256-head[1]-r[5]+head[3]*.22,rx:Math.max(4,head[2]*.7),ry:Math.max(4,head[3]*.65)};
+  const point=p.cur===AN_FALL+1?AI_LIE_MOUTHS[p.fid]:p.cur===AN_FALL?AI_KO_MOUTHS[p.fid]?.[p.aidx]:null;
+  if(!point)return null;return{x:point[0]-1,y:point[1]-3,rx:5,ry:4};
+}
+function aiFaceInjuryArt(p,art,base){
+  const level=aiFaceInjuryLevel(p);if(!level)return art;const face=aiFaceRegion(p,base),frame=face&&aiClothFrame(p,base);if(!frame?.skinPixels.length)return art;
+  let cache=AI_FACE_IMAGES.get(art.image);if(!cache){cache=new Map();AI_FACE_IMAGES.set(art.image,cache);}
+  const key=[...art.rect,level,face.x,face.y,face.rx,face.ry].join(':');let image=cache.get(key);
+  if(!image){image=document.createElement('canvas');image.width=frame.w;image.height=frame.h;const ctx=image.getContext('2d');ctx.drawImage(art.image,...art.rect.slice(0,4),0,0,frame.w,frame.h);
+    const data=ctx.getImageData(0,0,frame.w,frame.h),original=new Uint8ClampedArray(data.data);
+    for(const i of frame.skinPixels){const x=i%frame.w,y=Math.floor(i/frame.w),dx=(x-face.x)/face.rx,dy=(y-face.y)/face.ry,d=dx*dx+dy*dy;if(d>1)continue;
+      const at=i*4;if(original[at]>130&&original[at+1]<45&&original[at+2]<70)continue;
+      const weight=(.45+.4*(1-d))*(level===2?1:.8),light=(original[at]+original[at+1]+original[at+2])/765;
+      const bruise=[48+light*30,18+light*15,75+light*30];for(let c=0;c<3;c++)data.data[at+c]=Math.round(original[at+c]*(1-weight)+bruise[c]*weight);
+      // Puff the exposed cheek by one or two pixels; eyes, hair and clothes
+      // keep their original pixels, and no combat boxes are altered.
+      if(dy>-.25&&dx<-.15)for(let n=1;n<=level;n++){const nx=x-n;if(nx<0)continue;const q=(y*frame.w+nx)*4;if(original[q+3])continue;data.data[q]=data.data[at];data.data[q+1]=data.data[at+1];data.data[q+2]=data.data[at+2];data.data[q+3]=255;}
+    }
+    ctx.putImageData(data,0,0);cache.set(key,image);if(cache.size>64)cache.delete(cache.keys().next().value);
+  }
+  return{...art,image,rect:[0,0,frame.w,frame.h,art.rect[4],art.rect[5]]};
+}
 function aiClothesHit(x,y,owner){
   // Blood can only stain clothing/skin on the fighter who was injured.
   for(const p of P){if(p.i!==owner)continue;const art=fighterArtBase(p),r=art.rect,px=Math.floor((p.FACE?-(x-p.X/256):x-p.X/256)-r[4]),py=Math.floor(p.Y/256-y-r[5]);if(px<0||py<0||px>=r[2]||py>=r[3])continue;const frame=aiClothFrame(p,art);if(frame?.mask[py*frame.w+px])return p;}
@@ -205,6 +231,30 @@ function aiMouth(p){
   const point=AI_KO_MOUTHS[p.fid]?.[p.aidx];if(!point)return null;
   const rect=fighterArt(p).rect,base=p.F.frames[ent(p)[0]],x=rect[4]+point[0]*rect[2]/base[2],y=rect[5]+point[1]*rect[3]/base[3];
   return{x:p.X/256+(p.FACE?-x:x),y:p.Y/256-y};
+}
+// Mouth pixels in the original lying sprites (unflipped cropped atlas frame).
+const AI_LIE_MOUTHS=[[109,41],[91,32],[137,23],[123,24],[106,38],[119,27],[129,27],[87,23],[112,24],[92,43],[117,36],[126,26]];
+function aiFloorMouth(p){
+  if(p.cur!==AN_FALL+1)return null;const point=AI_LIE_MOUTHS[p.fid],base=p.F.frames[ent(p)[0]],r=fighterArtBase(p).rect;
+  const x=r[4]+point[0]*r[2]/base[2],y=r[5]+point[1]*r[3]/base[3];
+  return{x:p.X/256+(p.FACE?-x:x),y:p.Y/256-y};
+}
+function aiFloorCoughStep(){
+  for(const p of P){
+    if(hpAlive(p)||p.ST!==S_KO||p.cur!==AN_FALL+1||p.Y>0||p.VY!==0)continue;
+    const state=AI_FLOOR_COUGHS[p.i]||(AI_FLOOR_COUGHS[p.i]={landed:G.tick,next:G.tick+12,count:0,lastBurst:-999});
+    if(state.count>=3||G.tick<state.next)continue;const mouth=aiFloorMouth(p);if(!mouth)continue;
+    const dir=p.FACE?-1:1,seed=aiFXHash(G.tick,'floor-cough:'+p.i);
+    const drops=Array.from({length:9},(_,i)=>{const h=aiFXHash(seed,i),q=(h&65535)/65535;return{x:mouth.x,y:mouth.y,vx:dir*(.25+q*1.15),vy:1.1+((h>>>16)/65535)*1.5,size:1+(i%3===0),tick:G.tick,floorCough:true,clothEligible:false,color:['#d3132b','#a90b21','#ed263c'][i%3]};});
+    aiBloodAdd(drops,p.i);state.lastBurst=G.tick;state.count++;state.next=G.tick+36;
+  }
+}
+function aiFloorCoughDraw(camera,ground,view){
+  if(!aiEnabled())return;
+  for(const p of view){const state=AI_FLOOR_COUGHS[p.i];if(!state||hpAlive(P[p.i]))continue;
+    const age=G.tick-state.lastBurst,r={start:state.lastBurst,selector:1},f=age>=0&&age<20&&aiRetchFrame(r),mouth=f&&aiFloorMouth(p);if(!mouth)continue;
+    const im=AI_REEL_IMAGES[SF2AIREELDATA.frames.indexOf(f)];cx.save();cx.translate(mouth.x-camera,ground-mouth.y);cx.scale(p.FACE?-.65:.65,.65);cx.rotate(-.6);cx.drawImage(im,f.x,f.y);cx.restore();
+  }
 }
 function aiDeathBegin(p,effect){
   if(!aiEnabled()||G.scene!=='fight')return;
@@ -325,7 +375,7 @@ function aiSetProfile(p,fid){
 
 function aiResetPlayer(p){if(!aiEnabled()){aiClearProfile(p);return;}
 
-  delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i+':'+(p.AIColorChoice?.clothing??-1)+':'+(p.AIColorChoice?.skin??-1);p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,AICFG.colors[p.i]);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
+  delete p.AICPU;delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i+':'+(p.AIColorChoice?.clothing??-1)+':'+(p.AIColorChoice?.skin??-1);p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,AICFG.colors[p.i]);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
   p.AICombo={active:false,id:0,hits:0,damage:0,riftUsed:false};
 
   p.AIMetrics={riftStarts:0,riftCancels:0,riftCost:0,riftRejected:0,groundHits:0,blockedNormals:0,maxCombo:0,lastRift:null};
@@ -1675,7 +1725,50 @@ function ceai(p,o,d,r,tw){const t=CEAI[p.fid];if(!t||VER.cur!=='CE'||p.ST!==S_FR
 
   const b=K_ATK<<B[a.slice(1)];if(a[0]==='c')return K_D|b;if(a[0]==='j'){p.AIJB=b;p.AIJT=14;return tw|K_U;}return b;}
 
-function ai(p){if(p.AIJB&&p.ST===S_AIR&&--p.AIJT<=0){const b=p.AIJB;p.AIJB=0;return p.KEYS=b;}if(p.ST!==S_AIR&&p.AIJT<=0)p.AIJB=0; const r=rand(), o=p.opp, L=ailvl(), pr=x=>((r>>>4)&255)<q60(x)*256; let d=o.X-p.X, tw,aw; if(d>=0){tw=K_R;aw=K_L;}else{tw=K_L;aw=K_R;d=-d;} d>>=8; let k=0;
+// AI Edition commits to short action plans instead of rerolling posture every
+// frame. Original WW/CE CPU scheduling remains in aiLegacy below.
+function aiEditionCPU(p){
+  const o=p.opp,d=Math.abs(o.X-p.X)/256,forward=o.X>=p.X?K_R:K_L,back=forward===K_R?K_L:K_R,diff=Math.max(0,Math.min(3,G.diff|0));
+  const s=p.AICPU||(p.AICPU={keys:0,until:0,kind:'idle',decisions:0,specialReady:0,attackReady:0,threat:null,threatAt:0,jumpAt:0,jumpButton:0}),reaction=[18,12,8,5][diff];
+  const commit=(keys,kind,ticks)=>{s.keys=keys;s.kind=kind;s.until=G.tick+ticks;s.decisions++;if(['normal','punish','throw','special','anti-air'].includes(kind))s.attackReady=G.tick+[100,70,42,18][diff];return p.KEYS=keys;};
+  if(G.hfz>0){p.FORCE=0;return p.KEYS=s.keys&~CONF;}
+  if(p.ST===S_AIR){if(s.jumpButton&&G.tick>=s.jumpAt&&p.Y>4*256){const button=s.jumpButton;s.jumpButton=0;return p.KEYS=button;}return p.KEYS=0;}
+  if(![S_FREE,S_CR,S_UP].includes(p.ST)){s.keys&=~CONF;return p.KEYS=s.keys;}
+  const projectile=o.FBON&&Math.abs(o.FBX-p.X)<170*256,air=o.ST===S_AIR&&o.Y>12*256&&d<140,attack=[S_ATK,S_SPEC].includes(o.ST)&&d<125;
+  const threat=projectile?'projectile':air?'air':attack?'attack':null;
+  if(threat!==s.threat){s.threat=threat;s.threatAt=G.tick;}
+  const ready=threat&&G.tick-s.threatAt>=reaction,AP=aipick(p);
+  if(ready&&s.kind!=='guard'&&s.kind!=='anti-air'){
+    const r=rand()>>>0;
+    if(air&&AP.aa>=0&&G.tick>=s.specialReady&&(r&255)<[75,140,205,242][diff]){
+      p.FORCE=(diff>=2?32:16)|(AP.aa+1);s.specialReady=G.tick+45;return commit(0,'anti-air',14);
+    }
+    const crouch=attack&&o.Y===0&&ent(o)[10]>=0;
+    return commit(back|(crouch?K_D:0),'guard',18);
+  }
+  if(G.tick<s.until){
+    // Approach can end early on reaching attack range; every other plan keeps
+    // its posture for the commitment window, including after a threat clears.
+    if(s.kind!=='approach'||d>55)return p.KEYS=s.keys&~(G.tick>=s.until-6?CONF:0);
+  }
+  if(ready&&s.kind==='guard')return commit(back|(attack&&o.Y===0&&ent(o)[10]>=0?K_D:0),'guard',18);
+  const r=rand()>>>0,chance=(r&65535)/65536,strength=diff>=2?2:(r>>>16)%3,attackDelay=[26,18,12,8][diff];
+  const special=slot=>{p.FORCE=(strength<<4)|(slot+1);s.specialReady=G.tick+[80,65,52,44][diff];return commit(0,'special',12);};
+  const reach=[78,98,88,92,78,108,90,150,100,125,105,122][p.fid];
+  if(d<thrr(p,0)-3&&o.Y===0&&[S_FREE,S_CR,S_UP].includes(o.ST)&&chance<[.1,.2,.35,.5][diff])return commit(forward|(K_ATK<<((r>>>18)&1?2:5)),'throw',attackDelay);
+  if(d>105&&AP.far.length&&!p.FBON&&G.tick>=s.specialReady&&chance<[.16,.26,.38,.5][diff])return special(AP.far[(r>>>16)%AP.far.length]);
+  if(d<=reach){
+    if(G.tick<s.attackReady)return commit(0,'recover-spacing',Math.min(8,s.attackReady-G.tick));
+    if(d>45&&d<100&&AP.mid.length&&G.tick>=s.specialReady&&chance<[.08,.14,.2,.28][diff])return special(AP.mid[(r>>>16)%AP.mid.length]);
+    const punish=[S_HIT,S_GETUP].includes(o.ST)||o.ST===S_ATK&&o.aidx>0,low=((r>>>20)&3)===0;
+    const button=d<52?(punish&&diff>=2?2:(r>>>17)%3):(r>>>18)&1?4:5;
+    return commit((low?K_D:0)|(K_ATK<<button),punish?'punish':'normal',attackDelay);
+  }
+  if(d>135&&d<260&&chance<[.04,.065,.08,.1][diff]){s.jumpAt=G.tick+13;s.jumpButton=K_ATK<<((r>>>18)&1?2:5);return commit(forward|K_U,'jump-in',18);}
+  return commit(forward,'approach',16+(r>>>20)%9);
+}
+function ai(p){return aiEnabled()?aiEditionCPU(p):aiLegacy(p);}
+function aiLegacy(p){if(p.AIJB&&p.ST===S_AIR&&--p.AIJT<=0){const b=p.AIJB;p.AIJB=0;return p.KEYS=b;}if(p.ST!==S_AIR&&p.AIJT<=0)p.AIJB=0; const r=rand(), o=p.opp, L=ailvl(), pr=x=>((r>>>4)&255)<q60(x)*256; let d=o.X-p.X, tw,aw; if(d>=0){tw=K_R;aw=K_L;}else{tw=K_L;aw=K_R;d=-d;} d>>=8; let k=0;
 
   const str=()=>{let s=(r>>>24)&3;if(s===3)s=1;return s<<4;};
 
@@ -2373,7 +2466,7 @@ function fighterBounds(p){
   return b;
 }
 function fighterArtBase(p){const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CESPECIAL?.art(p,alternate)||( VER.edition==='ce'?(window.SF2CEWINNER?.art(p,alternate)||window.SF2CEDIZZY?.art(p,alternate)):null)||window.SF2CEDHALSIM?.art(p,alternate)||window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:extra?.fixedPalette?extra.image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],alternate};}
-function fighterArt(p){const art=fighterArtBase(p);return aiEnabled()?aiClothesArt(p,art):art;}
+function fighterArt(p){const art=fighterArtBase(p);return aiEnabled()?aiFaceInjuryArt(p,aiClothesArt(p,art),art):art;}
 const aiWorldSurface=document.createElement('canvas');
 let aiWorldTop=-32,aiHorizontalInset=0;
 // Special KO framing is a final scene transform: physics, stage scrolling and HUD
@@ -2417,12 +2510,12 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
   const drawp=p=>{const art=fighterArt(p),alternate=art.alternate;spr(art.image,art.rect,(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p):0),ground-(p.Y>>8),p.FACE);
     if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.draw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p,true):0),ground-(p.Y>>8),p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready);if(VER.edition==='ce'){if(p.anim?.name?.startsWith('ceWinner'))SF2CEWINNER.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);else if(p.anim?.name?.startsWith('ceDizzy'))SF2CEDIZZY.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);else window.SF2CEROUND?.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);}
 
-    if((VER.edition!=='ce'||p.CEDizzy?.legacy)&&p.DIZZY===2){cx.fillStyle='#ffe000';for(let i=0;i<3;i++){const a=G.tick/12+i*2.09;cx.fillRect((p.X>>8)-c+Math.cos(a)*14-2,ground-(p.Y>>8)-100+Math.sin(a)*4,4,4);}}};
+    if((VER.edition!=='ce'||p.CEDizzy?.legacy)&&p.DIZZY===2){if(aiEnabled())SF2CEDIZZY.drawFallbackStars(cx,p,c,ground,G.tick,G);else{cx.fillStyle='#ffe000';for(let i=0;i<3;i++){const a=G.tick/12+i*2.09;cx.fillRect((p.X>>8)-c+Math.cos(a)*14-2,ground-(p.Y>>8)-100+Math.sin(a)*4,4,4);}}}};
 
   if(VER.edition==='ce')SF2CEDIZZY.drawStars(CE_OBJECT_CONTEXT,G,c,ground);else if(G.CESpecialObjects)SF2CEDIZZY.drawStars(CE_OBJECT_CONTEXT,{CEObjects:G.CESpecialObjects},c,ground);
   const top=(view[0].ST===S_ATK||view[0].ST===S_SPEC)?0:1; drawp(view[1-top]);drawp(view[top]);if(VER.edition==='ce'){SF2CEWINNER.drawObjects(CE_OBJECT_CONTEXT,G,c,ground);SF2CEDIZZY.drawStars(CE_OBJECT_CONTEXT,G,c,ground,true);}else if(G.CESpecialObjects)SF2CEDIZZY.drawStars(CE_OBJECT_CONTEXT,{CEObjects:G.CESpecialObjects},c,ground,true);
 
-  aiRetchDraw(c,ground,view);
+  aiRetchDraw(c,ground,view);aiFloorCoughDraw(c,ground,view);
   if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.drawDrops(CE_OBJECT_CONTEXT,P,c,ground);
 
   if(VER.cur==='CE')SF2CEDHALSIM.draw(CE_OBJECT_CONTEXT,G,c,ground);for(const p of P)if(p.FBON)drawfb(p,ground,c);
@@ -2985,6 +3078,9 @@ function cycleEdition(direction){const ids=['ww','ce','ai'];setEdition(ids[(ids.
 
 function aiInfo(){return {
 
+  cpu:P.map(p=>p.AICPU?{plan:p.AICPU.kind,decisions:p.AICPU.decisions}:null),
+  facialInjury:P.map(aiFaceInjuryLevel),
+  floorCoughs:AI_FLOOR_COUGHS.map(s=>s?{count:s.count,age:G.tick-s.landed}:null),
   teeth:AI_TEETH.map(r=>r?{age:G.tick-r.start}:null),
   retching:AI_RETCH.map(r=>r?{bloody:r.bloody,animation:SF2AIREELDATA.animations[r.selector].name,age:G.tick-r.start}:null),
   cinematic:aiSKOView(),

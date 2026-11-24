@@ -10,4 +10,8 @@ AI Edition presentation adds mouth blood on facial hits, landed heavy blows and 
 
 AI Edition also uses the original Champion Edition teeth, blood and orange/grey vomit sprite animations recovered from action 0x23 (animation table 0x298ae). Heavy body hits show vomit, changing to the original blood animation below 35% remaining health; heavy facial hits show the original teeth effect. These are native sprite frames over the recovered recoil poses, replacing the custom mouth stream. Residual droplets retain floor splashes. Hit/block contact flashes use the short strength-sized scripts and animate through hitstop. Recovery provenance, image addresses, palette indices and original frame durations are included in ai_reels_data.js.
 
+AI Edition defeated fighters cough blood three times after settling into their lying pose, leaving persistent floor stains. Below 20% health, skin around the face bruises and cheeks swell subtly; the injury becomes more pronounced below 10%. Round reset clears these effects. Legacy AI dizzy indicators use recovered star/bird sprites instead of square markers.
+
+The AI Edition CPU uses committed movement, guard and attack plans with difficulty-specific reaction delays and attack intervals. Hardest applies from the start of the arcade ladder, with stronger anti-air choices, pressure, throws and recovery punishes. WW/CE retain their original CPU logic.
+
 This repository contains the browser preview only. Every push to main automatically redeploys GitHub Pages.

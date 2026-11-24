@@ -87,6 +87,16 @@
   }
  });}
  function drawStars(ctx,G,cam,ground,front=false){for(const a of G.CEObjects?.pools[8].slots||[]){if(!a.used||a.kind!==35||a.child!==4||!a.draw||front!==(a.camera===0))continue;const pal=a.variant?14:a.palette,f=D.starArt[a.source+':'+pal+':'+a.face];if(!f)continue;ctx.drawImage(images[f.image],(a.x>>>16)-256-cam+f.x,ground-((a.y>>>16)-40)+f.y);}}
+ // AI uses the original star/bird art when its legacy dizzy body is active.
+ // This presentation helper does not allocate native actors or consume RNG.
+ function drawFallbackStars(ctx,p,cam,ground,tick,world){
+  const parent=p.i?0x86be:0x83be;if([world?.CEObjects,world?.CESpecialObjects].some(s=>s?.pools[8].slots.some(a=>a.used&&a.kind===35&&a.child===4&&a.parent===parent)))return;
+  const variant=p.fid&1,phase=Math.floor(tick/48)&1,source=D.stars.sources[4+variant+phase*2],attach=D.stars.attach[p.fid][4],face=p.FACE?1:0;
+  const f=D.starArt[source+':'+(variant?14:11)+':'+face];if(!f)return;
+  for(let i=0;i<3;i++){const angle=tick/12+i*Math.PI*2/3,x=p.X/256+(p.FACE?-attach[0]:attach[0])-cam+Math.cos(angle)*14,y=ground-p.Y/256-attach[1]+Math.sin(angle)*4;
+    ctx.drawImage(images[f.image],Math.round(x)+f.x,Math.round(y)+f.y);
+  }
+ }
  function drawBirds(ctx,G,cam){const s=G.CEObjects;if(!s)return;SF2CESTAGEBIRDS.drawAt(ctx,cam,s.pools[8].slots.filter(a=>a.used&&a.kind===17&&a.child));}
- window.SF2CEDIZZY={ready,register,reset,interrupt,keys,state,beginWorld,land,queue,decay,admit,body,objects,art,claw,drawStars,drawBirds};
+ window.SF2CEDIZZY={ready,register,reset,interrupt,keys,state,beginWorld,land,queue,decay,admit,body,objects,art,claw,drawStars,drawFallbackStars,drawBirds};
 })();
