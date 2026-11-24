@@ -8,7 +8,7 @@ Arcade has the original twelve matches and bonus rounds followed by the Metro Ci
 |---|---|---|
 | Damnd | Street Rush, Somersault Kick, Rising Smash, Barrel Call | Slum |
 | Sodom | Katana Rush, Twin Blade Cyclone, Rising Katana, Gut Buster | Subway |
-| Andore | Giant Rush, Flying Body Press, Hammer Lift, Cage Piledriver, Shoulder Breaker | West Side cage |
+| Andore | Bull Rush, Body Slam, Headbutt, Giant Throw, Double Palm | West Side cage |
 | Edi. E | Police Pistol, Baton Rush, Baton Upper, Arrest and Batter, Pistol Burst | West Side |
 | Rolento | Patriot Circle, Stinger Grenade, Staff Vault, Shoulder Toss, Grenade Retreat | Industrial Area |
 | Abigail | Rage Charge, Giant Body Splash, Bay Uppercut, Crushing Toss, Power Punch | Bay Area |
@@ -33,3 +33,13 @@ Normal zoom caps at1.2x, based only on horizontal spacing. The existing special-
 ## Validation
 
 202 mirrored normal/special contact-and-recovery cases; all six guests' standing/low block, wrong block, dizzy and Yoga Fire recovery; mirrored throws;1800-tick CPU runs; twelve-hit cycles in both slots; bonus-stage chains; map-to-versus-to-fight identity/arena transitions; graphics modes/headroom/jump-independent zoom; explicit health, combo scaling and chip checks. Existing timed-breaker, special-cancel and all-native-roster bonus checks pass. WW/CE240-frame combat traces remain identical to the previous implementation. Browser screenshots and the develop-web-game action client were inspected.
+
+## Polish pass 2
+
+Andore now uses18 recovered native animation frames, original sprite origins, native jab/strike/rush/slam sequences and frame-specific attack records. Idle holds a neutral pose; neutral jumping no longer substitutes a knocked-down sprite. Other guests also hold their idle/air poses rather than cycling walking/falling frames. These fixes do not claim the broader move-fidelity audit is finished.
+
+Original FF audio command captures00,0d,26,29,2c,2f are included as decoded browser media. Specials, hit impacts, whiffs and KOs have an explicit FF audio path. Low-health bleeding includes exactly20% health: two small drops every8–12ticks, with clothing absorption disabled for those drops. Heavy/special hits produce larger mouth bursts; most spill particles reach the floor. The cosmetic particle/stain pools remain bounded.
+
+The AI renderer reuses magnification buffers and filters the HUD only when its pixels change. Offscreen world rows are skipped with a3-pixel neighbourhood retained for identical MMPX output. Smooth2x now uses a2x display buffer and Smooth4x a4x buffer. A simulation tick schedules one AI render; high-refresh displays no longer trigger duplicate full renders. Faithful editions keep their previous frame scheduling.
+
+In a local headless Chromium150-frame scenario, mean render costs changed from5.18 to3.21ms(close2x),10.46 to7.76ms(wide2x),9.46 to3.39ms(close4x),14.01 to7.79ms(wide4x). This is local render timing, not a guarantee of real-device FPS. Close/wide4x pixel hashes match the previous renderer. A simulated240Hz second yielded59 simulation steps and59 renders. Gameplay, FF audio/blood and WW/CE trace regressions pass.

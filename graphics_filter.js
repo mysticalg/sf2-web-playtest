@@ -115,29 +115,33 @@
   // into the display buffer. HUD remains an independent logical pixel layer.
   let worldFrame=null,overlay=null,overlayContext=null;
   const magnifyCaches=new Map();
-  function magnify(canvas,factor,key){
+  function magnify(canvas,factor,key,rect=null){
     if(factor===1)return canvas;
     let c=magnifyCaches.get(key);if(!c){c={canvas:document.createElement('canvas')};magnifyCaches.set(key,c);}
-    const w=canvas.width,h=canvas.height,rgba=canvas.getContext('2d',{willReadFrequently:true}).getImageData(0,0,w,h);
-    let pixels=new Uint32Array(rgba.data.buffer),pw=w,ph=h;
-    for(let f=1;f<factor;f*=2){pixels=acceleratedScale2x(pixels,pw,ph);pw*=2;ph*=2;}
-    if(c.canvas.width!==pw||c.canvas.height!==ph){c.canvas.width=pw;c.canvas.height=ph;}
-    c.canvas.getContext('2d').putImageData(new ImageData(new Uint8ClampedArray(pixels.buffer),pw,ph),0,0);return c.canvas;
+    const w=rect?.w||canvas.width,h=rect?.h||canvas.height,rgba=canvas.getContext('2d',{willReadFrequently:true}).getImageData(rect?.x||0,rect?.y||0,w,h),src=new Uint32Array(rgba.data.buffer);
+    const pw=w*factor,ph=h*factor,changedSize=c.w!==w||c.h!==h||c.factor!==factor;
+    if(changedSize){c.w=w;c.h=h;c.factor=factor;c.previous=new Uint32Array(w*h);c.two=new Uint32Array(w*h*4);c.four=factor===4?new Uint32Array(w*h*16):null;c.canvas.width=pw;c.canvas.height=ph;c.context=c.canvas.getContext('2d');c.image=new ImageData(new Uint8ClampedArray((factor===4?c.four:c.two).buffer),pw,ph);c.valid=false;}
+    let changed=!c.valid;if(!changed)for(let i=0;i<src.length;i++)if(src[i]!==c.previous[i]){changed=true;break;}
+    if(changed){acceleratedScale2x(src,w,h,c.two);if(factor===4)acceleratedScale2x(c.two,w*2,h*2,c.four);c.context.putImageData(c.image,0,0);c.previous.set(src);c.valid=true;c.updates=(c.updates||0)+1;}else c.hits=(c.hits||0)+1;
+    return c.canvas;
   }
   function beginWorld(surface,top,matrix){
-    if(!overlay){overlay=document.createElement('canvas');overlay.width=width;overlay.height=height;overlayContext=overlay.getContext('2d');}
+    if(!overlay){overlay=document.createElement('canvas');overlay.width=width;overlay.height=height;overlayContext=overlay.getContext('2d',{willReadFrequently:true});}
     overlayContext.setTransform(1,0,0,1,0,0);overlayContext.clearRect(0,0,width,height);overlayContext.imageSmoothingEnabled=false;
     worldFrame={surface,top,matrix};return overlayContext;
   }
   function finishWorld(){if(worldFrame)nativeContext.drawImage(overlay,0,0);}
   function presentWorld(){
-    const factor=4,f=worldFrame,m=f.matrix;
+    const factor=Math.max(2,scale()),f=worldFrame,m=f.matrix;
     if(display.width!==width*factor||display.height!==height*factor){display.width=width*factor;display.height=height*factor;displayContext=display.getContext('2d');validPrevious=false;outputImage=null;}
     display.style.imageRendering=mode==='original'?'pixelated':'auto';
     displayContext.setTransform(1,0,0,1,0,0);displayContext.clearRect(0,0,display.width,display.height);displayContext.imageSmoothingEnabled=false;
-    const source=magnify(f.surface,mode==='original'?1:2,'world');
+    // Only filter visible world rows, with three native pixels of MMPX
+    // neighbourhood on each side. Offscreen camera/SKO padding stays unfiltered.
+    const crop=mode==='original'?{x:0,y:0,w:f.surface.width,h:f.surface.height}:(()=>{const x=Math.max(0,Math.floor(-m.e/m.a)-3),y=Math.max(0,Math.floor(-m.f/m.d-f.top)-3),right=Math.min(f.surface.width,Math.ceil((width-m.e)/m.a)+3),bottom=Math.min(f.surface.height,Math.ceil((height-m.f)/m.d-f.top)+3);return{x,y,w:Math.max(1,right-x),h:Math.max(1,bottom-y)};})();
+    const source=magnify(f.surface,mode==='original'?1:2,'world',crop);
     displayContext.setTransform(factor*m.a,factor*m.b,factor*m.c,factor*m.d,factor*m.e,factor*m.f);
-    displayContext.drawImage(source,0,0,source.width,source.height,0,f.top,f.surface.width,f.surface.height);
+    displayContext.drawImage(source,0,0,source.width,source.height,crop.x,f.top+crop.y,crop.w,crop.h);
     displayContext.setTransform(1,0,0,1,0,0);const hud=magnify(overlay,scale(),'hud');displayContext.drawImage(hud,0,0,width*factor,height*factor);
   }
   function present(){
@@ -178,10 +182,10 @@
     for(const type of ['keydown','keyup'])select.addEventListener(type,e=>e.stopPropagation());
     select.addEventListener('change',()=>{setMode(select.value);display.focus({preventScroll:true});});sizeDisplay();return native;
   }
-  function stats(){const sorted=durations.slice().sort((a,b)=>a-b);return {mode,scale:scale(),frames,filtered,cached,lastMs,samples:sorted.length,avgMs:durations.reduce((a,b)=>a+b,0)/(durations.length||1),p95Ms:sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)]||0,maxMs:sorted[sorted.length-1]||0};}
+  function stats(){const sorted=durations.slice().sort((a,b)=>a-b);return {mode,scale:scale(),magnification:Object.fromEntries([...magnifyCaches].map(([k,c])=>[k,{updates:c.updates||0,hits:c.hits||0}])),frames,filtered,cached,lastMs,samples:sorted.length,avgMs:durations.reduce((a,b)=>a+b,0)/(durations.length||1),p95Ms:sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)]||0,maxMs:sorted[sorted.length-1]||0};}
   addEventListener('keydown',e=>{
     if(!display||e.code!=='KeyG'||e.repeat||e.ctrlKey||e.altKey||e.metaKey||e.target instanceof Element&&e.target.closest('select,input,textarea,[contenteditable=true]'))return;
     e.preventDefault();e.stopImmediatePropagation();setMode(modes[(modes.indexOf(mode)+1)%modes.length]);display.focus({preventScroll:true});
   });
-  window.SF2Graphics={beginWorld,finishWorld,clearWorld(){worldFrame=null;},get worldProjection(){return worldFrame?{displayScale:4,sourceWidth:worldFrame.surface.width,sourceHeight:worldFrame.surface.height}:null;},attach,present,setMode,scale2x,acceleratedScale2x,get backend(){return accelerated?'wasm':'javascript';},get wasmFailure(){return wasmFailure;},get mode(){return mode;},get width(){return width;},get height(){return height;},get sourceCanvas(){return native;},get displayCanvas(){return display;},stats,resetStats(){durations.length=0;frames=filtered=cached=lastMs=0;},algorithm:'MMPX 2x cascaded twice',license:'MIT'};
+  window.SF2Graphics={beginWorld,finishWorld,clearWorld(){worldFrame=null;},get worldProjection(){return worldFrame?{displayScale:Math.max(2,scale()),sourceWidth:worldFrame.surface.width,sourceHeight:worldFrame.surface.height}:null;},attach,present,setMode,scale2x,acceleratedScale2x,get backend(){return accelerated?'wasm':'javascript';},get wasmFailure(){return wasmFailure;},get mode(){return mode;},get width(){return width;},get height(){return height;},get sourceCanvas(){return native;},get displayCanvas(){return display;},stats,resetStats(){durations.length=0;frames=filtered=cached=lastMs=0;},algorithm:'MMPX 2x cascaded twice',license:'MIT'};
 })();
