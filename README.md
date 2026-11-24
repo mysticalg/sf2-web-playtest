@@ -20,13 +20,22 @@ This repository contains the browser preview only. Every push to main automatica
 
 [Play as Damnd](https://mysticalg.github.io/sf2-web-playtest/?edition=ai&fighter=damnd) or [fight the Damnd CPU](https://mysticalg.github.io/sf2-web-playtest/?edition=ai&opponent=damnd). In normal AI character select, move down to Damnd’s own third-row portrait, press punch or kick, then confirm colours. Damnd keeps his original Final Fight colours by default and uses the shared projected SF2 shadow. His roster and versus portraits use the original arcade intro TV close-up, cropped from the [ScrollBoss sprite rip](https://scrollboss.illmosis.net/sprites.php?g=finalfight1), with its original colours. His victory pose plays the recovered Final Fight laugh (sound command 40 / 0x28).
 
-This is a one-on-one adaptation: 42 recovered Final Fight poses plus 12 imagegen-assisted secondary kick frames, registered to the same floor and fifteen-colour palette. Primary attacks are punches and a close grab/throw; the CPU favours these over kicks. Six normal buttons, crouching attacks, aerial attacks, guard, hurt, knockdown, victory, mirror matches and CPU control are integrated. He has 160 health; light/medium/heavy normals deal 10/17/24 damage and his throw deals 30. His SF2 move timings and collision setup are authored adaptations, not a claim that Final Fight contained SF2 controls.
+This is a one-on-one adaptation: 42 recovered Final Fight poses plus 36 imagegen-assisted kick, crouching punch, guard, dizzy and burn poses, registered to the same floor and fifteen-colour palette. Primary attacks are punches and a close grab/throw; the CPU favours these over kicks. Six normal buttons, crouching attacks, aerial attacks, guard, hurt, knockdown, victory, mirror matches and CPU control are integrated. He has 180 health; light/medium/heavy normals deal 12/19/27 damage and his throw deals 34. His crouching punches and guard use lowered hurtboxes, and his own dizzy and burning artwork follows the existing reaction timers. His SF2 move timings and collision setup are authored adaptations, not a claim that Final Fight contained SF2 controls.
 
-- Street Rush: LP+LK, or quarter-circle forward + punch. A long dash with three separate punches (12+12+20 damage), ending in knockdown.
-- Somersault Kick: MP+MK, or quarter-circle forward + kick.
-- Rising Smash: HP+HK, or forward/down/down-forward + punch.
+- Street Rush: LP+LK, or quarter-circle forward + punch. A long dash with three separate punches (14+14+22 damage), ending in knockdown.
+- Somersault Kick: MP+MK, or quarter-circle forward + kick. Two spin contacts plus the extended kick deal 8+8+16 damage; the final kick knocks down.
+- Rising Smash: HP+HK, or forward/down/down-forward + punch (30 damage).
+- Barrel Call: MP+HK, or quarter-circle back + punch. Uses the original whistle pose and sound command 39 (0x27), then the [original eight-frame rolling barrel animation](https://spritedatabase.net/file/21522), ripped by jin315. One barrel at a time, 24/27/30 damage by strength, low guard gives 4 chip, and jumping clears it. Hit/block breaks it; round reset and travel beyond the stage remove it.
 - Grab/throw: toward/back + medium/heavy punch at close range.
 
 Asset source commit and SHA-256 provenance are embedded in ai_damnd_data.js. Runtime integration is in ai_damnd.js; WW/CE retain their original roster and mechanics.
 
 Damnd uses Dhalsim’s CE jump height, horizontal speed and gravity, including backward jumps in either direction. When Damnd is the opponent, his stage is the recovered Slum boss courtyard: Metro City skyline, wrecked cars and the boss doorway. Native Final Fight layers are adapted to the SF2 floor, with a rigid world-space fighting plane and quarter-speed distant skyline.
+
+## AI Edition six-button chains
+
+On a confirmed grounded normal hit, tap any attack button not yet used in the current six-button cycle to cancel directly into that normal. Order and strength are unrestricted: HK → HP → MK → MP → LK → LP, or any other order. After all six buttons connect, all six become available again. Down is retained for buffered crouching attacks. Inputs during hit pause are buffered; simultaneous special chords and deliberate motion commands keep their existing priority. Special moves and throws retain their own controls.
+
+CPU opponents use longer confirmed chains at higher difficulties; Damnd prefers short punch chains to preserve his punch-and-throw style. Used buttons dim under the hit counter. Misses and blocks do not grant a cancel. Defender recovery, taking damage and round reset clear the chain. Small follow-up steps, reduced normal-hit pushback, a stable combo hurtbox and startup-length hitstun keep short attacks connected after heavy hits. A normal knockdown can be caught by the next confirmed follow-up. WW and CE retain their original combat.
+
+Run `node tests/ai-chain.test.cjs` for all 720 six-button permutations across two cycles and the rejection/reset/input-priority checks.

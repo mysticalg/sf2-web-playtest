@@ -16,7 +16,7 @@ window.SF2AI_ROSTER={
     {key:'ce:sagat',fighterId:9,name:'Sagat',ready:true},
     {key:'ce:bison',fighterId:8,name:'M.Bison',ready:true}
   ],
-  additions:[{key:'ai:damnd',baseFighterId:10,name:'Damnd',origin:'Final Fight',status:'playable',ready:true,selectable:true,maxHP:160},{key:'ai:evil-ken',baseFighterId:4,name:'Evil Ken',status:'playable',ready:true,selectable:true,maxHP:136}],
+  additions:[{key:'ai:damnd',baseFighterId:10,name:'Damnd',origin:'Final Fight',status:'playable',ready:true,selectable:true,maxHP:180},{key:'ai:evil-ken',baseFighterId:4,name:'Evil Ken',status:'playable',ready:true,selectable:true,maxHP:136}],
   developmentProfiles:[
     {key:'ai:evil-ryu',baseFighterId:0,name:'Evil Ryu',status:'prototype',ready:false,selectablePrototype:true,maxHP:136}
   ]
