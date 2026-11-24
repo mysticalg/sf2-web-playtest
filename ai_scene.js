@@ -103,6 +103,17 @@ window.SF2AISCENE=(()=>{
    ctx.save();ctx.filter='none';ctx.beginPath();ctx.rect(0,top,width,Math.max(0,-48+frontY-top));ctx.clip();ctx.drawImage(frontFrame,front,-768+frontY,1024*frontScale,1024);ctx.restore();ctx.drawImage(d.images.top,front,-48+frontY,1024*frontScale,16);
   }
  }
+ function guileSky(ctx,cam,width,top,registration){
+  const map=window.SF2CESTAGESCROLL,im=map?.layerImage(3,0);
+  if(!im?.complete||!im.naturalWidth)return;
+  const edge=-32+(registration?.y||0),height=edge-top;
+  if(height<=0)return;
+  // Continue the native sky's upper edge at its own parallax coordinates.
+  // The generic painted extension has a different sunset and makes a seam.
+  const source=map.mapX(3,0,registration?.camera??cam,-32)-(registration?.inset||0);
+  let sx=((source%im.naturalWidth)+im.naturalWidth)%im.naturalWidth,dx=0;
+  while(dx<width){const w=Math.min(im.naturalWidth-sx,width-dx);ctx.drawImage(im,sx,0,w,1,dx,top,w,height);dx+=w;sx=0;}
+ }
  function draw(ctx,stage,cam,width,top,height,room,filter,registration){
   if(!image.complete||!image.naturalWidth)return;
   const sw=image.naturalWidth/3,sh=image.naturalHeight/4,sx=(stage%3)*sw,sy=Math.floor(stage/3)*sh,span=room.right-room.left;
@@ -116,6 +127,7 @@ window.SF2AISCENE=(()=>{
    if(top<origin)ctx.drawImage(image,sx+1,sy+1,sw-2,1,dx,top,span,origin-top);
    if(top+height>bottom)ctx.drawImage(image,sx+1,sy+sh-2,sw-2,1,dx,bottom,span,top+height-bottom);
   }
+  if(stage===3)guileSky(ctx,cam,width,top,registration);
   ctx.restore();
  }
  function ryuFloor(ctx,cam,width){

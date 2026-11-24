@@ -1243,23 +1243,20 @@ function camera(){
 
   if(aiEnabled()&&G.scene==='fight'){
     window.SF2CECAMERA?.step(G.stage,P,{throw:P.some(p=>p.THV),shake:!!G.CECameraShake});
-    const room=aiRoom(),xs=P.map(p=>p.X/256),poses=P.concat(window.SF2CECAMERA?.poses||[]),bounds=poses.map(p=>({p,b:fighterBounds(p)})),main=window.SF2CECAMERA?.state.main||0;
+    const room=aiRoom(),xs=P.map(p=>p.X/256),poses=P.concat(window.SF2CECAMERA?.poses||[]),bounds=poses.map(p=>({p,b:fighterBounds(p)}));
     const left=Math.min(...bounds.map(({p,b})=>p.X/256+b.left)),right=Math.max(...bounds.map(({p,b})=>p.X/256+b.right));
-    const high=Math.max(...bounds.map(({p,b})=>p.Y/256-b.top-main+8));
-    const span=room.right-room.left;
-    const airBounds=bounds.filter(({p})=>p.Y>0||p.CES?.kind==='vegawall'&&p.CES.phase>0),airOuter=airBounds.length?Math.max(0,...airBounds.map(({p,b})=>Math.max(room.left-p.X/256-b.left,p.X/256+b.right-room.right))):0;
-    const needed=Math.min(span,Math.max(W,Math.min(span,Math.abs(xs[1]-xs[0])+128),right-left+24,high*W/(GROUND-52)));
+    // Zoom follows only horizontal fighter separation, never jump height or
+    // animation bounds. A 320px close view gives a modest 1.2x zoom-in.
+    const span=room.right-room.left,minWidth=Math.min(320,span);
+    const needed=Math.min(span,Math.max(minWidth,Math.abs(xs[1]-xs[0])+128));
     const follow=G.AICamera||(G.AICamera={velocity:0,centre:(xs[0]+xs[1])/2,centreVelocity:0,target:W,hold:0});
-    // Anticipate rising motion; leave extra headroom before the hard visibility
-    // boundary. This removes the frame-by-frame zoom chase during ascent.
-    const motionVelocity=p=>{const last=follow.last?.[p.i];return{x:Math.abs(p.VX||0)>0?(p.VX||0)/256:last?(p.X-last.x)/256:0,y:Math.max((p.VY||0)/256,last?(p.Y-last.y)/256:0)};};
+    // Animation/velocity prediction is used for horizontal framing only.
+    const motionVelocity=p=>{const last=follow.last?.[p.i];return{x:Math.abs(p.VX||0)>0?(p.VX||0)/256:last?(p.X-last.x)/256:0};};
     const future=bounds.flatMap(({p,b})=>{const out=[{p,b}];let ticks=0;for(let i=p.aidx+1;i<Math.min(p.anim.ents.length,p.aidx+4)&&ticks<8;i++){ticks+=p.anim.ents[i-1][1]||1;out.push({p,b:fighterBounds({...p,aidx:i})});}return out;});
-    const predicted=Math.max(...future.map(({p,b})=>p.Y/256-b.top-main+8+Math.max(0,motionVelocity(p).y)*8));
     const futureLeft=Math.min(...future.map(({p,b})=>p.X/256+b.left+Math.min(0,motionVelocity(p).x)*8)),futureRight=Math.max(...future.map(({p,b})=>p.X/256+b.right+Math.max(0,motionVelocity(p).x)*8));
     follow.last=P.map(p=>({x:p.X,y:p.Y}));
-    const predictedAirOuter=airBounds.length?Math.max(0,room.left-futureLeft,futureRight-room.right):0;
-    const target=Math.min(span,Math.max(needed,predicted*W/(GROUND-64),futureRight-futureLeft+24));
-    follow.target=Math.max(W,Math.min(span,follow.target));
+    const target=needed;
+    follow.target=Math.max(minWidth,Math.min(span,follow.target));
     if(target>follow.target+4){follow.target=target;follow.hold=20;}
     else if(follow.hold>0)follow.hold--;
     else if(target<follow.target-14)follow.target=target;
@@ -1268,7 +1265,7 @@ function camera(){
     let [width,velocity]=spring(G.AIViewWidth||W,follow.velocity,follow.target,follow.target>(G.AIViewWidth||W)?.13:.075);
     if(width<needed){width=needed;velocity=Math.max(0,velocity);}
     if(width>span){width=span;velocity=Math.min(0,velocity);}
-    if(width<W+.05&&Math.abs(velocity)<.05){width=W;velocity=0;}
+    if(width<minWidth+.05&&Math.abs(velocity)<.05){width=minWidth;velocity=0;}
     G.AIViewWidth=width;follow.velocity=velocity;
     const desired=(xs[0]+xs[1])/2+P.reduce((n,p)=>n+(p.VX||0)/256,0)*2;
     [follow.centre,follow.centreVelocity]=spring(follow.centre,follow.centreVelocity,desired,.13);
