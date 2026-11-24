@@ -44,15 +44,15 @@ const AI_BLOOD={particles:[],stains:[],lastTick:-1,drips:[0,0],clothes:[0,0],ser
 const AI_SPECIAL_VOICES=[null,null];
 function aiBloodReset(){AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;AI_BLOOD.lastTick=-1;AI_BLOOD.drips=[0,0];AI_BLOOD.clothes=[0,0];AI_BLOOD.serial=0;AI_SPECIAL_VOICES.fill(null);aiEchoStop();}
 function aiFXHash(seed,id){let h=SF2AIRULES.hash(seed,id);h^=h>>>16;h=Math.imul(h,0x7feb352d);h^=h>>>15;h=Math.imul(h,0x846ca68b);return(h^(h>>>16))>>>0;}
-function aiBloodAdd(particles){
-  for(const p of particles){const id=AI_BLOOD.serial++;p.depth=SF2AIRULES.hash(id,'blood-floor')%7;p.life=140;p.landed=false;p.clothEligible=aiFXHash(id,'cloth')%3===0;AI_BLOOD.particles.push(p);}
+function aiBloodAdd(particles,owner){
+  for(const p of particles){const id=AI_BLOOD.serial++;p.depth=SF2AIRULES.hash(id,'blood-floor')%7;p.life=140;p.landed=false;p.owner=owner;p.clothEligible=aiFXHash(id,'cloth')%3===0;AI_BLOOD.particles.push(p);}
   if(AI_BLOOD.particles.length>192)AI_BLOOD.particles.splice(0,AI_BLOOD.particles.length-192);
 }
 function aiBloodBurst(p,strength=1,drip=false){
   if(!aiEnabled()||G.scene!=='fight')return;const mouth=aiMouth(p);if(!mouth)return;
   const seed=SF2AIRULES.hash(G.tick,'face-blood:'+p.i+':'+AI_BLOOD.serial),dir=p.FACE?1:-1;
   const particles=Array.from({length:drip?1:6+strength*3},(_,i)=>{const h=aiFXHash(seed,i),r=(h&65535)/65535,q=(h>>>16)/65535;return{x:mouth.x,y:mouth.y,vx:drip?dir*.12:dir*(1+r*2.8),vy:drip?-.2:1+q*2.8,size:drip?1:1+(h%2),tick:G.tick,color:['#8c1020','#c51c2c','#de293b'][i%3]};});
-  aiBloodAdd(particles);if(!drip)aiClothesStain(p,1);
+  aiBloodAdd(particles,p.i);if(!drip)aiClothesStain(p,1);
 }
 function aiBloodStep(){
   if(!aiEnabled()||G.scene!=='fight'){AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;aiEchoStop();return;}
@@ -62,7 +62,7 @@ function aiBloodStep(){
     else AI_BLOOD.drips[p.i]=G.tick+12;
   }
   for(const p of AI_BLOOD.particles){const t=G.tick-p.tick;if(p.landed||t>=p.life)continue;
-    if(t>2&&p.clothEligible){const wearer=aiClothesHit(p.x+p.vx*t,p.y+p.vy*t-.13*t*t);if(wearer){aiClothesStain(wearer,1);p.landed=true;continue;}}
+    if(t>2&&p.clothEligible){const wearer=aiClothesHit(p.x+p.vx*t,p.y+p.vy*t-.13*t*t,p.owner);if(wearer){aiClothesStain(wearer,1);p.landed=true;continue;}}
     if(p.y+p.vy*t-.13*t*t<=-p.depth){
       p.landed=true;const camera=Math.floor(G.cam),landX=p.x+p.vx*t,zero=aiBloodFloorX({x:camera,depth:p.depth},camera),scale=aiBloodFloorX({x:camera+1,depth:p.depth},camera)-zero;
       const stain={x:camera+(landX-camera-zero)/(scale||1),depth:p.depth,size:p.size+1,color:p.color};
@@ -113,8 +113,9 @@ function aiClothesArt(p,art){
   }
   return{...art,image,rect:[0,0,frame.w,frame.h,art.rect[4],art.rect[5]]};
 }
-function aiClothesHit(x,y){
-  for(const p of P){const art=fighterArtBase(p),r=art.rect,px=Math.floor((p.FACE?-(x-p.X/256):x-p.X/256)-r[4]),py=Math.floor(p.Y/256-y-r[5]);if(px<0||py<0||px>=r[2]||py>=r[3])continue;const frame=aiClothFrame(p,art);if(frame?.mask[py*frame.w+px])return p;}
+function aiClothesHit(x,y,owner){
+  // Blood can only add clothing stains to the fighter who was injured.
+  for(const p of P){if(p.i!==owner)continue;const art=fighterArtBase(p),r=art.rect,px=Math.floor((p.FACE?-(x-p.X/256):x-p.X/256)-r[4]),py=Math.floor(p.Y/256-y-r[5]);if(px<0||py<0||px>=r[2]||py>=r[3])continue;const frame=aiClothFrame(p,art);if(frame?.mask[py*frame.w+px])return p;}
   return null;
 }
 // Mouth landmarks in the three recovered falling sprites (unflipped atlas
@@ -143,7 +144,7 @@ function aiDeathBegin(p,effect){
     const h=aiFXHash(seed,'blood:'+i),r=(h&65535)/65535,q=(h>>>16)/65535;
     return {x:mouth.x,y:mouth.y,vx:dir*(.6+r*3.2)+(q-.5)*1.8,vy:1.2+q*3.8,size:1+(h%3),life:30+(h%25),tick:G.tick,color:['#8c1020','#c51c2c','#ed3341'][i%3]};
   });
-  aiBloodAdd(particles);aiClothesStain(p,special?3:2);
+  aiBloodAdd(particles,p.i);aiClothesStain(p,special?3:2);
   if(special)aiSpecialKOEcho(p.opp,effect);
   AI_DEATH_FX.push({slot:p.i,special,start:G.tick,lastTick:-1,lastSample:-99,airborne:false,emitting:special,mouth,trails:[],particles});
 }
@@ -163,7 +164,7 @@ function aiDeathStep(){
       const mouth=aiMouth(p);fx.mouth=mouth;
       if(mouth&&fx.airborne&&G.tick-(fx.lastBlood??fx.start)>=6){
         const drops=[];for(let j=0;j<2;j++)drops.push({x:mouth.x,y:mouth.y,vx:(p.VX||0)/640+(p.FACE?1:-1)*(.4+j*.3),vy:1+j*.5,size:1+j,life:28+j*6,tick:G.tick,color:j?'#c51c2c':'#8c1020'});
-        aiBloodAdd(drops);fx.particles.push(...drops);fx.lastBlood=G.tick;
+        aiBloodAdd(drops,p.i);fx.particles.push(...drops);fx.lastBlood=G.tick;
       }
       if(fx.trails.length>10)fx.trails.shift();fx.x=p.X;fx.y=p.Y;fx.lastSample=G.tick;
     }
@@ -1233,7 +1234,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
   if(VER.edition!=='ce'||G.mode2p||d.opp.i===0)d.opp.SCORE=nativeScore===null?(d.opp.SCORE||0)+dmg*100:Math.min(9999999,(d.opp.SCORE||0)+nativeScore);
 
-  SF2CESPECIAL.interrupt(d);hpDamage(d,dmg,{special:specialKO,projectile:specialAttack===true||!!reaction?.profile?.projectile});if(aiEnabled()&&region===0&&hpAlive(d))aiBloodBurst(d,str);if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});if(!hpAlive(d)){if(VER.edition==='ce'&&d.CEDizzy){d.CEDizzy.activeDizzy=d.CEDizzy.dizzy=0;d.CEDizzy.fall=d.CEDizzy.pending=null;d.DIZZY=0;}if(specialReaction&&!localStop)G.hfz=HFRZ;if(specialReaction){G.hfz=0;SF2CESPECIAL.start(d,reaction,dir,ceDizzyHooks(),true);return;}d.CE_FatalHitPending={special:reaction?.reactionCode>=24&&reaction.reactionCode!==32};return fallst(d,S_KO,dir);}
+  SF2CESPECIAL.interrupt(d);hpDamage(d,dmg,{special:specialKO,projectile:specialAttack===true||!!reaction?.profile?.projectile});if(aiEnabled()&&(region===0||str===2||!specialAttack&&[S_ATK,S_AIR].includes(d.opp.ST)&&btnof(d.opp.cur)%3===2)&&hpAlive(d))aiBloodBurst(d,str);if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});if(!hpAlive(d)){if(VER.edition==='ce'&&d.CEDizzy){d.CEDizzy.activeDizzy=d.CEDizzy.dizzy=0;d.CEDizzy.fall=d.CEDizzy.pending=null;d.DIZZY=0;}if(specialReaction&&!localStop)G.hfz=HFRZ;if(specialReaction){G.hfz=0;SF2CESPECIAL.start(d,reaction,dir,ceDizzyHooks(),true);return;}d.CE_FatalHitPending={special:reaction?.reactionCode>=24&&reaction.reactionCode!==32};return fallst(d,S_KO,dir);}
 
   /* ROM-measured (CE emu, P2 struct +0x5d timer/+0x5f points): timer += 40/60/80 per L/M/H hit, ticks down 1/frame,
 
