@@ -22,9 +22,11 @@ This repository contains the browser preview only. Every push to main automatica
 
 This is a one-on-one adaptation: 42 recovered Final Fight poses plus 12 imagegen-assisted secondary kick frames, registered to the same floor and fifteen-colour palette. Primary attacks are punches and a close grab/throw; the CPU favours these over kicks. Six normal buttons, crouching attacks, aerial attacks, guard, hurt, knockdown, victory, mirror matches and CPU control are integrated. He has 160 health; light/medium/heavy normals deal 10/17/24 damage and his throw deals 30. His SF2 move timings and collision setup are authored adaptations, not a claim that Final Fight contained SF2 controls.
 
-- Street Rush: LP+LK, or quarter-circle forward + punch.
+- Street Rush: LP+LK, or quarter-circle forward + punch. A long dash with three separate punches (12+12+20 damage), ending in knockdown.
 - Somersault Kick: MP+MK, or quarter-circle forward + kick.
 - Rising Smash: HP+HK, or forward/down/down-forward + punch.
 - Grab/throw: toward/back + medium/heavy punch at close range.
 
 Asset source commit and SHA-256 provenance are embedded in ai_damnd_data.js. Runtime integration is in ai_damnd.js; WW/CE retain their original roster and mechanics.
+
+Damnd uses Dhalsim’s CE jump height, horizontal speed and gravity, including backward jumps in either direction. When Damnd is the opponent, his stage is the recovered Slum boss courtyard: Metro City skyline, wrecked cars and the boss doorway. Native Final Fight layers are adapted to the SF2 floor, with a rigid world-space fighting plane and quarter-speed distant skyline.

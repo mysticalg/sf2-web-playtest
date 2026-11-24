@@ -36,8 +36,9 @@ window.SF2AIDamnd=(()=>{
   put(28,'fall',[...one('hurt',1,5),...one('hurtFall',0,6),...one('recover',0,8)]);put(29,'lie',one('corpse',pose('corpse').length-1,10));
   put(30,'getup',[...one('recover',0,6),...one('rise',0,5),...one('idle',0,4)]);put(31,'win',pose('laugh'),{loop:true});
   put(46,'throw',[...one('motion2',1,10),...one('uppercut',2,8),...one('idle',0,12)]);
-  const rush=clone(pose('strike'));rush[0].ticks=6;rush[1].ticks=4;rush[3].ticks=8;
-  put(100,'damndRush',rush,{attack:true,strength:2,kd:true});
+  // Three separate straight-punch contacts, followed by a committed recovery.
+  const rush=[];for(let punch=0;punch<3;punch++)for(const [i,e]of pose('strike').slice(0,7).entries())rush.push({...e,ticks:i===3?5:2});rush.push(...one('idle',0,10));
+  put(100,'damndRush',rush,{attack:true,strength:2});
   const leap=clone(pose('leap'));[5,4,4,4,12,4].forEach((n,i)=>leap[i].ticks=n);
   put(101,'damndSomersault',leap,{attack:true,strength:2,kd:true});
   const rise=clone(pose('uppercut'));rise[0].ticks=5;rise[1].ticks=3;rise[2].ticks=7;
@@ -47,11 +48,14 @@ window.SF2AIDamnd=(()=>{
   f.moves=[{inp:'qcf',btn:'P',kind:'damnd',role:'far',a:100,name:'Street Rush'},{inp:'qcf',btn:'K',kind:'damnd',role:'mid',a:101,name:'Somersault Kick'},{inp:'dp',btn:'P',kind:'damnd',role:'rise',a:102,name:'Rising Smash'}];
   delete f._ai;return template=f;
  }
- function bind(p,native){p.F=clone(build(native));p.AIAtlas=image;p.AIAtlasAlt=image;p.ft=[0x210,0x180,[0,0,0x780,0x48],[-0x240,0,0x780,0x48],[0x240,0,0x780,0x48]];}
+ function bind(p,native){p.F=clone(build(native));p.AIAtlas=image;p.AIAtlasAlt=image;// Dhalsim CE jump curves, reordered for this adapter's neutral/back/forward convention.
+ p.ft=[0x210,0x180,[0,0,0x600,0x30],[-0x260,-5,0x620,0x30],[0x240,5,0x600,0x30]];}
  function art(p){const a=p.anim?.guest?p.anim:null,index=a?a.ents[Math.min(p.aidx,a.ents.length-1)][0]:(p.ST===8?template.anims[29].ents[0][0]:p.ST===5?template.anims[22].ents[0][0]:template.anims[0].ents[0][0]);return{image,rect:D.frames[index].rect,alternate:false};}
- function start(p,m,str,h){Object.assign(p,{ST:11,MV:m,SPSTR:str,SPK:1,SPKD:1,RETCR:0,KB:0,hitdone:0,AIDamndMove:{tick:0,launched:false}});h.anim(p,m.a,0);h.sound(0x25);return true;}
+ function start(p,m,str,h){Object.assign(p,{ST:11,MV:m,SPSTR:str,SPK:1,SPKD:m.a===100?0:1,RETCR:0,KB:0,hitdone:0,AIDamndMove:{tick:0,launched:false,punch:0}});h.anim(p,m.a,0);h.sound(0x25);return true;}
  function step(p,h){const m=p.MV;if(m?.kind==='throw'){if(p.THV){const v=p.THV;p.opp.X=p.X-v.d*28*256;p.opp.Y=0;p.opp.STUN=999;if(--v.t<=0)h.release(p);}if(--p.SCNT<=0)h.idle(p);return true;}const s=p.AIDamndMove;if(!s||m?.kind!=='damnd')return false;s.tick++;
-  if(m.a===100){if(s.tick>=5&&s.tick<20)p.X+=(p.FACE?1:-1)*(0x220+p.SPSTR*0x40);if(p.adone||s.tick>42){delete p.AIDamndMove;h.idle(p);}}
+  if(m.a===100){const punch=Math.min(2,Math.floor(p.aidx/7));if(punch!==s.punch){s.punch=punch;p.hitdone=0;p.AIAttackSerial=(p.AIAttackSerial||0)+1;}p.SPKD=punch===2?1:0;
+   if(s.tick>=4&&s.tick<51)p.X+=(p.FACE?1:-1)*(0x400+p.SPSTR*0x40);if(p.adone||s.tick>72){delete p.AIDamndMove;h.idle(p);}}
+
   else{if(!s.launched&&s.tick>=5){s.launched=true;p.VX=(p.FACE?1:-1)*(m.a===101?0x230:0x80);p.VY=m.a===101?0x690:0x480;p.AX=0;p.AY=m.a===101?0x58:0x50;}
    if(s.launched&&!h.gravity(p)){delete p.AIDamndMove;h.idle(p);h.sound(0x2f);}
    else if(s.tick>75){p.Y=p.VY=p.VX=0;delete p.AIDamndMove;h.idle(p);}
