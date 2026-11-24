@@ -12,16 +12,25 @@
  function reset(){origin=null;lastStage=-1;}
  function advance(stage,tick){if(lastStage!==stage||origin===null||tick<origin){lastStage=stage;origin=tick;}}
  const camera=cam=>Math.max(0,Math.min(384,Math.floor(cam)));
+ // AI's close view can travel beyond the native 384px camera domain.
+ // Extend the recovered per-row rate instead of freezing the floor there.
+ const wideCamera=()=>window.SF2?.edition==='ai';
+ function rawX(s,l,cam,y=-32){
+  const position=Math.floor(cam),c=camera(position);
+  const at=n=>{const row=l.nativeLayer===2?s.rows[n].find(r=>y>=r[0]&&y<r[1]):null;return s.cameras[n][l.nativeLayer]+64+(row?.[2]||0);};
+  const value=at(c);
+  if(!wideCamera()||position===c)return value;
+  const other=c===0?64:320,rate=(value-at(other))/(c-other);
+  return value+(position-c)*rate;
+ }
  function mapX(stage,index,cam,y=-32){
   const s=stages.get(stage),l=s?.layers.find(l=>l.index===index);if(!s?.rows||!l)return null;
-  const c=camera(cam),row=l.nativeLayer===2?s.rows[c].find(r=>y>=r[0]&&y<r[1]):null;
-  return((s.cameras[c][l.nativeLayer]+64+(row?.[2]||0))%l.width+l.width)%l.width;
+  return((rawX(s,l,cam,y)%l.width)+l.width)%l.width;
  }
  function view(stage,index,cam,width,y=-32){
   const s=stages.get(stage),l=s?.layers.find(l=>l.index===index);if(!s?.rows||!l)return null;
-  const left=camera(cam),right=camera(cam+Math.max(0,width-384));
-  const raw=c=>s.cameras[c][l.nativeLayer]+64+(l.nativeLayer===2?(s.rows[c].find(r=>y>=r[0]&&y<r[1])?.[2]||0):0);
-  const source=raw(left),sourceWidth=width+raw(right)-source-(right-left);
+  const left=wideCamera()?Math.floor(cam):camera(cam),right=wideCamera()?Math.floor(cam+Math.max(0,width-384)):camera(cam+Math.max(0,width-384));
+  const source=rawX(s,l,left,y),sourceWidth=width+rawX(s,l,right,y)-source-(right-left);
   return{source,sourceWidth,scale:width/sourceWidth,leftCamera:left,rightCamera:right};
  }
  function draw(ctx,stage,index,cam,tick,width=384,viewOffset=0,panorama=false){
@@ -31,13 +40,13 @@
   if(s.tail?.index===index){const t=s.tail;ctx.drawImage(t.im,t.x-t.cameras[c]+t.left+viewOffset,240-t.y+t.top);return true;}
   const l=s.layers.find(l=>l.index===index);if(!l)return false;
   const im=SF2CESTAGEANIMATIONS.nativeLayer(stage,index,l.im,tick,cam);let rows=l.nativeLayer===2?s.rows[c]:[[-32,224,0]];
-  if(panorama&&width>384&&l.nativeLayer===2){
+  if(l.nativeLayer===2&&((panorama&&width>384)||(wideCamera()&&Math.floor(cam)!==c))){
    // Either endpoint can change its row scroll at a band boundary. The source
    // union must therefore split on both schedules, even if the left is flat.
-   const right=camera(cam+width-384),edges=[...new Set([...rows,...s.rows[right]].flatMap(r=>[r[0],r[1]]))].sort((a,b)=>a-b);
+   const right=camera(cam+Math.max(0,width-384)),extra=wideCamera()&&Math.floor(cam)!==c?s.rows[c===0?64:320]:[],edges=[...new Set([...rows,...s.rows[right],...extra].flatMap(r=>[r[0],r[1]]))].sort((a,b)=>a-b);
    rows=edges.slice(0,-1).map((y,i)=>[y,edges[i+1],0]);
   }
-  for(const[y0,y1,shift]of rows){if(panorama&&width>384){const v=view(stage,index,cam,width,y0);let sx=((v.source-viewOffset)%l.width+l.width)%l.width,dx=0,remaining=v.sourceWidth;while(remaining>0){const sw=Math.min(l.width-sx,remaining),dw=sw*v.scale;ctx.drawImage(im,sx,y0+32,sw,y1-y0,dx,y0,dw,y1-y0);dx+=dw;remaining-=sw;sx=0;}continue;}let sx=((s.cameras[c][l.nativeLayer]+(s.wind?.layer===l.nativeLayer?s.wind.offsets[age%s.wind.period]-s.wind.offsets[s.wind.atCameraSample]:0)+64+shift-viewOffset)%l.width+l.width)%l.width,dx=0;while(dx<width){const w=Math.min(l.width-sx,width-dx);ctx.drawImage(im,sx,y0+32,w,y1-y0,dx,y0,w,y1-y0);dx+=w;sx=0;}}
+  for(const[y0,y1,shift]of rows){if(panorama&&width>384){const v=view(stage,index,cam,width,y0);let sx=((v.source-viewOffset)%l.width+l.width)%l.width,dx=0,remaining=v.sourceWidth;while(remaining>0){const sw=Math.min(l.width-sx,remaining),dw=sw*v.scale;ctx.drawImage(im,sx,y0+32,sw,y1-y0,dx,y0,dw,y1-y0);dx+=dw;remaining-=sw;sx=0;}continue;}let sx=((rawX(s,l,cam,y0)+(s.wind?.layer===l.nativeLayer?s.wind.offsets[age%s.wind.period]-s.wind.offsets[s.wind.atCameraSample]:0)-viewOffset)%l.width+l.width)%l.width,dx=0;while(dx<width){const w=Math.min(l.width-sx,width-dx);ctx.drawImage(im,sx,y0+32,w,y1-y0,dx,y0,w,y1-y0);dx+=w;sx=0;}}
   return true;
  }
  const layerImage=(stage,index)=>stages.get(stage)?.layers.find(l=>l.index===index)?.im;
