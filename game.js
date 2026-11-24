@@ -40,6 +40,7 @@ const AICFG={configured:false,prototype:false,selectedProfiles:[null,null],color
 
 // Presentation-only KO effects: separate state and cosmetic hashes, no combat RNG.
 const AI_DEATH_FX=[];
+const AI_KO_TRAIL={life:40,opacity:.76,max:18,duration:200};
 const AI_BLOOD={particles:[],stains:[],lastTick:-1,drips:[0,0],clothes:[0,0],serial:0};
 const AI_SPECIAL_VOICES=[null,null];
 function aiBloodReset(){AI_BLOOD.particles.length=AI_BLOOD.stains.length=0;AI_BLOOD.lastTick=-1;AI_BLOOD.drips=[0,0];AI_BLOOD.clothes=[0,0];AI_BLOOD.serial=0;AI_SPECIAL_VOICES.fill(null);aiEchoStop();}
@@ -175,17 +176,17 @@ function aiDeathStep(){
   if(!aiEnabled()||G.scene!=='fight'){AI_DEATH_FX.length=0;return;}
   for(let i=AI_DEATH_FX.length-1;i>=0;i--){
     const fx=AI_DEATH_FX[i],p=P[fx.slot],age=G.tick-fx.start;
-    if(age>240||hpAlive(p)){AI_DEATH_FX.splice(i,1);continue;}
+    if(age>AI_KO_TRAIL.duration+AI_KO_TRAIL.life+20||hpAlive(p)){AI_DEATH_FX.splice(i,1);continue;}
     if(fx.lastTick===G.tick)continue;fx.lastTick=G.tick;
-    fx.trails=fx.trails.filter(t=>G.tick-t.tick<20);fx.particles=fx.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life);
+    fx.trails=fx.trails.filter(t=>G.tick-t.tick<AI_KO_TRAIL.life);fx.particles=fx.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life);
     if(p.Y>0)fx.airborne=true;
     if(fx.airborne&&p.Y<=0||p.CEKO?.ready)fx.bloodStopped=true;
     const winner=P[fx.trailSlot];
-    fx.emitting=fx.special&&hpAlive(winner)&&age<160;
+    fx.emitting=fx.special&&hpAlive(winner)&&age<AI_KO_TRAIL.duration;
     const pose=winner.cur+':'+winner.aidx,moved=fx.x===undefined||Math.abs(winner.X-fx.x)+Math.abs(winner.Y-fx.y)>=256||pose!==fx.pose;
     if(fx.emitting&&moved&&G.tick-fx.lastSample>=2){
       const art=fighterArt(winner);fx.trails.push({slot:winner.i,image:art.image,rect:art.rect.slice(),face:winner.FACE,x:winner.X/256,y:winner.Y/256,tick:G.tick});
-      if(fx.trails.length>10)fx.trails.shift();fx.x=winner.X;fx.y=winner.Y;fx.pose=pose;fx.lastSample=G.tick;
+      if(fx.trails.length>AI_KO_TRAIL.max)fx.trails.shift();fx.x=winner.X;fx.y=winner.Y;fx.pose=pose;fx.lastSample=G.tick;
     }
     const mouth=aiMouth(p);fx.mouth=mouth;
     const bloodMoved=fx.bloodX===undefined||Math.abs(p.X-fx.bloodX)+Math.abs(p.Y-fx.bloodY)>=256;
@@ -198,7 +199,7 @@ function aiDeathStep(){
 }
 function aiDeathDraw(camera,ground){
   if(!aiEnabled())return;cx.save();
-  for(const fx of AI_DEATH_FX)for(const t of fx.trails){const age=G.tick-t.tick;cx.globalAlpha=.42*Math.pow(Math.max(0,1-age/20),1.4);spr(t.image,t.rect,Math.floor(t.x)-camera,ground-Math.floor(t.y),t.face);}
+  for(const fx of AI_DEATH_FX)for(const t of fx.trails){const age=G.tick-t.tick;cx.globalAlpha=AI_KO_TRAIL.opacity*Math.pow(Math.max(0,1-age/AI_KO_TRAIL.life),.9);spr(t.image,t.rect,Math.floor(t.x)-camera,ground-Math.floor(t.y),t.face);}
   cx.restore();
 }
 const AI_PROFILES={ken:{key:'ce:ken',name:'Ken',maxHP:144,baseFighterId:4},'evil-ken':{key:'ai:evil-ken',name:'Evil Ken',maxHP:136,baseFighterId:4},ryu:{key:'ce:ryu',name:'Ryu',maxHP:144},'evil-ryu':{key:'ai:evil-ryu',name:'Evil Ryu',maxHP:136}};
