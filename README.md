@@ -6,4 +6,6 @@ Work in progress. ROM fidelity repairs are underway; this is not a completed arc
 
 AI Edition camera zoom follows horizontal fighter separation: close combat uses a 1.2x view, while wider spacing pulls back. Jump height and animation poses do not affect zoom or horizontal framing. Guile sky, Honda bath animation and Ken harbour extensions have AI-specific rendering fixes for the expanded view.
 
+AI Edition presentation adds mouth blood on facial hits and KOs, intermittent bleeding below 20% health, floor stains that last for the round, and progressive clothing stains from splashes and droplets. Special KOs add fading fighter afterimages and three fading echo taps of the finishing special. These effects do not change damage, movement or round timing.
+
 This repository contains the browser preview only. Every push to main automatically redeploys GitHub Pages.
