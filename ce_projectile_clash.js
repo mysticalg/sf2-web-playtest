@@ -22,11 +22,11 @@
   // 0x951204 -> 0x958c0: hit and block both create this burst. The core
   // supplies the 0x95a60 midpoint of the pre-reaction attack/hurt centres.
   function bodyImpact(p,point,h){if(!Array.isArray(point)||point.length<2)return;spawn(p,h,point);}
-  // AI fighter contacts reuse the original turquoise guard (0..2) and gold hit (3) art.
+  // AI fighter contacts use the original strength-sized burst scripts (0..2).
   // The first frame is visible during hitstop, before animation resumes.
   function contactImpact({x,y,face,strength,blocked,tick}){
-    const selector=blocked?Math.max(0,Math.min(2,strength|0)):3,animation=data.animations[selector];
-    effects.push({selector,x,y,face,index:0,timer:animation.entries[0].ticks,born:tick,visible:true,contact:true});
+    const selector=Math.max(0,Math.min(2,strength|0)),animation=data.animations[selector];
+    effects.push({selector,x,y,face,index:0,timer:animation.entries[0].ticks,born:tick,visible:true,contact:true,blocked});
   }
   function beforeAdvance(p,h){
     if(!record(p))return false;
@@ -47,15 +47,25 @@
   }
   function stepEffects(h){
     for(let i=effects.length-1;i>=0;i--){
-      const e=effects[i];if(e.born===h.tick)continue;
+      const e=effects[i];if(e.contact||e.born===h.tick)continue;
       const animation=data.animations[e.selector];
       if(--e.timer===0){e.index++;const entry=animation.entries[e.index];if(!entry||entry.terminal){effects.splice(i,1);continue;}e.timer=entry.ticks;}
       e.visible=true;
     }
   }
+  // Contact flashes run on visual ticks, including hitstop. Projectile effects
+  // retain the original simulation scheduling above.
+  function stepContactEffects(tick){
+    for(let i=effects.length-1;i>=0;i--){const e=effects[i];if(!e.contact)continue;
+      let age=tick-e.born,index=0;const entries=data.animations[e.selector].entries;
+      while(entries[index]&&!entries[index].terminal&&age>=entries[index].ticks){age-=entries[index].ticks;index++;}
+      if(!entries[index]||entries[index].terminal){effects.splice(i,1);continue;}
+      e.index=index;e.timer=entries[index].ticks-age;e.visible=true;
+    }
+  }
   function drawEffects(cx,ground,camera,h={}){
     for(const e of effects){
-      if(!e.visible)continue;const entry=data.animations[e.selector].entries[e.index],f=data.frames[entry.frame],im=images[entry.frame];
+      if(!e.visible)continue;const entry=data.animations[e.selector].entries[e.index],f=data.frames[entry.frame],im=e.contact&&!e.blocked&&h.contactImage?h.contactImage(entry.frame):images[entry.frame];
       if(!im.complete||!im.naturalWidth)continue;
       const image=h.image?h.image(im,'object'):im;if(!image)continue;
       const x=e.x-camera,y=ground-e.y;cx.save();
@@ -65,6 +75,6 @@
     }
   }
   function reset(players=[]){effects.length=0;for(const p of players)delete p.FBCLASH;}
-  window.SF2CEPROJECTILES={box,overlap,record,beforeAdvance,bodyImpact,contactImpact,stepEffects,drawEffects,reset,
+  window.SF2CEPROJECTILES={box,overlap,record,beforeAdvance,bodyImpact,contactImpact,stepEffects,stepContactEffects,drawEffects,reset,
     ready:Promise.all(images.map(i=>i.decode())),get effects(){return effects;},data};
 })();
