@@ -2,7 +2,7 @@
 
 Work in progress. ROM fidelity repairs are underway; this is not a completed arcade-accuracy claim.
 
-[Play the preview](https://mysticalg.github.io/sf2-web-playtest/). Choose WORLD WARRIOR, CHAMPION EDITION or AI EDITION in the main title VERSION row. All modes share the recovered engine and native menus. Keyboard, standard gamepads and touch controls are supported. Enter or punch starts; Esc backs through screens; M toggles sound. AI keeps the original twelve portraits and offers regular Ryu / Evil Ryu Prototype at Ryu, and Ken / Evil Ken at Ken. Other unfinished additions are excluded. At Ryu or Ken, punch selects the original fighter and kick selects the Evil variant (keyboard A/Z; standard gamepad X/A). Touch players tap the labelled choice. Graphics defaults to MMPX Smooth 2x when no choice has been saved; the selector offers Original pixels, MMPX Smooth 2x and Smooth 4x (slower), with G to cycle. The explicit [Evil Ryu development matchup](https://mysticalg.github.io/sf2-web-playtest/?edition=ai&prototype=evil-ryu) uses original Ryu graphics and prototype rules. AI online play is disabled.
+[Play the preview](https://mysticalg.github.io/sf2-web-playtest/). Choose WORLD WARRIOR, CHAMPION EDITION or AI EDITION in the main title VERSION row. All modes share the recovered engine and native menus. Keyboard, standard gamepads and touch controls are supported. Enter or punch starts; Esc backs through screens; M toggles sound. AI keeps the original twelve portraits and offers regular Ryu / Evil Ryu Prototype at Ryu, and Ken / Evil Ken at Ken. Damnd, the first Final Fight boss, is available as Balrog’s kick variant in AI Edition; punch keeps Balrog. His recovered sprites are sourced from mysticalg/final-fight-web-port and final-fight-web-playtest. Other unfinished additions are excluded. At Ryu or Ken, punch selects the original fighter and kick selects the Evil variant (keyboard A/Z; standard gamepad X/A). Touch players tap the labelled choice. Graphics defaults to MMPX Smooth 2x when no choice has been saved; the selector offers Original pixels, MMPX Smooth 2x and Smooth 4x (slower), with G to cycle. The explicit [Evil Ryu development matchup](https://mysticalg.github.io/sf2-web-playtest/?edition=ai&prototype=evil-ryu) uses original Ryu graphics and prototype rules. AI online play is disabled.
 
 AI Edition camera zoom follows horizontal fighter separation: close combat uses a 1.5x view, while wider spacing pulls back. Jump height and animation poses do not affect zoom or horizontal framing. Guile sky, Honda bath animation and Ken harbour extensions have AI-specific rendering fixes for the expanded view.
 
@@ -15,3 +15,16 @@ AI Edition defeated fighters cough blood three times after settling into their l
 The AI Edition CPU uses committed movement, guard and attack plans with difficulty-specific reaction delays and attack intervals. Hardest applies from the start of the arcade ladder, with stronger anti-air choices, pressure, throws and recovery punishes. WW/CE retain their original CPU logic.
 
 This repository contains the browser preview only. Every push to main automatically redeploys GitHub Pages.
+
+## Final Fight guest: Damnd
+
+[Play as Damnd](https://mysticalg.github.io/sf2-web-playtest/?edition=ai&fighter=damnd) or [fight the Damnd CPU](https://mysticalg.github.io/sf2-web-playtest/?edition=ai&opponent=damnd). In normal AI character select, highlight Balrog and press kick, then confirm colours. Damnd keeps his original Final Fight colours by default and uses the shared projected SF2 shadow.
+
+This is a one-on-one adaptation: 42 recovered Final Fight poses plus 12 imagegen-assisted secondary kick frames, registered to the same floor and fifteen-colour palette. Primary attacks are punches and a close grab/throw; the CPU favours these over kicks. Six normal buttons, crouching attacks, aerial attacks, guard, hurt, knockdown, victory, mirror matches and CPU control are integrated. He has 160 health; light/medium/heavy normals deal 10/17/24 damage and his throw deals 30. His SF2 move timings and collision setup are authored adaptations, not a claim that Final Fight contained SF2 controls.
+
+- Street Rush: LP+LK, or quarter-circle forward + punch.
+- Somersault Kick: MP+MK, or quarter-circle forward + kick.
+- Rising Smash: HP+HK, or forward/down/down-forward + punch.
+- Grab/throw: toward/back + medium/heavy punch at close range.
+
+Asset source commit and SHA-256 provenance are embedded in ai_damnd_data.js. Runtime integration is in ai_damnd.js; WW/CE retain their original roster and mechanics.
