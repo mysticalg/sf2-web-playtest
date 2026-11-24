@@ -51,7 +51,7 @@ function aiBloodAdd(particles,owner){
 function aiBloodBurst(p,strength=1,drip=false){
   if(!aiEnabled()||G.scene!=='fight')return;const mouth=aiMouth(p);if(!mouth)return;
   const seed=SF2AIRULES.hash(G.tick,'face-blood:'+p.i+':'+AI_BLOOD.serial),dir=p.FACE?1:-1;
-  const particles=Array.from({length:drip?1:6+strength*3},(_,i)=>{const h=aiFXHash(seed,i),r=(h&65535)/65535,q=(h>>>16)/65535;return{x:mouth.x,y:mouth.y,vx:drip?dir*.12:dir*(1+r*2.8),vy:drip?-.2:1+q*2.8,size:drip?1:1+(h%2),tick:G.tick,color:['#8c1020','#c51c2c','#de293b'][i%3]};});
+  const particles=Array.from({length:drip?1:6+strength*3},(_,i)=>{const h=aiFXHash(seed,i),r=(h&65535)/65535,q=(h>>>16)/65535;return{x:mouth.x,y:mouth.y,vx:drip?dir*.12:dir*(1+r*2.8),vy:drip?-.2:1+q*2.8,size:drip?1:1+(h%2),tick:G.tick,color:['#b20b22','#d3132b','#ed263c'][i%3]};});
   aiBloodAdd(particles,p.i);if(!drip)aiClothesStain(p,1);
 }
 function aiBloodStep(){
@@ -81,8 +81,14 @@ function aiBloodFloorX(stain,camera){
 }
 function aiBloodDraw(camera,ground,stains=false){
   if(!aiEnabled())return;cx.save();
-  if(stains){cx.globalAlpha=.82;for(const s of AI_BLOOD.stains){cx.fillStyle=s.color;cx.fillRect(Math.round(aiBloodFloorX(s,camera)-s.size/2),ground+s.depth,Math.ceil(s.size),1);if(s.size>2)cx.fillRect(Math.round(aiBloodFloorX(s,camera)),ground+s.depth+1,2,1);}}
-  else for(const p of AI_BLOOD.particles){const t=G.tick-p.tick;if(p.landed||t>=p.life)continue;cx.globalAlpha=.95;cx.fillStyle=p.color;cx.fillRect(Math.floor(p.x+p.vx*t)-camera,ground-Math.floor(p.y+p.vy*t-.13*t*t),p.size,p.size);}
+  if(stains){cx.globalAlpha=.94;for(const s of AI_BLOOD.stains){const x=Math.round(aiBloodFloorX(s,camera)),y=ground+s.depth,h=aiFXHash(Math.floor(s.x*256),'floor:'+s.depth);cx.fillStyle=s.color;
+    if(h%3===0){cx.fillRect(x,y,1,1);cx.fillRect(x+2,y+1,1,1);if(s.size>2)cx.fillRect(x-2,y,1,1);}
+    else if(h%3===1)cx.fillRect(x-1,y,Math.min(4,Math.ceil(s.size)),1);
+    else{cx.fillRect(x,y,1,2);if(s.size>2)cx.fillRect(x-1,y+1,2,1);}
+  }}else for(const p of AI_BLOOD.particles){const t=G.tick-p.tick;if(p.landed||t>=p.life)continue;const x=Math.floor(p.x+p.vx*t)-camera,y=ground-Math.floor(p.y+p.vy*t-.13*t*t),vy=p.vy-.26*t,speed=Math.hypot(p.vx,vy);cx.fillStyle=p.color;
+    if(speed>2){const length=Math.min(3,Math.floor(speed/1.5));cx.globalAlpha=.55;for(let n=1;n<=length;n++)cx.fillRect(x-Math.round(p.vx/speed*n),y+Math.round(vy/speed*n),1,1);}
+    cx.globalAlpha=.98;cx.fillRect(x,y,Math.min(2,p.size),1+(p.size>1?1:0));
+  }
   cx.restore();
 }
 const AI_CLOTH_SOURCES=new WeakMap(),AI_CLOTH_FRAMES=new WeakMap();
@@ -93,20 +99,36 @@ function aiClothFrame(p,art){
   const key=p.fighterKey+':'+art.rect.slice(0,4).join(',');if(frames.has(key))return frames.get(key);
   const [sx,sy,w,h]=art.rect,c=document.createElement('canvas');c.width=w;c.height=h;const ctx=c.getContext('2d',{willReadFrequently:true});ctx.drawImage(art.image,sx,sy,w,h,0,0,w,h);const pixels=ctx.getImageData(0,0,w,h);
   ctx.clearRect(0,0,w,h);ctx.drawImage(source.image,sx,sy,w,h,0,0,w,h);const original=ctx.getImageData(0,0,w,h).data;
-  const indices=new Set(SF2AIRULES.clothing(p.fighterKey)),rgb=q=>(q[0]<<16)|(q[1]<<8)|q[2];
-  // Ambiguous palette colours are excluded so shared black/skin/hair pixels
-  // can never be painted red merely because clothing uses the same RGB.
-  const colors=new Set(source.palette.flatMap((q,i)=>indices.has(i)&&!source.palette.some((other,j)=>!indices.has(j)&&rgb(q)===rgb(other))?[rgb(q)]:[]));
-  const mask=new Uint8Array(w*h),cloth=[];for(let i=0;i<mask.length;i++)if(original[i*4+3]&&colors.has((original[i*4]<<16)|(original[i*4+1]<<8)|original[i*4+2])){mask[i]=1;cloth.push(i);}
-  const frame={w,h,pixels,mask,cloth,variants:new Map()};frames.set(key,frame);if(frames.size>128)frames.delete(frames.keys().next().value);return frame;
+  const clothing=new Set(SF2AIRULES.clothing(p.fighterKey)),skin=new Set(SF2AIRULES.skin(p.fighterKey)),indices=new Set([...clothing,...skin]),rgb=q=>(q[0]<<16)|(q[1]<<8)|q[2];
+  // Skin and clothing accept blood; ambiguous colours shared with hair or
+  // equipment remain untouched. Transparent pixels always remain transparent.
+  const allowed=(set)=>new Set(source.palette.flatMap((q,i)=>set.has(i)&&!source.palette.some((other,j)=>!indices.has(j)&&rgb(q)===rgb(other))?[rgb(q)]:[]));
+  const colors=allowed(indices),skinColors=allowed(skin),clothingColors=allowed(clothing),mask=new Uint8Array(w*h),cloth=[],skinPixels=[],clothingPixels=[];
+  for(let i=0;i<mask.length;i++){const color=(original[i*4]<<16)|(original[i*4+1]<<8)|original[i*4+2];if(original[i*4+3]&&colors.has(color)){mask[i]=1;cloth.push(i);if(skinColors.has(color))skinPixels.push(i);if(clothingColors.has(color))clothingPixels.push(i);}}
+  const frame={w,h,pixels,mask,cloth,skinPixels,clothingPixels,variants:new Map()};frames.set(key,frame);if(frames.size>128)frames.delete(frames.keys().next().value);return frame;
 }
 function aiClothesArt(p,art){
   const amount=AI_BLOOD.clothes[p.i];if(!amount)return art;const frame=aiClothFrame(p,art);if(!frame?.cloth.length)return art;
   let image=frame.variants.get(amount);if(!image){
     image=document.createElement('canvas');image.width=frame.w;image.height=frame.h;const ctx=image.getContext('2d'),data=new ImageData(new Uint8ClampedArray(frame.pixels.data),frame.w,frame.h),seed=SF2AIRULES.hash(p.i+37,p.fighterKey+':'+art.rect.slice(0,4));
-    for(let spot=0;spot<amount;spot++){const h=aiFXHash(seed,spot),centre=frame.cloth[h%frame.cloth.length],x=centre%frame.w,y=Math.floor(centre/frame.w),rx=2+(h>>>8)%6,ry=2+(h>>>16)%5;
-      for(let py=Math.max(0,y-ry);py<Math.min(frame.h,y+ry+1);py++)for(let px=Math.max(0,x-rx);px<Math.min(frame.w,x+rx+1);px++){const i=py*frame.w+px;if(!frame.mask[i]||(px-x)**2/rx**2+(py-y)**2/ry**2>1)continue;const shade=(frame.pixels.data[i*4]+frame.pixels.data[i*4+1]+frame.pixels.data[i*4+2])/765;
-        for(let channel=0;channel<3;channel++){const blood=[80+100*shade,8+12*shade,18+15*shade][channel];data.data[i*4+channel]=17*Math.round((frame.pixels.data[i*4+channel]*.22+blood*.78)/17);}
+    // Small discrete marks replace the former large ellipses. Use a crimson
+    // palette shaded by luminance, never mixed with the costume/skin hue.
+    const paint=(x,y,hash,edge=false)=>{
+      if(x<0||y<0||x>=frame.w||y>=frame.h)return;const i=y*frame.w+x;if(!frame.mask[i])return;
+      const shade=(frame.pixels.data[i*4]*.2126+frame.pixels.data[i*4+1]*.7152+frame.pixels.data[i*4+2]*.0722)/255;
+      const red=(edge?158:184)+Math.round(shade*38)+(hash%13),green=edge?7:11,blue=edge?22:29;
+      data.data[i*4]=red;data.data[i*4+1]=green;data.data[i*4+2]=blue;
+    };
+    for(let spot=0;spot<amount;spot++){
+      const h=aiFXHash(seed,spot),pool=spot%3===1&&frame.skinPixels.length?frame.skinPixels:frame.clothingPixels.length?frame.clothingPixels:frame.cloth,centre=pool[h%pool.length],x=centre%frame.w,y=Math.floor(centre/frame.w),style=(h>>>28)%4;
+      if(style===0){ // fine scattered speckles
+        paint(x,y,h);for(let n=0;n<3+(h%3);n++){const q=aiFXHash(h,n);paint(x+(q%7)-3,y+((q>>>8)%7)-3,q,true);}
+      }else if(style===1){ // a tiny irregular spot, one to three pixels across
+        const radius=1+(h%2);for(let dy=-radius;dy<=radius;dy++)for(let dx=-radius;dx<=radius;dx++)if(dx*dx+dy*dy<=radius*radius&&((dx===0&&dy===0)||aiFXHash(h,dx+dy*7)%4!==0))paint(x+dx,y+dy,h,dx*dx+dy*dy>1);
+      }else if(style===2){ // narrow gravity streak with a rounded end
+        const length=3+(h%5),lean=(h>>>8)%3-1;for(let n=0;n<length;n++)paint(x+Math.round(lean*n/4),y+n,h,n<length-2);paint(x+Math.round(lean*(length-1)/4)+1,y+length-1,h);
+      }else{ // short fine splash line
+        const length=2+(h%4),direction=h&1?1:-1;for(let n=0;n<length;n++)paint(x+n*direction,y+Math.floor(n/3),h,n>0);
       }
     }
     ctx.putImageData(data,0,0);frame.variants.set(amount,image);if(frame.variants.size>3)frame.variants.delete(frame.variants.keys().next().value);
@@ -114,7 +136,7 @@ function aiClothesArt(p,art){
   return{...art,image,rect:[0,0,frame.w,frame.h,art.rect[4],art.rect[5]]};
 }
 function aiClothesHit(x,y,owner){
-  // Blood can only add clothing stains to the fighter who was injured.
+  // Blood can only stain clothing/skin on the fighter who was injured.
   for(const p of P){if(p.i!==owner)continue;const art=fighterArtBase(p),r=art.rect,px=Math.floor((p.FACE?-(x-p.X/256):x-p.X/256)-r[4]),py=Math.floor(p.Y/256-y-r[5]);if(px<0||py<0||px>=r[2]||py>=r[3])continue;const frame=aiClothFrame(p,art);if(frame?.mask[py*frame.w+px])return p;}
   return null;
 }
@@ -142,11 +164,11 @@ function aiDeathBegin(p,effect){
   const mouth=aiMouth(p),dir=p.FACE?1:-1,seed=SF2AIRULES.hash(G.tick,'ko:'+p.i);
   const particles=Array.from({length:mouth?(special?28:18):0},(_,i)=>{
     const h=aiFXHash(seed,'blood:'+i),r=(h&65535)/65535,q=(h>>>16)/65535;
-    return {x:mouth.x,y:mouth.y,vx:dir*(.6+r*3.2)+(q-.5)*1.8,vy:1.2+q*3.8,size:1+(h%3),life:30+(h%25),tick:G.tick,color:['#8c1020','#c51c2c','#ed3341'][i%3]};
+    return {x:mouth.x,y:mouth.y,vx:dir*(.6+r*3.2)+(q-.5)*1.8,vy:1.2+q*3.8,size:1+(h%3),life:30+(h%25),tick:G.tick,color:['#b20b22','#d3132b','#ed263c'][i%3]};
   });
   aiBloodAdd(particles,p.i);aiClothesStain(p,special?3:2);
   if(special)aiSpecialKOEcho(p.opp,effect);
-  AI_DEATH_FX.push({slot:p.i,special,start:G.tick,lastTick:-1,lastSample:-99,airborne:false,emitting:special,mouth,trails:[],particles});
+  AI_DEATH_FX.push({slot:p.i,trailSlot:p.opp.i,special,start:G.tick,lastTick:-1,lastSample:-99,airborne:false,emitting:special,mouth,trails:[],particles});
 }
 function aiDeathStep(){
   aiBloodStep();
@@ -157,18 +179,21 @@ function aiDeathStep(){
     if(fx.lastTick===G.tick)continue;fx.lastTick=G.tick;
     fx.trails=fx.trails.filter(t=>G.tick-t.tick<20);fx.particles=fx.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life);
     if(p.Y>0)fx.airborne=true;
-    if(fx.airborne&&p.Y<=0||p.CEKO?.ready)fx.emitting=false;
-    const moved=fx.x===undefined||Math.abs(p.X-fx.x)+Math.abs(p.Y-fx.y)>=256;
-    if(fx.special&&fx.emitting&&age<200&&moved&&G.tick-fx.lastSample>=2){
-      const art=fighterArt(p);fx.trails.push({image:art.image,rect:art.rect.slice(),face:p.FACE,x:p.X/256,y:p.Y/256,tick:G.tick});
-      const mouth=aiMouth(p);fx.mouth=mouth;
-      if(mouth&&fx.airborne&&G.tick-(fx.lastBlood??fx.start)>=6){
-        const drops=[];for(let j=0;j<2;j++)drops.push({x:mouth.x,y:mouth.y,vx:(p.VX||0)/640+(p.FACE?1:-1)*(.4+j*.3),vy:1+j*.5,size:1+j,life:28+j*6,tick:G.tick,color:j?'#c51c2c':'#8c1020'});
-        aiBloodAdd(drops,p.i);fx.particles.push(...drops);fx.lastBlood=G.tick;
-      }
-      if(fx.trails.length>10)fx.trails.shift();fx.x=p.X;fx.y=p.Y;fx.lastSample=G.tick;
+    if(fx.airborne&&p.Y<=0||p.CEKO?.ready)fx.bloodStopped=true;
+    const winner=P[fx.trailSlot];
+    fx.emitting=fx.special&&hpAlive(winner)&&age<160;
+    const pose=winner.cur+':'+winner.aidx,moved=fx.x===undefined||Math.abs(winner.X-fx.x)+Math.abs(winner.Y-fx.y)>=256||pose!==fx.pose;
+    if(fx.emitting&&moved&&G.tick-fx.lastSample>=2){
+      const art=fighterArt(winner);fx.trails.push({slot:winner.i,image:art.image,rect:art.rect.slice(),face:winner.FACE,x:winner.X/256,y:winner.Y/256,tick:G.tick});
+      if(fx.trails.length>10)fx.trails.shift();fx.x=winner.X;fx.y=winner.Y;fx.pose=pose;fx.lastSample=G.tick;
     }
-    if(age>60&&!fx.emitting&&!fx.trails.length&&!fx.particles.length)AI_DEATH_FX.splice(i,1);
+    const mouth=aiMouth(p);fx.mouth=mouth;
+    const bloodMoved=fx.bloodX===undefined||Math.abs(p.X-fx.bloodX)+Math.abs(p.Y-fx.bloodY)>=256;
+    if(fx.special&&!fx.bloodStopped&&mouth&&fx.airborne&&age<200&&bloodMoved&&G.tick-(fx.lastBlood??fx.start)>=6){
+      const drops=[];for(let j=0;j<2;j++)drops.push({x:mouth.x,y:mouth.y,vx:(p.VX||0)/640+(p.FACE?1:-1)*(.4+j*.3),vy:1+j*.5,size:1+j,life:28+j*6,tick:G.tick,color:j?'#d3132b':'#b20b22'});
+      aiBloodAdd(drops,p.i);fx.particles.push(...drops);fx.lastBlood=G.tick;fx.bloodX=p.X;fx.bloodY=p.Y;
+    }
+    if(age>60&&!fx.emitting&&!fx.trails.length&&!fx.particles.length&&(fx.bloodStopped||age>=200||!fx.special))AI_DEATH_FX.splice(i,1);
   }
 }
 function aiDeathDraw(camera,ground){
@@ -2870,7 +2895,7 @@ function cycleEdition(direction){const ids=['ww','ce','ai'];setEdition(ids[(ids.
 function aiInfo(){return {
 
   blood:{clothes:AI_BLOOD.clothes.slice(),particles:AI_BLOOD.particles.length,stains:AI_BLOOD.stains.length,marks:AI_BLOOD.stains.map(s=>({...s}))},
-  deathEffects:AI_DEATH_FX.map(f=>({slot:f.slot,special:f.special,emitter:'mouth',mouth:f.mouth?{...f.mouth}:null,age:G.tick-f.start,trails:f.trails.length,particles:f.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life).length})),
+  deathEffects:AI_DEATH_FX.map(f=>({slot:f.slot,trailSlot:f.trailSlot,special:f.special,emitter:'mouth',mouth:f.mouth?{...f.mouth}:null,age:G.tick-f.start,trails:f.trails.length,particles:f.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life).length})),
   edition:VER.edition,prototype:AICFG.prototype||P.some(p=>p.aiProfile==='evil-ryu'),onlineEnabled:false,upstream:'f14f766',runtimeBaseline:'b3285',ready:VER.cur==='CE'&&VER.loading===2,
 
   configured:aiEnabled(),training:AICFG.training,mode:AICFG.mode,dummy:AICFG.dummy,sound:!muted,
