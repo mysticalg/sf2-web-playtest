@@ -1640,7 +1640,7 @@ function phase(){
 
     setanim(p,n,0);p.Y=p.VX=p.VY=0;p.ST=S_WIN;if(VER.edition==='ce'&&p.fid===7)p.CECameraIgnore=true;}
 
-    if(G.gt===96+victoryHold&&G.winmask!==3){const w=G.winmask&1?0:1;G.bann=(VER.cur==='CE'||G.mode2p||!G.arc?aiName(P[w]).toUpperCase()+' WIN':w?'YOU LOSE':'YOU WIN')+(P[w].HP===aiMax(P[w])?'  PERFECT':'');if(VER.cur==='CE'&&window.SF2CEANNOUNCER){G.ann=SF2CEANNOUNCER.init(G.mode2p?P[w].fid:w?13:12);for(const code of SF2CEANNOUNCER.step(G.ann))sfxc(code);}}
+    if(G.gt===96+victoryHold&&G.winmask!==3){const w=G.winmask&1?0:1;G.bann=(VER.cur==='CE'||G.mode2p||!G.arc?aiName(P[w]).toUpperCase()+' WIN':w?'YOU LOSE':'YOU WIN')+(P[w].HP===aiMax(P[w])?'  PERFECT':'');if(VER.cur==='CE'&&window.SF2CEANNOUNCER){G.ann=SF2CEANNOUNCER.init(isDamnd(P[w])?(G.mode2p||w===0?12:13):G.mode2p?P[w].fid:w?13:12);for(const code of SF2CEANNOUNCER.step(G.ann))sfxc(code);}}
 
   if(G.gt===96+victoryHold&&G.winmask===3)G.bann=G.ko?'DOUBLE K.O.':'DRAW GAME';
 
