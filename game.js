@@ -2368,10 +2368,10 @@ function aiEchoBuffer(voice){
 function aiSpecialKOEcho(owner,effect){
   if(!aiEnabled())return;const saved=AI_SPECIAL_VOICES[owner.i],move=effect?.projectile?saved?.projectile:saved?.last;
   const voice=move||{commands:[[0,XS(owner)?.sph?.[Math.max(0,owner.F.moves.indexOf(owner.MV))]||0x2a]],sample:null,kind:owner.MV?.kind||'special'};
-  soundStats.koEchoRequests=(soundStats.koEchoRequests||0)+1;soundStats.lastKOEcho={slot:owner.i,kind:voice.kind,taps:3,played:false};
+  soundStats.koEchoRequests=(soundStats.koEchoRequests||0)+1;soundStats.lastKOEcho={slot:owner.i,kind:voice.kind,taps:4,played:false};
   if(!AC||muted||netReplaying)return;
   try{const buffer=aiEchoBuffer(voice);if(!buffer)return;const now=AC.currentTime;
-    for(const [delay,volume] of [[.03,.65],[.21,.32],[.39,.16],[.57,.08]]){const source=AC.createBufferSource(),gain=AC.createGain();source.buffer=buffer;gain.gain.value=volume;source.connect(gain);gain.connect(MG);const node={source,gain};AI_ECHO.nodes.push(node);source.onended=()=>{source.disconnect();gain.disconnect();const index=AI_ECHO.nodes.indexOf(node);if(index>=0)AI_ECHO.nodes.splice(index,1);};source.start(now+delay);}
+    for(const [delay,volume] of [[.03,.65],[.35,.34],[.67,.21],[.99,.12],[1.31,.065]]){const source=AC.createBufferSource(),gain=AC.createGain();source.buffer=buffer;gain.gain.value=volume;source.connect(gain);gain.connect(MG);const node={source,gain};AI_ECHO.nodes.push(node);source.onended=()=>{source.disconnect();gain.disconnect();const index=AI_ECHO.nodes.indexOf(node);if(index>=0)AI_ECHO.nodes.splice(index,1);};source.start(now+delay);}
     soundStats.koEchoes=(soundStats.koEchoes||0)+1;soundStats.lastKOEcho.played=true;soundStats.lastKOEcho.duration=buffer.duration;
   }catch(error){console.warn('Special KO echo unavailable:',error.message);}
 }
