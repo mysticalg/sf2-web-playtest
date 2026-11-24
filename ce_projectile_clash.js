@@ -22,6 +22,12 @@
   // 0x951204 -> 0x958c0: hit and block both create this burst. The core
   // supplies the 0x95a60 midpoint of the pre-reaction attack/hurt centres.
   function bodyImpact(p,point,h){if(!Array.isArray(point)||point.length<2)return;spawn(p,h,point);}
+  // AI fighter contacts reuse the original turquoise guard (0..2) and gold hit (3) art.
+  // The first frame is visible during hitstop, before animation resumes.
+  function contactImpact({x,y,face,strength,blocked,tick}){
+    const selector=blocked?Math.max(0,Math.min(2,strength|0)):3,animation=data.animations[selector];
+    effects.push({selector,x,y,face,index:0,timer:animation.entries[0].ticks,born:tick,visible:true,contact:true});
+  }
   function beforeAdvance(p,h){
     if(!record(p))return false;
     if(p.FBCLASH){
@@ -59,6 +65,6 @@
     }
   }
   function reset(players=[]){effects.length=0;for(const p of players)delete p.FBCLASH;}
-  window.SF2CEPROJECTILES={box,overlap,record,beforeAdvance,bodyImpact,stepEffects,drawEffects,reset,
+  window.SF2CEPROJECTILES={box,overlap,record,beforeAdvance,bodyImpact,contactImpact,stepEffects,drawEffects,reset,
     ready:Promise.all(images.map(i=>i.decode())),get effects(){return effects;},data};
 })();

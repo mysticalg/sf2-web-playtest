@@ -1243,11 +1243,20 @@ const DMG_CE={"0":{"47":4,"14":5,"48":14,"15":13,"49":19,"16":18,"11":7,"17":5,"
 
 function dmgof(i){return Math.round(12+1.8*(i&0x7f))+((rand()>>>20)%3)-1;}
 
+function aiImpactPoint(d,region,projectile){
+  if(!aiEnabled())return null;
+  const p=d.opp,a=projectile?fbbox(p):boxw(p,4),b=boxw(d,region);
+  return a&&b?{x:(a[0]+b[0])/2,y:(a[1]+b[1])/2,face:p.FACE}:null;
+}
+function aiImpact(point,strength,blocked){
+  if(point)SF2CEPROJECTILES.contactImpact({...point,strength,blocked,tick:G.tick});
+}
 function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=null,specialAttack=null){const specialKO=specialAttack??(!!reaction?.profile?.projectile||reaction?.reactionCode>=24&&reaction.reactionCode!==32||d.opp.ST===S_SPEC&&!['throw','athrow','ai-rift'].includes(d.opp.MV?.kind));if(aiEnabled()&&d.AIRift)d.AIRift=null; if(str>2)str=2;
+  const impact=aiImpactPoint(d,region,specialAttack===true||!!reaction?.profile?.projectile);
 
   if(d.ST===S_FREE||d.ST===S_CR||d.ST===S_BLK){const back=dir>0?K_R:K_L; /* M13d: block away from the attacker's actual side (crossups) */
 
-    if(reaction?.nativeBlocked??(!!(d.KEYS&back)&&(!low||(low>0)===!!(d.KEYS&K_D)))){ /* native posture admission is resolved before damage RNG */const c=d.KEYS&K_D?1:0;d.RETCR=c;setanim(d,c?AN_BLOCKC:AN_BLOCKS,0);d.ST=S_BLK;
+    if(reaction?.nativeBlocked??(!!(d.KEYS&back)&&(!low||(low>0)===!!(d.KEYS&K_D)))){ /* native posture admission is resolved before damage RNG */aiImpact(impact,str,true);const c=d.KEYS&K_D?1:0;d.RETCR=c;setanim(d,c?AN_BLOCKC:AN_BLOCKS,0);d.ST=S_BLK;
 
       d.KB=PUSHKB[str]*dir;d.STUN=BSTUN[str]-(VER.cur==="CE"&&d.opp.MH2?2:0);if(!localStop)G.hfz=BFRZ; /* CE: 2nd blocked hit of a two-hit normal frees 2f sooner (ROM stun trace) */
 
@@ -1261,6 +1270,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
       }}if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});return lethalProjectileChip?undefined:'blk';}}
 
+  aiImpact(impact,str,false);
   const specialReaction=VER.cur==='CE'&&G.scene==='fight'&&SF2CESPECIAL.accepts(d,reaction);if(!localStop&&!specialReaction)G.hfz=HFRZ;
 
   const nativeScore=VER.edition==='ce'&&reaction?.scoreCommand!==undefined?SF2CECOMBAT.scoreAmount((VER.edition==='ce'?dmg>d.HP:dmg>=d.HP)?reaction.koScoreCommand:reaction.scoreCommand):null;
@@ -1394,7 +1404,7 @@ function fbhit(p,nativeStep=false){if(ceYogaProjectile(p))return;if(ceBoundProje
 
   const bl=applyhit(d,isEvilKen(p)?Math.floor(damage*192/256):damage,native?native.strength:s,0,0,p.FBVX>=0?1:-1,native?native.chip:s<2?5:8,region,localStop,native,true),X=XS(p);
 
-  if(nativeImpact)SF2CEPROJECTILES.bodyImpact(p,impactPoint,{tick:G.tick,rand});
+  if(nativeImpact&&!aiEnabled())SF2CEPROJECTILES.bodyImpact(p,impactPoint,{tick:G.tick,rand});
 
   if(localStop){d.CEPF={init:1,ticks:14,pose:ceProjectilePose(d)};Object.assign(d,oldPose);d.anim=d.F.anims[d.cur];}
 
