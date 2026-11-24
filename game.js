@@ -1243,18 +1243,12 @@ function camera(){
 
   if(aiEnabled()&&G.scene==='fight'){
     window.SF2CECAMERA?.step(G.stage,P,{throw:P.some(p=>p.THV),shake:!!G.CECameraShake});
-    const room=aiRoom(),xs=P.map(p=>p.X/256),poses=P.concat(window.SF2CECAMERA?.poses||[]),bounds=poses.map(p=>({p,b:fighterBounds(p)}));
-    const left=Math.min(...bounds.map(({p,b})=>p.X/256+b.left)),right=Math.max(...bounds.map(({p,b})=>p.X/256+b.right));
+    const room=aiRoom(),xs=P.map(p=>p.X/256);
     // Zoom follows only horizontal fighter separation, never jump height or
     // animation bounds. A 320px close view gives a modest 1.2x zoom-in.
     const span=room.right-room.left,minWidth=Math.min(320,span);
     const needed=Math.min(span,Math.max(minWidth,Math.abs(xs[1]-xs[0])+128));
-    const follow=G.AICamera||(G.AICamera={velocity:0,centre:(xs[0]+xs[1])/2,centreVelocity:0,target:W,hold:0});
-    // Animation/velocity prediction is used for horizontal framing only.
-    const motionVelocity=p=>{const last=follow.last?.[p.i];return{x:Math.abs(p.VX||0)>0?(p.VX||0)/256:last?(p.X-last.x)/256:0};};
-    const future=bounds.flatMap(({p,b})=>{const out=[{p,b}];let ticks=0;for(let i=p.aidx+1;i<Math.min(p.anim.ents.length,p.aidx+4)&&ticks<8;i++){ticks+=p.anim.ents[i-1][1]||1;out.push({p,b:fighterBounds({...p,aidx:i})});}return out;});
-    const futureLeft=Math.min(...future.map(({p,b})=>p.X/256+b.left+Math.min(0,motionVelocity(p).x)*8)),futureRight=Math.max(...future.map(({p,b})=>p.X/256+b.right+Math.max(0,motionVelocity(p).x)*8));
-    follow.last=P.map(p=>({x:p.X,y:p.Y}));
+    const follow=G.AICamera||(G.AICamera={velocity:0,target:W,hold:0});
     const target=needed;
     follow.target=Math.max(minWidth,Math.min(span,follow.target));
     if(target>follow.target+4){follow.target=target;follow.hold=20;}
@@ -1267,20 +1261,12 @@ function camera(){
     if(width>span){width=span;velocity=Math.min(0,velocity);}
     if(width<minWidth+.05&&Math.abs(velocity)<.05){width=minWidth;velocity=0;}
     G.AIViewWidth=width;follow.velocity=velocity;
-    const desired=(xs[0]+xs[1])/2+P.reduce((n,p)=>n+(p.VX||0)/256,0)*2;
-    [follow.centre,follow.centreVelocity]=spring(follow.centre,follow.centreVelocity,desired,.13);
-    // A soft centre follows movement, with the original room/pose guards.
-    G.cam=width>=span?room.left:Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
-    const base=follow.centre-width/2,futureLo=futureRight-width+12,futureHi=futureLeft-12;
-    const aim=futureLo<=futureHi?Math.max(futureLo,Math.min(futureHi,base)):base;
-    [follow.pan,follow.panVelocity]=spring(follow.pan||0,follow.panVelocity||0,aim-base,.13);
-    // Predict towards a comfortable margin, but only enforce two world pixels
-    // immediately. A newly extended hand/claw need not snap back to a12px pad.
-    const lo=right-width+2,hi=left-2,visual=lo<=hi?Math.max(lo,Math.min(hi,base+follow.pan)):base+follow.pan;
-    // A normal view must stay inside the actual room. A taller view contains
-    // that entire room; surplus width is zoom padding, never extra scrolling.
-    const edgeLo=width<=span?room.left:room.right-width,edgeHi=width<=span?room.right-width:room.left;
-    follow.inset=G.cam-Math.max(edgeLo,Math.min(edgeHi,visual));
+    // Anchor horizontal framing to actual positions. Jump poses and retained
+    // airborne VX must not pan the scenery or keep it drifting after landing.
+    // Follow position directly so a fighter and the floor stop together.
+    follow.centre=(xs[0]+xs[1])/2;
+    G.cam=Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
+    follow.inset=0;
     return;
   }
   if(VER.cur!=='CE'){const m=(P[0].X+P[1].X)>>9;G.cam=Math.max(r[0],Math.min(r[1],m-W/2|0));return;}
