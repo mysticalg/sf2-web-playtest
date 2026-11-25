@@ -8,13 +8,13 @@ Arcade has the original twelve matches and bonus rounds followed by the Metro Ci
 |---|---|---|
 | Damnd | Street Rush, Somersault Kick, Rising Smash, Barrel Call | Slum |
 | Sodom | Katana Rush, Twin Blade Cyclone, Rising Katana, Gut Buster | Subway |
-| Andore | Bull Rush, Body Slam, Headbutt, Giant Throw, Double Palm | West Side cage |
+| Andore | Bull Rush, Chest Bump, Headbutt, Piledriver, Choke Hold, Flying Seat Drop | West Side cage |
 | Edi. E | Police Pistol, Baton Rush, Baton Upper, Arrest and Batter, Pistol Burst | West Side |
-| Rolento | Patriot Circle, Stinger Grenade, Staff Vault, Shoulder Toss, Grenade Retreat | Industrial Area |
+| Rolento | Patriot Circle, Grenade Throw, Wall Kick, Shoulder Toss, Grenade Barrage, Grenade Retreat | Industrial Area |
 | Abigail | Rage Charge, Giant Body Splash, Bay Uppercut, Crushing Toss, Power Punch | Bay Area |
 | Belger | Crossbow Volley, Chair Rush, Sky Bolt Rain, Escape Hop, Crossbow Butt | Uptown |
 
-Shortcuts: LP+LK, MP+MK, HP+HK, MP+HK, LP+MK, respectively. Motions for the new guests: quarter-circle forward + punch, quarter-circle forward + kick, dragon-punch + punch, quarter-circle back + punch, quarter-circle back + kick. Forward/back + medium/heavy at close range throws. Six attack buttons, crouching attacks, high/low guard, directional jumps, hit-confirm chains, special cancels, timed combo breakers, dizzy/fire/KO reactions and bonus-stage attacks are connected.
+Shortcuts: LP+LK, MP+MK, HP+HK, MP+HK, LP+MK, HP+MP, respectively. Motions for the new guests: quarter-circle forward + punch, quarter-circle forward + kick, dragon-punch + punch, quarter-circle back + punch, quarter-circle back + kick, half-circle forward + punch (sixth move where available). Forward/back + medium/heavy at close range throws. Six attack buttons, crouching attacks, high/low guard, directional jumps, hit-confirm chains, special cancels, timed combo breakers, dizzy/fire/KO reactions and bonus-stage attacks are connected.
 
 These are authored SF2 adaptations of the Final Fight bosses, not a claim of frame-exact Final Fight AI. Their native signature actions inform the extensions: swords/charge and gut punches; police baton/pistol/grab; staff/acrobatic kicks/grenades/shoulder throw; rage charge punch and wrestling; chair and crossbow volleys/escape jumps. Normal buttons are adapted to each boss's native fighting style, including weapon strikes and punches on kick-button inputs.
 
@@ -43,3 +43,13 @@ Original FF audio command captures00,0d,26,29,2c,2f are included as decoded brow
 The AI renderer reuses magnification buffers and filters the HUD only when its pixels change. Offscreen world rows are skipped with a3-pixel neighbourhood retained for identical MMPX output. Smooth2x now uses a2x display buffer and Smooth4x a4x buffer. A simulation tick schedules one AI render; high-refresh displays no longer trigger duplicate full renders. Faithful editions keep their previous frame scheduling.
 
 In a local headless Chromium150-frame scenario, mean render costs changed from5.18 to3.21ms(close2x),10.46 to7.76ms(wide2x),9.46 to3.39ms(close4x),14.01 to7.79ms(wide4x). This is local render timing, not a guarantee of real-device FPS. Close/wide4x pixel hashes match the previous renderer. A simulated240Hz second yielded59 simulation steps and59 renders. Gameplay, FF audio/blood and WW/CE trace regressions pass.
+
+## Native move and floor alignment update
+
+Andore uses a planted wind-up followed by his running charge, with one contact and recovery. His piledriver lifts and inverts the victim, jumps and deals damage on landing. His standing choke repeatedly deals damage until the victim breaks free or is knocked out. Press new attack buttons and change direction to escape; holding one button does not count repeatedly. Close toward+MP initiates the choke; toward+HP initiates the piledriver. Flying Seat Drop uses an original seated airborne pose and an overhead hit during descent, with landing recovery. The same special can be started in the air.
+
+Rolento has one-grenade and three-grenade throws, a retreating three-grenade leap, fast movement (faster at low health), and a rebounding wall-kick special. Normal jumps into a wall also rebound, up to twice per airtime. Grenades use eight recovered original rotations and independent fuses/bounces; their blast artwork is an authored pixel effect. Round reset clears grenades and all carried/held-victim state.
+
+All seven guests use Ryu's visible sole baseline (+2 native pixels relative to the common floor anchor) for grounded idle, walk, crouch and normal attacks. This fixes Andore sitting below the opponent and removes frame-to-frame foot dips. Airborne poses retain a consistent air pivot. Belger's shared airborne/grounded attack pose receives its ground correction only when grounded. Edi's clipped walking/fallen cells and Abigail's clipped charge cells were re-extracted from the original sheets.
+
+Validation for this update: all seven guests in both slots through idle/walk/crouch/six normal attacks, mirrored Andore charge/piledriver/choke/seat-drop lifecycles and escape/interruption/KO, Rolento single/triple grenades and wall rebounds, standing/crouching seat-drop guard, blocked-special chip, airborne seat drop, grenade cleanup/reset, 206 mirrored combat cases, twelve-hit chains, CPU/throws and unchanged WW/CE traces. Screenshots were inspected in the action client. Further original-move fidelity work on the other guests remains in progress.
