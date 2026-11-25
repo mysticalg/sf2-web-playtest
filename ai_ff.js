@@ -12,7 +12,7 @@ window.SF2AIFF=(()=>{
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
  for(const[id,s]of Object.entries(specs)){
-  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-andore-choke-20';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
+  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-andore-carry-21';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
@@ -68,11 +68,11 @@ window.SF2AIFF=(()=>{
   f.moves=p.specials.map(([name,style,pose],i)=>{const a=p.id==='andore'&&i===5?112:[100,101,102,105,106,107][i],source=sequence(p,pose),seq=[...one(p.idle,6),...source,...one(p.idle,12)];if(['spin','dash'].includes(style))seq.splice(1,0,...source,...source);put(a,name,seq,{attack:!['bullet','burst','grenade','rain','retreat','grenade-barrage','hold','pistol','pistol-burst','grab-batter','bolts','bolt-rain','belger-hop','belger-retreat'].includes(style),strength:2,kd:!['dash','spin'].includes(style)});if(style==='dash'&&p.id==='andore')f.anims[a].ents.forEach((e,j)=>{if(j>0&&j<f.anims[a].ents.length-1){e[6]=[-40,48,28,28];e[7]=24;}});return{name,kind:'ff',style,a,inp:['qcf','qcf','dp','qcb','qcb','hcf'][i],btn:['P','K','P','P','K','P'][i],role:['grab','grab-batter','hold','power','baton','sodom-chop','sodom-double'].includes(style)?'near':style==='rise'?'rise':['dash','sodom-charge','rage','baton-rush','bullet','burst','pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','rain'].includes(style)?'far':'mid'};});
   if(p.id==='andore'){
    Object.assign(f.moves[0],{inp:'cbf',btn:'P'});Object.assign(f.moves[3],{inp:'grab',btn:'P'});Object.assign(f.moves[4],{inp:'grab',btn:'K'});Object.assign(f.moves[5],{inp:'cdu',btn:'K'});
-   const charge=[[11,18],...[0,1,2,3,4,5,0,1,2,3,4,5].map(frame=>[frame,3]),[6,18]];
+   const charge=[[11,18],...sequence(p,'run'),...sequence(p,'run'),[6,18]];
    put(100,'Andore Bull Rush',charge,{attack:false,strength:2,kd:true});f.anims[100].ents.forEach((e,i)=>{if(i>0&&i<charge.length-1){e[6]=[-36,48,32,28];e[7]=28;e[8]=2;e[9]=1;}});
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(112,'Andore Flying Seat Drop',[[p.data.airborneFrame,10]],{loop:true});f.anims[112].ents[0][6]=[0,18,34,30];f.anims[112].ents[0][7]=28;f.anims[112].ents[0][8]=2;f.anims[112].ents[0][9]=1;f.anims[112].ents[0][10]=-1;put(113,'Andore Seat Drop Landing',[[11,14],[0,10]]);
-   put(111,'Andore Choke Hold',sequence(p,'choke'),{loop:true});
+   put(111,'Andore Choke Hold',sequence(p,'choke'),{loop:true});put(114,'Andore Carry Straight',sequence(p,'carryStraight'),{loop:true});put(115,'Andore Carry Shake',sequence(p,'carryBent'),{loop:true});
    put(107,'Andore Piledriver Lift',[[p.data.liftFrame,10]],{loop:true});put(108,'Andore Piledriver Air',[[p.data.airborneFrame,8]],{loop:true});put(109,'Andore Piledriver Land',[[12,14],[0,12]]);
   }
   if(p.id==='rolento'){
@@ -238,15 +238,15 @@ window.SF2AIFF=(()=>{
  function bulletStep(player,room){for(const b of player.AIFFBullets||[]){b.x+=b.vx;if(b.ay){b.y+=b.vy;b.vy-=b.ay;}b.age++;}player.AIFFBullets=player.AIFFBullets.filter(b=>!b.hit&&b.y>=0&&b.age<=120&&b.x>=room.left-32&&b.x<=room.right+32);const b=player.AIFFBullets[0];player.FBON=b?1:0;if(b){player.FBX=Math.round(b.x*256);player.FBY=b.y*256;player.FBVX=b.vx*256;}else delete player.AIFFBullets;}
  function bulletContacts(player){return(player.AIFFBullets||[]).filter(b=>!b.hit).map(b=>({bullet:b,box:[b.x,b.y,b.type==='bolt'?8:6,3]}));}
  function bulletDraw(ctx,player,camera,ground){ctx.save();ctx.imageSmoothingEnabled=false;for(const b of player.AIFFBullets||[]){if(b.hit)continue;ctx.save();ctx.translate(Math.round(b.x-camera),Math.round(ground-b.y));if(b.type==='bolt'){ctx.rotate(Math.atan2(-(b.vy||0),b.vx));ctx.scale(-1,1);ctx.drawImage(boltImage,-7,-1);}else{if(b.dir>0)ctx.scale(-1,1);ctx.drawImage(bulletImage,-5,-1);}ctx.restore();}ctx.restore();}
- function holdStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{age:0,pulses:0,escape:0,previous:((o.AIButtons?.raw||0)|(o.KEYS&15)),dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false,choke:true}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
+ function holdStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{age:0,pulses:0,escape:0,walk:0,ownerPrevious:player.AIButtons?.raw||0,previous:((o.AIButtons?.raw||0)|(o.KEYS&15)),dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false,choke:true}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function holdStep(player,h){const s=player.AIFFHold,o=player.opp;s.age++;
-  const attack=player.AIButtons?.raw||0;if((attack&544)===544){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;throwStart(player,2,{...h,move:h.throwMove,special:true});return;}if((attack&192)===192){holdRelease(player,h,false);start(player,player.F.moves[5],2,h);return;}
+  const attack=player.AIButtons?.raw||0,punch=(attack&~s.ownerPrevious)&112;s.ownerPrevious=attack;if((attack&544)===544||(s.age>5&&punch)){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;throwStart(player,2,{...h,move:h.throwMove,special:true});return;}if((attack&192)===192){holdRelease(player,h,false);start(player,player.F.moves[5],2,h);return;}
   if(!player.THV||o.HP<=0){holdRelease(player,h,true);return;}
   const raw=(o.AIButtons?.raw||0)|(o.KEYS&15),fresh=(raw&~s.previous)&1008,direction=raw&15;let points=0;if(fresh)points+=2;if(direction&&direction!==(s.previous&15))points++;s.previous=raw;
   if(h.cpu?.(o)&&s.age>18&&s.age%6===0)points+=2;s.escape=Math.min(14,s.escape+Math.min(3,points));
   if(s.escape>=14){s.escaped=true;holdRelease(player,h,false);return;}
-  const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10,shake=shaking?((phase>>1)%2?2:-2):0;const chokeIndex=shaking?((phase>>1)%2):0;if(player.aidx!==chokeIndex)h.anim(player,111,chokeIndex);
-  o.X=player.X+s.dir*(32*bodyScale(player)+shake)*256;o.Y=38*bodyScale(player)*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;
+  const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10,shake=shaking?((phase>>1)%2?2:-2):0;const move=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);if(move){const room=h.room(),margin=96;player.X=Math.max((room.left+margin)*256,Math.min((room.right-margin)*256,player.X+move*0x180));s.walk++;}const chokeAnim=move?(shaking?115:114):111,chokeIndex=move?Math.floor(s.walk/4)%6:shaking?((phase>>1)%2):0;if(player.cur!==chokeAnim||player.aidx!==chokeIndex)h.anim(player,chokeAnim,chokeIndex);
+  const grip=art(player).rect,head=h.head?.(o),gx=player.X/256+s.dir*(-grip[4]-4),gy=-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+s.dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;
   if(s.age>=20&&(s.age-20)%24===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0){holdRelease(player,h,true);return;}h.anim(o,22,0);}
  }
  function holdRelease(player,h,fatal=false){const o=player.opp;delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;if(fatal){h.drop?.(o);}else{o.ST=5;o.STUN=12;o.KB=0;o.Y=0;}h.idle(player);}
