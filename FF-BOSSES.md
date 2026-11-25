@@ -9,12 +9,12 @@ Arcade has the original twelve matches and bonus rounds followed by the Metro Ci
 | Damnd | Street Rush, Somersault Kick, Rising Smash, Barrel Call | Slum |
 | Sodom | Katana Rush, Twin Blade Cyclone, Rising Katana, Gut Buster | Subway |
 | Andore | Bull Rush, Chest Bump, Headbutt, Piledriver, Choke Hold, Flying Seat Drop | West Side cage |
-| Edi. E | Police Pistol, Baton Rush, Baton Upper, Arrest and Batter, Pistol Burst | West Side |
+| Edi. E | Police Pistol, Baton Rush, Baton Smash, Arrest and Batter, Pistol Burst | West Side |
 | Rolento | Patriot Circle, Grenade Throw, Wall Kick, Shoulder Toss, Grenade Barrage, Grenade Retreat | Industrial Area |
-| Abigail | Rage Charge, Giant Body Splash, Bay Uppercut, Crushing Toss, Power Punch | Bay Area |
+| Abigail | Rage Charge, Giant Throw, Hammer Punch, Crushing Toss, Power Punch | Bay Area |
 | Belger | Crossbow Volley, Chair Rush, Sky Bolt Rain, Escape Hop, Crossbow Butt | Uptown |
 
-Shortcuts: LP+LK, MP+MK, HP+HK, MP+HK, LP+MK, HP+MP, respectively. Motions for the new guests: quarter-circle forward + punch, quarter-circle forward + kick, dragon-punch + punch, quarter-circle back + punch, quarter-circle back + kick, half-circle forward + punch (sixth move where available). Forward/back + medium/heavy at close range throws. Six attack buttons, crouching attacks, high/low guard, directional jumps, hit-confirm chains, special cancels, timed combo breakers, dizzy/fire/KO reactions and bonus-stage attacks are connected.
+Shortcuts: LP+LK, MP+MK, HP+HK, MP+HK, LP+MK, HP+LK, respectively. Motions for the new guests: quarter-circle forward + punch, quarter-circle forward + kick, dragon-punch + punch, quarter-circle back + punch, quarter-circle back + kick, half-circle forward + punch (sixth move where available). Forward/back + medium/heavy at close range throws. Six attack buttons, crouching attacks, high/low guard, directional jumps, hit-confirm chains, special cancels, timed combo breakers, dizzy/fire/KO reactions and bonus-stage attacks are connected.
 
 These are authored SF2 adaptations of the Final Fight bosses, not a claim of frame-exact Final Fight AI. Their native signature actions inform the extensions: swords/charge and gut punches; police baton/pistol/grab; staff/acrobatic kicks/grenades/shoulder throw; rage charge punch and wrestling; chair and crossbow volleys/escape jumps. Normal buttons are adapted to each boss's native fighting style, including weapon strikes and punches on kick-button inputs.
 
@@ -53,3 +53,15 @@ Rolento has one-grenade and three-grenade throws, a retreating three-grenade lea
 All seven guests use Ryu's visible sole baseline (+2 native pixels relative to the common floor anchor) for grounded idle, walk, crouch and normal attacks. This fixes Andore sitting below the opponent and removes frame-to-frame foot dips. Airborne poses retain a consistent air pivot. Belger's shared airborne/grounded attack pose receives its ground correction only when grounded. Edi's clipped walking/fallen cells and Abigail's clipped charge cells were re-extracted from the original sheets.
 
 Validation for this update: all seven guests in both slots through idle/walk/crouch/six normal attacks, mirrored Andore charge/piledriver/choke/seat-drop lifecycles and escape/interruption/KO, Rolento single/triple grenades and wall rebounds, standing/crouching seat-drop guard, blocked-special chip, airborne seat drop, grenade cleanup/reset, 206 mirrored combat cases, twelve-hit chains, CPU/throws and unchanged WW/CE traces. Screenshots were inspected in the action client. Further original-move fidelity work on the other guests remains in progress.
+
+## Attack speed, size and wide-zoom update
+
+Guest LP/LK normals use 3 startup, 3 active and 6 recovery ticks; MP/MK use 6/5/10; HP/HK use 10/7/16. Native active poses are retained; Sodom uses his original sword slash sequence for fast, medium and slow chops on both punch/kick buttons. Normal hit-confirm chains remain connected.
+
+Andore is explicitly enlarged from112 to119 visible standing pixels, matching CE Sagat's119. Rolento is enlarged10percent. Original atlases are retained; separate sized atlases use nearest-neighbour pixels, scaled body/contact geometry and the same sole baseline. Other guest scales are unchanged. The preceding floor-alignment release changed origins, not sprite scale.
+
+Edi now has grounded baton rush/smash and an attached three-blow arrest grab. His pistol fires one or three independent original bullet sprites, removed from body frames so bullets no longer stick to his pose. CPU Edi retreats and favours gunfire at27percent HP. Abigail uses a planted red charge wind-up followed by one powered contact, plus a grounded lift-and-toss rather than an invented rising attack.
+
+Wide Smooth2x frames now retain native world pixels directly when their output magnification is below1.5x, avoiding enlarge/filter/shrink work; the HUD remains filtered. Close-up filtering is unchanged. In a local80-frame Guile scenario at600px separation, mean render cost changed16.53 to3.42ms; close Smooth2x4.53 to4.44ms. Smooth4x retains smoothing and its wide-stage cost remains about17ms on this test machine. This is local browser timing, not proof of physical-device FPS.
+
+Verified mirrored grounded soles,206 normal/special lifecycles, allguest normal startup ordering,12-hit chains, CPU/throws, Andore charge/pile/choke and Rolento grenades/rebounds. WW/CE240-frame traces unchanged; size comparison and action-client screenshots inspected. Broader move fidelity for Sodom/Belger remains in progress.

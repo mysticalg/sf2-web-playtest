@@ -50,7 +50,7 @@ window.SF2AIDamnd=(()=>{
   // Air kicks use the recovered extended-leg leap frame.
   for(let i=3;i<6;i++)for(const base of[53,59]){const a=f.anims[base+i];a.ents=clone(animation('airKick',one('leap',4,12),{attack:true,strength:i%3}).ents);a.ents[0][1]=12;a.flags=[32768];}
   f.moves=[{inp:'qcf',btn:'P',kind:'damnd',role:'far',a:100,name:'Street Rush'},{inp:'qcf',btn:'K',kind:'damnd',role:'mid',a:101,name:'Somersault Kick'},{inp:'dp',btn:'P',kind:'damnd',role:'rise',a:102,name:'Rising Smash'},{inp:'qcb',btn:'P',kind:'damnd',role:'far',a:105,name:'Barrel Call'}];
-  delete f._ai;return template=f;
+  delete f._ai;SF2AIFF.retimeNormals(f);return template=f;
  }
  function bind(p,native){p.F=clone(build(native));p.AIAtlas=image;p.AIAtlasAlt=image;// Dhalsim CE jump curves, reordered for this adapter's neutral/back/forward convention.
  p.ft=[0x280,0x1c0,[0,0,0x600,0x30],[-0x260,-5,0x620,0x30],[0x240,5,0x600,0x30]];}
