@@ -77,6 +77,8 @@ window.SF2AIFF=(()=>{
    put(107,'Andore Piledriver Lift',[[p.data.liftFrame,10]],{loop:true});put(108,'Andore Piledriver Air',[[p.data.airborneFrame,8]],{loop:true});put(109,'Andore Piledriver Land',[[12,14],[0,12]]);
   }
   if(p.id==='rolento'){
+   f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
+   put(107,'Rolento Shoulder Grip',[[16,8]],{loop:true});put(108,'Rolento Shoulder Lift',[[16,8]],{loop:true});put(109,'Rolento Shoulder Release',[[17,8],[10,12]]);
    put(101,'Rolento Grenade Throw',[[10,6],[20,12],[10,16]]);
    put(106,'Rolento Grenade Barrage',[[10,6],[20,7],[10,3],[20,7],[10,3],[20,7],[10,18]]);
    put(110,'Rolento Wall Air',[[18,12]],{loop:true});Object.assign(f.anims[110].ents[0],{6:[-45,20,35,32],7:24,8:2,9:1,10:-1});
@@ -130,7 +132,7 @@ window.SF2AIFF=(()=>{
  function spawn(player,type,age){const dir=player.FACE?1:-1;player.AIFFProjectile={type,age:0,dir,strength:player.SPSTR};player.FBON=1;player.FBK='ff-'+type;player.FBDEF=null;player.FBAN=null;player.FBIMPACT=0;player.FBX=type==='rain'?player.opp.X-dir*30*256:player.X+dir*40*256;player.FBY=(type==='grenade'?84:type==='rain'?150:68)*256;player.FBVX=dir*(type==='grenade'?0x300:type==='rain'?0x60:0x580);player.AIFFProjectile.vy=type==='grenade'?0x280:type==='rain'?-0x480:0;}
  function step(player,h){const p=get(player.aiProfile),m=player.MV,s=player.AIFFMove;
   if(m?.kind==='throw'&&player.AIFFHold){if(player.AIFFHold.kind==='batter')batterStep(player,h);else holdStep(player,h);return;}
-  if(m?.kind==='throw'&&player.AIFFThrow){if(player.AIFFThrow.kind==='toss')tossStep(player,h);else pileStep(player,h);return;}
+  if(m?.kind==='throw'&&player.AIFFThrow){if(player.AIFFThrow.kind==='shoulder')shoulderStep(player,h);else if(player.AIFFThrow.kind==='toss')tossStep(player,h);else pileStep(player,h);return;}
   if(m?.kind==='throw'){if(player.THV){player.opp.X=player.X-player.THV.d*28*256;player.opp.Y=0;player.opp.STUN=999;if(--player.THV.t<=0)h.release(player);}if(--player.SCNT<=0)h.idle(player);return;}
   if(!s||m?.kind!=='ff')return;s.age++;
   if(p.id==='sodom'&&m.style.startsWith('sodom-')){sodomStep(player,h);return;}
@@ -138,6 +140,7 @@ window.SF2AIFF=(()=>{
   if(p.id==='edi'){ediStep(player,h);return;}
   if(p.id==='abigail'&&m.style==='rage'){rageStep(player,h);return;}
   if(p.id==='abigail'&&m.style==='grab'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
+  if(p.id==='rolento'&&m.style==='grab'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='rolento'&&['grenade','grenade-barrage','retreat','wallkick'].includes(m.style)){rolentoStep(player,h);return;}
   if(p.id==='andore'&&m.style==='seatdrop'){
    if(!s.launched){s.launched=true;s.phase='rise';player.VX=s.dir*0x2c0;player.AX=0;player.VY=s.fromAir?Math.min(player.VY,0):0x780;player.AY=0x40;}
@@ -163,7 +166,7 @@ window.SF2AIFF=(()=>{
   if(m.style==='grab'&&s.age===8&&Math.abs(player.X-player.opp.X)<76*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0){player.THV={t:12,dmg:p.id==='andore'?40:34,d:player.FACE?-1:1};player.MV=h.throwMove;player.SCNT=32;player.hitdone=1;Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0});h.anim(player.opp,22,0);return;}
   const end=m.style==='burst'?s.age>=55:player.adone||s.age>85;if(end&&!['rise','vault','retreat'].includes(m.style)){delete player.AIFFMove;h.idle(player);}
  }
- function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='edi')return batterStart(player,h);if(p.id==='abigail')return tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
+ function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='rolento')return shoulderStart(player,h);if(p.id==='edi')return batterStart(player,h);if(p.id==='abigail')return tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
   if(p.id==='andore'){
    const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:107,THV:{t:999,dmg:40,d:player.FACE?1:-1},hitdone:1,AIFFThrow:{age:0,phase:'grip',dir:player.FACE?1:-1}});
    Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,107,0);h.anim(o,22,0);h.sound(0x2b);return true;
@@ -224,6 +227,14 @@ window.SF2AIFF=(()=>{
   o.X=player.X+s.dir*47*256;o.Y=0;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;
   if([17,27,37].includes(s.age)){s.pulses++;h.chokeDamage(player,s.pulses===3?16:8);h.sound(0x2b);h.anim(o,22,0);if(o.HP<=0){holdRelease(player,h,true);return;}}
   if(s.age>=49){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;h.drop(o);h.idle(player);}
+ }
+ function shoulderStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,KB:0,RETCR:0,Y:0,VX:0,VY:0,THAN:107,THV:{t:999,dmg:34,d:player.FACE?-1:1},hitdone:1,AIFFThrow:{kind:'shoulder',age:0,phase:'grip',dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,107,0);h.anim(o,22,0);h.sound(0x2b);return true;}
+ function shoulderStep(player,h){const s=player.AIFFThrow,o=player.opp;s.age++;
+  if(s.phase!=='recover'&&(!player.THV||o.HP<=0)){cancelThrow(player,h);return;}
+  if(s.age===8){s.phase='lift';h.anim(player,108,0);}
+  if(s.age===20){delete o.AIFFHeld;h.release(player);s.phase='recover';h.anim(player,109,0);h.sound(0x2b);}
+  if(s.phase!=='recover'){const t=s.phase==='lift'?(s.age-8)/12:0,scale=bodyScale(player);o.X=player.X+s.dir*(34-46*t)*scale*256;o.Y=(18+68*t)*scale*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;o.AIFFHeld.inverted=t>.4;}
+  else if(s.age>=42){delete player.AIFFThrow;h.idle(player);}
  }
  function tossStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:107,THV:{t:999,dmg:40,d:player.FACE?1:-1},hitdone:1,AIFFThrow:{kind:'toss',age:0,phase:'grip',dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,107,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function tossStep(player,h){const s=player.AIFFThrow,o=player.opp;s.age++;
