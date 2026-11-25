@@ -43,7 +43,7 @@ window.SF2AIFF=(()=>{
  }
  function andoreCrouchPunch(pack,f){
   if(pack.id!=='andore')return;
-  const lower=f.frames[11],upper=f.frames[8],source=pack.image,shiftX=23,shiftY=19,seam=-35,left=Math.min(lower[4],upper[4]+shiftX),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const g=pose.getContext('2d');g.imageSmoothingEnabled=false;
+  const lower=f.frames[11],upper=f.frames[8],source=pack.image,shiftX=23,shiftY=22,seam=-32,left=Math.min(lower[4],upper[4]+shiftX),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const g=pose.getContext('2d');g.imageSmoothingEnabled=false;
   g.save();g.beginPath();g.rect(0,seam-top,pose.width,pose.height);g.clip();g.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);g.restore();
   g.save();g.beginPath();g.rect(0,0,pose.width,seam-top);g.clip();g.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);g.restore();
   const atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+pose.height+2;const ctx=atlas.getContext('2d');ctx.drawImage(source,0,0);ctx.drawImage(pose,0,source.height+1);const index=f.frames.length;f.frames.push([0,source.height+1,pose.width,pose.height,left,top]);pack.originalImage=source;pack.image=atlas;
