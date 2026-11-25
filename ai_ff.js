@@ -245,11 +245,11 @@ window.SF2AIFF=(()=>{
   const raw=(o.AIButtons?.raw||0)|(o.KEYS&15),fresh=(raw&~s.previous)&1008,direction=raw&15;let points=0;if(fresh)points+=2;if(direction&&direction!==(s.previous&15))points++;s.previous=raw;
   if(h.cpu?.(o)&&s.age>18&&s.age%6===0)points+=2;s.escape=Math.min(14,s.escape+Math.min(3,points));
   if(s.escape>=14){s.escaped=true;holdRelease(player,h,false);return;}
-  const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10,shake=shaking?((phase>>1)%2?2:-2):0;const move=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);if(move){const room=h.room(),margin=96;player.X=Math.max((room.left+margin)*256,Math.min((room.right-margin)*256,player.X+move*0x180));s.walk++;}const chokeAnim=move?(shaking?115:114):111,chokeIndex=move?Math.floor(s.walk/4)%6:shaking?((phase>>1)%2):0;if(player.cur!==chokeAnim||player.aidx!==chokeIndex)h.anim(player,chokeAnim,chokeIndex);player.acc=-1;
+  const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10;const move=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);if(move){const room=h.room(),margin=96;player.X=Math.max((room.left+margin)*256,Math.min((room.right-margin)*256,player.X+move*0x180));s.walk++;}const chokeAnim=move?(shaking?115:114):111,chokeIndex=move?Math.floor(s.walk/4)%6:shaking?((phase>>1)%2):0;if(player.cur!==chokeAnim||player.aidx!==chokeIndex)h.anim(player,chokeAnim,chokeIndex);player.acc=-1;
   const grip=art(player).rect,head=h.head?.(o),gx=player.X/256+s.dir*(-grip[4]-4),gy=-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+s.dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;
   if(s.age>=20&&(s.age-20)%24===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0){holdRelease(player,h,true);return;}h.anim(o,22,0);}
  }
- function holdRelease(player,h,fatal=false){const o=player.opp;delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;if(fatal){h.drop?.(o);}else{o.ST=5;o.STUN=12;o.KB=0;o.Y=0;}h.idle(player);}
+ function holdRelease(player,h,fatal=false){const o=player.opp;delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;if(fatal){h.drop?.(o);}else if(o.Y>0&&h.releaseHeld){h.releaseHeld(o);}else{o.ST=5;o.STUN=12;o.KB=0;o.Y=0;}h.idle(player);}
  function pileStep(player,h){
   const s=player.AIFFThrow,o=player.opp;s.age++;
   if((!player.THV||o.HP<=0)&&s.phase!=='recover'){cancelThrow(player,h);return;}
