@@ -121,3 +121,5 @@ The fast unfiltered wide Smooth2x path now copies the matching source rectangle 
 ## Full-area charge and guarding grab admission
 
 Andore and Abigail charges continue beyond their previous fixed travel window until contact or the far stage boundary, cycling original running frames. Contact/boundary triggers decaying skid and recovery. Mirrored no-contact tests traverse640/688native pixels to the exact boundary and return idle. Command grabs now admit a guarding grounded victim, so CPU defensive startup no longer invalidates choke/piledriver/toss. Keyboard choke-to-special and combat regressions pass. Abigail exact chest-forward impact artwork remains under audit.
+
+Sodom corrected action registration: previous recovered slash rows were shoulder-running poses and charge rows were standing sword poses. Regular attacks and blade specials now use four original sheet sword-swing frames; charge cycles original shoulder-running frames using the full-area charge controller. Charge cannot contact during wind-up. Mirrored sword/contact/miss cases,206 combat lifecycles,12-hit chains and original WW/CE traces pass.

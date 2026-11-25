@@ -4,7 +4,7 @@
 window.SF2AIFF=(()=>{
  const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[];
  const specs={
-  sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:'down',fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:['slash','slash','slash','slash','slash','slash'],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
+  sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:'down',fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:['swordSlash','swordSlash','swordSlash','swordSlash','swordSlash','swordSlash'],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[4,5,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]]]},
   rolento:{name:'Rolento',district:'Industrial Area',hp:300,speed:0x500,jump:0x740,point:[221,118],idle:[10,11],walk:[10,11,12,13],hurt:[8,25],crouch:[9],fall:[25,26,21],lie:[22],recover:[17,8,10],throw:[14,15],win:[0,1,2,3],normal:[[13,14,13],[13,15,13],[13,14,15,13],[17,18,19,17],[17,19,18,17],[17,18,19,17]],specials:[['Patriot Circle','spin',[13,14,15,14]],['Grenade Throw','grenade',[20]],['Wall Kick','wallkick',[9,5,6,7,18]],['Shoulder Toss','grab',[14,15]],['Grenade Barrage','grenade-barrage',[20]],['Grenade Retreat','retreat',[20,5,6,7]]]},
   abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[0,1,2,3],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Crushing Toss','grab',[19,21]],['Power Punch','power',[15,16,18]]]},
@@ -12,7 +12,7 @@ window.SF2AIFF=(()=>{
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
  for(const[id,s]of Object.entries(specs)){
-  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-andore-carry-21';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
+  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-sodom-sword-22';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
@@ -97,10 +97,10 @@ window.SF2AIFF=(()=>{
    put(107,'Abigail Throw Grip',[[19,9]],{loop:true});put(108,'Abigail Throw Lift',[[21,12]],{loop:true});put(109,'Abigail Throw Recovery',[[17,20],[4,8]]);
   }
   if(p.id==='sodom'){
-   put(100,'Sodom Katana Rush',[[3,10],[18,4],...[19,20,19,18,19,20,19,18].map(i=>[i,4]),[3,16]],{attack:false});
+   put(100,'Sodom Katana Rush',[[3,18],...[14,15,16,17,14,15,16,17].map(i=>[i,3]),[3,16]],{attack:false});
    for(let i=1;i<=8;i++){const e=f.anims[100].ents[i];e[6]=[-46,48,40,28];e[7]=30;e[8]=2;e[9]=1;}
-   put(101,'Sodom Twin Blade Chops',[[3,5],...[14,15,16,17].map(i=>[i,3]),[3,7],...[14,15,16,17].map(i=>[i,4]),[3,15]],{attack:true,strength:2});
-   put(102,'Sodom Heavy Sword Chop',[[3,7],[14,5],[15,5],[16,4],[17,4],[3,18]],{attack:true,strength:2,kd:true});
+   put(101,'Sodom Twin Blade Chops',[[3,5],...sequence(p,'swordSlash',3),[3,7],...sequence(p,'swordSlash',4),[3,15]],{attack:true,strength:2});
+   put(102,'Sodom Heavy Sword Chop',[[3,7],...sequence(p,'swordSlash'),[3,18]],{attack:true,strength:2,kd:true});
   }
   if(p.id==='belger'){
    put(100,'Belger Crossbow Volley',[[7,8],[14,5],[15,4],[16,7],[15,4],[16,7],[15,4],[7,15]]);
@@ -169,9 +169,7 @@ window.SF2AIFF=(()=>{
   }Object.assign(player,{MV:h.move,SPK:0,SPKD:0,SPSTR:atk%3,RETCR:0,KB:0,SCNT:34,ST:11,THAN:46,THV:{t:14,dmg:['andore','abigail'].includes(p.id)?40:32,d:player.FACE?-1:1},hitdone:1});h.anim(player,46,0);Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0,Y:0});h.anim(player.opp,22,0);h.sound(0x2b);return true;}
  function sodomStep(player,h){const s=player.AIFFMove,m=player.MV;
   if(m.style==='sodom-charge'){
-   if(player.hitdone&&!s.contact){s.contact=true;s.stop=s.age+16;h.anim(player,100,player.F.anims[100].ents.length-1);}
-   if(!s.contact&&s.age>=11&&s.age<=46)player.X+=s.dir*(0x500+player.SPSTR*0x40);
-   player.SPKD=1;if(s.age>=(s.stop||63)){delete player.AIFFMove;h.idle(player);}return;
+   chargeStep(player,h,16,0x500+player.SPSTR*0x40);return;
   }
   if(m.style==='sodom-double'){
    if(player.hitdone&&s.phase===0&&!s.firstContact){s.firstContact=true;player.opp.KB=Math.trunc(player.opp.KB*.35);}
@@ -294,5 +292,5 @@ window.SF2AIFF=(()=>{
  function damage(player,strength){if(player.ST!==11)return[10,17,25][Math.min(2,strength)]*(get(player.aiProfile).hp>=400?1.1:1)|0;return player.MV?.style==='sodom-charge'?30:player.MV?.style==='sodom-chop'?34:player.MV?.style==='sodom-double'?18:player.MV?.style==='rage'?40:player.MV?.style==='baton'||player.MV?.style==='baton-rush'?30:player.MV?.style==='dash'||player.MV?.style==='spin'?player.AIFFMove?.phase===2?17:11:player.MV?.style==='seatdrop'?34:player.MV?.style==='power'?36:27;}
  function stageDraw(ctx,id,camera,width,top,height,ground){const p=get(id),y=ground-220;ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#151b2b';ctx.fillRect(0,top,width,height);for(let xx=-camera;xx<width;xx+=720)ctx.drawImage(p.stage,xx,y);for(let yy=y;yy>top;yy-=16)ctx.drawImage(p.stage,0,0,720,16,-camera,yy-16,720,16);for(let yy=y+256;yy<top+height;yy+=16)ctx.drawImage(p.stage,0,236,720,16,-camera,yy,720,16);ctx.restore();}
  function mapDraw(ctx,s,defeated){ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#070c16';ctx.fillRect(0,0,384,224);ctx.drawImage(metro,0,20,384,180);for(const id of ids()){const point=id==='damnd'?[135,103]:get(id).point;ctx.fillStyle=id===s.id?(s.tick%20<10?'#fff':'#ff3030'):defeated.includes(id)?'#777':'#ffe050';ctx.fillRect(point[0]-3,point[1]-3,6,6);if(id===s.id){ctx.strokeStyle='#fff';ctx.strokeRect(point[0]-7,point[1]-7,14,14);}}ctx.restore();}
- return{soundCode(player,kind){if(kind!=='hit')return null;const pack=get(player.aiProfile);if(!pack?.data.nativeFrames||!pack.data.combat)return null;const frame=player.anim?.ents[player.aidx]?.[0],attack=pack.data.nativeFrames[frame]?.attack;return pack.data.combat.attacks[attack]?.sound??null;},retimeNormals,canProbe(player){return !(player.ST===11&&player.MV?.kind==='ff'&&player.MV.style==='seatdrop'&&player.AIFFMove?.phase!=='drop');},holdStart,bulletStep,bulletContacts,bulletDraw,grenadeStep,grenadeContacts,grenadeDraw,wallJump,heldArt,cancelThrow,prepareSound,playSound,soundCounts,ready,get,ids,specs,bind,art,portrait,mouth,start,step,throwStart,projectileStep,projectileDraw,damage,stageDraw,mapDraw};
+ return{soundCode(player,kind){if(kind!=='hit')return null;const pack=get(player.aiProfile);if(!pack?.data.nativeFrames||!pack.data.combat)return null;const frame=player.anim?.ents[player.aidx]?.[0],attack=pack.data.nativeFrames[frame]?.attack;return pack.data.combat.attacks[attack]?.sound??null;},retimeNormals,canProbe(player){if(player.aiProfile==='sodom'&&player.MV?.style==='sodom-charge')return player.AIFFMove?.age>=19&&!player.AIFFMove?.contact;return !(player.ST===11&&player.MV?.kind==='ff'&&player.MV.style==='seatdrop'&&player.AIFFMove?.phase!=='drop');},holdStart,bulletStep,bulletContacts,bulletDraw,grenadeStep,grenadeContacts,grenadeDraw,wallJump,heldArt,cancelThrow,prepareSound,playSound,soundCounts,ready,get,ids,specs,bind,art,portrait,mouth,start,step,throwStart,projectileStep,projectileDraw,damage,stageDraw,mapDraw};
 })();
