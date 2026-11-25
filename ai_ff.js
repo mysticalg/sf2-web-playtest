@@ -12,7 +12,7 @@ window.SF2AIFF=(()=>{
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
  for(const[id,s]of Object.entries(specs)){
-  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-sodom-sword-22';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
+  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-charge-registration-23';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
