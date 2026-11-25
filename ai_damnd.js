@@ -94,7 +94,7 @@ window.SF2AIDamnd=(()=>{
  function portrait(original,kind,p){
   const w=original.naturalWidth||original.width,h=original.naturalHeight||original.height,key=w+':'+h+':'+kind;
   if(portraits.has(key))return portraits.get(key);const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.imageSmoothingEnabled=false;
-  if(kind.endsWith('R')){x.translate(w,0);x.scale(-1,1);}const top=kind.startsWith('sel')?32:0,scale=Math.min(w/portraitImage.naturalWidth,(h-top)/portraitImage.naturalHeight),dw=portraitImage.naturalWidth*scale,dh=portraitImage.naturalHeight*scale;
+  if(!kind.endsWith('R')){x.translate(w,0);x.scale(-1,1);}const top=kind.startsWith('sel')?32:0,scale=Math.min(w/portraitImage.naturalWidth,(h-top)/portraitImage.naturalHeight),dw=portraitImage.naturalWidth*scale,dh=portraitImage.naturalHeight*scale;
   x.drawImage(portraitImage,(w-dw)/2,top+(h-top-dh)/2,dw,dh);portraits.set(key,c);return c;
  }
 

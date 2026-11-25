@@ -103,3 +103,9 @@ Andore charge contact holds native frame6, matching the supplied chest-forward r
 ## Double-button shortcut admission
 
 Every guest special is available through its assigned two-button pair, including Andore fifth/sixth specials. Final Fight guests buffer an initial single button for3ticks so a second button arriving2ticks later still forms the chord instead of leaking a normal. Existing non-guest timing is unchanged. Verified210 cases: all35 guest specials, both player slots, simultaneous/1tick/2tick-separated presses. Actual P1 keyboard choke-to-Piledriver S+C and choke-to-SeatDrop D+Z pass, as do normal chain regressions.
+
+## Guest portrait and palette correction
+
+Six guest profiles now use a face crop(76x72 from8,0), filling the portrait window instead of fitting a chest-up square. Left/default portraits face inward to the right; right-side portraits mirror left. Damnd facing follows the same convention. Native world travel images are matched by source URL (the map owns separate Image objects), replaced with the selected guest portrait, and inherited name/flag art is suppressed.
+
+Added missing clothing and skin palette-index groups for all six newer guests; previously empty groups made their colour selectors ineffective. Native colour choices remain available. Verified palette changes for every new guest, rendered select/travel screenshots, seven guest arcade transitions,206 combat cases and unchanged WW/CE traces. Generated portrait artwork keeps its original colours; battle costume/skin palette choices apply to sprites.

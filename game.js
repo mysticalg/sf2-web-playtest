@@ -2975,7 +2975,7 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 
     tx('Esc: title   Tab: '+(G.mode2p?'2P':'1P'),W/2,222,7,'#aaa');break;}
 
-  case 'map': if(G.map.FF){SF2AIFF.mapDraw(cx,G.map,G.AIFFLadder?.slice(0,G.li)||[]);tx('METRO CITY',192,20,12,'#ffe000','#000');tx(ffName(G.map.id).toUpperCase(),192,202,13,'#fff','#000');tx(G.map.id==='damnd'?'SLUM COURTYARD':SF2AIFF.get(G.map.id).district.toUpperCase(),192,218,8,'#ffb060','#000');break;}SF2CEWORLDMAP.draw(cx,G.map,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im});drawSelectionProfiles();break;
+  case 'map': if(G.map.FF){SF2AIFF.mapDraw(cx,G.map,G.AIFFLadder?.slice(0,G.li)||[]);tx('METRO CITY',192,20,12,'#ffe000','#000');tx(ffName(G.map.id).toUpperCase(),192,202,13,'#fff','#000');tx(G.map.id==='damnd'?'SLUM COURTYARD':SF2AIFF.get(G.map.id).district.toUpperCase(),192,218,8,'#ffb060','#000');break;}SF2CEWORLDMAP.draw(cx,G.map,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>{const guest=aiEnabled()&&guestSelected(0,G.sel[0]),native=SCE.f[G.sel[0]];if(guest&&im.src===native.selL.im.src)return aiPortraitImage(im,0,G.sel[0],'selL');if(guest&&(im.src===native.name.im.src||im.src===native.flag.im.src))return null;return ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im;}});if(aiEnabled()&&guestSelected(0,G.sel[0]))tx(ffName(guestSelected(0,G.sel[0])).toUpperCase(),48,108,9,'#fff','#000');drawSelectionProfiles();break;
 
   case 'vs': {const a=G.sel[0],b=G.arc?G.ladder[G.li]:G.sel[1],s=Math.min(1,t/20);
 
