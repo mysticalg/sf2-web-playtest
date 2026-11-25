@@ -7,7 +7,7 @@ Arcade has the original twelve matches and bonus rounds followed by the Metro Ci
 | Fighter | Specials in shortcut order | District |
 |---|---|---|
 | Damnd | Street Rush, Somersault Kick, Rising Smash, Barrel Call | Slum |
-| Sodom | Katana Rush, Twin Blade Cyclone, Rising Katana, Gut Buster | Subway |
+| Sodom | Katana Rush, Twin Blade Chops, Heavy Sword Chop, Gut Buster | Subway |
 | Andore | Bull Rush, Chest Bump, Headbutt, Piledriver, Choke Hold, Flying Seat Drop | West Side cage |
 | Edi. E | Police Pistol, Baton Rush, Baton Smash, Arrest and Batter, Pistol Burst | West Side |
 | Rolento | Patriot Circle, Grenade Throw, Wall Kick, Shoulder Toss, Grenade Barrage, Grenade Retreat | Industrial Area |
@@ -73,3 +73,9 @@ Original detached crossbow bolts are removed from body frames and emitted as ind
 Belger starts mounted and stays dismounted after attacking, jumping, taking damage or guarding. He no longer instantly returns to the chair between standing attack/hurt poses. A new round resets the mounted state. The body sprites retain native pixel dimensions.
 
 Mirrored volley/rain/hop lifecycles verify three independent shots, rise/fall trajectories, actual volley/rain damage, backward movement, full recovery and projectile cleanup. Chair damage/attack persistence and reset, all206 normal/special lifecycles, seven-guest floor baselines and twelve-hit chains pass; guard/dizzy/fire recovery and original WW/CE combat traces pass. Action-client and projectile screenshots were inspected. Andore's previous high-piledriver release also passed live actual-shortcut verification after using DOM-ready navigation. Further Sodom move-controller and global audio-fidelity work remains.
+
+## Sodom native charge and sword-contact pass
+
+Sodom uses recovered per-frame attack records for active poses, reach and original impact commands. Katana Rush has a planted wind-up, a grounded running charge, one knockdown contact and committed recovery. Twin Blade Chops has two separate contact windows; its first contact has reduced pushback and a small visible forward step between chops. Heavy Sword Chop stays grounded instead of using a generic rising jump. Fast/medium/heavy normal sword timings remain3/6/10startup ticks.
+
+Original sound command captures06 and10 are included alongside the previous FF clips. Sodom contacts select the command recorded in the active native attack entry. Guest body/projectile hits no longer layer an inherited SF2 hit sound over the FF impact; the shared guard cue remains. Mirrored tests verify one charge hit,198px miss travel with stationary wind-up, two chop contacts, grounded heavy chop, one original sword sound per light hit and full recovery. All206 normal/special lifecycles, normal chains, floor alignment, CPU/throws, Belger projectiles and WW/CE trace checks pass. Screenshots from the action client were inspected. These are SF2 adaptations of recovered Final Fight actions; full boss timing/audio parity remains under audit.
