@@ -12,7 +12,7 @@ Arcade has the original twelve matches and bonus rounds followed by the Metro Ci
 | Edi. E | Police Pistol, Baton Rush, Baton Smash, Arrest and Batter, Pistol Burst | West Side |
 | Rolento | Patriot Circle, Grenade Throw, Wall Kick, Shoulder Toss, Grenade Barrage, Grenade Retreat | Industrial Area |
 | Abigail | Rage Charge, Giant Throw, Hammer Punch, Crushing Toss, Power Punch | Bay Area |
-| Belger | Crossbow Volley, Chair Rush, Sky Bolt Rain, Escape Hop, Crossbow Butt | Uptown |
+| Belger | Crossbow Volley, Escape Leap, Sky Bolt Rain, Escape Hop, Crossbow Butt | Uptown |
 
 Shortcuts: LP+LK, MP+MK, HP+HK, MP+HK, LP+MK, HP+LK, respectively. Motions for the new guests: quarter-circle forward + punch, quarter-circle forward + kick, dragon-punch + punch, quarter-circle back + punch, quarter-circle back + kick, half-circle forward + punch (sixth move where available). Forward/back + medium/heavy at close range throws. Six attack buttons, crouching attacks, high/low guard, directional jumps, hit-confirm chains, special cancels, timed combo breakers, dizzy/fire/KO reactions and bonus-stage attacks are connected.
 
@@ -65,3 +65,11 @@ Edi now has grounded baton rush/smash and an attached three-blow arrest grab. Hi
 Wide Smooth2x frames now retain native world pixels directly when their output magnification is below1.5x, avoiding enlarge/filter/shrink work; the HUD remains filtered. Close-up filtering is unchanged. In a local80-frame Guile scenario at600px separation, mean render cost changed16.53 to3.42ms; close Smooth2x4.53 to4.44ms. Smooth4x retains smoothing and its wide-stage cost remains about17ms on this test machine. This is local browser timing, not proof of physical-device FPS.
 
 Verified mirrored grounded soles,206 normal/special lifecycles, allguest normal startup ordering,12-hit chains, CPU/throws, Andore charge/pile/choke and Rolento grenades/rebounds. WW/CE240-frame traces unchanged; size comparison and action-client screenshots inspected. Broader move fidelity for Sodom/Belger remains in progress.
+
+## Belger crossbow and escape pass
+
+Original detached crossbow bolts are removed from body frames and emitted as independent projectiles. Volley releases three horizontal bolts; Sky Bolt Rain fires three bolts upward with gravity so they descend across the opponent's position. Escape Leap is a backward leap; Escape Hop retreats while firing three bolts. Standing shooting poses are registered by their visible soles rather than detached projectile bounds.
+
+Belger starts mounted and stays dismounted after attacking, jumping, taking damage or guarding. He no longer instantly returns to the chair between standing attack/hurt poses. A new round resets the mounted state. The body sprites retain native pixel dimensions.
+
+Mirrored volley/rain/hop lifecycles verify three independent shots, rise/fall trajectories, actual volley/rain damage, backward movement, full recovery and projectile cleanup. Chair damage/attack persistence and reset, all206 normal/special lifecycles, seven-guest floor baselines and twelve-hit chains pass; guard/dizzy/fire recovery and original WW/CE combat traces pass. Action-client and projectile screenshots were inspected. Andore's previous high-piledriver release also passed live actual-shortcut verification after using DOM-ready navigation. Further Sodom move-controller and global audio-fidelity work remains.
