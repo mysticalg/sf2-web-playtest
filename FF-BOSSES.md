@@ -117,3 +117,7 @@ Before a guest adapter is built, portrait palette packets now use that guest ori
 ## Wide zoom source-crop correction
 
 The fast unfiltered wide Smooth2x path now copies the matching source rectangle instead of squeezing the entire padded world surface into the visible crop. Camera projection remains uniform on both axes. A deterministic row-pattern raster test matches direct uniform projection; original WW/CE traces are unchanged. This retains the earlier wide-scene performance optimisation.
+
+## Full-area charge and guarding grab admission
+
+Andore and Abigail charges continue beyond their previous fixed travel window until contact or the far stage boundary, cycling original running frames. Contact/boundary triggers decaying skid and recovery. Mirrored no-contact tests traverse640/688native pixels to the exact boundary and return idle. Command grabs now admit a guarding grounded victim, so CPU defensive startup no longer invalidates choke/piledriver/toss. Keyboard choke-to-special and combat regressions pass. Abigail exact chest-forward impact artwork remains under audit.

@@ -135,7 +135,7 @@ window.SF2AIFF=(()=>{
   if(p.id==='belger'){belgerStep(player,h);return;}
   if(p.id==='edi'){ediStep(player,h);return;}
   if(p.id==='abigail'&&m.style==='rage'){rageStep(player,h);return;}
-  if(p.id==='abigail'&&m.style==='grab'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
+  if(p.id==='abigail'&&m.style==='grab'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='rolento'&&['grenade','grenade-barrage','retreat','wallkick'].includes(m.style)){rolentoStep(player,h);return;}
   if(p.id==='andore'&&m.style==='seatdrop'){
    if(!s.launched){s.launched=true;s.phase='rise';player.VX=s.dir*0x2c0;player.AX=0;player.VY=s.fromAir?Math.min(player.VY,0):0x780;player.AY=0x40;}
@@ -144,26 +144,21 @@ window.SF2AIFF=(()=>{
    if(!h.gravity(player)){s.phase='recover';s.landed=s.age;player.VX=0;h.anim(player,113,0);h.sound(0x2f);}return;
   }
   if(p.id==='andore'&&m.style==='dash'){
-   if(s.age===19)h.sound(0x2b);
-   if(!s.contact&&player.hitdone){s.contact=true;s.stop=s.age+18;s.skid=5;h.anim(player,100,player.F.anims[100].ents.length-1);}
-   if(!s.contact&&s.age>=19&&s.age<=54)player.X+=s.dir*(0x480+player.SPSTR*0x60);
-   if(s.contact){player.X+=s.dir*s.skid*256;s.skid*=.75;}
-   player.SPKD=1;
-   if(s.age>=(s.stop||73)){delete player.AIFFMove;h.idle(player);}return;
+   chargeStep(player,h,18,0x480+player.SPSTR*0x60);return;
   }
   if(p.id==='andore'&&m.style==='hold'){
-   if(s.age===8&&Math.abs(player.X-player.opp.X)<=58*256&&[0,3,4,5].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.hold(player);
+   if(s.age===8&&Math.abs(player.X-player.opp.X)<=58*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.hold(player);
    else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;
   }
   if(p.id==='andore'&&m.style==='grab'){
-   if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);
+   if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);
    else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;
   }
   if(['dash','spin','power'].includes(m.style)){const phase=Math.min(m.style==='power'?0:2,Math.floor((s.age-6)/9));if(phase>=0&&phase!==s.phase){s.phase=phase;player.hitdone=0;player.AIAttackSerial=(player.AIAttackSerial||0)+1;}if(m.style==='dash'&&s.age>=6&&s.age<=32)player.X+=(player.FACE?1:-1)*(0x400+player.SPSTR*0x60);player.SPKD=phase===2?1:0;}
   if(['rise','vault','retreat'].includes(m.style)){if(!s.launched&&s.age>=5){s.launched=true;player.VX=(player.FACE?1:-1)*(m.style==='retreat'?-0x300:m.style==='vault'?0x300:0xc0);player.VY=m.style==='rise'?0x650:0x520;player.AX=0;player.AY=0x48;}if(s.launched&&!h.gravity(player)){delete player.AIFFMove;h.idle(player);return;}}
   if(['bullet','burst','grenade','rain','retreat'].includes(m.style)&&s.age===10){spawn(player,m.style==='retreat'?(p.id==='rolento'?'grenade':'bolt'):m.style==='burst'?'bolt':m.style,s.age);s.shots++;h.sound(0x25);}
   if(m.style==='burst'&&[24,38].includes(s.age)&&!player.FBON){spawn(player,'bolt');s.shots++;h.sound(0x25);}
-  if(m.style==='grab'&&s.age===8&&Math.abs(player.X-player.opp.X)<76*256&&[0,3,4,5].includes(player.opp.ST)&&player.opp.Y===0){player.THV={t:12,dmg:p.id==='andore'?40:34,d:player.FACE?-1:1};player.MV=h.throwMove;player.SCNT=32;player.hitdone=1;Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0});h.anim(player.opp,22,0);return;}
+  if(m.style==='grab'&&s.age===8&&Math.abs(player.X-player.opp.X)<76*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0){player.THV={t:12,dmg:p.id==='andore'?40:34,d:player.FACE?-1:1};player.MV=h.throwMove;player.SCNT=32;player.hitdone=1;Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0});h.anim(player.opp,22,0);return;}
   const end=m.style==='burst'?s.age>=55:player.adone||s.age>85;if(end&&!['rise','vault','retreat'].includes(m.style)){delete player.AIFFMove;h.idle(player);}
  }
  function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='edi')return batterStart(player,h);if(p.id==='abigail')return tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
@@ -205,16 +200,23 @@ window.SF2AIFF=(()=>{
    if((m.style==='pistol'?[20]:[20,31,42]).includes(s.age)){spawnBullet(player);h.sound(0x25);}
    if(s.age>=(m.style==='pistol'?46:68)){delete player.AIFFMove;h.idle(player);}return;
   }
-  if(m.style==='grab-batter'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=60*256&&player.opp.Y===0&&player.opp.HP>0&&[0,3,4,5].includes(player.opp.ST))h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
+  if(m.style==='grab-batter'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=60*256&&player.opp.Y===0&&player.opp.HP>0&&[0,3,4,5,6].includes(player.opp.ST))h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(m.style==='baton-rush'&&s.age>=9&&s.age<=24)player.X+=s.dir*0x240;
   player.SPKD=1;if(player.adone||s.age>=65){delete player.AIFFMove;h.idle(player);}
  }
- function rageStep(player,h){const s=player.AIFFMove;
+ function rageStep(player,h){chargeStep(player,h,20,0x500+player.SPSTR*0x40);}
+ function chargeStep(player,h,recovery,speed){const s=player.AIFFMove,animation=player.F.anims[100],last=animation.ents.length-1;
+  const stop=()=>{s.contact=true;s.stop=s.age+recovery;s.skid=5;h.anim(player,100,last);};
   if(s.age===19)h.sound(0x2b);
-  if(player.hitdone&&!s.contact){s.contact=true;s.stop=s.age+20;s.skid=5;h.anim(player,100,player.F.anims[100].ents.length-1);}
-  if(!s.contact&&s.age>=19&&s.age<=59)player.X+=s.dir*(0x500+player.SPSTR*0x40);
+  if(!s.contact&&player.hitdone)stop();
+  if(!s.contact&&s.age>=19){
+   const room=h.room(),edge=(s.dir>0?room.right-40:room.left+40)*256;
+   player.X+=s.dir*speed;
+   if(s.dir>0?player.X>=edge:player.X<=edge){player.X=edge;stop();}
+   else{const frame=1+Math.floor((s.age-19)/3)%(last-1);if(player.aidx!==frame)h.anim(player,100,frame);}
+  }
   if(s.contact){player.X+=s.dir*s.skid*256;s.skid*=.75;}
-  player.SPKD=1;if(s.age>=(s.stop||79)){delete player.AIFFMove;h.idle(player);}
+  player.SPKD=1;if(s.stop&&s.age>=s.stop){delete player.AIFFMove;h.idle(player);}
  }
  function batterStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{kind:'batter',age:0,pulses:0,dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function batterStep(player,h){const s=player.AIFFHold,o=player.opp;s.age++;
