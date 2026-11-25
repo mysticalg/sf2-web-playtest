@@ -1043,7 +1043,7 @@ function startspec(p,ev,force){const air=aiEnabled()&&p.ST===S_AIR&&!p.PJ;const 
   else for(const x of mv){const e=ev.find(e=>e[0]===x.inp&&e[1]===x.btn); if(e){m=x;str=e[2];break;}}
 
   if(!m)return false; if(str>2)str=2;
-  if(isFFGuest(p)&&!isDamnd(p)&&m.kind==='ff'){if(air&&!(p.aiProfile==='rolento'&&['grenade','grenade-barrage'].includes(m.style))&&!(p.aiProfile==='andore'&&m.style==='seatdrop'))return false;AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,0x25]],sample:null,kind:'ff',tick:G.tick}};return SF2AIFF.start(p,m,str,{anim:setanim,sound:()=>ffSound(p,'special')});}if(isDamnd(p)&&m.kind==='damnd'){if(air)return false;AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,0x25]],sample:null,kind:'damnd',tick:G.tick}};return SF2AIDamnd.start(p,m,str,{anim:setanim,sound:sfxc});}if(VER.edition==='ce'&&p.fid===1&&m.inp==='mash'&&p.ST===S_ATK&&!p.CEHHSCancel)return false;if(p.CES?.kind==='hundredhands'&&p.MV===m)return false;
+  if(isFFGuest(p)&&!isDamnd(p)&&m.kind==='ff'){if(air&&!(p.aiProfile==='rolento'&&['grenade','grenade-barrage'].includes(m.style))&&!(p.aiProfile==='andore'&&m.style==='seatdrop'))return false;const voice={commands:[],sample:null,ffCode:['andore','abigail'].includes(p.aiProfile)?41:47,kind:'ff',tick:G.tick};AI_SPECIAL_VOICES[p.i]={last:voice,projectile:['pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','retreat','belger-retreat'].includes(m.style)?voice:AI_SPECIAL_VOICES[p.i]?.projectile};return SF2AIFF.start(p,m,str,{anim:setanim,sound:()=>ffSound(p,'special')});}if(isDamnd(p)&&m.kind==='damnd'){if(air)return false;AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,0x25]],sample:null,kind:'damnd',tick:G.tick}};return SF2AIDamnd.start(p,m,str,{anim:setanim,sound:sfxc});}if(VER.edition==='ce'&&p.fid===1&&m.inp==='mash'&&p.ST===S_ATK&&!p.CEHHSCancel)return false;if(p.CES?.kind==='hundredhands'&&p.MV===m)return false;
   if(aiEnabled()&&p.AIButtons)p.AIButtons.motion=null;
   if(m.kind==='fb'&&p.FBON)return false;if(VER.cur==='CE'&&p.fid===7&&(p.CEYogaLink||m.inp==='hcf'&&p.FBON))return false;
 
@@ -2629,6 +2629,7 @@ const AI_ECHO={buffers:new Map(),module:null,nodes:[]};
 function aiEchoStop(){for(const n of AI_ECHO.nodes){try{n.source.stop();}catch{}n.source.disconnect();n.gain.disconnect();}AI_ECHO.nodes.length=0;}
 function aiEchoBuffer(voice){
   if(voice.buffer)return voice.buffer;
+  if(voice.ffCode!==undefined)return SF2AIFF.soundBuffer(voice.ffCode);
   const key=JSON.stringify([voice.commands,voice.sample]);if(AI_ECHO.buffers.has(key))return AI_ECHO.buffers.get(key);
   AI_ECHO.module??=new WebAssembly.Module(b64(SF2MUS.wasm));const noop=()=>0;
   const instance=new WebAssembly.Instance(AI_ECHO.module,{wasi_snapshot_preview1:{fd_close:noop,fd_seek:noop,fd_write:noop}}),x=instance.exports;
