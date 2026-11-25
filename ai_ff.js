@@ -134,7 +134,7 @@ window.SF2AIFF=(()=>{
   if(m.style==='grab'&&s.age===8&&Math.abs(player.X-player.opp.X)<76*256&&[0,3,4,5].includes(player.opp.ST)&&player.opp.Y===0){player.THV={t:12,dmg:p.id==='andore'?40:34,d:player.FACE?-1:1};player.MV=h.throwMove;player.SCNT=32;player.hitdone=1;Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0});h.anim(player.opp,22,0);return;}
   const end=m.style==='burst'?s.age>=55:player.adone||s.age>85;if(end&&!['rise','vault','retreat'].includes(m.style)){delete player.AIFFMove;h.idle(player);}
  }
- function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='edi')return batterStart(player,h);if(p.id==='abigail')return tossStart(player,h);if(p.id==='andore'&&(atk===1||atk===4))return holdStart(player,h);
+ function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='edi')return batterStart(player,h);if(p.id==='abigail')return tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
   if(p.id==='andore'){
    const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:107,THV:{t:999,dmg:40,d:player.FACE?1:-1},hitdone:1,AIFFThrow:{age:0,phase:'grip',dir:player.FACE?1:-1}});
    Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,107,0);h.anim(o,22,0);h.sound(0x2b);return true;
@@ -186,7 +186,7 @@ window.SF2AIFF=(()=>{
  function pileStep(player,h){
   const s=player.AIFFThrow,o=player.opp;s.age++;
   if((!player.THV||o.HP<=0)&&s.phase!=='recover'){cancelThrow(player,h);return;}
-  if(s.phase==='grip'&&s.age>=10){s.phase='jump';player.VY=0x680;player.AY=0x48;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
+  if(s.phase==='grip'&&s.age>=6){s.phase='jump';player.VY=0x1000;player.AY=0xb0;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
   if(s.phase==='jump'){
    if(!h.gravity(player)){s.phase='recover';s.landed=s.age;delete o.AIFFHeld;h.slam(player);h.anim(player,109,0);h.sound(0x2f);}
   }
