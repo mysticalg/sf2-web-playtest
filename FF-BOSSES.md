@@ -89,3 +89,7 @@ Mirrored normal/special combat, original sole baseline, twelve-hit chains and hi
 The user-requested waist adjustment lowers the selected torso and waist join by3 native pixels (torso Y+22, join Y-32). Original lower-leg pixels below that join and the idle crouch remain byte-identical; sprite dimensions/scale are unchanged.
 
 Andore chain alignment preserves the original crouched waist chain across the punching-torso join. Conflicting upper-chain pixels in the waist band are replaced with the matching original crouched pixels; belt height, torso registration, lower legs and normal crouch remain unchanged. Verified2520 lower-region pixels against the source and reran206 combat lifecycles.
+
+## Abigail crouching punch
+
+Abigail now uses his original forward-punch upper body (frame18) with his existing crouched lower body (frame20), registered at the waist without rescaling. Startup/recovery retain the original crouch. Three strengths keep the established3/6/10 startup timing. His3255 lower-region pixels and idle crouch are unchanged; Andore retains his approved23/22 waist registration and all93 chain pixels. Mirrored combat, normal chains, floor alignment, guard/dizzy/fire recovery and unchanged WW/CE traces pass. Gameplay screenshots inspected.
