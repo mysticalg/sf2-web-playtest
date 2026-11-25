@@ -1115,7 +1115,7 @@ function zgrab(p,atk){const o=p.opp,n=AI(p,'cn'+['LP','MP','HP'][atk]);if(!(VER.
   if(!trythrow(p,atk,1))return false;setanim(p,n,0);p.THAN=n;p.SCNT=atk===1?50:55;p.THV.dmg=28;p.THV.t=p.SCNT-6;p.ZG=1;return true;}
 
 function trythrow(p,atk,force){const result=trythrow0(p,atk,force);if(result&&VER.cur==='CE')SF2CESPECIAL.interrupt(p.opp);if(result&&VER.edition==='ce')SF2CEDIZZY.interrupt(p.opp);return result;}
-function trythrow0(p,atk,force){if(VER.cur==='CE'&&p.fid===5&&atk>=3)return false;const o=p.opp; if(!force&&!canthrow(p,atk>=3))return false; if(isFFGuest(p)){G.throws=(G.throws||0)+1;return (isDamnd(p)?SF2AIDamnd:SF2AIFF).throwStart(p,atk,{special:force===2,move:THROW,anim:setanim,sound:code=>isDamnd(p)?sfxc(code):ffSound(p,code===0x2f?'land':'throw')});}if(XS(p)&&atk>=3&&AI(p,'throwk')<0)return false; /* CE: only Ryu/Ken/Honda/Chun-Li/Zangief have a kick throw */
+function trythrow0(p,atk,force){if(VER.cur==='CE'&&p.fid===5&&atk>=3)return false;const o=p.opp; if(!force&&!canthrow(p,atk>=3))return false; if(isFFGuest(p)){G.throws=(G.throws||0)+1;return (isDamnd(p)?SF2AIDamnd:SF2AIFF).throwStart(p,atk,{special:force===2||(p.aiProfile==='andore'&&!force&&atk<3),move:THROW,anim:setanim,sound:code=>isDamnd(p)?sfxc(code):ffSound(p,code===0x2f?'land':'throw')});}if(XS(p)&&atk>=3&&AI(p,'throwk')<0)return false; /* CE: only Ryu/Ken/Honda/Chun-Li/Zangief have a kick throw */
 
   if(aiEnabled()&&o.AIRift)o.AIRift=null;
 
