@@ -145,7 +145,7 @@
     const worldFactor=mode==='original'||factor*Math.abs(m.a)<1.5?1:2;
     const source=magnify(f.surface,worldFactor,'world',crop);
     displayContext.setTransform(factor*m.a,factor*m.b,factor*m.c,factor*m.d,factor*m.e,factor*m.f);
-    displayContext.drawImage(source,0,0,source.width,source.height,crop.x,f.top+crop.y,crop.w,crop.h);
+    if(worldFactor===1)displayContext.drawImage(source,crop.x,crop.y,crop.w,crop.h,crop.x,f.top+crop.y,crop.w,crop.h);else displayContext.drawImage(source,0,0,source.width,source.height,crop.x,f.top+crop.y,crop.w,crop.h);
     displayContext.setTransform(1,0,0,1,0,0);const hud=magnify(overlay,scale(),'hud');displayContext.drawImage(hud,0,0,width*factor,height*factor);
   }
   function present(){

@@ -113,3 +113,7 @@ Added missing clothing and skin palette-index groups for all six newer guests; p
 ## Fresh guest selection palette safety
 
 Before a guest adapter is built, portrait palette packets now use that guest original palette instead of the shorter inherited SF2 palette. Skin index lookup also ignores absent entries. This prevents invalid colour reads on fresh guest selection. Confirm-input tests cover all seven guest tiles through colour-screen drawing, colour selection and confirmation; both-slot portrait packets use the correct guest identity and palette.
+
+## Wide zoom source-crop correction
+
+The fast unfiltered wide Smooth2x path now copies the matching source rectangle instead of squeezing the entire padded world surface into the visible crop. Camera projection remains uniform on both axes. A deterministic row-pattern raster test matches direct uniform projection; original WW/CE traces are unchanged. This retains the earlier wide-scene performance optimisation.
