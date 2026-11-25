@@ -93,3 +93,9 @@ Andore chain alignment preserves the original crouched waist chain across the pu
 ## Abigail crouching punch
 
 Abigail now uses his original forward-punch upper body (frame18) with his existing crouched lower body (frame20), registered at the waist without rescaling. Startup/recovery retain the original crouch. Three strengths keep the established3/6/10 startup timing. His3255 lower-region pixels and idle crouch are unchanged; Andore retains his approved23/22 waist registration and all93 chain pixels. Mirrored combat, normal chains, floor alignment, guard/dizzy/fire recovery and unchanged WW/CE traces pass. Gameplay screenshots inspected.
+
+## Hold controls and charge skid
+
+Andore can transition from an active choke into Piledriver (MP+HK; P1 S+C) or Flying Seat Drop (HP+LK; P1 D+Z). Previously the hold's special state rejected the normal shortcut queue. A keyboard-driven test now establishes the choke and executes both transitions, checking high launch/landing damage, held-victim cleanup and full recovery.
+
+Andore charge contact holds native frame6, matching the supplied chest-forward reference, and moves into an18tick skid with decaying horizontal velocity. Abigail receives a20tick skid; his exact original chest-impact pose remains under comparison. Abigail's requested torso registration moves3px right in the right-facing pose, and his original crouched waist band reconnects the chain on that side. His lower3255pixels and approved Andore chain remain unchanged. These updates pass combat lifecycles and actual keyboard hold-to-special tests.

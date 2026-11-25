@@ -44,12 +44,14 @@ window.SF2AIFF=(()=>{
  function andoreCrouchPunch(pack,f){
   if(!['andore','abigail'].includes(pack.id))return;
   const isAndore=pack.id==='andore',lowerIndex=isAndore?11:20,upperIndex=isAndore?8:18;
-  const lower=f.frames[lowerIndex],upper=f.frames[upperIndex],source=pack.image,shiftX=isAndore?23:-1,shiftY=isAndore?22:13,seam=-32,left=Math.min(lower[4],upper[4]+shiftX),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const g=pose.getContext('2d');g.imageSmoothingEnabled=false;
+  const lower=f.frames[lowerIndex],upper=f.frames[upperIndex],source=pack.image,shiftX=isAndore?23:-4,shiftY=isAndore?22:13,seam=-32,left=Math.min(lower[4],upper[4]+shiftX),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const g=pose.getContext('2d');g.imageSmoothingEnabled=false;
   g.save();g.beginPath();g.rect(0,seam-top,pose.width,pose.height);g.clip();g.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);g.restore();
   g.save();g.beginPath();g.rect(0,0,pose.width,seam-top);g.clip();g.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);g.restore();
   // Preserve one continuous original crouched waist chain across the join.
   const nativeWaist=document.createElement('canvas');nativeWaist.width=lower[2];nativeWaist.height=lower[3];const ng=nativeWaist.getContext('2d');ng.drawImage(source,...lower.slice(0,4),0,0,lower[2],lower[3]);const original=ng.getImageData(0,0,lower[2],lower[3]).data,pixels=g.getImageData(0,0,pose.width,pose.height),gold=new Set([1,2,4,7,10,12,13,14].map(i=>pack.data.palette[i].join(','))),isGold=(a,i)=>a[i+3]&&gold.has(a[i]+','+a[i+1]+','+a[i+2]);
-  if(isAndore)for(let y=-48;y<-25;y++)for(let x=lower[4];x<lower[4]+lower[2];x++){const from=((y-lower[5])*lower[2]+x-lower[4])*4,to=((y-top)*pose.width+x-left)*4;if(isGold(original,from)||isGold(pixels.data,to))for(let c=0;c<4;c++)pixels.data[to+c]=original[from+c];}g.putImageData(pixels,0,0);
+  if(isAndore)for(let y=-48;y<-25;y++)for(let x=lower[4];x<lower[4]+lower[2];x++){const from=((y-lower[5])*lower[2]+x-lower[4])*4,to=((y-top)*pose.width+x-left)*4;if(isGold(original,from)||isGold(pixels.data,to))for(let c=0;c<4;c++)pixels.data[to+c]=original[from+c];}
+  if(!isAndore)for(let y=-38;y<-25;y++)for(let x=lower[4];x<lower[4]+lower[2];x++){const from=((y-lower[5])*lower[2]+x-lower[4])*4,to=((y-top)*pose.width+x-left)*4;for(let c=0;c<4;c++)pixels.data[to+c]=original[from+c];}
+  g.putImageData(pixels,0,0);
   const atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+pose.height+2;const ctx=atlas.getContext('2d');ctx.drawImage(source,0,0);ctx.drawImage(pose,0,source.height+1);const index=f.frames.length;f.frames.push([0,source.height+1,pose.width,pose.height,left,top]);pack.originalImage=source;pack.image=atlas;
   for(let b=0;b<6;b++){const strength=b%3,a=anim(pack,pack.id+'CrouchPunch'+b,[[lowerIndex,[3,6,10][strength]],[lowerIndex,[3,5,7][strength]],[lowerIndex,[6,10,16][strength]]],{crouch:true,low:true});a.ents[1][0]=index;Object.assign(a.ents[1],{6:[-65,56,25,16],7:12+strength*6,8:strength,9:b===5?1:0});f.anims[14+b]=a;}
   f.crouchPunch={lower:lowerIndex,upper:upperIndex,frame:index,shiftX,shiftY,seam};
@@ -65,7 +67,7 @@ window.SF2AIFF=(()=>{
   for(let i=20;i<=25;i++)put(i,'ffHit'+i,p.hurt);put(26,'blockS',one(p.idle),{loop:true});put(27,'blockC',one(p.crouch),{loop:true,crouch:true});put(28,'fall',p.fall);put(29,'lie',p.lie);put(30,'getup',p.recover);put(31,'win',p.win,{loop:true});put(46,'throw',p.throw);put(103,'ffDizzy',p.hurt,{loop:true});put(104,'ffBurn',p.hurt);
   f.moves=p.specials.map(([name,style,pose],i)=>{const a=p.id==='andore'&&i===5?112:[100,101,102,105,106,107][i],source=sequence(p,pose),seq=[...one(p.idle,6),...source,...one(p.idle,12)];if(['spin','dash'].includes(style))seq.splice(1,0,...source,...source);put(a,name,seq,{attack:!['bullet','burst','grenade','rain','retreat','grenade-barrage','hold','pistol','pistol-burst','grab-batter','bolts','bolt-rain','belger-hop','belger-retreat'].includes(style),strength:2,kd:!['dash','spin'].includes(style)});if(style==='dash'&&p.id==='andore')f.anims[a].ents.forEach((e,j)=>{if(j>0&&j<f.anims[a].ents.length-1){e[6]=[-40,48,28,28];e[7]=24;}});return{name,kind:'ff',style,a,inp:['qcf','qcf','dp','qcb','qcb','hcf'][i],btn:['P','K','P','P','K','P'][i],role:['grab','grab-batter','hold','power','baton','sodom-chop','sodom-double'].includes(style)?'near':style==='rise'?'rise':['dash','sodom-charge','rage','baton-rush','bullet','burst','pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','rain'].includes(style)?'far':'mid'};});
   if(p.id==='andore'){
-   const charge=[[11,18],...[0,1,2,3,4,5,0,1,2,3,4,5].map(frame=>[frame,3]),[0,18]];
+   const charge=[[11,18],...[0,1,2,3,4,5,0,1,2,3,4,5].map(frame=>[frame,3]),[6,18]];
    put(100,'Andore Bull Rush',charge,{attack:false,strength:2,kd:true});f.anims[100].ents.forEach((e,i)=>{if(i>0&&i<charge.length-1){e[6]=[-36,48,32,28];e[7]=28;e[8]=2;e[9]=1;}});
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(112,'Andore Flying Seat Drop',[[p.data.airborneFrame,10]],{loop:true});f.anims[112].ents[0][6]=[0,18,34,30];f.anims[112].ents[0][7]=28;f.anims[112].ents[0][8]=2;f.anims[112].ents[0][9]=1;f.anims[112].ents[0][10]=-1;put(113,'Andore Seat Drop Landing',[[11,14],[0,10]]);
@@ -143,8 +145,9 @@ window.SF2AIFF=(()=>{
   }
   if(p.id==='andore'&&m.style==='dash'){
    if(s.age===19)h.sound(0x2b);
-   if(!s.contact&&player.hitdone){s.contact=true;s.stop=s.age+18;h.anim(player,100,player.F.anims[100].ents.length-1);}
+   if(!s.contact&&player.hitdone){s.contact=true;s.stop=s.age+18;s.skid=5;h.anim(player,100,player.F.anims[100].ents.length-1);}
    if(!s.contact&&s.age>=19&&s.age<=54)player.X+=s.dir*(0x480+player.SPSTR*0x60);
+   if(s.contact){player.X+=s.dir*s.skid*256;s.skid*=.75;}
    player.SPKD=1;
    if(s.age>=(s.stop||73)){delete player.AIFFMove;h.idle(player);}return;
   }
@@ -208,8 +211,9 @@ window.SF2AIFF=(()=>{
  }
  function rageStep(player,h){const s=player.AIFFMove;
   if(s.age===19)h.sound(0x2b);
-  if(player.hitdone&&!s.contact){s.contact=true;s.stop=s.age+20;h.anim(player,100,player.F.anims[100].ents.length-1);}
+  if(player.hitdone&&!s.contact){s.contact=true;s.stop=s.age+20;s.skid=5;h.anim(player,100,player.F.anims[100].ents.length-1);}
   if(!s.contact&&s.age>=19&&s.age<=59)player.X+=s.dir*(0x500+player.SPSTR*0x40);
+  if(s.contact){player.X+=s.dir*s.skid*256;s.skid*=.75;}
   player.SPKD=1;if(s.age>=(s.stop||79)){delete player.AIFFMove;h.idle(player);}
  }
  function batterStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{kind:'batter',age:0,pulses:0,dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
@@ -233,6 +237,7 @@ window.SF2AIFF=(()=>{
  function bulletDraw(ctx,player,camera,ground){ctx.save();ctx.imageSmoothingEnabled=false;for(const b of player.AIFFBullets||[]){if(b.hit)continue;ctx.save();ctx.translate(Math.round(b.x-camera),Math.round(ground-b.y));if(b.type==='bolt'){ctx.rotate(Math.atan2(-(b.vy||0),b.vx));ctx.scale(-1,1);ctx.drawImage(boltImage,-7,-1);}else{if(b.dir>0)ctx.scale(-1,1);ctx.drawImage(bulletImage,-5,-1);}ctx.restore();}ctx.restore();}
  function holdStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{age:0,pulses:0,escape:0,previous:((o.AIButtons?.raw||0)|(o.KEYS&15)),dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false,choke:true}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function holdStep(player,h){const s=player.AIFFHold,o=player.opp;s.age++;
+  const attack=player.AIButtons?.raw||0;if((attack&544)===544){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;throwStart(player,2,{...h,move:h.throwMove,special:true});return;}if((attack&192)===192){holdRelease(player,h,false);start(player,player.F.moves[5],2,h);return;}
   if(!player.THV||o.HP<=0){holdRelease(player,h,true);return;}
   const raw=(o.AIButtons?.raw||0)|(o.KEYS&15),fresh=(raw&~s.previous)&1008,direction=raw&15;let points=0;if(fresh)points+=2;if(direction&&direction!==(s.previous&15))points++;s.previous=raw;
   if(h.cpu?.(o)&&s.age>18&&s.age%6===0)points+=2;s.escape=Math.min(14,s.escape+Math.min(3,points));
