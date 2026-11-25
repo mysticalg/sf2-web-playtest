@@ -99,3 +99,7 @@ Abigail now uses his original forward-punch upper body (frame18) with his existi
 Andore can transition from an active choke into Piledriver (MP+HK; P1 S+C) or Flying Seat Drop (HP+LK; P1 D+Z). Previously the hold's special state rejected the normal shortcut queue. A keyboard-driven test now establishes the choke and executes both transitions, checking high launch/landing damage, held-victim cleanup and full recovery.
 
 Andore charge contact holds native frame6, matching the supplied chest-forward reference, and moves into an18tick skid with decaying horizontal velocity. Abigail receives a20tick skid; his exact original chest-impact pose remains under comparison. Abigail's requested torso registration moves3px right in the right-facing pose, and his original crouched waist band reconnects the chain on that side. His lower3255pixels and approved Andore chain remain unchanged. These updates pass combat lifecycles and actual keyboard hold-to-special tests.
+
+## Double-button shortcut admission
+
+Every guest special is available through its assigned two-button pair, including Andore fifth/sixth specials. Final Fight guests buffer an initial single button for3ticks so a second button arriving2ticks later still forms the chord instead of leaking a normal. Existing non-guest timing is unchanged. Verified210 cases: all35 guest specials, both player slots, simultaneous/1tick/2tick-separated presses. Actual P1 keyboard choke-to-Piledriver S+C and choke-to-SeatDrop D+Z pass, as do normal chain regressions.
