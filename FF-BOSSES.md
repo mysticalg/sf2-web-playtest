@@ -109,3 +109,7 @@ Every guest special is available through its assigned two-button pair, including
 Six guest profiles now use a face crop(76x72 from8,0), filling the portrait window instead of fitting a chest-up square. Left/default portraits face inward to the right; right-side portraits mirror left. Damnd facing follows the same convention. Native world travel images are matched by source URL (the map owns separate Image objects), replaced with the selected guest portrait, and inherited name/flag art is suppressed.
 
 Added missing clothing and skin palette-index groups for all six newer guests; previously empty groups made their colour selectors ineffective. Native colour choices remain available. Verified palette changes for every new guest, rendered select/travel screenshots, seven guest arcade transitions,206 combat cases and unchanged WW/CE traces. Generated portrait artwork keeps its original colours; battle costume/skin palette choices apply to sprites.
+
+## Fresh guest selection palette safety
+
+Before a guest adapter is built, portrait palette packets now use that guest original palette instead of the shorter inherited SF2 palette. Skin index lookup also ignores absent entries. This prevents invalid colour reads on fresh guest selection. Confirm-input tests cover all seven guest tiles through colour-screen drawing, colour selection and confirmation; both-slot portrait packets use the correct guest identity and palette.
