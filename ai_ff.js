@@ -41,6 +41,15 @@ window.SF2AIFF=(()=>{
    a.ents=out;a.flags=out.map((_,i)=>i===out.length-1?32769:0);a.normalTiming={strength,startup:out.slice(0,out.findIndex(e=>e[6]?.[2]>0)).reduce((n,e)=>n+e[1],0),total:out.reduce((n,e)=>n+e[1],0)};
   }return f;
  }
+ function andoreCrouchPunch(pack,f){
+  if(pack.id!=='andore')return;
+  const lower=f.frames[11],upper=f.frames[8],source=pack.image,shiftX=23,shiftY=19,seam=-35,left=Math.min(lower[4],upper[4]+shiftX),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const g=pose.getContext('2d');g.imageSmoothingEnabled=false;
+  g.save();g.beginPath();g.rect(0,seam-top,pose.width,pose.height);g.clip();g.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);g.restore();
+  g.save();g.beginPath();g.rect(0,0,pose.width,seam-top);g.clip();g.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);g.restore();
+  const atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+pose.height+2;const ctx=atlas.getContext('2d');ctx.drawImage(source,0,0);ctx.drawImage(pose,0,source.height+1);const index=f.frames.length;f.frames.push([0,source.height+1,pose.width,pose.height,left,top]);pack.originalImage=source;pack.image=atlas;
+  for(let b=0;b<6;b++){const strength=b%3,a=anim(pack,'andoreCrouchPunch'+b,[[11,[3,6,10][strength]],[11,[3,5,7][strength]],[11,[6,10,16][strength]]],{crouch:true,low:true});a.ents[1][0]=index;Object.assign(a.ents[1],{6:[-65,56,25,16],7:12+strength*6,8:strength,9:b===5?1:0});f.anims[14+b]=a;}
+  f.crouchPunch={lower:11,upper:8,frame:index,shiftX,shiftY,seam};
+ }
  function build(p,native){if(p.template)return p.template;const f=clone(native);f.name=p.name;f.img=p.data.image;f.frames=clone(p.data.frames);f.pal=clone(p.data.palette);f.pal2=clone(f.pal);
   f.anims=native.anims.map(a=>anim(p,a.name,/^(thpose|throwfall|vegaizunafall)/.test(a.name)?a.ents.map((e,i)=>[sequence(p,p.fall)[i%sequence(p,p.fall).length][0],e[1]]):/hit|hurt/.test(a.name)?p.hurt:p.idle,{loop:a.mode===0}));
   while(f.anims.length<112)f.anims.push(anim(p,'ffExtra'+f.anims.length,p.idle));
@@ -93,7 +102,7 @@ window.SF2AIFF=(()=>{
    put(105,'Belger Escape Hop',[[9,5],[8,10],[7,8]],{loop:true});
   }
   const scale=p.data.sizeAdjustment?.factor||1;if(scale!==1)for(const a of f.anims)for(const e of a.ents)for(let k=2;k<=6;k++)if(Array.isArray(e[k]))e[k]=e[k].map(n=>Math.round(n*scale));
-  retimeNormals(f);delete f._ai;return p.template=f;
+  retimeNormals(f);andoreCrouchPunch(p,f);delete f._ai;return p.template=f;
  }
  function bind(player,native,id){const p=get(id);player.F=clone(build(p,native));player.AIAtlas=player.AIAtlasAlt=p.image;player.ft=[p.speed,p.speed*.72|0,[0,0,p.jump,0x40],[-0x240,0,p.jump,0x40],[0x280,0,p.jump,0x40]];}
  function art(player){const p=get(player.aiProfile),f=player.F;let frame;
