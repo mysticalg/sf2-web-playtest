@@ -87,3 +87,5 @@ The normal crouch remains the original frame11. Crouched attacks use the exact o
 Mirrored normal/special combat, original sole baseline, twelve-hit chains and high-piledriver/seat-drop shortcut checks pass. Gameplay screenshots inspected. Remaining crouched-attack additions for other guests are still pending.
 
 The user-requested waist adjustment lowers the selected torso and waist join by3 native pixels (torso Y+22, join Y-32). Original lower-leg pixels below that join and the idle crouch remain byte-identical; sprite dimensions/scale are unchanged.
+
+Andore chain alignment preserves the original crouched waist chain across the punching-torso join. Conflicting upper-chain pixels in the waist band are replaced with the matching original crouched pixels; belt height, torso registration, lower legs and normal crouch remain unchanged. Verified2520 lower-region pixels against the source and reran206 combat lifecycles.
