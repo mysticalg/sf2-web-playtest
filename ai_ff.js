@@ -73,6 +73,7 @@ window.SF2AIFF=(()=>{
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(112,'Andore Flying Seat Drop',[[p.data.airborneFrame,10]],{loop:true});f.anims[112].ents[0][6]=[0,18,34,30];f.anims[112].ents[0][7]=28;f.anims[112].ents[0][8]=2;f.anims[112].ents[0][9]=1;f.anims[112].ents[0][10]=-1;put(113,'Andore Seat Drop Landing',[[11,14],[0,10]]);
    put(111,'Andore Choke Hold',sequence(p,'choke'),{loop:true});put(114,'Andore Carry Straight',sequence(p,'carryStraight'),{loop:true});put(115,'Andore Carry Shake',sequence(p,'carryBent'),{loop:true});
+   put(116,'Andore Piledriver Squat',[[11,10]],{loop:true});
    put(107,'Andore Piledriver Lift',[[p.data.liftFrame,10]],{loop:true});put(108,'Andore Piledriver Air',[[p.data.airborneFrame,8]],{loop:true});put(109,'Andore Piledriver Land',[[12,14],[0,12]]);
   }
   if(p.id==='rolento'){
@@ -251,11 +252,12 @@ window.SF2AIFF=(()=>{
  function pileStep(player,h){
   const s=player.AIFFThrow,o=player.opp;s.age++;
   if((!player.THV||o.HP<=0)&&s.phase!=='recover'){cancelThrow(player,h);return;}
-  if(s.phase==='grip'&&s.age>=6){s.phase='jump';player.VY=0x1000;player.AY=0xb0;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
+  if(s.phase==='grip'&&s.age>=6){s.phase='squat';s.squatAt=s.age;o.AIFFHeld.inverted=true;h.anim(player,116,0);}
+  if(s.phase==='squat'&&s.age-s.squatAt>=10){s.phase='jump';player.VY=0x1000;player.AY=0xb0;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
   if(s.phase==='jump'){
    if(!h.gravity(player)){s.phase='recover';s.landed=s.age;delete o.AIFFHeld;h.slam(player);h.anim(player,109,0);h.sound(0x2f);}
   }
-  if(s.phase!=='recover'){o.X=player.X+s.dir*7*bodyScale(player)*256;o.Y=player.Y+(s.phase==='grip'?48:66)*bodyScale(player)*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
+  if(s.phase!=='recover'){o.X=player.X+s.dir*7*bodyScale(player)*256;o.Y=player.Y+(s.phase==='grip'?48:s.phase==='squat'?85:66)*bodyScale(player)*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
   else if(s.age-s.landed>=26){delete player.AIFFThrow;h.idle(player);}
  }
  function cancelThrow(player,h){const o=player.opp;delete o.AIFFHeld;delete player.AIFFThrow;delete player.AIFFHold;player.THV=null;if(o.ST===5&&o.STUN>500){o.STUN=12;o.KB=0;if(o.Y>0)h.drop?.(o);} }
