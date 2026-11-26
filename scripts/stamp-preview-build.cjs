@@ -5,7 +5,12 @@ function stamp(directory,commit,builtAt=new Date().toISOString()){
   if(!/^[a-f0-9]{40}$/i.test(commit||''))throw new Error('A full Git commit is required');
   const root=path.resolve(directory),manifest=path.join(root,'build.json');
   const previous=JSON.parse(fs.readFileSync(manifest,'utf8'));
-  const meta={status:previous.status,version:previous.version,commit,builtAt};
+  const assetRevisions={};
+  for(const file of ['assets_ce.js','screens_ce.js','endings_ce.js']){
+    const target=path.join(root,file);
+    if(fs.existsSync(target))assetRevisions[file]=hash(target).slice(0,16);
+  }
+  const meta={status:previous.status,version:previous.version,commit,builtAt,assetRevisions};
   const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):e.isFile()?[path.join(dir,e.name)]:[]);
   const files=walk(root).sort();let stamped=0;
   for(const file of files.filter(f=>f.endsWith('.html'))){

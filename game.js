@@ -2419,7 +2419,7 @@ const AI_REEL_IMAGES=SF2AIREELDATA.frames.map(f=>img(f.img)),AI_IMPACT_IMAGES=SF
 
 const CEWIN=window.SF2CEWIN,CWIN=CEWIN?Object.fromEntries(Object.entries(CEWIN.fighters).map(([f,v])=>[f,{win:img(v.win),lose:img(v.lose),quote:img(v.quote)}])):null;
 
-function asseturl(file){return window.SF2BUILD?file+'?v='+SF2BUILD.commit:file;}
+function asseturl(file){const b=window.SF2BUILD;return b?file+'?v='+((b.assetRevisions||{})[file]||b.commit):file;}
 
 let STI=D.stages.map(ls=>ls.map(l=>img(l.img))),FXI=img(D.fx_img);let FI=D.fighters.map(f=>img(f.img)),FIA=FI;
 
