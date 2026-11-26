@@ -132,7 +132,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
    return{x:p.X/256+sign*part.pivot[0],y:p.Y/256-part.pivot[1],face:p.FACE,angle:0};
   },
   blood:(packet,d)=>aiBloodAdd(packet,d.i),stain:aiClothesStain,
-  impact:e=>{if(!e.special)G.hfz=Math.min(G.hfz,2);G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
+  impact:e=>{if(!e.special)G.hfz=Math.min(G.hfz,Math.round(4*(1-(e.progress??0))**2));G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
   fire:e=>{fire={tick:G.tick,x:e.point.x,y:e.point.y};AI_RETCH[e.victim.i]=AI_TEETH[e.victim.i]=AI_FLOOR_COUGHS[e.victim.i]=null;},
   echo:(w,request)=>{if(lastMove?.nativeSlot===-1)pendingEcho={owner:w,request};else aiSpecialKOEcho(w,{special:true,projectile:!!w.FBON});},
   camera(w,active){if(active)AI_SKO_VIEW={slot:w.i,start:G.tick-24};else AI_SKO_VIEW=null;},
@@ -160,7 +160,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   framing,
   focus(ground){const f=framing(true),s=finisher.view();if(!f||!s)return null;const t=Math.min(1,s.age/18),weight=s.completed?Math.max(0,1-(G.tick-s.completedAt)/36):t*t*(3-2*t);return{weight,zoom:f.zoom,screenY:H*.66,x:(f.left+f.right)/2,y:ground-(f.top+f.bottom)/2,top:ground-f.top};},
   drawFire(ctx,camera,ground){if(!fire)return;const age=G.tick-fire.tick;if(age>=24)return;const a=frames[Math.floor(age/2)%frames.length];if(!a.image.complete)return;ctx.save();ctx.globalAlpha=.9;spr(a.image,a.rect,fire.x-camera,ground-12,0);ctx.restore();},
-  drawResult(ctx){if(G.scene!=='win'||!finisher.retained()||!portrait)return;const s=finisher.info();ctx.save();if(s.winner===1){ctx.translate(W,0);ctx.scale(-1,1);}ctx.beginPath();ctx.rect(0,16,192,144);ctx.clip();for(const offset of[18,12,6]){ctx.globalAlpha=.7-offset/40;ctx.drawImage(portrait,offset+Math.round(Math.sin(G.tick/9)),16);}ctx.globalAlpha=1;ctx.drawImage(portrait,0,16);ctx.restore();},
+  drawResult(ctx){if(G.scene!=='win'||!finisher.retained()||!portrait)return;const s=finisher.view();ctx.save();if(s.winner===1){ctx.translate(W,0);ctx.scale(-1,1);}ctx.beginPath();ctx.rect(0,16,192,144);ctx.clip();for(const offset of[18,12,6]){ctx.globalAlpha=.7-offset/40;ctx.drawImage(portrait,offset+Math.round(Math.sin(G.tick/9)),16);}ctx.globalAlpha=1;ctx.drawImage(portrait,0,16);ctx.restore();},
   ready:Promise.all(frames.map(a=>a.image.decode()))
  });
 };
