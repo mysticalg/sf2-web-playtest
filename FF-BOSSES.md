@@ -219,3 +219,10 @@ The five themes were rendered offline from the original ff_09.12b Z80 program an
 Themes decode lazily, with at most two decoded themes retained. Only one music voice plays; asynchronous loads cannot restart an arena theme after leaving the fight. The native SF2 music worklet receives its stop command while Final Fight music plays, and normal scene music resumes on menus, win screens, bonus stages or original arenas. Music uses the existing master mute control and stays separate from Special KO echoes.
 
 Validation: all seven arenas start the intended decoded track with one looping source and nonzero measured browser output; native music output is silent underneath. Late audio unlock, round reset without duplicate music, master mute/unmute, scene changes, guest P1 on an original arena, and a deliberately delayed music fetch cancelled by returning to title all pass. All five MP3s decode fully; their PCM provenance and native arena command membership pass. Actual keyboard gameplay in Edi's arena was captured and inspected. WW/CE240frame traces and release-stamping/chain regressions remain unchanged. Physical speaker output is not established by the browser analyser check.
+
+
+## Edi original gunshot
+
+Each Police Pistol and Pistol Burst bullet now plays original Final Fight sound command12(hex), selected by the native bullet spawn at0x0467ce calling0x000ad2. The clip is captured offline from the original driver, PCM-hash checked and converted to96kbps MP3; capture and encoded hashes are recorded in ai_ff_data.js. Pistol Special KO echoes use that same decoded gunshot instead of the generic guest special clip. Other move sounds and music are unchanged.
+
+Sixteen both-slot single/three-shot cases at130/240pixel gaps verify1/3released bullets,1/3original gunshot triggers,1/3hits and blocked chip, projectile cleanup and normal recovery. Twelve finishing-KO cases retain five echoes sourced from the correct decoded move clip; all guest special audio triggers pass. An actual keyboard LP+MK burst produced3HIT and three original shot triggers; its screenshot/state were inspected. Edi's gum-spit victory remains outstanding.
