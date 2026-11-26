@@ -3733,10 +3733,11 @@
     "ffPortraitProjectionVariants": 60,
     "ffProjectedMaskPixels": 1272,
     "additionalReviewedActionFrames": 287,
-    "additionalPaletteInversionGalleryCases": 1240,
+    "additionalPaletteInversionGalleryCases": 1248,
     "additionalCopiedCrouchFrames": 5,
     "additionalRefinedFFEyeOpenings": 18,
-    "explicitExcludedFrames": 129
+    "explicitExcludedFrames": 129,
+    "correctedLegacySourceOffsets": 2
   },
   "knownLimits": [
     "Unannotated source poses deliberately omit eye FX; annotation does not imply full native face coverage.",

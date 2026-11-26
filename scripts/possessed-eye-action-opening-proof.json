@@ -12273,5 +12273,93 @@
     "rootReviewed": true,
     "semantic": "Complete exposed eye socket: two dark pupil pixels and adjacent white sclera; unchanged native copied torso in crouch composites.",
     "copiedFromNativeFrame": 14
+  },
+  {
+    "base": "damnd",
+    "frame": 54,
+    "mask": [
+      [
+        24,
+        9,
+        1,
+        1
+      ],
+      [
+        30,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      1,
+      1148,
+      80,
+      89,
+      -41,
+      -86
+    ],
+    "sourcePNGsha256": "eace23b1c5f2d0bddc3baefa5006ee9e3805f76c18b620cc3d91b51eb5982700",
+    "sourceEyeRGBA": [
+      [
+        24,
+        9,
+        17,
+        17,
+        17,
+        255
+      ],
+      [
+        30,
+        10,
+        0,
+        102,
+        136,
+        255
+      ]
+    ],
+    "rootReviewed": true,
+    "semantic": "Authored red lights inside the two opaque sunglass lenses; no visible iris claimed."
+  },
+  {
+    "base": "andore",
+    "frame": 40,
+    "mask": [
+      [
+        53,
+        12,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      261,
+      507,
+      103,
+      116,
+      -66,
+      -113
+    ],
+    "sourcePNGsha256": "5b9234275ad7150f8403fa21132cff60c9af58cd211c39f722a06ca4eedb7a53",
+    "sourceEyeRGBA": [
+      [
+        53,
+        12,
+        17,
+        17,
+        17,
+        255
+      ],
+      [
+        54,
+        12,
+        17,
+        17,
+        17,
+        255
+      ]
+    ],
+    "rootReviewed": true,
+    "semantic": "Both dark pixels inside the visible eye opening of the original open-palm torso; transparent former location rejected."
   }
 ]
