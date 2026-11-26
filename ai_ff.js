@@ -16,6 +16,7 @@ window.SF2AIFF=(()=>{
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
+ const swordImage=new Image();swordImage.src=assetURL(SF2AIFFData.sodom.katana.image);pending.push(swordImage.decode());
  const grenadeImage=new Image();grenadeImage.src=assetURL(SF2AIFFData.rolento.grenades.image);pending.push(grenadeImage.decode());
  const boltImage=new Image();boltImage.src=assetURL(SF2AIFFData.belger.bolt.image);pending.push(boltImage.decode());
  const bulletImage=new Image();bulletImage.src=assetURL(SF2AIFFData.edi.bullet.image);pending.push(bulletImage.decode());
@@ -126,8 +127,38 @@ window.SF2AIFF=(()=>{
    put(105,'Belger Escape Hop',[[9,5],[8,10],[7,8]],{loop:true});
   }
   const scale=p.data.sizeAdjustment?.factor||1;if(scale!==1)for(const a of f.anims)for(const e of a.ents)for(let k=2;k<=6;k++)if(Array.isArray(e[k]))e[k]=e[k].map(n=>Math.round(n*scale));
-  retimeNormals(f);andoreCrouchPunch(p,f);delete f._ai;return p.template=f;
+  retimeNormals(f);andoreCrouchPunch(p,f);if(p.id==='sodom')sodomUnarmed(p,f);delete f._ai;return p.template=f;
  }
+ function sodomUnarmed(pack,f){
+  const source=pack.image,lower=f.frames[42],atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+130;const g=atlas.getContext('2d');g.drawImage(source,0,0);const low=[];
+  for(const [j,index]of[25,24].entries()){
+   const upper=f.frames[index],shiftY=32,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');
+   c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();
+   const x=1+j*150;g.drawImage(pose,x,source.height+1);low.push(f.frames.length);f.frames.push([x,source.height+1,pose.width,pose.height,left,top]);
+  }
+  pack.image=atlas;const air=f.frames.length,r=f.frames[0];f.frames.push([...r.slice(0,4),-Math.floor(r[2]/2),r[5]]);
+  const adapted={...pack,data:{...pack.data,frames:f.frames}},unarmed={},put=(i,name,list,options)=>unarmed[i]=anim(adapted,'Sodom Unarmed '+name,list,options);
+  put(0,'Ready',[[25,12]],{loop:true});put(1,'Walk',[14,15,16,17],{loop:true});put(2,'Back',[17,16,15,14],{loop:true});put(3,'Crouch',[[25,3],[low[0],3],[low[0],8]],{loop:true,crouch:true});unarmed[3].loop=2;put(4,'Stand',[[low[0],3],[25,3]]);
+  for(let i=5;i<=7;i++)put(i,'Jump',[[air,12]],{loop:true});put(26,'Guard',[[25,8]],{loop:true});put(27,'Low Guard',[[low[0],8]],{loop:true,crouch:true});put(31,'Victory',[[30,12]],{loop:true});
+  for(const base of[8,14,47,53,59])for(let b=0;b<6;b++){
+   const strength=b%3,crouch=base===14,poses=crouch?low:[25,24],a=put(base+b,'Punch '+base+' '+b,[[poses[0],[3,6,10][strength]],[poses[1],[3,5,7][strength]],[poses[0],[6,10,16][strength]]],{crouch,low:crouch});Object.assign(a.ents[1],{6:[-39,crouch?32:63,24,18],7:[8,14,21][strength],8:strength,9:crouch&&b===5?1:0,10:crouch?1:0});a.normalTiming={strength,startup:[3,6,10][strength],total:[12,21,33][strength]};
+  }
+  f.anims[128]=anim(pack,'Sodom Unarmed Double Punch',[[25,5],[24,4],[25,7],[24,4],[25,14]]);for(const i of[1,3])Object.assign(f.anims[128].ents[i],{6:[-39,63,24,18],7:14,8:2,9:0,10:0});
+  f.anims[129]=anim(pack,'Sodom Unarmed Heavy Punch',[[25,10],[24,7],[25,16]]);Object.assign(f.anims[129].ents[1],{6:[-39,63,24,18],7:26,8:2,9:1,10:0});
+  f.anims[130]=anim(pack,'Sodom Recover Katana',[[26,3],[32,9]]);f.anims[131]=anim(pack,'Sodom Lift Recovered Katana',[[41,3],[42,3]]);f.sodomUnarmed=unarmed;f.sodomArmed=Object.fromEntries(Object.keys(unarmed).map(i=>[i,f.anims[i]]));f.sodomUnarmedLow=low;
+ }
+ function swordEquipped(player){return player.aiProfile!=='sodom'||!player.AIFFSword;}
+ function swordAnims(player,armed){const list=armed?player.F?.sodomArmed:player.F?.sodomUnarmed;if(!list)return;for(const [i,a]of Object.entries(list))player.F.anims[i]=a;if(player.anim?.guest){player.anim=player.F.anims[player.cur];player.aidx=Math.min(player.aidx,player.anim.ents.length-1);player.acc=Math.min(player.acc,player.anim.ents[player.aidx][1]-1);}}
+ function resetSword(player){swordAnims(player,true);delete player.AIFFSword;}
+ function disarm(player,dir){if(player.aiProfile!=='sodom'||player.AIFFSword)return false;player.AIFFSword={x:player.X/256,y:player.Y/256+78,vx:dir*1.5,vy:3.5,age:0,bounce:0,phase:'toss'};swordAnims(player,false);return true;}
+ function swordStep(player,room,sound){const w=player.AIFFSword;if(!w)return;w.age++;if(w.phase==='floor')return;w.vy-=.34375;w.vx-=Math.sign(w.vx)*Math.min(Math.abs(w.vx),2/256);w.x+=w.vx;w.y+=w.vy;w.x=Math.max(room.left+44,Math.min(room.right-44,w.x));
+  if(w.y<=0){w.y=0;sound?.();if(!w.bounce){w.bounce=1;w.vx=Math.sign(w.vx||1);w.vy=3;}else{w.phase='floor';w.vx=w.vy=0;}}
+ }
+ function swordDraw(ctx,player,camera,ground){const w=player.AIFFSword;if(!w)return;const data=SF2AIFFData.sodom.katana,frame=data.frames[w.phase==='floor'?data.frames.length-1:w.age%(data.frames.length-1)];ctx.save();ctx.imageSmoothingEnabled=false;ctx.drawImage(swordImage,...frame.slice(0,4),Math.round(w.x-camera)+frame[4],Math.round(ground-2-w.y)+frame[5],frame[2],frame[3]);ctx.restore();}
+ function swordPickup(player,h){const w=player.AIFFSword;if(player.aiProfile!=='sodom'||!w||w.phase!=='floor'||player.HP<=0||player.Y!==0||![0,3,4].includes(player.ST)||Math.abs(player.X/256-w.x)>22||!(h.keys&8)||!(h.nw&0x70))return false;
+  Object.assign(player,{ST:11,MV:{kind:'ff',style:'sodom-pickup',name:'Recover Katana'},AIFFMove:{age:0},VX:0,VY:0,KB:0,SPK:0,SPKD:0,RETCR:0,hitdone:1});h.anim(player,130,0);return true;
+ }
+ function swordCPU(player,danger){const w=player.AIFFSword;if(player.aiProfile!=='sodom'||!w||w.phase!=='floor'||danger||player.HP<=0||player.opp.HP<=0)return null;const dx=w.x-player.X/256;return Math.abs(dx)<=22?8|16:dx>0?2:1;}
  function bind(player,native,id){const p=get(id);player.F=clone(build(p,native));player.AIAtlas=player.AIAtlasAlt=p.image;player.ft=[p.speed,p.speed*.72|0,[0,0,p.jump,0x40],[-0x240,0,p.jump,0x40],[0x280,0,p.jump,0x40]];}
  function art(player){const p=get(player.aiProfile),f=player.F;let frame;
   if(player.DIZZY===2)frame=sequence(p,p.hurt)[Math.floor((player.STUN||0)/10)%sequence(p,p.hurt).length][0];
@@ -142,13 +173,14 @@ window.SF2AIFF=(()=>{
  function portrait(id,original,kind){const p=get(id),w=original.naturalWidth||original.width,h=original.naturalHeight||original.height,key=w+':'+h+kind;if(p.portraits.has(key))return p.portraits.get(key);const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');g.imageSmoothingEnabled=false;if(!kind.endsWith('R')){g.translate(w,0);g.scale(-1,1);}const top=kind.startsWith('sel')?32:0,scale=Math.max(w/76,(h-top)/72),dw=76*scale,dh=72*scale;g.save();g.beginPath();g.rect(0,top,w,h-top);g.clip();g.drawImage(p.portraitImage,8,0,76,72,(w-dw)/2,top+(h-top-dh)/2,dw,dh);g.restore();p.portraits.set(key,c);return c;}
  function bodyScale(player){return get(player.aiProfile)?.data.sizeAdjustment?.factor||1;}
  function mouth(player){const scale=bodyScale(player),r=art(player).rect,lying=player.cur===29,x=lying?r[4]+r[2]*.72:-12*scale;return{x:player.X/256+(player.FACE?-x:x),y:player.Y/256+(lying?12*scale:Math.min(98*scale,Math.max(35*scale,-r[5]-17*scale)))};}
- function start(player,m,str,h){if(['bullet','burst','grenade','rain','retreat','grenade-barrage','pistol','pistol-burst','bolts','bolt-rain'].includes(m.style)&&player.FBON)return false;Object.assign(player,{ST:11,MV:m,SPSTR:str,SPK:1,SPKD:['dash','spin'].includes(m.style)?0:1,RETCR:0,KB:0,hitdone:0,AIFFMove:{age:0,phase:-1,launched:false,shots:0,dir:player.FACE?1:-1,fromAir:player.Y>0}});h.anim(player,m.a,0);h.sound(0x25);return true;}
+ function start(player,m,str,h){if(['bullet','burst','grenade','rain','retreat','grenade-barrage','pistol','pistol-burst','bolts','bolt-rain'].includes(m.style)&&player.FBON)return false;Object.assign(player,{ST:11,MV:m,SPSTR:str,SPK:1,SPKD:['dash','spin'].includes(m.style)?0:1,RETCR:0,KB:0,hitdone:0,AIFFMove:{age:0,phase:-1,launched:false,shots:0,dir:player.FACE?1:-1,fromAir:player.Y>0}});h.anim(player,!swordEquipped(player)&&m.style==='sodom-double'?128:!swordEquipped(player)&&m.style==='sodom-chop'?129:m.a,0);h.sound(0x25);return true;}
  function spawn(player,type,age){const dir=player.FACE?1:-1;player.AIFFProjectile={type,age:0,dir,strength:player.SPSTR};player.FBON=1;player.FBK='ff-'+type;player.FBDEF=null;player.FBAN=null;player.FBIMPACT=0;player.FBX=type==='rain'?player.opp.X-dir*30*256:player.X+dir*40*256;player.FBY=(type==='grenade'?84:type==='rain'?150:68)*256;player.FBVX=dir*(type==='grenade'?0x300:type==='rain'?0x60:0x580);player.AIFFProjectile.vy=type==='grenade'?0x280:type==='rain'?-0x480:0;}
  function step(player,h){const p=get(player.aiProfile),m=player.MV,s=player.AIFFMove;
   if(m?.kind==='throw'&&player.AIFFHold){if(player.AIFFHold.kind==='batter')batterStep(player,h);else holdStep(player,h);return;}
   if(m?.kind==='throw'&&player.AIFFThrow){if(player.AIFFThrow.kind==='shoulder')shoulderStep(player,h);else if(player.AIFFThrow.kind==='toss')tossStep(player,h);else pileStep(player,h);return;}
   if(m?.kind==='throw'){if(player.THV){player.opp.X=player.X-player.THV.d*28*256;player.opp.Y=0;player.opp.STUN=999;if(--player.THV.t<=0)h.release(player);}if(--player.SCNT<=0)h.idle(player);return;}
   if(!s||m?.kind!=='ff')return;s.age++;
+  if(m.style==='sodom-pickup'){if(s.age===12&&player.AIFFSword?.phase==='floor'&&Math.abs(player.X/256-player.AIFFSword.x)<=22){resetSword(player);h.anim(player,131,0);h.sound(0x10);}if(s.age>=18){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='sodom'&&m.style==='grab'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='sodom'&&m.style.startsWith('sodom-')){sodomStep(player,h);return;}
   if(p.id==='belger'){belgerStep(player,h);return;}
@@ -192,8 +224,8 @@ window.SF2AIFF=(()=>{
   }
   if(m.style==='sodom-double'){
    if(player.hitdone&&s.phase===0&&!s.firstContact){s.firstContact=true;player.opp.KB=Math.trunc(player.opp.KB*.35);}
-   if(player.aidx===5){const gap=Math.abs(player.X-player.opp.X)/256;if(gap>55)player.X+=s.dir*Math.min(4,gap-55)*256;}
-   const strike=player.aidx>=6?1:0;if(s.phase!==strike){s.phase=strike;player.hitdone=0;player.AIAttackSerial=(player.AIAttackSerial||0)+1;}
+   const second=swordEquipped(player)?6:3;if(player.aidx===(swordEquipped(player)?5:2)){const gap=Math.abs(player.X-player.opp.X)/256;if(gap>55)player.X+=s.dir*Math.min(4,gap-55)*256;}
+   const strike=player.aidx>=second?1:0;if(s.phase!==strike){s.phase=strike;player.hitdone=0;player.AIAttackSerial=(player.AIAttackSerial||0)+1;}
    player.SPKD=strike;
   }else player.SPKD=1;
   if(player.adone||s.age>75){delete player.AIFFMove;h.idle(player);}
@@ -346,8 +378,8 @@ window.SF2AIFF=(()=>{
  }
  function projectileStep(player,room){const s=player.AIFFProjectile;if(!s||!player.FBON){delete player.AIFFProjectile;return;}s.age++;player.FBX+=player.FBVX;player.FBY+=s.vy;if(s.type==='grenade'){s.vy-=0x26;if(player.FBY<12*256){player.FBY=12*256;s.vy=Math.abs(s.vy)*.45|0;if(s.age>65)s.exploding=1;}}if(s.type==='rain'&&player.FBY<12*256)player.FBON=0;if(s.age>120||player.FBX/256<room.left-40||player.FBX/256>room.right+40)player.FBON=0;}
  function projectileDraw(ctx,player,camera,ground){const s=player.AIFFProjectile;if(!s||!player.FBON)return;const x=(player.FBX>>8)-camera,y=ground-(player.FBY>>8);ctx.save();if(s.type==='grenade'){ctx.fillStyle='#172b17';ctx.fillRect(x-4,y-5,8,10);ctx.fillStyle='#bbc060';ctx.fillRect(x-3,y-4,2,8);ctx.fillStyle='#eebd50';ctx.fillRect(x-1,y-8,3,3);}else{ctx.strokeStyle='#e9d89a';ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x-s.dir*10,y);ctx.lineTo(x+s.dir*8,y);ctx.stroke();ctx.fillStyle='#faffed';ctx.fillRect(x+s.dir*7-1,y-2,3,4);}ctx.restore();}
- function damage(player,strength){if(player.ST!==11)return[10,17,25][Math.min(2,strength)]*(get(player.aiProfile).hp>=400?1.1:1)|0;return player.MV?.style==='wallkick'?30:player.MV?.style==='wallpunch'?32:player.MV?.style==='sodom-charge'?30:player.MV?.style==='sodom-chop'?34:player.MV?.style==='sodom-double'?18:player.MV?.style==='rage'?40:player.MV?.style==='baton'||player.MV?.style==='baton-rush'?30:player.MV?.style==='dash'||player.MV?.style==='spin'?player.AIFFMove?.phase===2?17:11:player.MV?.style==='seatdrop'?34:player.MV?.style==='power'?36:27;}
+ function damage(player,strength){if(player.ST!==11)return(swordEquipped(player)?[10,17,25]:[8,14,21])[Math.min(2,strength)]*(get(player.aiProfile).hp>=400?1.1:1)|0;return player.MV?.style==='wallkick'?30:player.MV?.style==='wallpunch'?32:player.MV?.style==='sodom-charge'?30:player.MV?.style==='sodom-chop'?(swordEquipped(player)?34:26):player.MV?.style==='sodom-double'?(swordEquipped(player)?18:14):player.MV?.style==='rage'?40:player.MV?.style==='baton'||player.MV?.style==='baton-rush'?30:player.MV?.style==='dash'||player.MV?.style==='spin'?player.AIFFMove?.phase===2?17:11:player.MV?.style==='seatdrop'?34:player.MV?.style==='power'?36:27;}
  function stageDraw(ctx,id,camera,width,top,height,ground){const p=get(id),y=ground-220;ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#151b2b';ctx.fillRect(0,top,width,height);for(let xx=-camera;xx<width;xx+=720)ctx.drawImage(p.stage,xx,y);for(let yy=y;yy>top;yy-=16)ctx.drawImage(p.stage,0,0,720,16,-camera,yy-16,720,16);for(let yy=y+256;yy<top+height;yy+=16)ctx.drawImage(p.stage,0,236,720,16,-camera,yy,720,16);ctx.restore();}
  function mapDraw(ctx,s,defeated){ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#070c16';ctx.fillRect(0,0,384,224);ctx.drawImage(metro,0,20,384,180);for(const id of ids()){const point=id==='damnd'?[135,103]:get(id).point;ctx.fillStyle=id===s.id?(s.tick%20<10?'#fff':'#ff3030'):defeated.includes(id)?'#777':'#ffe050';ctx.fillRect(point[0]-3,point[1]-3,6,6);if(id===s.id){ctx.strokeStyle='#fff';ctx.strokeRect(point[0]-7,point[1]-7,14,14);}}ctx.restore();}
- return{soundCode(player,kind){if(kind!=='hit')return null;const pack=get(player.aiProfile);if(!pack?.data.nativeFrames||!pack.data.combat)return null;const frame=player.anim?.ents[player.aidx]?.[0],attack=pack.data.nativeFrames[frame]?.attack;return pack.data.combat.attacks[attack]?.sound??null;},retimeNormals,canProbe(player){if(player.MV?.kind==='ff'&&((player.aiProfile==='sodom'&&player.MV.style==='sodom-charge')||(player.aiProfile==='andore'&&player.MV.style==='dash')||(player.aiProfile==='abigail'&&player.MV.style==='rage')))return player.AIFFMove?.age>=19&&!player.AIFFMove?.contact;if(player.aiProfile==='rolento'&&['wallkick','wallpunch'].includes(player.MV?.style))return player.AIFFMove?.phase==='dive';return !(player.ST===11&&player.MV?.kind==='ff'&&player.MV.style==='seatdrop'&&player.AIFFMove?.phase!=='drop');},soundBuffer:code=>soundBuffers.get(code)||null,holdStart,bulletStep,bulletContacts,bulletDraw,grenadeStep,grenadeContacts,grenadeDraw,wallJump,heldArt,cancelThrow,prepareSound,playSound,soundCounts,ready,get,ids,specs,bind,art,portrait,mouth,start,step,throwStart,projectileStep,projectileDraw,damage,stageDraw,mapDraw};
+ return{resetSword,disarm,swordStep,swordDraw,swordPickup,swordCPU,swordEquipped,soundCode(player,kind){if(kind==='weapon')return 16;if(kind!=='hit')return null;const pack=get(player.aiProfile);if(!pack?.data.nativeFrames||!pack.data.combat)return null;const frame=player.anim?.ents[player.aidx]?.[0],attack=pack.data.nativeFrames[frame]?.attack;return pack.data.combat.attacks[attack]?.sound??null;},retimeNormals,canProbe(player){if(player.MV?.kind==='ff'&&((player.aiProfile==='sodom'&&player.MV.style==='sodom-charge')||(player.aiProfile==='andore'&&player.MV.style==='dash')||(player.aiProfile==='abigail'&&player.MV.style==='rage')))return player.AIFFMove?.age>=19&&!player.AIFFMove?.contact;if(player.aiProfile==='rolento'&&['wallkick','wallpunch'].includes(player.MV?.style))return player.AIFFMove?.phase==='dive';return !(player.ST===11&&player.MV?.kind==='ff'&&player.MV.style==='seatdrop'&&player.AIFFMove?.phase!=='drop');},soundBuffer:code=>soundBuffers.get(code)||null,holdStart,bulletStep,bulletContacts,bulletDraw,grenadeStep,grenadeContacts,grenadeDraw,wallJump,heldArt,cancelThrow,prepareSound,playSound,soundCounts,ready,get,ids,specs,bind,art,portrait,mouth,start,step,throwStart,projectileStep,projectileDraw,damage,stageDraw,mapDraw};
 })();
