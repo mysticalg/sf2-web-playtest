@@ -1,0 +1,3884 @@
+{
+  "version": 2,
+  "review": "Canonical native eye openings accepted by evil-overlay worker; damaged originals independently reviewed and corrected by root; all projected mask neighborhoods verified against original images",
+  "sourceChecksum": "fnv1a-js-im.src",
+  "maskFormat": "native-row-runs [x,y,width], opaque red fills whole opening; no pupil/highlight layer",
+  "records": [
+    {
+      "base": "ryu",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 3915048209,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          33,
+          42,
+          1,
+          1
+        ],
+        [
+          54,
+          42,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Two visible dark pupils.",
+      "mask": [
+        [
+          32,
+          41,
+          3
+        ],
+        [
+          53,
+          41,
+          8
+        ],
+        [
+          31,
+          42,
+          4
+        ],
+        [
+          53,
+          42,
+          5
+        ],
+        [
+          32,
+          43,
+          2
+        ],
+        [
+          54,
+          43,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 24,
+      "verified": true,
+      "originalPngSha256": "94390203793d012fe5b00bc056e945703481446639998f7033564d00e8de62d1",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 3501979354,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          94,
+          42,
+          1,
+          1
+        ],
+        [
+          73,
+          42,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Two visible dark pupils.",
+      "mask": [
+        [
+          67,
+          41,
+          8
+        ],
+        [
+          93,
+          41,
+          3
+        ],
+        [
+          70,
+          42,
+          5
+        ],
+        [
+          93,
+          42,
+          4
+        ],
+        [
+          72,
+          43,
+          2
+        ],
+        [
+          94,
+          43,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 24,
+      "verified": true,
+      "originalPngSha256": "653bcc23ced426019f639cd25ab93ce53a3468898f7452073ff2400ef9c3c15e",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "selR",
+      "variant": "default",
+      "source": 1336157953,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          33,
+          74,
+          1,
+          1
+        ],
+        [
+          54,
+          74,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Two visible dark pupils.",
+      "mask": [
+        [
+          32,
+          73,
+          3
+        ],
+        [
+          53,
+          73,
+          8
+        ],
+        [
+          31,
+          74,
+          4
+        ],
+        [
+          53,
+          74,
+          5
+        ],
+        [
+          32,
+          75,
+          2
+        ],
+        [
+          54,
+          75,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 24,
+      "verified": true,
+      "originalPngSha256": "30ce23fa3b19039fd034098dd45271795297aac2517293ba2b811c7dd65d6ee5",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "selL",
+      "variant": "default",
+      "source": 2371476136,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          62,
+          74,
+          1,
+          1
+        ],
+        [
+          41,
+          74,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Two visible dark pupils.",
+      "mask": [
+        [
+          35,
+          73,
+          8
+        ],
+        [
+          61,
+          73,
+          3
+        ],
+        [
+          38,
+          74,
+          5
+        ],
+        [
+          61,
+          74,
+          4
+        ],
+        [
+          40,
+          75,
+          2
+        ],
+        [
+          62,
+          75,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 24,
+      "verified": true,
+      "originalPngSha256": "2b11e8017d28e83bac7f9855e686c1e9146ada94b212fff96038bfc80413fd37",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "win",
+      "variant": "default",
+      "source": 3960856128,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          110,
+          58,
+          1,
+          1
+        ],
+        [
+          89,
+          58,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Two visible dark pupils.",
+      "mask": [
+        [
+          83,
+          57,
+          8
+        ],
+        [
+          109,
+          57,
+          3
+        ],
+        [
+          86,
+          58,
+          5
+        ],
+        [
+          109,
+          58,
+          4
+        ],
+        [
+          88,
+          59,
+          2
+        ],
+        [
+          110,
+          59,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 24,
+      "verified": true,
+      "originalPngSha256": "bb19c54bf4ebef3511df68ce91bfba1ed0dd3a4674bc5c88b8bb0844735c1c60",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "lose",
+      "variant": "default",
+      "source": 466810899,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          83,
+          58,
+          1,
+          1
+        ],
+        [
+          104,
+          58,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Default damaged face retains two visible pupils.",
+      "maskReview": "Trim one brown lower-lid pixel81,59; retain the actual dark pupil wedges enclosed by original pale sclera.",
+      "mask": [
+        [
+          79,
+          57,
+          5
+        ],
+        [
+          104,
+          57,
+          8
+        ],
+        [
+          79,
+          58,
+          7
+        ],
+        [
+          101,
+          58,
+          8
+        ],
+        [
+          82,
+          59,
+          5
+        ],
+        [
+          98,
+          59,
+          7
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 40,
+      "verified": true,
+      "originalPngSha256": "355b7bfc0b814e47e274a3732542ed0f0608a952dc90136c407f68f22ab07a58",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "honda",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 2717059346,
+      "size": [
+        126,
+        104
+      ],
+      "eyes": [
+        [
+          33,
+          43,
+          1,
+          1
+        ],
+        [
+          58,
+          43,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Warpaint is not an eye; cores lie inside the exposed eyes.",
+      "mask": [
+        [
+          55,
+          41,
+          4
+        ],
+        [
+          62,
+          41,
+          2
+        ],
+        [
+          32,
+          42,
+          3
+        ],
+        [
+          54,
+          42,
+          10
+        ],
+        [
+          32,
+          43,
+          3
+        ],
+        [
+          53,
+          43,
+          10
+        ],
+        [
+          32,
+          44,
+          3
+        ],
+        [
+          53,
+          44,
+          8
+        ],
+        [
+          33,
+          45,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 48,
+      "verified": true,
+      "originalPngSha256": "71dc4f68a36d271cc4226064a4fef30a4a0f505af6af46b1e8b6c873ac1aa1fb",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "honda",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 4087565635,
+      "size": [
+        126,
+        104
+      ],
+      "eyes": [
+        [
+          92,
+          43,
+          1,
+          1
+        ],
+        [
+          67,
+          43,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Warpaint is not an eye; cores lie inside the exposed eyes.",
+      "mask": [
+        [
+          62,
+          41,
+          2
+        ],
+        [
+          67,
+          41,
+          4
+        ],
+        [
+          62,
+          42,
+          10
+        ],
+        [
+          91,
+          42,
+          3
+        ],
+        [
+          63,
+          43,
+          10
+        ],
+        [
+          91,
+          43,
+          3
+        ],
+        [
+          65,
+          44,
+          8
+        ],
+        [
+          91,
+          44,
+          3
+        ],
+        [
+          88,
+          45,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 48,
+      "verified": true,
+      "originalPngSha256": "27847028c06a40baca7ef47441e99c822f6b1c69c09f863c57e1418a4e0c0a9b",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "honda",
+      "kind": "selR",
+      "variant": "default",
+      "source": 4162975769,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          34,
+          83,
+          1,
+          1
+        ],
+        [
+          59,
+          83,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Warpaint is not an eye; cores lie inside the exposed eyes.",
+      "mask": [
+        [
+          56,
+          81,
+          4
+        ],
+        [
+          63,
+          81,
+          2
+        ],
+        [
+          33,
+          82,
+          3
+        ],
+        [
+          55,
+          82,
+          10
+        ],
+        [
+          33,
+          83,
+          3
+        ],
+        [
+          54,
+          83,
+          10
+        ],
+        [
+          33,
+          84,
+          3
+        ],
+        [
+          54,
+          84,
+          8
+        ],
+        [
+          34,
+          85,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 48,
+      "verified": true,
+      "originalPngSha256": "602892b21293fd19a3e775d980a4cf564cae009f8e9862e8697bd6ba134d8dd3",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "honda",
+      "kind": "selL",
+      "variant": "default",
+      "source": 3421868322,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          61,
+          83,
+          1,
+          1
+        ],
+        [
+          36,
+          83,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Warpaint is not an eye; cores lie inside the exposed eyes.",
+      "mask": [
+        [
+          31,
+          81,
+          2
+        ],
+        [
+          36,
+          81,
+          4
+        ],
+        [
+          31,
+          82,
+          10
+        ],
+        [
+          60,
+          82,
+          3
+        ],
+        [
+          32,
+          83,
+          10
+        ],
+        [
+          60,
+          83,
+          3
+        ],
+        [
+          34,
+          84,
+          8
+        ],
+        [
+          60,
+          84,
+          3
+        ],
+        [
+          57,
+          85,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 48,
+      "verified": true,
+      "originalPngSha256": "409ec9049c454eb3c01279090870258bde8e364c0c059782ca40f07e09064ab2",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "honda",
+      "kind": "win",
+      "variant": "default",
+      "source": 467315732,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          109,
+          67,
+          1,
+          1
+        ],
+        [
+          84,
+          67,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Warpaint is not an eye; cores lie inside the exposed eyes.",
+      "mask": [
+        [
+          79,
+          65,
+          2
+        ],
+        [
+          84,
+          65,
+          4
+        ],
+        [
+          79,
+          66,
+          10
+        ],
+        [
+          108,
+          66,
+          3
+        ],
+        [
+          80,
+          67,
+          10
+        ],
+        [
+          108,
+          67,
+          3
+        ],
+        [
+          82,
+          68,
+          8
+        ],
+        [
+          108,
+          68,
+          3
+        ],
+        [
+          105,
+          69,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 48,
+      "verified": true,
+      "originalPngSha256": "242e650695aceb272be2f6c26c2fcf054e53e79dcd82cad00bd04eb68ed9f470",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "honda",
+      "kind": "lose",
+      "variant": "default",
+      "source": 2457598473,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Eyes are closed/obscured by warpaint and the raised hand; no exposed eye core.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "0688c88c65acae02d5672adc106a08fb03bc75df30ce4d15557b2d5c044ba2f7",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "blanka",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 2718096097,
+      "size": [
+        125,
+        95
+      ],
+      "eyes": [
+        [
+          49,
+          53,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only the near eye is exposed; far eye/nose bridge excluded.",
+      "mask": [
+        [
+          49,
+          51,
+          5
+        ],
+        [
+          47,
+          52,
+          7
+        ],
+        [
+          47,
+          53,
+          6
+        ],
+        [
+          48,
+          54,
+          4
+        ],
+        [
+          46,
+          55,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "47fdfc47a84e8dd13ae99c1d863d5fad12c581c1017d28973ed644c4fc588aea",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "blanka",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 1448837092,
+      "size": [
+        125,
+        95
+      ],
+      "eyes": [
+        [
+          75,
+          53,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only the near eye is exposed; far eye/nose bridge excluded.",
+      "mask": [
+        [
+          71,
+          51,
+          5
+        ],
+        [
+          71,
+          52,
+          7
+        ],
+        [
+          72,
+          53,
+          6
+        ],
+        [
+          73,
+          54,
+          4
+        ],
+        [
+          76,
+          55,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "708b793ab03f57f8f32a9787cccbde78d0b39e906114a8c77e3118075defa2db",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "blanka",
+      "kind": "selR",
+      "variant": "default",
+      "source": 222540314,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          20,
+          86,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only the near eye is exposed; far eye/nose bridge excluded.",
+      "mask": [
+        [
+          20,
+          84,
+          5
+        ],
+        [
+          18,
+          85,
+          7
+        ],
+        [
+          18,
+          86,
+          6
+        ],
+        [
+          19,
+          87,
+          4
+        ],
+        [
+          17,
+          88,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "8b6afa5cf66d3de189ddf480dd20d9f94c838736c1c2f107933618144acb68cd",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "blanka",
+      "kind": "selL",
+      "variant": "default",
+      "source": 3376657073,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          75,
+          86,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only the near eye is exposed; far eye/nose bridge excluded.",
+      "mask": [
+        [
+          71,
+          84,
+          5
+        ],
+        [
+          71,
+          85,
+          7
+        ],
+        [
+          72,
+          86,
+          6
+        ],
+        [
+          73,
+          87,
+          4
+        ],
+        [
+          76,
+          88,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "2073a341ed1c0f8a38a3ffcfba9a2fb1d1fd88ed9c1472f70f338fb41406186f",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "blanka",
+      "kind": "win",
+      "variant": "default",
+      "source": 1234829688,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          91,
+          86,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only the near eye is exposed; far eye/nose bridge excluded.",
+      "mask": [
+        [
+          87,
+          84,
+          5
+        ],
+        [
+          87,
+          85,
+          7
+        ],
+        [
+          88,
+          86,
+          6
+        ],
+        [
+          89,
+          87,
+          4
+        ],
+        [
+          92,
+          88,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "5466939959508fba1632f99885eece857311ca7d16ac9f436be5232e5b9de7a9",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "blanka",
+      "kind": "lose",
+      "variant": "default",
+      "source": 1158510865,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          89,
+          95,
+          1,
+          1
+        ],
+        [
+          107,
+          93,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "Rolled white eyes; no distinct pupil is visible. Cores are inside exposed white eye pixels.",
+      "maskReview": "Include the missed lower-left white corner85,98 and its grey boundary86..88. Retain the original candidate iris contours. Upper grey cap is eyelid shading, not expanded into a rectangle.",
+      "mask": [
+        [
+          104,
+          91,
+          8
+        ],
+        [
+          106,
+          92,
+          6
+        ],
+        [
+          90,
+          93,
+          3
+        ],
+        [
+          104,
+          93,
+          7
+        ],
+        [
+          85,
+          94,
+          8
+        ],
+        [
+          105,
+          94,
+          5
+        ],
+        [
+          86,
+          95,
+          6
+        ],
+        [
+          106,
+          95,
+          3
+        ],
+        [
+          86,
+          96,
+          5
+        ],
+        [
+          105,
+          96,
+          3
+        ],
+        [
+          88,
+          97,
+          3
+        ],
+        [
+          85,
+          98,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 61,
+      "verified": true,
+      "originalPngSha256": "b7d3b466e1eecbc5279945a61157dd14d4d06bbea25c1b4d331ca3b0059b207a",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "guile",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 1558826356,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          48,
+          35,
+          1,
+          1
+        ],
+        [
+          71,
+          35,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue visible irises; no forehead or brow highlight.",
+      "mask": [
+        [
+          45,
+          35,
+          6
+        ],
+        [
+          64,
+          35,
+          10
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "a62b993d34b5767675d008f05dbb78dc836a45527f2ef3d90c1d02a6cd981359",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "guile",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 379823137,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          79,
+          35,
+          1,
+          1
+        ],
+        [
+          56,
+          35,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue visible irises; no forehead or brow highlight.",
+      "mask": [
+        [
+          54,
+          35,
+          10
+        ],
+        [
+          77,
+          35,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "65a545afd3b9835bc4bb53198da15f30ebe354ebef071b71b67ac15f2df80252",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "guile",
+      "kind": "selR",
+      "variant": "default",
+      "source": 3830075936,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          32,
+          67,
+          1,
+          1
+        ],
+        [
+          55,
+          67,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue visible irises; no forehead or brow highlight.",
+      "mask": [
+        [
+          29,
+          67,
+          6
+        ],
+        [
+          48,
+          67,
+          10
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "dcca9694d937df57998d20860b406205c4e3ec2c3fc79bcf4ec5ea845c019811",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "guile",
+      "kind": "selL",
+      "variant": "default",
+      "source": 1174965964,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          63,
+          67,
+          1,
+          1
+        ],
+        [
+          40,
+          67,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue visible irises; no forehead or brow highlight.",
+      "mask": [
+        [
+          38,
+          67,
+          10
+        ],
+        [
+          61,
+          67,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "148c54fb0214e05774be7f5f88cf5098557f63ee3d94c7a82f6c8965960846d1",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "guile",
+      "kind": "win",
+      "variant": "default",
+      "source": 2911600885,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          95,
+          51,
+          1,
+          1
+        ],
+        [
+          72,
+          51,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue visible irises; no forehead or brow highlight.",
+      "mask": [
+        [
+          70,
+          51,
+          10
+        ],
+        [
+          93,
+          51,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "5741888538cb8492293fad7dc65397f2088e52a1dfc35302a59c91c0fb1701dc",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "guile",
+      "kind": "lose",
+      "variant": "default",
+      "source": 4076164384,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          99,
+          52,
+          1,
+          1
+        ],
+        [
+          119,
+          52,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Drooping lids still expose both irises/pupils.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [
+        [
+          97,
+          51,
+          6
+        ],
+        [
+          112,
+          51,
+          13
+        ],
+        [
+          97,
+          52,
+          4
+        ],
+        [
+          114,
+          52,
+          8
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 31,
+      "verified": true,
+      "originalPngSha256": "0eb2d351818ae45c69e7f863645552f61c862f5fb38ea0bc4e9b9ce8828a3eac",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ken",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 1900220583,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          32,
+          43,
+          1,
+          1
+        ],
+        [
+          49,
+          43,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils under the eyebrows.",
+      "mask": [
+        [
+          56,
+          40,
+          2
+        ],
+        [
+          49,
+          41,
+          7
+        ],
+        [
+          31,
+          42,
+          2
+        ],
+        [
+          48,
+          42,
+          6
+        ],
+        [
+          31,
+          43,
+          4
+        ],
+        [
+          49,
+          43,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 23,
+      "verified": true,
+      "originalPngSha256": "f5eebd6e3c7abeb2bb4db505567dbe72ae0c587abf9581f37701736a7377128c",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ken",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 570788447,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          95,
+          43,
+          1,
+          1
+        ],
+        [
+          78,
+          43,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils under the eyebrows.",
+      "mask": [
+        [
+          70,
+          40,
+          2
+        ],
+        [
+          72,
+          41,
+          7
+        ],
+        [
+          74,
+          42,
+          6
+        ],
+        [
+          95,
+          42,
+          2
+        ],
+        [
+          77,
+          43,
+          2
+        ],
+        [
+          93,
+          43,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 23,
+      "verified": true,
+      "originalPngSha256": "7908f3dc200ddf454cf194153cd9d7f4a545c38243071b28a7041410fb0c9027",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ken",
+      "kind": "selR",
+      "variant": "default",
+      "source": 1566984648,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          32,
+          75,
+          1,
+          1
+        ],
+        [
+          49,
+          75,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils under the eyebrows.",
+      "mask": [
+        [
+          56,
+          72,
+          2
+        ],
+        [
+          49,
+          73,
+          7
+        ],
+        [
+          31,
+          74,
+          2
+        ],
+        [
+          48,
+          74,
+          6
+        ],
+        [
+          31,
+          75,
+          4
+        ],
+        [
+          49,
+          75,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 23,
+      "verified": true,
+      "originalPngSha256": "0671832d7b20befe74187152744daa68f1a61f28cd848da01ec548a5e2b09895",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ken",
+      "kind": "selL",
+      "variant": "default",
+      "source": 2763274110,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          63,
+          75,
+          1,
+          1
+        ],
+        [
+          46,
+          75,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils under the eyebrows.",
+      "mask": [
+        [
+          38,
+          72,
+          2
+        ],
+        [
+          40,
+          73,
+          7
+        ],
+        [
+          42,
+          74,
+          6
+        ],
+        [
+          63,
+          74,
+          2
+        ],
+        [
+          45,
+          75,
+          2
+        ],
+        [
+          61,
+          75,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 23,
+      "verified": true,
+      "originalPngSha256": "cf679726e2442e7c2ce68c6bc4d89351b46377847d8356dccc9c36fe5335ee7f",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ken",
+      "kind": "win",
+      "variant": "default",
+      "source": 669238729,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          111,
+          59,
+          1,
+          1
+        ],
+        [
+          94,
+          59,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils under the eyebrows.",
+      "mask": [
+        [
+          86,
+          56,
+          2
+        ],
+        [
+          88,
+          57,
+          7
+        ],
+        [
+          90,
+          58,
+          6
+        ],
+        [
+          111,
+          58,
+          2
+        ],
+        [
+          93,
+          59,
+          2
+        ],
+        [
+          109,
+          59,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 23,
+      "verified": true,
+      "originalPngSha256": "67810fe7f13579c40b05cc331a34bc26149803dc4fda5dd15f8d6d53424fdd80",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ken",
+      "kind": "lose",
+      "variant": "default",
+      "source": 2323063892,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          110,
+          55,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Far eye is closed; near eye remains open.",
+      "maskReview": "Include the missed white outer corner117,57; closed far eye remains unchanged.",
+      "mask": [
+        [
+          109,
+          54,
+          4
+        ],
+        [
+          109,
+          55,
+          6
+        ],
+        [
+          111,
+          56,
+          6
+        ],
+        [
+          114,
+          57,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 20,
+      "verified": true,
+      "originalPngSha256": "32acae29555e209327e958963f55e14aa7e2e1f456e811e5a4541dffb2693839",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "chun-li",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 3628171930,
+      "size": [
+        128,
+        103
+      ],
+      "eyes": [
+        [
+          28,
+          55,
+          1,
+          1
+        ],
+        [
+          45,
+          51,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the exposed eye shapes, excluding lash tips.",
+      "mask": [
+        [
+          49,
+          49,
+          5
+        ],
+        [
+          46,
+          50,
+          7
+        ],
+        [
+          44,
+          51,
+          4
+        ],
+        [
+          44,
+          52,
+          2
+        ],
+        [
+          27,
+          54,
+          4
+        ],
+        [
+          27,
+          55,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "a158e2948668afdecf56b1e52173b2bcbd314259d860515d8a030970b28ec25a",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "chun-li",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 3892033695,
+      "size": [
+        128,
+        103
+      ],
+      "eyes": [
+        [
+          99,
+          55,
+          1,
+          1
+        ],
+        [
+          82,
+          51,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the exposed eye shapes, excluding lash tips.",
+      "mask": [
+        [
+          74,
+          49,
+          5
+        ],
+        [
+          75,
+          50,
+          7
+        ],
+        [
+          80,
+          51,
+          4
+        ],
+        [
+          82,
+          52,
+          2
+        ],
+        [
+          97,
+          54,
+          4
+        ],
+        [
+          98,
+          55,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "358fb9d644b92299107e647e6264898883bc2828920940cf6119670a7f64b8db",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "chun-li",
+      "kind": "selR",
+      "variant": "default",
+      "source": 1071214282,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          28,
+          96,
+          1,
+          1
+        ],
+        [
+          45,
+          92,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the exposed eye shapes, excluding lash tips.",
+      "mask": [
+        [
+          49,
+          90,
+          5
+        ],
+        [
+          46,
+          91,
+          7
+        ],
+        [
+          44,
+          92,
+          4
+        ],
+        [
+          44,
+          93,
+          2
+        ],
+        [
+          27,
+          95,
+          4
+        ],
+        [
+          27,
+          96,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "aa210f2376c5fdce91fab9bf9cd11843412fe5bfe92dbbbec7f06e504a5f0117",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "chun-li",
+      "kind": "selL",
+      "variant": "default",
+      "source": 1230034852,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          67,
+          96,
+          1,
+          1
+        ],
+        [
+          50,
+          92,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the exposed eye shapes, excluding lash tips.",
+      "mask": [
+        [
+          42,
+          90,
+          5
+        ],
+        [
+          43,
+          91,
+          7
+        ],
+        [
+          48,
+          92,
+          4
+        ],
+        [
+          50,
+          93,
+          2
+        ],
+        [
+          65,
+          95,
+          4
+        ],
+        [
+          66,
+          96,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "8cb3211c7f685331b5c14566fd643680d55f016a62253fbfff578ffe4b9a083b",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "chun-li",
+      "kind": "win",
+      "variant": "default",
+      "source": 3480709649,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          115,
+          80,
+          1,
+          1
+        ],
+        [
+          98,
+          76,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the exposed eye shapes, excluding lash tips.",
+      "mask": [
+        [
+          90,
+          74,
+          5
+        ],
+        [
+          91,
+          75,
+          7
+        ],
+        [
+          96,
+          76,
+          4
+        ],
+        [
+          98,
+          77,
+          2
+        ],
+        [
+          113,
+          79,
+          4
+        ],
+        [
+          114,
+          80,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 25,
+      "verified": true,
+      "originalPngSha256": "8691cb77a9a8f8bf4e03a587e4770435ca1f434ae414dd7ee0ded0fae87f2b9f",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "chun-li",
+      "kind": "lose",
+      "variant": "default",
+      "source": 3769704549,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Both eyes closed; eyelashes, tears and cyan highlights excluded.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "726aea9cd4f0e9f5580c4d43c717d573a336146a1d5fb4b90a3506b1647a1b8e",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "zangief",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 2282417075,
+      "size": [
+        128,
+        96
+      ],
+      "eyes": [
+        [
+          33,
+          40,
+          1,
+          1
+        ],
+        [
+          51,
+          40,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Pupils inside blue irises.",
+      "mask": [
+        [
+          50,
+          36,
+          6
+        ],
+        [
+          49,
+          37,
+          9
+        ],
+        [
+          31,
+          38,
+          5
+        ],
+        [
+          48,
+          38,
+          10
+        ],
+        [
+          31,
+          39,
+          3
+        ],
+        [
+          48,
+          39,
+          10
+        ],
+        [
+          31,
+          40,
+          3
+        ],
+        [
+          48,
+          40,
+          8
+        ],
+        [
+          31,
+          41,
+          3
+        ],
+        [
+          49,
+          41,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 63,
+      "verified": true,
+      "originalPngSha256": "3c9029d1ac8e2b2030ccf4c4d0197c172171bfa9a8e1d00b07894ea085dde094",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "zangief",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 719798775,
+      "size": [
+        128,
+        96
+      ],
+      "eyes": [
+        [
+          94,
+          40,
+          1,
+          1
+        ],
+        [
+          76,
+          40,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Pupils inside blue irises.",
+      "mask": [
+        [
+          72,
+          36,
+          6
+        ],
+        [
+          70,
+          37,
+          9
+        ],
+        [
+          70,
+          38,
+          10
+        ],
+        [
+          92,
+          38,
+          5
+        ],
+        [
+          70,
+          39,
+          10
+        ],
+        [
+          94,
+          39,
+          3
+        ],
+        [
+          72,
+          40,
+          8
+        ],
+        [
+          94,
+          40,
+          3
+        ],
+        [
+          73,
+          41,
+          6
+        ],
+        [
+          94,
+          41,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 63,
+      "verified": true,
+      "originalPngSha256": "c5a9cf461a7752b2df95d8383a4dd9ca0c3a9401dd7872a9ccca8d1068c74c2d",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "zangief",
+      "kind": "selR",
+      "variant": "default",
+      "source": 1846602191,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          33,
+          72,
+          1,
+          1
+        ],
+        [
+          51,
+          72,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Pupils inside blue irises.",
+      "mask": [
+        [
+          50,
+          68,
+          6
+        ],
+        [
+          49,
+          69,
+          9
+        ],
+        [
+          31,
+          70,
+          5
+        ],
+        [
+          48,
+          70,
+          10
+        ],
+        [
+          31,
+          71,
+          3
+        ],
+        [
+          48,
+          71,
+          10
+        ],
+        [
+          31,
+          72,
+          3
+        ],
+        [
+          48,
+          72,
+          8
+        ],
+        [
+          31,
+          73,
+          3
+        ],
+        [
+          49,
+          73,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 63,
+      "verified": true,
+      "originalPngSha256": "3c31f9ca00b00b143718f59b7ec215963c66678ae82ace82a235f57fe1f8e318",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "zangief",
+      "kind": "selL",
+      "variant": "default",
+      "source": 3631421085,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          62,
+          72,
+          1,
+          1
+        ],
+        [
+          44,
+          72,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Pupils inside blue irises.",
+      "mask": [
+        [
+          40,
+          68,
+          6
+        ],
+        [
+          38,
+          69,
+          9
+        ],
+        [
+          38,
+          70,
+          10
+        ],
+        [
+          60,
+          70,
+          5
+        ],
+        [
+          38,
+          71,
+          10
+        ],
+        [
+          62,
+          71,
+          3
+        ],
+        [
+          40,
+          72,
+          8
+        ],
+        [
+          62,
+          72,
+          3
+        ],
+        [
+          41,
+          73,
+          6
+        ],
+        [
+          62,
+          73,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 63,
+      "verified": true,
+      "originalPngSha256": "959df58bdafd1146e9baab3539bd72d95019a2aa9719148a49b00f1fb7fdb933",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "zangief",
+      "kind": "win",
+      "variant": "default",
+      "source": 1978440780,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          110,
+          72,
+          1,
+          1
+        ],
+        [
+          92,
+          72,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Pupils inside blue irises.",
+      "mask": [
+        [
+          88,
+          68,
+          6
+        ],
+        [
+          86,
+          69,
+          9
+        ],
+        [
+          86,
+          70,
+          10
+        ],
+        [
+          108,
+          70,
+          5
+        ],
+        [
+          86,
+          71,
+          10
+        ],
+        [
+          110,
+          71,
+          3
+        ],
+        [
+          88,
+          72,
+          8
+        ],
+        [
+          110,
+          72,
+          3
+        ],
+        [
+          89,
+          73,
+          6
+        ],
+        [
+          110,
+          73,
+          3
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 63,
+      "verified": true,
+      "originalPngSha256": "6fb7cc38802852b3d5ecc4cdc1671fe29a71d0664359b448e8db37332032ff4c",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "zangief",
+      "kind": "lose",
+      "variant": "default",
+      "source": 2369059963,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          101,
+          68,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only near iris is exposed as a blue slit; far eye closed.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [
+        [
+          105,
+          67,
+          2
+        ],
+        [
+          101,
+          68,
+          3
+        ],
+        [
+          97,
+          69,
+          4
+        ],
+        [
+          97,
+          70,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 11,
+      "verified": true,
+      "originalPngSha256": "a0ece7f583b3b1a380cf3e21caeea733f337c832a4ea78d4a453bb72fbd555c2",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "dhalsim",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 2729220001,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          27,
+          47,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "One narrow blank exposed eye; no separate iris pixel. Far eye hidden.",
+      "mask": [
+        [
+          26,
+          46,
+          4
+        ],
+        [
+          23,
+          47,
+          6
+        ],
+        [
+          22,
+          48,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 14,
+      "verified": true,
+      "originalPngSha256": "719ba90d8efea9a75b6de2cc365d589c2ef5b134a3f56abff07e58f468188fbc",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "dhalsim",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 2359293920,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          100,
+          47,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "One narrow blank exposed eye; no separate iris pixel. Far eye hidden.",
+      "mask": [
+        [
+          98,
+          46,
+          4
+        ],
+        [
+          99,
+          47,
+          6
+        ],
+        [
+          102,
+          48,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 14,
+      "verified": true,
+      "originalPngSha256": "2553c784a86d13a7e5efafd94f08d09a937a42cdfcc36d46808bb332804c323b",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "dhalsim",
+      "kind": "selR",
+      "variant": "default",
+      "source": 3882106535,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          27,
+          79,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "One narrow blank exposed eye; no separate iris pixel. Far eye hidden.",
+      "mask": [
+        [
+          26,
+          78,
+          4
+        ],
+        [
+          23,
+          79,
+          6
+        ],
+        [
+          22,
+          80,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 14,
+      "verified": true,
+      "originalPngSha256": "d187203b16206244cae4e1a4e979fb150bbefd6b078cc7af94786d22a03d4d9d",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "dhalsim",
+      "kind": "selL",
+      "variant": "default",
+      "source": 3274351368,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          68,
+          79,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "One narrow blank exposed eye; no separate iris pixel. Far eye hidden.",
+      "mask": [
+        [
+          66,
+          78,
+          4
+        ],
+        [
+          67,
+          79,
+          6
+        ],
+        [
+          70,
+          80,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 14,
+      "verified": true,
+      "originalPngSha256": "a05ae1747e9a83eb03030bfc322b36dc7e2e9a902b31e50fe55a2726c4591e7e",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "dhalsim",
+      "kind": "win",
+      "variant": "default",
+      "source": 308605961,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          116,
+          63,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "One narrow blank exposed eye; no separate iris pixel. Far eye hidden.",
+      "mask": [
+        [
+          114,
+          62,
+          4
+        ],
+        [
+          115,
+          63,
+          6
+        ],
+        [
+          118,
+          64,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 14,
+      "verified": true,
+      "originalPngSha256": "f376a2ec8d454ccd74ec1dc8115a00805bb10010dfddd482395f38e6d82a34cc",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "dhalsim",
+      "kind": "lose",
+      "variant": "default",
+      "source": 2154394910,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          71,
+          63,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "Narrow blank exposed eye pixel; no separate iris.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [
+        [
+          69,
+          63,
+          5
+        ],
+        [
+          73,
+          64,
+          1
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 6,
+      "verified": true,
+      "originalPngSha256": "bf70feeeaa52cec6a875bf0fc091b553e8e860121a349f5de9f21ca04b01908c",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "bison",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 2942438144,
+      "size": [
+        128,
+        104
+      ],
+      "eyes": [
+        [
+          51,
+          49,
+          1,
+          1
+        ],
+        [
+          70,
+          49,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue iris pixels below the hat shadow. Hat highlight excluded.",
+      "mask": [
+        [
+          49,
+          48,
+          5
+        ],
+        [
+          70,
+          48,
+          6
+        ],
+        [
+          51,
+          49,
+          4
+        ],
+        [
+          69,
+          49,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 20,
+      "verified": true,
+      "originalPngSha256": "dda98b33edd8952c19b2a4087919c4a70c9ba2113e0713ab443128b261e8dfa3",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "bison",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 1087178633,
+      "size": [
+        128,
+        104
+      ],
+      "eyes": [
+        [
+          76,
+          49,
+          1,
+          1
+        ],
+        [
+          57,
+          49,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue iris pixels below the hat shadow. Hat highlight excluded.",
+      "mask": [
+        [
+          52,
+          48,
+          6
+        ],
+        [
+          74,
+          48,
+          5
+        ],
+        [
+          54,
+          49,
+          5
+        ],
+        [
+          73,
+          49,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 20,
+      "verified": true,
+      "originalPngSha256": "60ba2e2206a768feac0e75c0d12cf6f81e1f034f98e3014469a56d02a7ec5f51",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "bison",
+      "kind": "selR",
+      "variant": "default",
+      "source": 299079241,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          35,
+          89,
+          1,
+          1
+        ],
+        [
+          54,
+          89,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue iris pixels below the hat shadow. Hat highlight excluded.",
+      "mask": [
+        [
+          33,
+          88,
+          5
+        ],
+        [
+          54,
+          88,
+          6
+        ],
+        [
+          35,
+          89,
+          4
+        ],
+        [
+          53,
+          89,
+          5
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 20,
+      "verified": true,
+      "originalPngSha256": "6ef56036f6a602f2f65a81750758b96767fb56c40717c79e4aac94cdeaf0b94c",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "bison",
+      "kind": "selL",
+      "variant": "default",
+      "source": 2823923569,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          60,
+          89,
+          1,
+          1
+        ],
+        [
+          41,
+          89,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue iris pixels below the hat shadow. Hat highlight excluded.",
+      "mask": [
+        [
+          36,
+          88,
+          6
+        ],
+        [
+          58,
+          88,
+          5
+        ],
+        [
+          38,
+          89,
+          5
+        ],
+        [
+          57,
+          89,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 20,
+      "verified": true,
+      "originalPngSha256": "bdd65779d093eb25456e206fd49013c3111a7d006d6ef66dbd58070c479c0249",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "bison",
+      "kind": "win",
+      "variant": "default",
+      "source": 1059659804,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          92,
+          73,
+          1,
+          1
+        ],
+        [
+          73,
+          73,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Blue iris pixels below the hat shadow. Hat highlight excluded.",
+      "mask": [
+        [
+          68,
+          72,
+          6
+        ],
+        [
+          90,
+          72,
+          5
+        ],
+        [
+          70,
+          73,
+          5
+        ],
+        [
+          89,
+          73,
+          4
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 20,
+      "verified": true,
+      "originalPngSha256": "01a5dbc90f8bc45f391bcbb2c2770099951d02b4d6612a721c622933a9441583",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "bison",
+      "kind": "lose",
+      "variant": "default",
+      "source": 1576357481,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Both swollen eyes shut; skin/hat highlights excluded.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "f3ec0e84ff25e1d6f4ee7634bc0b9a4f32138a7a21edc7d8f0ea7b311ec6a2d0",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "sagat",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 3628209084,
+      "size": [
+        128,
+        103
+      ],
+      "eyes": [
+        [
+          44,
+          32,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only unpatched eye is exposed; patch and strap explicitly excluded.",
+      "mask": [
+        [
+          40,
+          31,
+          13
+        ],
+        [
+          37,
+          32,
+          14
+        ],
+        [
+          39,
+          33,
+          11
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 38,
+      "verified": true,
+      "originalPngSha256": "6118a574a51337fbd7845ac0fd9dab5f45e42297eef2b1cd6121be79c5ec74d5",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "sagat",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 116207900,
+      "size": [
+        128,
+        103
+      ],
+      "eyes": [
+        [
+          83,
+          32,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only unpatched eye is exposed; patch and strap explicitly excluded.",
+      "mask": [
+        [
+          75,
+          31,
+          13
+        ],
+        [
+          77,
+          32,
+          14
+        ],
+        [
+          78,
+          33,
+          11
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 38,
+      "verified": true,
+      "originalPngSha256": "a977e0ad4a6296146ffb92603fab49299ef60fa29f1e02857d18b04f80e259b8",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "sagat",
+      "kind": "selR",
+      "variant": "default",
+      "source": 3260627198,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          28,
+          73,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only unpatched eye is exposed; patch and strap explicitly excluded.",
+      "mask": [
+        [
+          24,
+          72,
+          13
+        ],
+        [
+          21,
+          73,
+          14
+        ],
+        [
+          23,
+          74,
+          11
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 38,
+      "verified": true,
+      "originalPngSha256": "43c87a49b09ad3a66a9a424cc9b242d64119399476211f54dcd0945d5fd280c8",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "sagat",
+      "kind": "selL",
+      "variant": "default",
+      "source": 3653086429,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          67,
+          73,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only unpatched eye is exposed; patch and strap explicitly excluded.",
+      "mask": [
+        [
+          59,
+          72,
+          13
+        ],
+        [
+          61,
+          73,
+          14
+        ],
+        [
+          62,
+          74,
+          11
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 38,
+      "verified": true,
+      "originalPngSha256": "72ecf95e1a1d1e8b95c5c7ec228be83369bd2d7be621fa85e6b7b5be28187014",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "sagat",
+      "kind": "win",
+      "variant": "default",
+      "source": 2905895157,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          99,
+          57,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Only unpatched eye is exposed; patch and strap explicitly excluded.",
+      "mask": [
+        [
+          91,
+          56,
+          13
+        ],
+        [
+          93,
+          57,
+          14
+        ],
+        [
+          94,
+          58,
+          11
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 38,
+      "verified": true,
+      "originalPngSha256": "1a06a494d054d9fc24b948bd09409537b53c226e0d2f21dacb20202732a03ba2",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "sagat",
+      "kind": "lose",
+      "variant": "default",
+      "source": 2912644738,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          93,
+          58,
+          1,
+          1
+        ]
+      ],
+      "semantic": "exposed-eye-pixel",
+      "note": "Swollen unpatched eye retains a narrow exposed white slit; patch excluded.",
+      "maskReview": "Fill the white slit plus grey inner edge88,58 and black pupil98,58; the thick grey swollen upper eyelid at y57 stays unpainted, and the eyepatch stays dark.",
+      "mask": [
+        [
+          88,
+          58,
+          11
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 11,
+      "verified": true,
+      "originalPngSha256": "ff817077489485e37fa780b513a3d8ad661e9dd25c726fae6bbc7d4c585a2f5b",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "balrog",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 127479454,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          49,
+          43,
+          1,
+          1
+        ],
+        [
+          69,
+          45,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the eye opening; brow and skin highlights excluded.",
+      "mask": [
+        [
+          49,
+          43,
+          2
+        ],
+        [
+          48,
+          44,
+          4
+        ],
+        [
+          68,
+          44,
+          4
+        ],
+        [
+          68,
+          45,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "1be43ef9f3a1100d2a59a83a2038daab2e71eedff34ed26db19ad04afaab4a13",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "balrog",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 3871549735,
+      "size": [
+        128,
+        112
+      ],
+      "eyes": [
+        [
+          78,
+          43,
+          1,
+          1
+        ],
+        [
+          58,
+          45,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the eye opening; brow and skin highlights excluded.",
+      "mask": [
+        [
+          77,
+          43,
+          2
+        ],
+        [
+          56,
+          44,
+          4
+        ],
+        [
+          76,
+          44,
+          4
+        ],
+        [
+          54,
+          45,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "e58b72a30956ac48b82827fbe2ba431479a4114af2a709504e257ad5a07b71a9",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "balrog",
+      "kind": "selR",
+      "variant": "default",
+      "source": 1109082689,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          33,
+          75,
+          1,
+          1
+        ],
+        [
+          53,
+          77,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the eye opening; brow and skin highlights excluded.",
+      "mask": [
+        [
+          33,
+          75,
+          2
+        ],
+        [
+          32,
+          76,
+          4
+        ],
+        [
+          52,
+          76,
+          4
+        ],
+        [
+          52,
+          77,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "662bfe46dd7f8c39aae3c56322c68da59998eed155b196074e871beee20a51e9",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "balrog",
+      "kind": "selL",
+      "variant": "default",
+      "source": 1307758731,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [
+        [
+          62,
+          75,
+          1,
+          1
+        ],
+        [
+          42,
+          77,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the eye opening; brow and skin highlights excluded.",
+      "mask": [
+        [
+          61,
+          75,
+          2
+        ],
+        [
+          40,
+          76,
+          4
+        ],
+        [
+          60,
+          76,
+          4
+        ],
+        [
+          38,
+          77,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "4b4fad98361e6778a5023266854a05e6451d6b45cdae2b882a674a9f4a389c5f",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "balrog",
+      "kind": "win",
+      "variant": "default",
+      "source": 1274335285,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          94,
+          59,
+          1,
+          1
+        ],
+        [
+          74,
+          61,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Dark pupils inside the eye opening; brow and skin highlights excluded.",
+      "mask": [
+        [
+          93,
+          59,
+          2
+        ],
+        [
+          72,
+          60,
+          4
+        ],
+        [
+          92,
+          60,
+          4
+        ],
+        [
+          70,
+          61,
+          6
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 16,
+      "verified": true,
+      "originalPngSha256": "21cade3296d6c8b36ee3ef9a18cc2268a072c066d1026c99a08b160108fc2bbf",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "balrog",
+      "kind": "lose",
+      "variant": "default",
+      "source": 590047255,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Both eyes closed/swollen; bruise and skin pixels excluded.",
+      "maskReview": "Reviewed against original coordinate grid; candidate contour retained, closed or occluded eyes empty.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "532e5bcbadbbbac94f2eca741d7e32b7f22b2e98b9234c6560817c113a7e8fe6",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "vega",
+      "kind": "vsR",
+      "variant": "default",
+      "source": 307884433,
+      "size": [
+        128,
+        100
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Opaque mask and brown hole shadow expose no iris or eye pixel.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "f35b608c8014aeb7f2070076bef468a519baa7684b1ffaee41afadad66634bd1",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "vega",
+      "kind": "vsL",
+      "variant": "default",
+      "source": 2055547617,
+      "size": [
+        128,
+        100
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Opaque mask and brown hole shadow expose no iris or eye pixel.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "841addb26a77e198def364b9c5f26808f8a2216de75807038893838c8fccc240",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "vega",
+      "kind": "selR",
+      "variant": "default",
+      "source": 3561956029,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Opaque mask and brown hole shadow expose no iris or eye pixel.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "ed9fdbb944143e57895b1d1a79c9d5f27322a993fddd671b9b2c1b5c36ae912b",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "vega",
+      "kind": "selL",
+      "variant": "default",
+      "source": 585010888,
+      "size": [
+        96,
+        128
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Opaque mask and brown hole shadow expose no iris or eye pixel.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "3b64eb24cb10fd80bde7645bbcc65841cef90431552390155cd2aa1275031aa3",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "vega",
+      "kind": "win",
+      "variant": "default",
+      "source": 412486526,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Opaque mask and brown hole shadow expose no iris or eye pixel.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "7395886753e6819ff5a262dabddfe16afd9b6d94478733fc567d0b83aff3f6bb",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "vega",
+      "kind": "lose",
+      "variant": "default",
+      "source": 1699684290,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          88,
+          51,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Broken mask reveals one dark pupil; other swollen eye is closed.",
+      "maskReview": "Remove brown lower-lid pixels87..88,52; preserve black inner-corner86,52 and exposed pale eye/pupil opening above. Broken-mask border is excluded.",
+      "mask": [
+        [
+          88,
+          50,
+          4
+        ],
+        [
+          86,
+          51,
+          5
+        ],
+        [
+          86,
+          52,
+          1
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 10,
+      "verified": true,
+      "originalPngSha256": "07b54050b28d28110d86c76594e26e87da964684d9537e8b8fdd357f7d0b25de",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "lose",
+      "variant": "mirrorLoserP1",
+      "source": 2226197178,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Ryu mirror-match loser is distinct CLOSED-eye artwork; both eyes excluded.",
+      "maskReview": "Trim one brown lower-lid pixel81,59; retain the actual dark pupil wedges enclosed by original pale sclera.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "1e7df61ac8936a5d3ea575025768260d6dd60de8a52a7959dcea6c8e22ecd8ae",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "win",
+      "variant": "mirrorWinnerP2",
+      "source": 3733232413,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [
+        [
+          110,
+          58,
+          1,
+          1
+        ],
+        [
+          89,
+          58,
+          1,
+          1
+        ]
+      ],
+      "semantic": "visible iris",
+      "note": "Two visible dark pupils.",
+      "mask": [
+        [
+          83,
+          57,
+          8
+        ],
+        [
+          109,
+          57,
+          3
+        ],
+        [
+          86,
+          58,
+          5
+        ],
+        [
+          109,
+          58,
+          4
+        ],
+        [
+          88,
+          59,
+          2
+        ],
+        [
+          110,
+          59,
+          2
+        ]
+      ],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 24,
+      "verified": true,
+      "originalPngSha256": "8e05e525b2ce7f8edc0653a23db719f869ab9aa573b9f6f2bc34540a7df504b8",
+      "outsideMaskChangedPixels": 0
+    },
+    {
+      "base": "ryu",
+      "kind": "lose",
+      "variant": "mirrorLoserP2",
+      "source": 459301548,
+      "size": [
+        192,
+        144
+      ],
+      "eyes": [],
+      "semantic": "no-visible-eye",
+      "note": "Ryu mirror-match loser is distinct CLOSED-eye artwork; both eyes excluded.",
+      "maskReview": "Trim one brown lower-lid pixel81,59; retain the actual dark pupil wedges enclosed by original pale sclera.",
+      "mask": [],
+      "maskFormat": "native-row-runs [x,y,width]",
+      "maskPixelCount": 0,
+      "verified": true,
+      "originalPngSha256": "7faa4e1723215422964d054128b3708dac030e8adbb0205546bfa51260f69a42",
+      "outsideMaskChangedPixels": 0
+    }
+  ],
+  "verified": true
+}

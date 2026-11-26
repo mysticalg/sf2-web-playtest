@@ -1,0 +1,29 @@
+# AI Edition evil identities
+
+All22 currently playable originals have stable `evil-{base}` identities: the12 CE fighters, seven Final Fight bosses and Guy/Cody/Haggar. Existing Evil Ryu and Evil Ken retain their existing controllers. ST identity records are reserved but disabled until reviewed playable ST controllers exist.
+
+Confirm a native roster tile with **punch for original / kick for evil**, for either player. The visible prompt and existing palette panel use the same flow. Direct setup accepts `SF2AI.configure({p1:'evil-andore',p2:'evil-cody',mode:'versus'})`; `?edition=ai&fighter=evil-andore` also works. The complete name remains available everywhere; only the96-pixel native caption abbreviates `EVIL E.HONDA` / `EVIL M.BISON` to fit the actual8-pixel glyph grid.
+
+`AIIdentity` / `fighterKey` carry the exact selected version. New variants keep the native base in `aiProfile`, preserving normals, throws, weapons, shortcut inputs, special voices, stages and music. Names, selection, travel, result portraits, authored quotes, endings and arcade opponents resolve the explicit identity. Public diagnostics also expose the exact identity. This avoids dispatching an FF fighter through inherited Balrog data.
+
+## Original art and red openings
+
+Original body/portrait PNGs, dimensions, registration and animation poses remain unchanged. The only generated component is the compact shared red light in `ai-evil/eyes-generated-v2-red.png`. It was created with the built-in imagegen tool by editing the earlier native-reference eye effect. Runtime samples an opaque red pixel from that asset into exact original eye-opening masks; there are **no pupils, white/yellow highlights or pale centers**. A red halo extends at most one native pixel beyond the mask. No generated anatomy or new battle pose is substituted.
+
+Body masks bind to native source-frame identity and local pixels, not live head boxes, recoloured RGB or screen position. Clothes/bruise canvases retain that metadata; held180-degree art rotates the local mask. Native Belger uses his final mounted wheel/body source frame after substitution. Equipment frames have no eye annotation. Unknown external art or unsupported geometry remains unpainted. Render queries are pure; cropped FX caches are bounded to64 entries and original portrait source checksums use a WeakMap.
+
+CE portrait masks are keyed by the original image-source FNV and kind. This matters for Ryu: the two closed-eye mirror-loss portraits are different artwork, so neither inherits the open-eye default loss mask.75 actual source variants contain1774 original mask pixels;11 closed/occluded sources remain untouched. Sagat's patch stays unchanged. FF/hero masks are projected through the actual native Canvas renderer in all six portrait kinds; replaying the complete normal image matches all60 original output images byte-for-byte before projecting the1272 mask pixels. Opaque Damnd sunglasses receive small authored red lens lights; Sodom uses the original pale oni-mask eye openings. Tiny thumbnails with no resolved original eye receive no guessed cheek glow.
+
+The normal profile PNGs remain the creator-approved versions, including Belger's selected crooked grin/high-shoulder/bowtie image (SHA256 `fbac15437dba9717009014a727d9b5b69cd9009f4ad906b1a3072fe60a2cfbbb`). Existing FF generated portraits still use their existing colour treatment; no new body-material segmentation is claimed for those portraits.
+
+## Coverage and limits
+
+`AI-EVIL-EYE-COVERAGE.json` records per-family source frames, actual input samples, explicit closed/hidden exclusions and unmapped samples. All native idle/walk entries are mapped or explicitly hidden. Actual crouch and selected active poses have additional reviewed masks. **Moving-pose eye coverage is incomplete**: unreviewed hurt, dizzy, attack and special poses can omit the effect. A selectable identity is not a claim that every visible-eye frame is annotated. Original controller behavior remains available through those poses. The faithful WW/CE editions receive none of these variants or overlays.
+
+## Reproduction and local evidence
+
+Use `node scripts/capture-evil-eye-sources.cjs`, `py -3.13 scripts/build-evil-eye-anchors.py`, then `py -3.13 scripts/promote-evil-eye-patches.py` sequentially. Face-patch propagation requires identical original RGBA neighborhoods, with ambiguous/unmatched poses excluded. Reviewed seeds and exclusions live in `scripts/evil-eye-reviewed-*.json` / `scripts/evil-eye-exclusions.json`.
+
+Portrait imports use `node scripts/build-evil-ce-portrait-eyes.cjs`. FF projection uses `node scripts/capture-evil-portrait-sources.cjs`, then `node scripts/build-evil-ff-portrait-eyes.cjs`. Do not run the old scratch provisional builders. The source masks and generation hashes/prompts are preserved under `scripts/` and `ai-evil/provenance.json`.
+
+Local tests include44 mirrored direct identities;135 native selection/arcade/ending/edition transitions; actual glyph bounds for both96-pixel captions;300 CE portrait source/slot/palette cases;44 paired source/solid-red masks;220 injury/inversion/pure-render/cache cases;308 actual input-driven movement/crouch/normal/air records;44 real8%-health walking/crouching captures;330 actual original/evil special-finisher choices;75 finisher lifecycle cases; and faithful60-frame/four-pixel-hash comparisons. Test scripts are `tests/ai-evil-*.browser.cjs` and the existing finisher suites. Set `SF2_TEST_URL` for a different local server. These are local checks, not a deployment claim.

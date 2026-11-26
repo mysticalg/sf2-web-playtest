@@ -139,7 +139,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   aborted:reason=>{G.AIFinisherAbort=reason;}
  };
  finisher=SF2AIFINISHERS.create(host);
- window.render_game_to_text??=()=>JSON.stringify({edition:VER.edition,scene:G.scene,phase:G.gph,players:P.map(p=>({slot:p.i,profile:p.aiProfile||CE_KEYS[p.fid],x:p.X/256,y:p.Y/256,hp:finisher.isVictim(p)?0:p.HP,maxHP:aiMax(p),wins:p.WINS,state:p.ST,animation:p.anim?.name,frame:p.aidx})),finisher:finisher.info(),blood:{particles:AI_BLOOD.particles.length,stains:AI_BLOOD.stains.length},camera:{x:G.cam,width:aiViewWidth()},coordinates:'world pixels; Y upwards'});
+ window.render_game_to_text??=()=>JSON.stringify({edition:VER.edition,scene:G.scene,phase:G.gph,players:P.map(p=>({slot:p.i,profile:aiIdentity(p),baseProfile:p.aiProfile||CE_KEYS[p.fid],x:p.X/256,y:p.Y/256,hp:finisher.isVictim(p)?0:p.HP,maxHP:aiMax(p),wins:p.WINS,state:p.ST,animation:p.anim?.name,frame:p.aidx})),finisher:finisher.info(),blood:{particles:AI_BLOOD.particles.length,stains:AI_BLOOD.stains.length},camera:{x:G.cam,width:aiViewWidth()},coordinates:'world pixels; Y upwards'});
  function framing(render=false){
   const state=finisher.view();if(!state||G.scene!=='fight'||state.completed&&G.tick-state.completedAt>=36)return null;const actors=render?SF2CECAMERA.poses||P:P,bounds=[];
   for(const p of actors){if(finisher.hidden(p))continue;const r=nativeArt(p).rect,x=p.X/256,y=p.Y/256,left=x+(p.FACE?-r[4]-r[2]:r[4]);bounds.push({left,right:left+r[2],top:y-r[5],bottom:y-r[5]-r[3]});}

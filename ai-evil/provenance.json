@@ -1,0 +1,38 @@
+{
+  "schema": 2,
+  "tool": "built-in image_gen.imagegen",
+  "mode": "edit",
+  "created": "2026-11-26",
+  "asset": "ai-evil/eyes-generated-v2-red.png",
+  "sha256": "652de41b486206646d52a059651d65995c0b96794d9dcd7de691870f2fbc8f2a",
+  "size": [
+    2172,
+    724
+  ],
+  "reference": "ai-evil/eyes-generated-v1.png; earlier native Guile/Andore/Cody reference portraits",
+  "generationOutput": "exec-23c31527-236b-40d1-ad9c-1e70603da7d8.png",
+  "runtime": {
+    "opaqueCoreSample": [
+      733,
+      381,
+      1,
+      1
+    ],
+    "coreRGBA": [
+      248,
+      0,
+      0,
+      255
+    ],
+    "haloSample": [
+      770,
+      350,
+      80,
+      35
+    ],
+    "haloAlpha": 0.3,
+    "haloRadiusNativePixels": 1,
+    "nativeSpritesRedrawn": false
+  },
+  "prompt": "Use case: precise-object-edit. Edit target: attached isolated eye-effect asset. Change ONLY the eye color/effect specification: make both narrow eye openings COMPLETELY SATURATED SCARLET RED, no visible pupils, no white or yellow or pale hot centers, no dark iris spots. Entire interior of each eye is solid luminous red, surrounded by a compact red-only glow. Keep two small horizontal crisp pixel-art eye shapes on genuinely transparent background. Remove background noise, remove gray/white clouds, no face, skin, brows, head, body, text, frame, outline silhouette, beams, flames, or other subjects. Crisp arcade pixel-art steps, no painterly blur. The original game face and sprite anatomy remain unchanged; this asset supplies only red glowing light sampled inside exact original eye-opening masks."
+}

@@ -500,14 +500,14 @@ window.SF2AIVictoryQuotes=(()=>{
  const aliases={ehonda:'honda','e-honda':'honda',chunli:'chun-li',mbison:'bison','m-bison':'bison',dictator:'bison',boxer:'balrog',claw:'vega',edie:'edi','edi-e':'edi',thrasher:'damnd',evilryu:'evil-ryu',evilken:'evil-ken','t-hawk':'thawk','fei-long':'feilong','dee-jay':'deejay',gouki:'akuma'};
  function normalize(value){
   if(value&&typeof value==='object'){
-   for(const key of['aiProfile','fighterKey','key','id','profileName','name'])if(value[key]!==undefined&&value[key]!==null&&value[key]!=='')return normalize(value[key]);
+   for(const key of['AIIdentity','aiProfile','fighterKey','key','id','profileName','name'])if(value[key]!==undefined&&value[key]!==null&&value[key]!=='')return normalize(value[key]);
    return normalize(value.fid);
   }
   if(Number.isInteger(value))return CE.concat(FUTURE)[value]||'challenger';
   const clean=String(value??'challenger').toLowerCase().trim().replace(/^(?:ai|ce|ww|ssf2t|st):/,'').replace(/[._\s]+/g,'-').replace(/-+/g,'-');
   return aliases[clean]||clean||'challenger';
  }
- function identity(value){const id=normalize(value),v=voices[id];return freeze({id,known:!!v,name:v?.name||fallback.name,base:v?.base||id,move:v?.move||fallback.move});}
+ function identity(value){const id=normalize(value),evil=window.SF2AIEVIL?.get(id),v=voices[id]||voices[evil?.base];return freeze({id,known:!!v,name:evil?.name||v?.name||fallback.name,base:evil?.base||v?.base||id,move:v?.move||fallback.move});}
  function wrap(text,width=38){
   if(!Number.isInteger(width)||width<8||width>38)throw new RangeError('Quote width must be 8..38 native characters');
   const words=String(text??'').trim().toUpperCase().replace(/\s+/g,' ').split(' ').filter(Boolean),greedy=[];let line='';
@@ -530,7 +530,7 @@ window.SF2AIVictoryQuotes=(()=>{
   return Object.freeze(solve(0,count)?.lines||greedy);
  }
  function variants(winnerID,loserID,options={}){
-  const winner=identity(winnerID),loser=identity(loserID),death=options.death===true,kind=death?'death':'normal',v=voices[winner.id]||fallback;
+  const winner=identity(winnerID),loser=identity(loserID),death=options.death===true,kind=death?'death':'normal',v=voices[winner.id]||(window.SF2AIEVIL?.get(winner.id)?SF2AIEVIL.quotes:fallback);
   const exact=matchups[winner.id+'|'+loser.id],inherited=!exact&&loser.base!==loser.id?matchups[winner.id+'|'+loser.base]:null,pool=(exact||inherited)?.[kind]||v[kind],source=exact?'matchup':inherited?'matchup-base':winner.known?'character':'fallback';
   return Object.freeze(pool.map((template,index)=>{const text=template.replace(/\{name\}/g,loser.name).replace(/\{move\}/g,loser.move);return freeze({winner:winner.id,loser:loser.id,death,index,source,text,lines:wrap(text)});}));
  }
@@ -539,6 +539,7 @@ window.SF2AIVictoryQuotes=(()=>{
  function choose(winnerID,loserID,options={}){
   const pool=variants(winnerID,loserID,options),record=pool[0],key=[record.winner,record.loser,record.death?'death':'normal',stablePart(options.seed),stablePart(options.matchSerial)].join('\u0000');return pool[hash(key)%3];
  }
+ for(const v of window.SF2AIEVIL?.all()||[])if(!voices[v.id])voices[v.id]={name:v.name,base:v.base,move:voices[v.base]?.move||fallback.move,normal:SF2AIEVIL.quotes.normal,death:SF2AIEVIL.quotes.death};
  freeze(voices);freeze(matchups);freeze(fallback);freeze(aliases);freeze(CE);freeze(FUTURE);
  return Object.freeze({version:1,choose,variants,identity,wrap,ids:()=>Object.freeze(Object.keys(voices)),layout:freeze({width:384,maxCharacters:38,maxLines:3,glyphWidth:8,lineHeight:13,baselines:[176,189,202],portraitBottom:160,textBottom:205}),catalog:voices,matchups});
 })();

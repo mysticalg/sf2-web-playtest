@@ -1,0 +1,60 @@
+{
+  "guile": {
+    "3": "closed native eyelid",
+    "4": "closed native eyelid",
+    "6": "closed native eyelid",
+    "150": "back-facing aerial strike; eye opening hidden"
+  },
+  "dhalsim": {
+    "7": "raised palm occludes eye",
+    "13": "raised palm occludes eye"
+  },
+  "ryu": {
+    "108": "back-facing aerial strike; no exposed eye",
+    "129": "back-facing vertical kick; no exposed eye"
+  },
+  "ken": {
+    "108": "back-facing aerial strike; no exposed eye",
+    "129": "back-facing vertical kick; no exposed eye"
+  },
+  "sodom": {
+    "24": "back-facing punch; visor opening hidden",
+    "43": "approved crouch punch uses back-facing upper body; visor opening hidden"
+  },
+  "cody": {
+    "32": "back-facing torso punch; eye opening hidden"
+  },
+  "belger": {
+    "35": "chair, wheel, fragment or projectile equipment; not a face",
+    "36": "chair, wheel, fragment or projectile equipment; not a face",
+    "37": "chair, wheel, fragment or projectile equipment; not a face",
+    "38": "chair, wheel, fragment or projectile equipment; not a face",
+    "39": "chair, wheel, fragment or projectile equipment; not a face",
+    "40": "chair, wheel, fragment or projectile equipment; not a face",
+    "41": "chair, wheel, fragment or projectile equipment; not a face",
+    "42": "chair, wheel, fragment or projectile equipment; not a face",
+    "43": "chair, wheel, fragment or projectile equipment; not a face",
+    "44": "chair, wheel, fragment or projectile equipment; not a face",
+    "45": "chair, wheel, fragment or projectile equipment; not a face",
+    "46": "chair, wheel, fragment or projectile equipment; not a face",
+    "47": "chair, wheel, fragment or projectile equipment; not a face",
+    "48": "chair, wheel, fragment or projectile equipment; not a face",
+    "49": "chair, wheel, fragment or projectile equipment; not a face",
+    "50": "chair, wheel, fragment or projectile equipment; not a face",
+    "51": "chair, wheel, fragment or projectile equipment; not a face",
+    "52": "chair, wheel, fragment or projectile equipment; not a face",
+    "53": "chair, wheel, fragment or projectile equipment; not a face",
+    "54": "chair, wheel, fragment or projectile equipment; not a face",
+    "55": "chair, wheel, fragment or projectile equipment; not a face",
+    "56": "chair, wheel, fragment or projectile equipment; not a face",
+    "57": "chair, wheel, fragment or projectile equipment; not a face",
+    "58": "chair, wheel, fragment or projectile equipment; not a face",
+    "59": "chair, wheel, fragment or projectile equipment; not a face",
+    "60": "chair, wheel, fragment or projectile equipment; not a face",
+    "61": "chair, wheel, fragment or projectile equipment; not a face",
+    "62": "chair, wheel, fragment or projectile equipment; not a face",
+    "63": "chair, wheel, fragment or projectile equipment; not a face",
+    "64": "chair, wheel, fragment or projectile equipment; not a face",
+    "28": "native upwards-facing leap pose; no exposed eye visible"
+  }
+}

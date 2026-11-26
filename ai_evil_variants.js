@@ -1,0 +1,26 @@
+/* AI Edition identity/eye presentation. Native controllers retain their original
+ * profile IDs, frame data and assets. Existing Evil Ryu/Ken keep their own code.
+ * Generated overlay provenance and native-eye coverage: AI-EVIL-VARIANTS.md. */
+'use strict';
+window.SF2AIEVIL=(()=>{
+ const ce=['ryu','honda','blanka','guile','ken','chun-li','zangief','dhalsim','bison','sagat','balrog','vega'];
+ const names=['Ryu','E. Honda','Blanka','Guile','Ken','Chun-Li','Zangief','Dhalsim','M. Bison','Sagat','Balrog','Vega'];
+ const bases=[...ce.map((id,fid)=>({id,fid,name:names[fid],family:'ce',hp:288})),{id:'damnd',fid:10,name:'Damnd',family:'ff',hp:360},...Object.entries(SF2AIFF.specs).map(([id,p])=>({id,fid:10,name:p.name,family:'ff',hp:p.hp})),...Object.entries(SF2AIHeroes.specs).map(([id,p])=>({id,fid:10,name:p.name,family:'hero',hp:p.hp}))];
+ const unique=[...new Map(bases.map(p=>[p.id,p])).values()],records=new Map(unique.map(p=>['evil-'+p.id,Object.freeze({...p,base:p.id,id:'evil-'+p.id,key:'ai:evil-'+p.id,name:'Evil '+p.name,existing:['ryu','ken'].includes(p.id),ready:true})]));
+ // Reserved identities do not imply a loaded ST fighter or selectable raw data.
+ const future=Object.freeze(['cammy','thawk','feilong','deejay','akuma'].map(base=>Object.freeze({id:'evil-'+base,base,ready:false,selectable:false,requires:'reviewed playable ST controller'})));
+ function clean(value){return String(value??'').replace(/^(?:ai|ce|ww|st|ssf2t):/,'');}
+ function identity(value){return typeof value==='object'&&value?value.AIIdentity||value.aiProfile||clean(value.fighterKey):clean(value);}
+ function get(value){return records.get(identity(value))||null;}
+ function base(value){const id=identity(value);return records.get(id)?.base||id;}
+ function variant(value){const id=base(value);return records.get('evil-'+id)||null;}
+ const quotes=Object.freeze({normal:Object.freeze(['{name}, the darkness has sharpened every strike.','{name}, you have only seen the beginning of my power.','{name}, remember the eyes that watched you fall.']),death:Object.freeze(['{name}, the darkness has claimed its final victory.','{name}, your last breath could not extinguish my fury.','{name}, this battle ends in silence.'])});
+ const eyeFX=new Image();eyeFX.src='ai-evil/eyes-generated-v2-red.png';const ready=eyeFX.decode(),cache=new WeakMap(),recent=[],portraitSources=new WeakMap();
+ function sourceHash(image){if(!image?.src)return null;if(portraitSources.has(image))return portraitSources.get(image);let v=2166136261;for(let i=0;i<image.src.length;i++)v=Math.imul(v^image.src.charCodeAt(i),16777619)>>>0;portraitSources.set(image,v);return v;}
+ function eyePaint(g,points){g.save();for(const[x,y,w,h]of points){g.globalAlpha=.3;g.drawImage(eyeFX,770,350,80,35,x-1,y-1,w+2,h+2);}g.globalAlpha=1;for(const[x,y,w,h]of points)g.drawImage(eyeFX,733,381,1,1,x,y,w,h);g.restore();}
+ function art(p,a,frame=a?.nativeEyeFrame){if(!get(p)||!eyeFX.complete||!eyeFX.naturalWidth||p.HP<=0||p.ST===8||!a?.rect||frame===null||!Number.isInteger(frame))return a;const native=p.F.frames[frame];if(!native||native[2]!==a.rect[2]||native[3]!==a.rect[3])return a;const points=window.SF2AIEVILEYES?.frames[base(p)]?.[frame];if(!points?.length)return a;let entries=cache.get(a.image);if(!entries)cache.set(a.image,entries=new Map());const key=base(p)+':'+frame+':'+a.rect.join(',')+':'+(p.AIFFHeld?.inverted?1:0);if(entries.has(key))return entries.get(key);
+  const r=a.rect,c=document.createElement('canvas');c.width=r[2];c.height=r[3];const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(a.image,...r.slice(0,4),0,0,c.width,c.height);const transformed=p.AIFFHeld?.inverted?points.map(([x,y,w,h])=>[c.width-x-w,c.height-y-h,w,h]):points;eyePaint(g,transformed);const result={...a,image:c,rect:[0,0,r[2],r[3],r[4],r[5]]};entries.set(key,result);recent.push({entries,key});if(recent.length>64){const old=recent.shift();old.entries.delete(old.key);}return result;
+ }
+ function portrait(image,p,kind){const variant=get(p);if(!variant||!eyeFX.complete||!eyeFX.naturalWidth||!image?.width)return image;const table=window.SF2AIEVILPORTRAITS?.[base(p)]?.[kind],source=sourceHash(p.nativePortraitSource),entry=table?.sources?.[source]||(variant.family==='ce'?null:table);if(!entry?.verified||!entry.eyes?.length||image.width!==entry.size[0]||image.height!==entry.size[1])return image;let variants=cache.get(image);if(!variants)cache.set(image,variants=new Map());const key='portrait:'+base(p)+':'+kind+':'+source;if(variants.has(key))return variants.get(key);const c=document.createElement('canvas');c.width=image.width;c.height=image.height;const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(image,0,0);eyePaint(g,entry.eyes);variants.set(key,c);recent.push({entries:variants,key});if(recent.length>64){const old=recent.shift();old.entries.delete(old.key);}return c;}
+ return Object.freeze({version:1,identity,get,base,variant,ids:()=>[...records.keys()],all:()=>[...records.values()],bases:()=>unique.slice(),future,quotes,ready,art,portrait,get cacheSize(){return recent.length;}});
+})();
