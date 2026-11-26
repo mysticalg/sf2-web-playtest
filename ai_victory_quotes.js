@@ -204,7 +204,7 @@ window.SF2AIVictoryQuotes=(()=>{
    '{name}, no mayor should have to count victories like this.',
    'Your {move} is finished. I must answer for the cost.'
   ]},
-  'evil-ryu':{name:'Evil Ryu',base:'ryu',move:'Rift Step',normal:[
+  'evil-ryu':{name:'Possessed Ryu',base:'ryu',move:'Rift Step',normal:[
    'Your {move} cannot touch the killing intent.',
    '{name}, hesitation is the weakness I have discarded.',
    'The darkness gives me what restraint never could.'
@@ -213,7 +213,7 @@ window.SF2AIVictoryQuotes=(()=>{
    '{name}, this is the answer the darkness promised.',
    'Your {move} ends here. My hunger does not.'
   ]},
-  'evil-ken':{name:'Evil Ken',base:'ken',move:'Cinder Break',normal:[
+  'evil-ken':{name:'Possessed Ken',base:'ken',move:'Cinder Break',normal:[
    'Your {move} cannot keep pace with these flames.',
    '{name}, you mistook my fury for a loss of control.',
    'No restraint. No mercy. No one left standing.'

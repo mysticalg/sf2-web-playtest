@@ -1,12 +1,12 @@
 /* AI Edition identity/eye presentation. Native controllers retain their original
- * profile IDs, frame data and assets. Existing Evil Ryu/Ken keep their own code.
+ * profile IDs, frame data and assets. Existing Possessed Ryu/Ken keep their own code.
  * Generated overlay provenance and native-eye coverage: AI-EVIL-VARIANTS.md. */
 'use strict';
 window.SF2AIEVIL=(()=>{
  const ce=['ryu','honda','blanka','guile','ken','chun-li','zangief','dhalsim','bison','sagat','balrog','vega'];
  const names=['Ryu','E. Honda','Blanka','Guile','Ken','Chun-Li','Zangief','Dhalsim','M. Bison','Sagat','Balrog','Vega'];
  const bases=[...ce.map((id,fid)=>({id,fid,name:names[fid],family:'ce',hp:288})),{id:'damnd',fid:10,name:'Damnd',family:'ff',hp:360},...Object.entries(SF2AIFF.specs).map(([id,p])=>({id,fid:10,name:p.name,family:'ff',hp:p.hp})),...Object.entries(SF2AIHeroes.specs).map(([id,p])=>({id,fid:10,name:p.name,family:'hero',hp:p.hp}))];
- const unique=[...new Map(bases.map(p=>[p.id,p])).values()],records=new Map(unique.map(p=>['evil-'+p.id,Object.freeze({...p,base:p.id,id:'evil-'+p.id,key:'ai:evil-'+p.id,name:'Evil '+p.name,existing:['ryu','ken'].includes(p.id),ready:true})]));
+ const unique=[...new Map(bases.map(p=>[p.id,p])).values()],records=new Map(unique.map(p=>['evil-'+p.id,Object.freeze({...p,base:p.id,id:'evil-'+p.id,key:'ai:evil-'+p.id,name:'Possessed '+p.name,existing:['ryu','ken'].includes(p.id),ready:true})]));
  // Reserved identities do not imply a loaded ST fighter or selectable raw data.
  const future=Object.freeze(['cammy','thawk','feilong','deejay','akuma'].map(base=>Object.freeze({id:'evil-'+base,base,ready:false,selectable:false,requires:'reviewed playable ST controller'})));
  function clean(value){return String(value??'').replace(/^(?:ai|ce|ww|st|ssf2t):/,'');}

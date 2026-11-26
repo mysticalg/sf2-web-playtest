@@ -305,7 +305,7 @@ function aiDeathDraw(camera,ground){
   for(const fx of AI_DEATH_FX)for(const t of fx.trails){const age=G.tick-t.tick;cx.globalAlpha=AI_KO_TRAIL.opacity*Math.pow(Math.max(0,1-age/AI_KO_TRAIL.life),.9);spr(t.image,t.rect,Math.floor(t.x)-camera,ground-Math.floor(t.y),t.face);}
   cx.restore();
 }
-const AI_PROFILES={...Object.fromEntries(SF2AIEVIL.all().map(v=>[v.id,{key:v.key,name:v.name,maxHP:v.existing?272:v.hp,baseFighterId:v.fid}])),...Object.fromEntries(Object.entries(SF2AIHeroes.specs).map(([id,p])=>[id,{key:'ai:'+id,name:p.name,maxHP:p.hp,baseFighterId:10}])),...Object.fromEntries(Object.entries(SF2AIFF.specs).map(([id,p])=>[id,{key:'ai:'+id,name:p.name,maxHP:p.hp,baseFighterId:10}])),damnd:{key:'ai:damnd',name:'Damnd',maxHP:360,baseFighterId:10},ken:{key:'ce:ken',name:'Ken',maxHP:288,baseFighterId:4},'evil-ken':{key:'ai:evil-ken',name:'Evil Ken',maxHP:272,baseFighterId:4},ryu:{key:'ce:ryu',name:'Ryu',maxHP:288},'evil-ryu':{key:'ai:evil-ryu',name:'Evil Ryu',maxHP:272}};
+const AI_PROFILES={...Object.fromEntries(SF2AIEVIL.all().map(v=>[v.id,{key:v.key,name:v.name,maxHP:v.existing?272:v.hp,baseFighterId:v.fid}])),...Object.fromEntries(Object.entries(SF2AIHeroes.specs).map(([id,p])=>[id,{key:'ai:'+id,name:p.name,maxHP:p.hp,baseFighterId:10}])),...Object.fromEntries(Object.entries(SF2AIFF.specs).map(([id,p])=>[id,{key:'ai:'+id,name:p.name,maxHP:p.hp,baseFighterId:10}])),damnd:{key:'ai:damnd',name:'Damnd',maxHP:360,baseFighterId:10},ken:{key:'ce:ken',name:'Ken',maxHP:288,baseFighterId:4},'evil-ken':{key:'ai:evil-ken',name:'Possessed Ken',maxHP:272,baseFighterId:4},ryu:{key:'ce:ryu',name:'Ryu',maxHP:288},'evil-ryu':{key:'ai:evil-ryu',name:'Possessed Ryu',maxHP:272}};
 
 const EDITION_SETTING_KEYS={faithful:'sf2:faithful:v1:settings',ai:'sf2:ai:ce-v1:settings',ce:'sf2:ce:v2:settings'};
 
@@ -378,7 +378,7 @@ function evilKenSelectable(){return !!window.SF2AIEvilKen?.ready&&window.SF2AI_R
 
 function evilKenSelected(slot,fid){return aiEnabled()&&fid===4&&(AICFG.prototype?AICFG.profiles[slot]:AICFG.selectedProfiles[slot])==='evil-ken';}
 
-function selectedProfileLabel(slot,fid){const variant=SF2AIEVIL.get(aiPortraitIdentity(slot,fid).id);if(variant)return variant.name.toUpperCase();return guestSelected(slot,fid)?ffName(guestSelected(slot,fid)).toUpperCase():evilRyuSelected(slot,fid)?'EVIL RYU PROTOTYPE':evilKenSelected(slot,fid)?'EVIL KEN':D.fighters[fid].name.toUpperCase();}
+function selectedProfileLabel(slot,fid){const variant=SF2AIEVIL.get(aiPortraitIdentity(slot,fid).id);if(variant)return variant.name.toUpperCase();return guestSelected(slot,fid)?ffName(guestSelected(slot,fid)).toUpperCase():evilRyuSelected(slot,fid)?'POSSESSED RYU PROTOTYPE':evilKenSelected(slot,fid)?'POSSESSED KEN':D.fighters[fid].name.toUpperCase();}
 
 function ryuVariantStrip(){return aiEnabled()&&!AICFG.prototype&&G.scene==='select'&&!G.AIColor&&!!SF2AIEVIL.variant(G.cep?.[G.selstep]>=12?ffGuestIds()[G.cep[G.selstep]-12]:CE_KEYS[G.sel[G.selstep]]);}
 
@@ -398,13 +398,13 @@ function aiSetProfile(p,fid){
 
   const requested=AICFG.prototype?AICFG.profiles[p.i]:AICFG.selectedProfiles[p.i],variant=SF2AIEVIL.get(requested),guest=guestSelected(p.i,fid),evil=evilRyuSelected(p.i,fid),ken=fid===4&&(AICFG.prototype?AICFG.profiles[p.i]:AICFG.selectedProfiles[p.i])==='evil-ken';
 
-  if(ken&&!window.SF2AIEvilKen?.ready)throw new Error('Evil Ken pack is not loaded');
+  if(ken&&!window.SF2AIEvilKen?.ready)throw new Error('Possessed Ken pack is not loaded');
 
   const id=guest|| (ken?'evil-ken':evil?'evil-ryu':CE_KEYS[fid]),key=variant?.key||(guest||evil||ken?'ai:'+id:'ce:'+id),source=D.fighters[fid];
 
   if(p._AI_SOURCE!==source||p.fighterKey!==key){if(guest){if(guest==='damnd')SF2AIDamnd.bind(p,source);else (SF2AIHeroes.get(guest)?SF2AIHeroes:SF2AIFF).bind(p,source,guest);}else if(ken)SF2AIEvilKen.bind(p);else p.F=JSON.parse(JSON.stringify(source));delete p.F._ai;p._AI_SOURCE=source;}
 
-  p.fid=fid;if(!guest)p.ft=FTX[fid];p.aiProfile=id;p.AIIdentity=variant?.id||id;p.fighterKey=key;p.profileName=variant?.name||(guest?ffName(guest):ken?'Evil Ken':evil?'Evil Ryu':source.name);
+  p.fid=fid;if(!guest)p.ft=FTX[fid];p.aiProfile=id;p.AIIdentity=variant?.id||id;p.fighterKey=key;p.profileName=variant?.name||(guest?ffName(guest):ken?'Possessed Ken':evil?'Possessed Ryu':source.name);
 
   p.F.name=p.profileName;p.maxHP=guest?(guest==='damnd'?360:ffPack(guest).hp):evil||ken?272:288;if(!guest&&!ken){p.AIAtlas=evil?FIA[0]:null;delete p.AIAtlasAlt;delete p.AIEvilKen;}
 
@@ -2907,7 +2907,7 @@ function drawRyuVariantStrip(){
   if(!ryuVariantStrip())return;const state=ceFadeState();if(state&&!SF2CEFADE.view(state).objectsVisible)return;
 
   const base=G.cep?.[G.selstep]>=12?ffGuestIds()[G.cep[G.selstep]-12]:CE_KEYS[G.sel[G.selstep]],variant=SF2AIEVIL.variant(base);
-  ceFill(BLUE,96,65,192,27,'object');tx('PUNCH: NORMAL  KICK: EVIL',192,76,7,'#ffe000','#000');tx(variant?.name.toUpperCase()||'',192,88,7,'#fff','#000');
+  ceFill(BLUE,64,65,256,27,'object');tx('PUNCH: NORMAL  KICK: POSSESSED',192,76,7,'#ffe000','#000');tx(variant?.name.toUpperCase()||'',192,88,7,'#fff','#000');
 
 }
 
@@ -2931,7 +2931,7 @@ function drawResultProfiles(w,l){
 
   if(!aiEnabled()||!P.some(p=>SF2AIEVIL.get(p)||isFFGuest(p)))return;
 
-  const label=p=>p.aiProfile==='evil-ryu'?'EVIL RYU PROTOTYPE':aiName(p).toUpperCase();
+  const label=p=>p.aiProfile==='evil-ryu'?'POSSESSED RYU PROTOTYPE':aiName(p).toUpperCase();
 
   tx(label(P[0]),96,10,8,'#fff','#000');tx(label(P[1]),288,10,8,'#fff','#000');
 
@@ -2940,7 +2940,7 @@ function drawResultProfiles(w,l){
 
 
 function arcadeDefeated(){return G.arc&&!G.mode2p?[...new Set(G.ladder.slice(0,G.li))]:[];}
-function aiSelectionName(e,slot,fid){if(!guestSelected(slot,fid)&&!(aiEnabled()&&SF2AIEVIL.get(aiPortraitIdentity(slot,fid).id))){dimg(e,0,false,'object');return;}const label=selectedProfileLabel(slot,fid).replace(/^EVIL ([EM])\. /,'EVIL $1.');tx(label,Math.floor(e.x+e.im.naturalWidth/2),e.y+e.im.naturalHeight-2,label.length>6?9:16,'#ffb060','#0044aa');}
+function aiSelectionName(e,slot,fid){if(!guestSelected(slot,fid)&&!(aiEnabled()&&SF2AIEVIL.get(aiPortraitIdentity(slot,fid).id))){dimg(e,0,false,'object');return;}const label=selectedProfileLabel(slot,fid).replace(/^POSSESSED ([EM])\. /,'POSSESSED $1.'),center=Math.floor(e.x+e.im.naturalWidth/2);cx.save();cx.translate(center,0);cx.scale(Math.min(1,(e.im.naturalWidth-2)/(8*label.length)),1);tx(label,0,e.y+e.im.naturalHeight-2,9,'#ffb060','#0044aa');cx.restore();}
 function selce(){const bl=(G.tick>>4)&1;
 
   if(SCE&&SCE.bg.complete){if(!window.SF2CEWORLDMAP?.drawSelectBackground(cx,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im}))fimg(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
@@ -3246,7 +3246,7 @@ function aiStart(){
 
 window.SF2AI={
 
-  async registerDevelopmentProfile(id,data){if(id!=='evil-ken'||!window.SF2AIEvilKen)throw new Error('Evil Ken adapter is not loaded');const deadline=performance.now()+90000;while(VER.loading!==2){if(VER.loading===3||performance.now()>deadline)throw new Error('CE dependency load failed');await new Promise(r=>setTimeout(r,25));}return SF2AIEvilKen.register(data,{native:VER.ce.f[4],makeAlt:altatlas});},
+  async registerDevelopmentProfile(id,data){if(id!=='evil-ken'||!window.SF2AIEvilKen)throw new Error('Possessed Ken adapter is not loaded');const deadline=performance.now()+90000;while(VER.loading!==2){if(VER.loading===3||performance.now()>deadline)throw new Error('CE dependency load failed');await new Promise(r=>setTimeout(r,25));}return SF2AIEvilKen.register(data,{native:VER.ce.f[4],makeAlt:altatlas});},
 
   async configure(options={}){
 
@@ -3259,7 +3259,7 @@ window.SF2AI={
 
     await setEdition('ai',{prototype:true});
 
-    if([options.p1,options.p2].includes('evil-ken')&&!window.SF2AIEvilKen?.ready)throw new Error('Register the reviewed Evil Ken pack before configuring it');
+    if([options.p1,options.p2].includes('evil-ken')&&!window.SF2AIEvilKen?.ready)throw new Error('Register the reviewed Possessed Ken pack before configuring it');
 
     const deadline=performance.now()+90000;
 
