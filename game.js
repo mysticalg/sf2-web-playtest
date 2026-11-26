@@ -33,7 +33,7 @@ const MAXHP=144;
 function hpAlive(p){return VER.edition==='ce'?p.HP>=0:p.HP>0;}
 
 let AI_FINISHERS=null;
-function hpDamage(p,amount,effect=null){if(aiEnabled()&&AI_FINISHERS?.damage(p,amount))return p.HP;const alive=hpAlive(p);p.HP=Math.max(VER.edition==='ce'?-1:0,p.HP-amount);if(alive&&!hpAlive(p)){ffSound(p,'ko');if(!AI_FINISHERS?.offer(p,{...effect,unblocked:effect?.blocked!==true}))aiDeathBegin(p,effect);}return p.HP;}
+function hpDamage(p,amount,effect=null){if(aiEnabled()&&AI_FINISHERS?.damage(p,amount))return p.HP;const alive=hpAlive(p);p.HP=Math.max(VER.edition==='ce'?-1:0,p.HP-amount);if(aiEnabled())SF2AIFFChair.sync(p);if(alive&&!hpAlive(p)){ffSound(p,'ko');if(!AI_FINISHERS?.offer(p,{...effect,unblocked:effect?.blocked!==true}))aiDeathBegin(p,effect);}return p.HP;}
 
 // Explicit per-player identity; base fid remains 0 for inherited CE tables.
 
@@ -1138,7 +1138,7 @@ function zgrab(p,atk){const o=p.opp,n=AI(p,'cn'+['LP','MP','HP'][atk]);if(!(VER.
 
   if(!trythrow(p,atk,1))return false;setanim(p,n,0);p.THAN=n;p.SCNT=atk===1?50:55;p.THV.dmg=28;p.THV.t=p.SCNT-6;p.ZG=1;return true;}
 
-function trythrow(p,atk,force){const result=trythrow0(p,atk,force);if(result&&VER.cur==='CE')SF2CESPECIAL.interrupt(p.opp);if(result&&VER.edition==='ce')SF2CEDIZZY.interrupt(p.opp);return result;}
+function trythrow(p,atk,force){const result=trythrow0(p,atk,force);if(result&&aiEnabled())SF2AIFFChair.dismount(p.opp,'grab');if(result&&VER.cur==='CE')SF2CESPECIAL.interrupt(p.opp);if(result&&VER.edition==='ce')SF2CEDIZZY.interrupt(p.opp);return result;}
 function trythrow0(p,atk,force){if(VER.cur==='CE'&&p.fid===5&&atk>=3)return false;const o=p.opp; if(!force&&!canthrow(p,atk>=3))return false; if(isFFGuest(p)){G.throws=(G.throws||0)+1;return (isDamnd(p)?SF2AIDamnd:ffAdapter(p)).throwStart(p,atk,{special:force===2||(p.aiProfile==='andore'&&!force&&atk<3),move:THROW,anim:setanim,head:aiHeadPoint,sound:code=>isDamnd(p)?sfxc(code):isFFHero(p)?SF2AIHeroes.playSound(code,AC,MG):ffSound(p,code===0x2f?'land':'throw')});}if(XS(p)&&atk>=3&&AI(p,'throwk')<0)return false; /* CE: only Ryu/Ken/Honda/Chun-Li/Zangief have a kick throw */
 
   if(aiEnabled()&&o.AIRift)o.AIRift=null;
@@ -1338,6 +1338,17 @@ function ceNativeCombat(p,d,region,projectile=false){
 
 /* M13d: hits are probed for both fighters first, then applied, so simultaneous hits trade like the arcade */
 
+function aiChairContacts(){
+ if(!P.some(p=>p.AIFFChair?.phase==='intact'))return;
+ SF2AIFFChair.contacts(P,p=>{if(p.AIRift||isFFGuest(p)&&!isDamnd(p)&&!ffAdapter(p).canProbe(p))return null;return boxw(p,4);},p=>{
+  if(isFFHero(p))return SF2AIHeroes.knifeContacts(p).map(c=>({box:c.box,dir:c.direction,hit:c.knife.hit,consume:()=>c.knife.hit=true}));
+  if(p.AIFFBullets)return SF2AIFF.bulletContacts(p).map(c=>({box:c.box,dir:c.bullet.dir,hit:c.bullet.hit,consume:()=>c.bullet.hit=true}));
+  if(p.AIFFGrenades)return SF2AIFF.grenadeContacts(p).map(c=>({box:c.box,dir:c.grenade.dir,hit:c.grenade.hit,consume:()=>c.grenade.hit=true}));
+  const yoga=ceYogaProjectile(p)&&SF2CEDHALSIM.projectile(p,G);if(yoga){const record=SF2CEDHALSIM.record(yoga);return record&&yoga.health===256?[{box:[(yoga.x>>>16)-256+(yoga.face?-record[0]:record[0]),(yoga.y>>>16)-40+record[1],record[2],record[3]],dir:yoga.face?1:-1,consume:()=>yoga.health=65535}]:[];}
+  if(!p.FBON||p.FBINIT||p.FBIMPACT||p.AIDamndBarrel?.broken)return[];
+  return[{box:fbbox(p),dir:p.FBVX>=0?1:-1,consume:()=>{p.FBON=p.FBDEFER=0;delete p.AIFFProjectile;if(p.AIDamndBarrel)p.AIDamndBarrel.broken=12;}}];
+ },(x,y,p)=>{aiImpact({x,y,face:p.FACE},2,false);ffSound(p,'weapon');});
+}
 function hitprobe(p){if(isFFGuest(p)&&!isDamnd(p)&&!ffAdapter(p).canProbe(p))return false;if(isDamnd(p))SF2AIDamnd.contactWindow(p);if(p.CES?.kind==='yoga')return false;if(VER.cur==='CE')window.SF2CEHONDAHANDS?.probe(p);if(aiEnabled()&&p.AIRift)return false; if(p.MV===THROW&&p.ST===S_SPEC||p.ST!==S_ATK&&p.ST!==S_SPEC&&!(p.ST===S_AIR&&p.JA)||(p.hitdone&&!(VER.cur==='CE'&&window.SF2CEVEGA&&SF2CEVEGA.reprobe(p))))return false; const d=p.opp; if(!hurtable(d))return false;
   const bx=boxw(p,4);if(!bx)return 0;const region=hurtregion(bx,d);return region>=0?region+1:p.MH2&&d.Y===0?(p.HREG||0)+1:0;} /* MH2: ROM two-hit normals land their 2nd hit on a victim still in hit/blockstun from the 1st */
 
@@ -1415,6 +1426,8 @@ function aiImpact(point,strength,blocked){
 }
 function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=null,specialAttack=null){if(aiEnabled()){const hits=[S_HIT,S_DOWN,S_GETUP].includes(d.ST)&&d.opp.AICombo?.active?d.opp.AICombo.hits:0;const scale=[1,.85,.72,.60,.50,.42,.35,.30,.25][Math.min(8,hits)];dmg=Math.max(1,Math.floor(dmg*scale));chip=chip?Math.max(1,Math.min(2,Math.floor(chip*.2))):0;}const specialKO=specialAttack??(!!reaction?.profile?.projectile||reaction?.reactionCode>=24&&reaction.reactionCode!==32||d.opp.ST===S_SPEC&&!['throw','athrow','ai-rift'].includes(d.opp.MV?.kind));if(aiEnabled()&&d.AIRift)d.AIRift=null; if(str>2)str=2;
   const impact=aiImpactPoint(d,region,specialAttack===true||!!reaction?.profile?.projectile);
+  // Original Belger remains seated through ordinary damage above half health.
+  if(aiEnabled()&&d.aiProfile==='belger'&&!SF2AIFFChair.dismounted(d)&&d.HP-dmg>aiMax(d)/2)kd=0;
 
   if(d.ST===S_FREE||d.ST===S_CR||d.ST===S_BLK){const back=dir>0?K_R:K_L; /* M13d: block away from the attacker's actual side (crossups) */
 
@@ -1432,7 +1445,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
       }}if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});return lethalProjectileChip?undefined:'blk';}}
 
-  aiImpact(impact,str,false);if(aiEnabled())SF2AIFFChair.breakChair(d,dir);if(isFFGuest(d.opp))ffSound(d.opp,'hit');
+  aiImpact(impact,str,false);if(isFFGuest(d.opp))ffSound(d.opp,'hit');
   const specialReaction=VER.cur==='CE'&&G.scene==='fight'&&SF2CESPECIAL.accepts(d,reaction);if(!localStop&&!specialReaction)G.hfz=HFRZ;
 
   const nativeScore=VER.edition==='ce'&&reaction?.scoreCommand!==undefined?SF2CECOMBAT.scoreAmount((VER.edition==='ce'?dmg>d.HP:dmg>=d.HP)?reaction.koScoreCommand:reaction.scoreCommand):null;
@@ -1458,7 +1471,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
   setanim(d,named>=0?named:body>=0?body:(c?AN_CHITL:AN_HITL)+str,0);d.ST=S_HIT;d.KB=dir*PUSHKB[str];d.STUN=HSTUN[str];}
 
-function fallst(d,s,dir){if(aiEnabled())SF2AIFFChair.breakChair(d,dir);if(aiEnabled()&&G.scene==='fight'&&ffAdapter(d).disarm(d,dir))ffSound(d,'weapon');const previous=VER.edition==='ce'&&d.CE_FatalHitPending&&!d.CE_FatalHitPending.special&&(d.Y>>8)===0&&!d.CETHV&&!d.CEBV?ceProjectilePose(d):null;delete d.CE_FatalHitPending;if(VER.cur==='CE'){if(d.CES?.kind==='vegawall'||d.CES?.kind==='vegaflip'){d.CES=null;d.MV=null;}delete d.CEVLAND;delete d.CER;delete d.CERSTOP;delete d.CEGUARD;delete d.CESHAKE;delete d.CERHOSTTICK;delete d.CERRESUME;}d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});if(previous){Object.assign(d,previous);d.anim=d.F.anims[d.cur];d.CEKO_GROUND=true;d.CEKO_DIR=dir;}}
+function fallst(d,s,dir){if(aiEnabled()&&G.scene==='fight'&&ffAdapter(d).disarm(d,dir))ffSound(d,'weapon');const previous=VER.edition==='ce'&&d.CE_FatalHitPending&&!d.CE_FatalHitPending.special&&(d.Y>>8)===0&&!d.CETHV&&!d.CEBV?ceProjectilePose(d):null;delete d.CE_FatalHitPending;if(VER.cur==='CE'){if(d.CES?.kind==='vegawall'||d.CES?.kind==='vegaflip'){d.CES=null;d.MV=null;}delete d.CEVLAND;delete d.CER;delete d.CERSTOP;delete d.CEGUARD;delete d.CESHAKE;delete d.CERHOSTTICK;delete d.CERRESUME;}d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});if(previous){Object.assign(d,previous);d.anim=d.F.anims[d.cur];d.CEKO_GROUND=true;d.CEKO_DIR=dir;}}
 
 // ---- projectile ----
 
@@ -2136,7 +2149,7 @@ function step0(net){
 
   if(!net){if(G.fade&&!G.fade.entered){CONTROL.padPrev=pd.map(p=>p.menu||0);CONTROL.keyPrev=held('Escape')?1:0;if(Array.isArray(window.SF2Input?.commands))SF2Input.commands.length=0;k1=k2=0;}else{const menu=localCommands(pd,k1,k2);if(menu.stop)return;k1=menu.k1;k2=menu.k2;}}
 
-  G.stepacc+=5; G.fr=G.stepacc>=12; if(G.fr)G.stepacc-=12; G.tick++;if(aiEnabled())for(const q of P)SF2AIFFChair.step(q,aiRoom(),G.tick);if(aiEnabled()&&G.scene==='fight'&&G.gph===1)SF2AIWEATHER.sound(aiWeather(),G.AIMatchSeed,G.round,G.stage,AC,MG,muted);if(VER.edition==='ce')G.CEStageTick=(G.CEStageTick??0)+1;
+  G.stepacc+=5; G.fr=G.stepacc>=12; if(G.fr)G.stepacc-=12; G.tick++;if(aiEnabled())for(const q of P)SF2AIFFChair.step(q,aiRoom(),G.tick,{advance:G.scene==='fight'&&G.gph===1&&G.hfz===0&&!AI_FINISHERS?.active()});if(aiEnabled()&&G.scene==='fight'&&G.gph===1)SF2AIWEATHER.sound(aiWeather(),G.AIMatchSeed,G.round,G.stage,AC,MG,muted);if(VER.edition==='ce')G.CEStageTick=(G.CEStageTick??0)+1;
 
   if(VER.cur==='CE'&&G.scene==='fight')window.SF2CECAMERA?.latch(P);
 
@@ -2193,7 +2206,7 @@ function step0(net){
   // Pool4 source3172a precedes fighter special tasks in observed original passes.
   if(VER.cur==='CE')SF2CEDHALSIM.objects(G,P,{hit:ceYogaHit,fire:ceYogaCollision,visible:ceObjectVisible});
   update(P[0]);update(P[1]);if(VER.edition==='ce'&&G.CERound)for(const p of P)if(hpAlive(p)&&p.ST===S_FREE&&!p.CEWin&&!p.CEKO)SF2CEROUND.admit(p,G.CERound.draw||p.i!==G.CERound.winner,false,ceRoundHooks());if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.sync)P.forEach(p=>SF2CETHROWS.sync(p,cethooks()));if(VER.edition==='ce'&&!G.CEHHContactDelay)cePriorFacing();;fbmove(P[0]);fbmove(P[1]);fbclash();if(VER.edition==='ce'&&!G.CEHHContactDelay)window.SF2CEHONDAHOLD?.facing(P);push();
-  {const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);const fbOrder=VER.cur==='CE'&&window.SF2CEPROJECTILES?P.slice().sort((a,b)=>(b.FBSLOT||0)-(a.FBSLOT||0)):P;fbOrder.forEach(fbafter);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);if(!ceTimedOut)phase();if(VER.edition==='ce')window.SF2CEHONDAHOLD?.physical(P);}
+  if(aiEnabled()&&G.gph===1)aiChairContacts();{const h0=hitprobe(P[0]),h1=hitprobe(P[1]);hitcheck(P[0],h0);hitcheck(P[1],h1);}fbhit(P[0]);fbhit(P[1]);const fbOrder=VER.cur==='CE'&&window.SF2CEPROJECTILES?P.slice().sort((a,b)=>(b.FBSLOT||0)-(a.FBSLOT||0)):P;fbOrder.forEach(fbafter);if(VER.cur!=='CE')camera();clampx(P[0]);clampx(P[1]);if(!ceTimedOut)phase();if(VER.edition==='ce')window.SF2CEHONDAHOLD?.physical(P);}
 /* ---- bonus stages (CE arcade ladder: car after fight 3, barrels after 6, drums after 9).
 
    CE car composition, counters, contact stop and suspension use SF2CECAR's native data.
