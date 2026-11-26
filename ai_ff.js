@@ -4,7 +4,7 @@
 window.SF2AIFF=(()=>{
  const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[];
  const specs={
-  sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:'down',fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:['swordSlash','swordSlash','swordSlash','swordSlash','swordSlash','swordSlash'],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
+  sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19,20],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[4,5,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]]]},
   rolento:{name:'Rolento',district:'Industrial Area',hp:300,speed:0x500,jump:0x740,point:[221,118],idle:[10,11],walk:[10,11,12,13],hurt:[8,25],crouch:[9],fall:[25,26,21],lie:[22],recover:[17,8,10],throw:[14,15],win:[0,1,2,3],normal:[[13,14,13],[13,15,13],[13,14,15,13],[17,18,19,17],[17,19,18,17],[17,18,19,17]],specials:[['Patriot Circle','spin',[13,14,15,14]],['Grenade Throw','grenade',[20]],['Wall Kick','wallkick',[9,5,6,7,18]],['Shoulder Toss','grab',[14,15]],['Grenade Barrage','grenade-barrage',[20]],['Grenade Retreat','retreat',[20,5,6,7]]]},
   abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[0,1,2,3],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Crushing Toss','grab',[19,21]],['Power Punch','power',[15,16,18]]]},
@@ -12,7 +12,7 @@ window.SF2AIFF=(()=>{
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
  for(const[id,s]of Object.entries(specs)){
-  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-sodom-grab-24';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
+  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-sodom-buttons-25';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
@@ -41,7 +41,12 @@ window.SF2AIFF=(()=>{
    a.ents=out;a.flags=out.map((_,i)=>i===out.length-1?32769:0);a.normalTiming={strength,startup:out.slice(0,out.findIndex(e=>e[6]?.[2]>0)).reduce((n,e)=>n+e[1],0),total:out.reduce((n,e)=>n+e[1],0)};
   }return f;
  }
+ function sodomCrouchAttacks(pack,f){const lower=f.frames[pack.data.crouchFrames[1]],source=pack.image,atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+170;const g=atlas.getContext('2d');g.drawImage(source,0,0);let x=1;
+  for(let b=0;b<6;b++){const upper=f.frames[b<3?24:19],shiftY=32,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();if(x+pose.width>=atlas.width)x=1;const index=f.frames.length;g.drawImage(pose,x,source.height+1);f.frames.push([x,source.height+1,pose.width,pose.height,left,top]);x+=pose.width+2;const a=f.anims[14+b];for(const e of a.ents){if(e[6][2]>0)e[0]=index;else e[0]=pack.data.crouchFrames[1];}}
+  pack.originalImage=source;pack.image=atlas;
+ }
  function andoreCrouchPunch(pack,f){
+  if(pack.id==='sodom'){sodomCrouchAttacks(pack,f);return;}
   if(!['andore','abigail'].includes(pack.id))return;
   const isAndore=pack.id==='andore',lowerIndex=isAndore?11:20,upperIndex=isAndore?8:18;
   const lower=f.frames[lowerIndex],upper=f.frames[upperIndex],source=pack.image,shiftX=isAndore?23:-4,shiftY=isAndore?22:13,seam=-32,left=Math.min(lower[4],upper[4]+shiftX),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const g=pose.getContext('2d');g.imageSmoothingEnabled=false;
@@ -100,7 +105,9 @@ window.SF2AIFF=(()=>{
    put(107,'Abigail Throw Grip',[[19,9]],{loop:true});put(108,'Abigail Throw Lift',[[21,12]],{loop:true});put(109,'Abigail Throw Recovery',[[17,20],[4,8]]);
   }
   if(p.id==='sodom'){
+   const cr=p.data.crouchFrames;for(let i=5;i<=7;i++)put(i,'Sodom Air Sword Guard',[[cr[0],12]],{loop:true});put(31,'Sodom Sword Victory',[[18,12]],{loop:true});put(3,'Sodom Crouch',[[cr[0],3],[cr[1],3],[cr[1],8]],{loop:true,crouch:true});f.anims[3].loop=2;put(4,'Sodom Stand Up',[[cr[0],3],[3,3]]);
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});put(111,'Sodom Gut Buster',sequence(p,'gutPunch'));
+   for(const base of[8,14,47,53,59])for(let b=0;b<6;b++){const a=f.anims[base+b];for(const e of a.ents){const active=e[0]===(b<3?24:19);e[6]=active?[-(b<3?48:66),base===14?30:63,b<3?26:40,20]:[0,0,0,0];e[7]=active?12+(b%3)*6:0;e[8]=b%3;}}
    put(100,'Sodom Katana Rush',[[3,18],...[14,15,16,17,14,15,16,17].map(i=>[i,3]),[3,16]],{attack:false});
    for(let i=1;i<=8;i++){const e=f.anims[100].ents[i];e[6]=[-46,48,40,28];e[7]=30;e[8]=2;e[9]=1;}
    put(101,'Sodom Twin Blade Chops',[[3,5],...sequence(p,'swordSlash',3),[3,7],...sequence(p,'swordSlash',4),[3,15]],{attack:true,strength:2});
