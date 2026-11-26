@@ -6,14 +6,16 @@ Original controllers, collisions, stages, sprites and the 1.04 sound program exe
 
 The packaged browser build passes all 32 standard fighter/slot scenarios, sixteen original old-character codes and Akuma. A complete Ryu arcade tape genuinely wins 24 rounds and twelve matches, including CPU Akuma, then plays the original ending, staff roll and title. That tape uses tool-assisted ordinary stick/button inputs; replay does not load states or inject health, results, stages, RNG or timers. Separate ordinary-input replays cover Continue credit spending, resumed fighting and Game Over.
 
-Independent checks against the main site's staged package matched 3,272 state samples and 1,032 complete RGB pictures across 98,200 native frames. Actual local file selection, post-ending keyboard Start and the Reset button passed; all requests were GET and no CPU/Z80 fallback or browser errors occurred. Original-instruction reference equality does not prove hardware GPU/DSP parity.
+The common-outcome update recovers Balrog and Vega's original victory controllers and Honda's defeat/Continue portrait paths. Six ordinary-input checks against the main site's staged package matched 4,111 state samples and 1,324 complete RGB pictures across 123,403 native frames. Actual local file selection, post-ending keyboard Start and the Reset button passed; all requests were GET and no CPU/Z80 fallback or browser errors occurred.
 
-The corresponding-source archive contains all 175 source/support files and 86 compilation units, licenses, portable build instructions and reusable input-only QA. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
+For the full Ryu clear and the three repaired outcomes, an offline Mode::Blocks oracle interprets every original 68000 and Z80 instruction. Its 85,403 frames, 2,845 state samples, 934 RGB pictures and all 137,692,732 PCM bytes match static execution. Earlier Native-reference matrices execute translated functions with original-instruction fallback only at uncovered sites; those checks do not independently interpret every covered instruction. Neither reference establishes hardware GPU/DSP parity.
+
+The corresponding-source archive contains all 178 source/support files and 89 compilation units, licenses, portable build instructions and six reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `ssf2t-native.wasm` (14,277,561 bytes) | `262fe757b0c91db4b954aa05a8166143c40a21e13cbe645d4756b73af662cef9` |
-| `corresponding-source.zip` (2,228,166 bytes) | `39223a7c7e4f93bc8c7208b3ddace5f9ba5161bdbbb116ea3887156a99d5e8ab` |
+| `ssf2t-native.wasm` (15,017,816 bytes) | `4f74bd991fcb2448c57b5b8a6632d5715c46390ec2713b94710cf149dabd617c` |
+| `corresponding-source.zip` (2,310,770 bytes) | `79cddb7714f43b71e1fdbc7e53df7019806a6ee101917c71b4e09d4a8a1a855f` |
 
 Only the twelve files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
 

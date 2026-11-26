@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 175,
-  "sourceArchiveSHA256": "39223a7c7e4f93bc8c7208b3ddace5f9ba5161bdbbb116ea3887156a99d5e8ab",
+  "sourceFiles": 178,
+  "sourceArchiveSHA256": "79cddb7714f43b71e1fdbc7e53df7019806a6ee101917c71b4e09d4a8a1a855f",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -44,14 +44,15 @@
     "cpuAkumaFinal": true,
     "toolAssistedInputGeneration": true,
     "stateLoadsInReplay": 0,
-    "strictFrames": 80000,
-    "strictRGBPictures": 675,
-    "strictAudioBytes": 128982000,
+    "strictFrames": 60200,
+    "strictRGBPictures": 642,
+    "strictAudioBytes": 97058924,
     "browserFrames": 60200,
     "browserStateSamples": 2006,
     "browserRGBPictures": 642,
     "endingFrame": 51188,
     "titleFrame": 59903,
+    "referenceMode": "Full Mode::Blocks instruction oracle for both 68000 and Z80",
     "cpuFallback": 0,
     "z80Fallback": 0
   },
@@ -80,8 +81,8 @@
       "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
     },
     "ssf2t-native.wasm": {
-      "bytes": 14277561,
-      "sha256": "262fe757b0c91db4b954aa05a8166143c40a21e13cbe645d4756b73af662cef9"
+      "bytes": 15017816,
+      "sha256": "4f74bd991fcb2448c57b5b8a6632d5715c46390ec2713b94710cf149dabd617c"
     },
     "bridge.js": {
       "bytes": 8904,
@@ -96,6 +97,39 @@
       "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
     }
   },
-  "packageVersion": "dbf1bfe09f7769f5b76e2fe290b46fff980a5dcec7ba1b90cfedc98a73cb16ac",
-  "wasmCacheVersion": "262fe757b0c91db4b954aa05a8166143c40a21e13cbe645d4756b73af662cef9"
+  "compiledSourceUnits": 89,
+  "nativeEntries": 9093,
+  "strictMatrixReferenceMode": "Earlier Native-mode reference: translated functions plus instruction fallback only at untranslated sites",
+  "commonOutcomeFixes": [
+    {
+      "fighter": "Balrog",
+      "outcome": "real KO and victory pose",
+      "frames": 4994,
+      "states": 166,
+      "rgbPictures": 85
+    },
+    {
+      "fighter": "Vega",
+      "outcome": "real KO and victory pose",
+      "frames": 5209,
+      "states": 173,
+      "rgbPictures": 85
+    },
+    {
+      "fighter": "E. Honda",
+      "outcome": "real defeat, Continue, Game Over and title",
+      "frames": 15000,
+      "states": 500,
+      "rgbPictures": 122
+    }
+  ],
+  "newOracleMode": "Full Mode::Blocks original-instruction oracle for both 68000 and Z80, offline only",
+  "newOracleFrames": 85403,
+  "newOracleStateSamples": 2845,
+  "newOracleRGBPictures": 934,
+  "newOraclePCMBytes": 137692732,
+  "previousRyuContinueGameOverReferenceMode": "Earlier Native-mode reference, not independent full instruction interpretation",
+  "fullActualArcadeClears": 1,
+  "packageVersion": "a57efdf716f5993db063ca4be2173e1618bdcfac0a2f99c9adb85a7f35cd7e2d",
+  "wasmCacheVersion": "4f74bd991fcb2448c57b5b8a6632d5715c46390ec2713b94710cf149dabd617c"
 }
