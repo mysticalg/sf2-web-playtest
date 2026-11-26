@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 184,
-  "sourceArchiveSHA256": "6ba1437970720b1fe2a98e17acc9250ba29db33aa982058430c5763895bbb139",
+  "sourceFiles": 186,
+  "sourceArchiveSHA256": "9fa94a9b4e83f1839affbe758dae3f6c548a74158f519f21d6a6b5c869ad2b5f",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -130,7 +130,7 @@
   "newOracleRGBPictures": 934,
   "newOraclePCMBytes": 137692732,
   "previousRyuContinueGameOverReferenceMode": "Earlier Native-mode reference, not independent full instruction interpretation",
-  "fullActualArcadeClears": 2,
+  "fullActualArcadeClears": 3,
   "mechanicsRecovery": {
     "entries": [
       "08BCD4",
@@ -156,6 +156,43 @@
     "noGameRAMWrites": true,
     "noStateLoads": true,
     "reusableQA": "qa/test-mechanics.cjs"
+  },
+  "cammyOrdinaryInputArcade": {
+    "fighter": "Cammy",
+    "fighterId": 12,
+    "productionWasmSHA256": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41",
+    "roundWins": 24,
+    "roundLosses": 0,
+    "matches": 12,
+    "cpuAkumaFinal": true,
+    "toolAssistedInputGeneration": true,
+    "stateLoadsInReplay": 0,
+    "healthLadderStageTimerRNGWrites": false,
+    "settingWrites": [
+      "original operator difficulty1"
+    ],
+    "strictFrames": 68473,
+    "stateSamples": 2282,
+    "rgbPictures": 693,
+    "audioBytes": 110397288,
+    "inputSHA256": "6696c75ec8caad806684529a470f102834ecc38c9a54f52b7964bfab4fefe0c0",
+    "endingFrame": 45851,
+    "titleFrame": 56920,
+    "cpuFallback": 0,
+    "z80Fallback": 0,
+    "oracle": "Full Mode::Blocks for both68000andZ80; offline only",
+    "ramVideoWholeBufferComparison": false,
+    "hardwareParityProven": false,
+    "finalOpponentEvidence": {
+      "frame": 44340,
+      "p2char": 0,
+      "p2akuma": 1,
+      "ladder": 11
+    },
+    "browserFrames": 68473,
+    "browserStateSamples": 2282,
+    "browserRGBPictures": 693,
+    "reusableQA": "qa/test-cammy.cjs"
   },
   "kenRecovery": {
     "entries": [
@@ -186,7 +223,7 @@
     "roundWins": 24,
     "roundLosses": 0,
     "matches": 12,
-    "cpuAkumaFinal": false,
+    "cpuAkumaFinal": true,
     "toolAssistedInputGeneration": true,
     "stateLoadsInReplay": 0,
     "healthLadderStageTimerRNGWrites": false,
@@ -203,11 +240,17 @@
     "cpuFallback": 0,
     "z80Fallback": 0,
     "oracle": "Full Mode::Blocks for both68000andZ80; offline only",
+    "finalOpponentEvidence": {
+      "frame": 50430,
+      "p2char": 0,
+      "p2akuma": 1,
+      "ladder": 11
+    },
     "browserFrames": 68425,
     "browserStateSamples": 2280,
     "browserRGBPictures": 630,
     "reusableQA": "qa/test-ken.cjs; SSF_FIXTURE=./ken-arcade-fixture.json"
   },
-  "packageVersion": "03eaa9275edcdbaa8983162ee68c4e898ef60cbdc987d9a839bcc516b965fcd0",
+  "packageVersion": "902b857a366ea96f160e1b78ba85e80ecb0fc85e931fa4e6d65ce9a9f936aa2b",
   "wasmCacheVersion": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41"
 }
