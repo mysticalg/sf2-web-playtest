@@ -1,0 +1,19 @@
+const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=require('node:fs'),assert=require('node:assert/strict');
+(async()=>{
+ const b=await chromium.launch({args:['--disable-http2']}),p=await b.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));await install(p);await p.goto(url,{waitUntil:'domcontentloaded',timeout:90000});await p.waitForFunction(()=>SF2.VER.loading===2&&window.FIN,null,{timeout:90000});
+ const result=await p.evaluate(async()=>{
+  const rows=[],shots={},targets=[...CE_KEYS.map((name,id)=>({name,id})),...Object.keys(AI_PROFILES).filter(name=>!['ryu','ken'].includes(name)).map(name=>({name,id:null}))];
+  for(const side of[0,1])for(const target of targets){
+   const id=target.id===null?target.name:'ryu';await SF2AI.configure({p1:side?'ryu':id,p2:side?id:'ryu',mode:'versus',training:false,seed:7831});SF2.freeze=1;G.gph=1;G.hfz=G.slow=0;
+   const d=P[side],w=d.opp;if(target.id!==null){AICFG.selectedProfiles[side]=null;setfighter(d,target.id);resetround();G.gph=1;}w.X=(side?360:480)*256;d.X=(side?480:360)*256;w.FACE=side?1:0;d.FACE=side?0:1;w.WINS=1;d.HP=0;FIN.offer(d,{unblocked:true});SF2.step([0,0]);
+   const art=FIN.sourceArt(d),r=art.rect,h=boxw(d,0),body=boxw(d,1),sign=d.FACE?-1:1,x=q=>(q[0]-d.X/256)*sign-r[4],y=q=>d.Y/256-q[1]-r[5],shape={head:h?{x:x(h),y:y(h),rx:h[2]*1.28,ry:h[3]*1.4}:undefined,neck:h?y(h)+h[3]*.85:undefined,cx:body?x(body):r[2]*.5,hip:r[3]*.6,halfTorso:body?Math.max(9,body[2]*.62):r[2]*.17};
+   const partition=SF2AIFINISHERS.partition(art,shape),original=art.image.getContext('2d').getImageData(0,0,r[2],r[3]).data,reconstruction=new Uint8ClampedArray(original.length),width=700,height=180,sheet=document.createElement('canvas');sheet.width=width;sheet.height=height;const g=sheet.getContext('2d');g.fillStyle='#273342';g.fillRect(0,0,width,height);g.imageSmoothingEnabled=false;g.drawImage(art.image,10,20);g.font='10px monospace';g.fillStyle='#fff';g.fillText(target.name,10,12);
+   partition.parts.forEach((part,i)=>{if(!part.image)return;const rgba=part.image.getContext('2d').getImageData(0,0,part.image.width,part.image.height).data,[sx,sy,w,h]=part.source;for(let yy=0;yy<h;yy++)for(let xx=0;xx<w;xx++){const source=(yy*w+xx)*4;if(rgba[source+3])reconstruction.set(rgba.subarray(source,source+4),((yy+sy)*r[2]+xx+sx)*4);}g.drawImage(part.image,150+i*90,30);g.fillText(part.name,150+i*90,165);});
+   let opaque=0,mismatch=0;for(let k=0;k<original.length;k+=4)if(original[k+3]){opaque++;for(let n=0;n<4;n++)if(original[k+n]!==reconstruction[k+n])mismatch++;}
+   if(side===0)shots[target.name]=sheet.toDataURL();for(let n=0;n<24;n++)SF2.step([0,0]);FIN.request(w.i,SF2AIRULES.mapping(w).find(m=>m.index===0&&!m.command),{fresh:true,serial:G.tick});let previous=null;for(let n=0;n<1800&&FIN.active();n++){previous=FIN.info();SF2.step([0,0]);}
+   const info=FIN.info(),boxes=FIN.fragmentBounds();rows.push({side,target:target.name,mismatch,opaque,parts:partition.parts.map(p=>({name:p.name,pixels:p.pixels})),phase:info.phase,contacts:info.contacts,fragments:info.parts?.length,rest:info.parts?.every(p=>p.rest),floorError:boxes.map(b=>Math.abs(b.bottom)),previousStage:previous?.stage,abort:G.AIFinisherAbort||null});delete G.AIFinisherAbort;
+  }return{rows,shots};
+ });
+ for(const[name,data]of Object.entries(result.shots))fs.writeFileSync(artifacts('parts-'+name+'.png'),Buffer.from(data.split(',')[1],'base64'));delete result.shots;fs.writeFileSync(artifacts('pixels.json'),JSON.stringify({result,errors},null,2));
+ const bad=result.rows.filter(r=>r.mismatch||r.parts.some(p=>!p.pixels)||r.phase!=='result'||r.fragments!==6||!r.rest||r.floorError.some(e=>e>1e-7));console.log(JSON.stringify({cases:result.rows.length,opaqueChannels:result.rows.reduce((a,r)=>a+r.opaque*4,0),errors,bad},null,2));assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);await b.close();
+})().catch(e=>{console.error(e);process.exit(1)});

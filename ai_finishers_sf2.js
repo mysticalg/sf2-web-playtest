@@ -1,0 +1,154 @@
+/* Adapter to this port's real normal, special, throw and projectile controllers.
+ * Loaded before game.js; bindSF2 is called only after game actors are initialized.
+ * The finishing presentation is an authored AI Edition extension, not ROM parity.
+ */
+'use strict';
+window.SF2AIFINISHERS.bindSF2=()=>{
+ let finisher,banner='',fire=null,portrait=null,pendingEcho=null,contactSerial=0,lastMove=null,inputPrevious=0;const normalPlans=new Map();
+ function portraitCutout(w,d){
+  const source=CWIN?.[w.fid]?.win;if(!source)return null;const base=window.SF2CEFADE?.mirrorWinner?.(w.i,w.fid,d.fid)||source,image=aiPortraitImage(base,w.i,w.fid,'win'),c=document.createElement('canvas');c.width=image.width;c.height=image.height;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(image,0,0);const p=g.getImageData(0,0,c.width,c.height),data=p.data,key=data.slice(0,4),seen=new Uint8Array(c.width*c.height),queue=[];
+  const enqueue=i=>{if(i<0||i>=seen.length||seen[i])return;seen[i]=1;const k=i*4;if(data[k]===key[0]&&data[k+1]===key[1]&&data[k+2]===key[2]&&data[k+3]===key[3])queue.push(i);};
+  for(let x=0;x<c.width;x++){enqueue(x);enqueue((c.height-1)*c.width+x);}for(let y=0;y<c.height;y++){enqueue(y*c.width);enqueue(y*c.width+c.width-1);}
+  for(let q=0;q<queue.length;q++){const i=queue[q],x=i%c.width;data[i*4+3]=0;if(x)enqueue(i-1);if(x<c.width-1)enqueue(i+1);enqueue(i-c.width);enqueue(i+c.width);}
+  g.putImageData(p,0,0);return c;
+ }
+ const nativeArt=p=>{const a=fighterArtBase(p);return aiFaceInjuryArt(p,aiClothesArt(p,a),a);};
+ const anatomy=(p,a)=>{const r=a.rect,h=boxw(p,0),b=boxw(p,1),sign=p.FACE?-1:1,x=q=>(q[0]-p.X/256)*sign-r[4],y=q=>p.Y/256-q[1]-r[5];return{head:h?{x:x(h),y:y(h),rx:h[2]*1.28,ry:h[3]*1.4}:undefined,neck:h?y(h)+h[3]*.85:undefined,cx:b?x(b):r[2]*.5,hip:r[3]*.6,halfTorso:b?Math.max(9,b[2]*.62):r[2]*.17};};
+ function resetActor(p){
+  SF2CESPECIAL.interrupt(p);SF2CEDIZZY.interrupt(p);
+  for(const k of['AIFFMove','AIFFHold','AIFFHeld','AIFFThrow','AIFFNormal','AIFFWall','AIFFSlide','AIFFProjectile','AIFFGrenades','AIFFBullets','AIHeroMove','AIHeroGrab','AIDamndMove','AIDamndBarrel','AIAir','CES','CEPF','CEKO','CETH','CETHV','CEBV','CEB','CEVNSTART','CENORMALINIT','CE_FatalHitPending','CEVLAND','AIFinishPose'])delete p[k];
+  p.THV=p.MV=null;p.VX=p.VY=p.AX=p.AY=p.KB=p.DIZZY=p.FBON=p.SCNT=p.PJ=p.JA=0;p.Y=0;p.ST=0;p.FORCE=0;p.VQ=null;SF2AIRULES.block(p,p.KEYS);aiBreakCombo(p);
+ }
+ function victimPose(p){
+  if(p.AIFinishPose){setanim(p,p.AIFinishPose.slot,p.AIFinishPose.entry);return;}
+  let best={slot:isFFGuest(p)?22:20,entry:0,score:-1};
+  const preferred=isFFGuest(p)?22:20;
+  for(const slot of[preferred,22]){
+   const a=p.F.anims[slot];if(!a)continue;
+   for(let entry=0;entry<a.ents.length;entry++){
+    setanim(p,slot,entry);p.ST=5;const art=nativeArt(p),parts=SF2AIFINISHERS.partition(art,anatomy(p,art));
+    const score=Math.min(...parts.parts.map(q=>q.pixels));if(score>best.score)best={slot,entry,score};if(score>0&&slot===preferred)break;
+   }if(best.score>0)break;
+  }
+  p.AIFinishPose=best;setanim(p,best.slot,best.entry);
+ }
+ function pose(p,name){
+  if(name==='dizzy'){victimPose(p);p.ST=5;p.STUN=9999;return;}
+  const n=name==='win'?31:name==='walk'?1:0;if(p.cur!==n)setanim(p,n,0);else animstep(p);p.ST=name==='win'?9:0;p.STUN=0;
+ }
+ function protectedVictim(d){return finisher?.isVictim(d)&&d.AIFinishProtected;}
+ function restoreTarget(d){pose(d,'dizzy');d.Y=d.KB=d.VX=d.VY=d.AX=d.AY=0;d.HP=1;d.HPD=0;}
+ function normalSlot(p,button,distance=Math.abs(p.opp.X-p.X)/256){return distance<NTHR[p.fid][button]&&p.F.anims[47+button]?47+button:8+button;}
+ function normalPlan(p,d,button){
+  if(normalPlans.has(button))return normalPlans.get(button);
+  const selected=d.AIFinishPose,target=selected?d.F.anims[selected.slot].ents[selected.entry]:ent(d),hurt=[target[2],target[3],target[4]].filter(b=>b?.[2]);let best=null;
+  for(const crouch of[false,true]){
+   for(let gap=20;gap<=144;gap++){
+    const slot=crouch?14+button:normalSlot(p,button,gap),a=p.F.anims[slot];if(!a)continue;let contacts=0;
+    for(const e of a.ents){const b=e[6];if(!b?.[2])continue;if(hurt.some(h=>Math.abs(b[1]-h[1])<b[3]+h[3]-1&&Math.abs(-b[0]-gap-h[0])<b[2]+h[2]-3))contacts++;}
+    if(contacts){const score=contacts*100-Math.abs(gap-42);if(!best||score>best.score)best={slot,gap,crouch,score};}
+   }if(best)break;
+  }
+  best??={slot:8+button,gap:40,crouch:false,score:0};normalPlans.set(button,best);return best;
+ }
+ function gap(w,d,action){
+  if(action.kind==='normal')return normalPlan(w,d,action.button).gap;
+  const m=w.F.moves[action.index];if(!m)return 48;
+  if(m.inp==='ppp'||m.inp==='kkk')return 38;
+  if(m.inp==='qcfu')return 58;
+  if(m.kind==='fb'||['pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','bullet','burst','rain','retreat','belger-retreat','barrel'].includes(m.style)||isDamnd(w)&&action.index===3)return 110;
+  if(['dash','sodom-charge','rage'].includes(m.style)||m.kind==='dash')return 110;
+  return 38;
+ }
+ function begin(p,action,d){
+  resetActor(p);restoreTarget(d);p.KEYS=p.PREV=p.HZK=0;SF2AIRULES.block(p,0);
+  lastMove={action,started:G.tick,nativeSlot:-1,nativeName:'starting',contacts:0};
+  if(action.kind==='normal'){
+   const plan=normalPlan(p,d,action.button),slot=plan.slot;setanim(p,slot,0);p.ST=1;p.RETCR=plan.crouch?1:0;p.CENORMALINIT=ceNativeNormal(p,slot);
+  }else if(action.command){
+   if(action.command==='rift')return null;
+   SF2AIEvilKen.reset(p);if(!SF2AIEvilKen.update(p,{keys:0,pressed:0,commands:['ember-kick']},{anim:setanim,idle:toidle,tick:animstep,sound:sfxc}))return null;
+  }else if(!startspec(p,[],(action.strength<<4)|(action.index+1)))return null;
+  lastMove.nativeSlot=p.cur;lastMove.nativeName=p.anim.name;lastMove.components=[{slot:p.cur,name:p.anim.name,index:action.index??null}];
+  if(pendingEcho){aiSpecialKOEcho(pendingEcho.owner,{special:true,projectile:!!pendingEcho.owner.FBON});pendingEcho=null;}
+  return{duration:600,contacts:[],nativeSlot:p.cur,nativeName:p.anim.name,action};
+ }
+ function animate(p,move,age,d){
+  if(G.hfz>0){G.hfz--;return{advance:false};}
+  const special=move.action.kind==='special';let keys=0;
+  if(move.escapeFollowup&&!move.followupStarted){
+   const dir=d.X>p.X?1:-1,target=d.X/256-dir*gap(p,d,{kind:'special',index:0}),delta=target-p.X/256;
+   p.X+=Math.trunc(Math.max(-4,Math.min(4,delta))*256);p.FACE=dir>0?1:0;pose(p,'walk');restoreTarget(d);
+   if(Math.abs(delta)<=4){pose(p,'idle');if(!startspec(p,[],(2<<4)|1))return{done:true};move.followupStarted=true;lastMove.components.push({slot:p.cur,name:p.anim.name,index:0});}
+   return{};
+  }
+  if(special&&p.CES?.kind==='vegawall'&&p.CES.phase===4&&p.CES.vy<0&&p.Y<44*256&&Math.abs(p.X-d.X)<96*256){keys=(d.X<p.X?1:2)|16;d.ST=0;}
+  // Original Andore hold: jump after two shakes, then punch in the air to invert.
+  if(special&&p.AIFFHold){if(p.AIFFHold.pulses>=2&&!p.AIFFHold.airborne)keys=4;else if(p.AIFFHold.airborne&&p.AIFFHold.airAge>=12)keys=16;}
+  p.KEYS=keys;p.FORCE=0;SF2AIRULES.block(p,keys);d.KEYS=d.FORCE=0;SF2AIRULES.block(d,0);
+  if(move.action.command){const current=p.AIEvilKen?.adapter.heat.move,target=move.action.command,next=current==='ember-kick'&&target!=='ember-kick'?'furnace-kick':current==='furnace-kick'&&target==='cinder-break'?'cinder-break':null;if(next)p.AIButtons.queue={command:next,tick:G.tick};}
+  if(!special)restoreTarget(d);
+  if(VER.cur==='CE')SF2CEPROJECTILES.stepEffects({tick:G.tick});
+  SF2CEDHALSIM.objects(G,P,{hit:ceYogaHit,fire:ceYogaCollision,visible:ceObjectVisible});
+  update(p);if(special)update(d);clampx(p);
+  if(move.action.command){const current=p.AIEvilKen?.adapter.heat.move;if(current&&move.heatVoice!==current){move.heatVoice=current;const code=current==='cinder-break'?p.F.sfx.sp[2][0][1]:p.F.sfx.wh[5];AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,code]],sample:null,kind:'evil-ken-heat',tick:G.tick}};}}
+  fbmove(p);const probe=hitprobe(p);hitcheck(p,probe);fbhit(p);fbafter(p);
+  if(!special||move.action.command&&p.AIEvilKen?.adapter.heat.move!==move.action.command)restoreTarget(d);
+  G.slow=0;
+  const attached=!!(p.THV||p.AIFFHold||p.AIFFThrow||p.AIHeroGrab||p.CETH||d.CETHV||d.AIFFHeld),projectile=!!(p.FBON||p.AIFFBullets?.length||p.AIFFGrenades?.length||p.AIFFProjectile||p.AIDamndBarrel);
+  const done=!attached&&!projectile&&p.ST!==1&&p.ST!==2&&p.ST!==11&&age>0;
+  const selected=p.F.moves[move.action.index],escape=special&&(p.aiProfile==='vega'&&selected?.inp==='bb'||p.aiProfile==='belger'&&['vault','belger-hop','belger-retreat'].includes(selected?.style)||['escape','movement'].includes(selected?.role));
+  if(done&&escape&&!move.escapeFollowup&&lastMove.contacts===0){move.escapeFollowup=true;return{};}
+  return{done};
+ }
+ const host={
+  context:()=>({enabled:aiEnabled(),scene:G.scene,tick:G.tick,phase:G.gph,players:P,room:aiRoom(),training:!!AICFG.prototype&&!!AICFG.training,keys:P.map(p=>p.KEYS)}),
+  art:nativeArt,anatomy,mouth:aiMouth,
+  prepare(w,d){resetActor(w);resetActor(d);normalPlans.clear();SF2CEDHALSIM.reset(G,P);window.SF2AIHeroWeapons?.cancelFlights(null,aiRoom());inputPrevious=w.KEYS;d.AIFinishProtected=true;d.HP=1;d.HPD=0;G.hfz=G.slow=0;G.CESpecialObjects=null;delete G.CESpecialSlow;AI_RETCH[d.i]=null;AI_FLOOR_COUGHS[d.i]=null;AI_DEATH_FX.length=0;},
+  input(w,phase){const keys=w.KEYS,nw=keys&~inputPrevious,rel=inputPrevious&~keys,events=motion(w,keys,nw,rel);inputPrevious=keys;if(phase!=='prompt')return;for(const event of events){const index=w.F.moves.findIndex(m=>m.inp===event[0]&&m.btn===event[1]);if(index>=0&&finisher.request(w.i,{index,strength:event[2]},{fresh:true,serial:G.tick}))break;}},
+  pose,gap,
+  specials:p=>SF2AIRULES.mapping(p).filter(m=>m.command!=='rift'&&(!m.command||isEvilKen(p))).map(m=>({...m})),
+  valid:(p,m)=>m.command?isEvilKen(p):!!p.F.moves[m.index]&&(window.SF2AIHeroWeapons?.validMove(p,p.F.moves[m.index])??true),
+  isCPU:p=>p.i===1&&!G.mode2p,
+  begin,animate,
+  finishMove(p){resetActor(p);},
+  position:(p,v)=>{p.X=Math.round(v.x*256);p.Y=Math.round(v.y*256);p.FACE=v.face;},
+  lockVictim:(w,d,phase)=>phase!=='special',
+  remainingArt:(p,a)=>SF2AIFF.heldArt(p,a),
+  partPoint(p,part,pose){
+   const sign=p.FACE?-1:1;
+   if(p.AIFFHeld?.inverted){const r=pose.art.rect,x=part.source[0]+part.source[2]/2-r[2]/2,y=part.source[1]+part.source[3]/2-r[3]/2;return{x:p.X/256-sign*x,y:p.Y/256+y,face:p.FACE,angle:Math.PI};}
+   return{x:p.X/256+sign*part.pivot[0],y:p.Y/256-part.pivot[1],face:p.FACE,angle:0};
+  },
+  blood:(packet,d)=>aiBloodAdd(packet,d.i),stain:aiClothesStain,
+  impact:e=>{G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
+  fire:e=>{fire={tick:G.tick,x:e.point.x,y:e.point.y};AI_RETCH[e.victim.i]=AI_TEETH[e.victim.i]=AI_FLOOR_COUGHS[e.victim.i]=null;},
+  echo:(w,request)=>{if(lastMove?.nativeSlot===-1)pendingEcho={owner:w,request};else aiSpecialKOEcho(w,{special:true,projectile:!!w.FBON});},
+  camera(w,active){if(active)AI_SKO_VIEW={slot:w.i,start:G.tick-24};else AI_SKO_VIEW=null;},
+  banner:text=>{banner=text;},
+  complete(w,d){resetActor(w);resetActor(d);delete d.AIFinishProtected;d.HP=d.HPD=0;d.ST=8;pose(w,'win');portrait=portraitCutout(w,d);endround(1<<w.i);},
+  fallback(w,d){resetActor(w);resetActor(d);delete d.AIFinishProtected;d.HP=d.HPD=0;aiDeathBegin(d,{special:false});fallst(d,8,d.FACE?-1:1);endround(1<<w.i);},
+  cleanup(reason,w,d){if(w)resetActor(w);if(d){resetActor(d);if(d.AIFinishProtected){delete d.AIFinishProtected;d.HP=d.HPD=0;}}if(reason==='winner-ko'){for(const p of[w,d])if(p&&p.HP<=0)fallst(p,8,p.FACE?-1:1);}banner='';fire=portrait=pendingEcho=null;lastMove=null;AI_SKO_VIEW=null;},
+  aborted:reason=>{G.AIFinisherAbort=reason;}
+ };
+ finisher=SF2AIFINISHERS.create(host);
+ function framing(render=false){
+  const state=finisher.view();if(!state||G.scene!=='fight'||state.completed&&G.tick-state.completedAt>=36)return null;const actors=render?SF2CECAMERA.poses||P:P,bounds=[];
+  for(const p of actors){if(finisher.hidden(p))continue;const r=nativeArt(p).rect,x=p.X/256,y=p.Y/256,left=x+(p.FACE?-r[4]-r[2]:r[4]);bounds.push({left,right:left+r[2],top:y-r[5],bottom:y-r[5]-r[3]});}
+  if(fire){bounds.push({left:fire.x-12,right:fire.x+12,top:12,bottom:0});for(const b of finisher.fragmentBounds())if(Math.abs((b.left+b.right)/2-fire.x)<=120)bounds.push(b);}
+  if(!bounds.length)return null;const left=Math.min(...bounds.map(b=>b.left)),right=Math.max(...bounds.map(b=>b.right)),top=Math.max(...bounds.map(b=>b.top)),bottom=Math.min(...bounds.map(b=>b.bottom)),width=right-left+28,height=top-bottom+12,zoom=Math.min(2.2,W/width,(H-72)/height);
+  return{left,right,top,bottom,zoom,width:Math.max(320,width,height*W/(H-72))};
+ }
+ const burn=Object.values(SF2CESPECIALDATA.fighters[0]).find(a=>a.name==='ceSpecialBurn15350'),frames=burn.extraArt.map(a=>{const image=new Image();image.src=SF2CESPECIALDATA.images[a.images[0]];return{image,rect:a.rect};});
+ return Object.assign(finisher,{
+  damage(d,amount){if(!protectedVictim(d))return false;if(amount>0){lastMove&&(lastMove.contacts++);const target=lastMove?.action.command,current=d.opp.AIEvilKen?.adapter.heat.move;finisher.notify(d.opp,d,++contactSerial,{final:!target||target===current});}d.HP=1;d.HPD=0;return true;},
+  nativeMove:()=>lastMove?{...lastMove,action:{...lastMove.action}}:null,
+  sourceBox(p,k){const selected=p.AIFinishPose;if(!protectedVictim(p)||k>2||!selected||!(p.AIFFHeld||p.CETHV||p.CEBV))return undefined;const b=p.F.anims[selected.slot].ents[selected.entry][2+k];return b?.[2]?[(p.FACE?-b[0]:b[0])+p.X/256,b[1]+p.Y/256,b[2],b[3]]:null;},
+  banner:()=>banner,
+  framing,
+  focus(ground){const f=framing(true),s=finisher.view();if(!f||!s)return null;const t=Math.min(1,s.age/18),weight=s.completed?Math.max(0,1-(G.tick-s.completedAt)/36):t*t*(3-2*t);return{weight,zoom:f.zoom,screenY:H*.66,x:(f.left+f.right)/2,y:ground-(f.top+f.bottom)/2,top:ground-f.top};},
+  drawFire(ctx,camera,ground){if(!fire)return;const age=G.tick-fire.tick;if(age>=24)return;const a=frames[Math.floor(age/2)%frames.length];if(!a.image.complete)return;ctx.save();ctx.globalAlpha=.9;spr(a.image,a.rect,fire.x-camera,ground-12,0);ctx.restore();},
+  drawResult(ctx){if(G.scene!=='win'||!finisher.retained()||!portrait)return;const s=finisher.info();ctx.save();if(s.winner===1){ctx.translate(W,0);ctx.scale(-1,1);}ctx.beginPath();ctx.rect(0,16,192,144);ctx.clip();for(const offset of[18,12,6]){ctx.globalAlpha=.7-offset/40;ctx.drawImage(portrait,offset+Math.round(Math.sin(G.tick/9)),16);}ctx.globalAlpha=1;ctx.drawImage(portrait,0,16);ctx.restore();},
+  ready:Promise.all(frames.map(a=>a.image.decode()))
+ });
+};
