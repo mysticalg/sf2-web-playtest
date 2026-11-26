@@ -13,6 +13,9 @@ window.SF2AIFINISHERS=(()=>{
  function canvas(w,h){const c=document.createElement('canvas');c.width=w;c.height=h;return c;}
  function hull(points){const a=points.sort((p,q)=>p[0]-q[0]||p[1]-q[1]),cross=(p,q,r)=>(q[0]-p[0])*(r[1]-p[1])-(q[1]-p[1])*(r[0]-p[0]),lo=[],hi=[];for(const p of a){while(lo.length>1&&cross(lo.at(-2),lo.at(-1),p)<=0)lo.pop();lo.push(p);}for(let i=a.length-1;i>=0;i--){const p=a[i];while(hi.length>1&&cross(hi.at(-2),hi.at(-1),p)<=0)hi.pop();hi.push(p);}lo.pop();hi.pop();return lo.concat(hi);}
  function copyArt(art){if(!art?.image||!art.rect)return null;const r=art.rect,c=canvas(r[2],r[3]);c.getContext('2d').drawImage(art.image,r[0],r[1],r[2],r[3],0,0,r[2],r[3]);return{...art,image:c,rect:[0,0,r[2],r[3],r[4],r[5]]};}
+ function paintPart(context2,part,x,y,face,alpha=1,angle=0){
+  if(!part.image)return;const w=part.image.width,h=part.image.height;context2.save();context2.globalAlpha*=alpha;context2.translate(Math.round(x-w/2)+w/2,Math.round(y-h/2)+h/2);if(angle===Math.PI||angle===-Math.PI)context2.scale(-1,-1);else if(angle)context2.rotate(angle);context2.scale(face?-1:1,1);context2.drawImage(part.image,-w/2,-h/2);context2.restore();
+ }
  /** Anatomical cuts use source-pixel coordinates, never scaled/repainted pixels.
   * @param {{image:CanvasImageSource,rect:number[]}} art unmirrored native pose
   * @param {{head?:{x:number,y:number,rx:number,ry:number},neck?:number,hip?:number,cx?:number,halfTorso?:number}} anatomy
@@ -61,18 +64,18 @@ window.SF2AIFINISHERS=(()=>{
   function event(type,detail={}){if(!state)return;state.events.push({tick:context().tick,type,...detail});if(state.events.length>96)state.events.shift();}
   function clear(reason='reset',fallback=false){
    if(!state){lastTick=-1;return false;}const s=state,[w,d]=actors();state=null;lastTick=-1;
-   try{host.camera?.(w,false);host.banner?.('');host.cleanup?.(reason,w,d);}finally{if(fallback&&!s.completed)host.fallback(w,d);}
+   try{host.camera?.(w,false);host.banner?.('');host.cleanup?.(reason,w,d,{fallback});}finally{if(fallback&&!s.completed)host.fallback(w,d,{...s.source,alreadyFinished:!!s.finalStrike});}
    return true;
   }
   function offer(victim,source={}){
    const c=context(),winner=c.players.find(p=>p.i!==victim.i);
    if(state||!c.enabled||c.scene!=='fight'||c.phase!==1||c.training||source.unblocked!==true||!winner||winner.HP<=0||victim.HP>0||!(c.finalRound??winner.WINS>=1))return false;
    const moves=host.specials(winner)||[];if(!moves.length)return false;
-   state={id:++serial,phase:'ready',winner:winner.i,victim:victim.i,started:c.tick,phaseStart:c.tick,lastKeys:(c.keys?.[winner.i]??winner.KEYS??0)&ATTACK,inputBlocked:(c.keys?.[winner.i]??winner.KEYS??0)&ATTACK,lastInput:-1,moves:moves.map(m=>({...m})),request:null,move:null,stage:0,seen:new Set(),parts:null,remaining:null,removed:new Set(),pieces:[],emitters:[],trails:[],lastTrail:-1,bloodSerial:0,contacts:0,completed:false,victimPose:null,events:[],source:{...source},prepared:false,recoil:0};
+   state={id:++serial,phase:'ready',winner:winner.i,victim:victim.i,started:c.tick,phaseStart:c.tick,lastKeys:(c.keys?.[winner.i]??winner.KEYS??0)&ATTACK,inputBlocked:(c.keys?.[winner.i]??winner.KEYS??0)&ATTACK,lastInput:-1,moves:moves.map(m=>({...m})),request:null,move:null,stage:0,seen:new Set(),parts:null,remaining:null,removed:new Set(),pieces:[],emitters:[],trails:[],lastTrail:-1,bloodSerial:0,contacts:0,completed:false,victimPose:null,events:[],source:host.captureSource?.(winner,victim,source)||{...source},prepared:false,recoil:0};
    event('offered');return true;
   }
   function prepare(){
-   const s=state,[w,d]=actors();host.prepare(w,d);host.pose(w,'idle');host.pose(d,'dizzy');
+   const s=state,[w,d]=actors();host.prepare(w,d,s.source);host.pose(w,'idle');host.pose(d,'dizzy');
    s.victimPose=copyArt(host.art(d));s.parts=partition(s.victimPose,host.anatomy?.(d,s.victimPose));s.remaining=copyArt(s.victimPose);s.prepared=true;
    const c=context();s.anchor={x:d.X/256,y:0,face:d.FACE};host.position(d,s.anchor);host.camera?.(w,true);event('prepared',{pixels:s.parts.pixelCount});
   }
@@ -88,9 +91,6 @@ window.SF2AIFINISHERS=(()=>{
    return move?request(slot,move,{fresh:true,serial:context().tick}):false;
   }
   function selectCPU(){const s=state,[w]=actors();if(!host.isCPU?.(w))return;const own=s.moves.filter(m=>host.valid?.(w,m)!==false);if(own.length)request(w.i,own[hash(s.id,w.i)%own.length],{fresh:true,serial:context().tick});}
-  function drawPart(context2,part,x,y,face,alpha=1,angle=0){
-   if(!part.image)return;context2.save();context2.globalAlpha*=alpha;context2.translate(Math.round(x),Math.round(y));if(angle)context2.rotate(angle);context2.scale(face?-1:1,1);context2.drawImage(part.image,-part.image.width/2,-part.image.height/2);context2.restore();
-  }
   function blood(point,count,power=1,vertical=1){
    const s=state,c=context(),[w,d]=actors();if(!host.blood)return;const dir=w.X<d.X?1:-1,packet=[];
    for(let i=0;i<Math.min(config.bloodPacket,count);i++){const h=hash(s.id*8191+s.bloodSerial++,i),u=(h&65535)/65535,v=(h>>>16)/65535;packet.push({x:point.x,y:Math.max(1,point.y),vx:dir*(.6+u*2.8)*power+(v-.5)*1.6,vy:(1.1+v*3.4)*power*vertical,size:i%5===0?2:1,tick:c.tick,color:COLORS[i%3],clothEligible:false,life:140});}
@@ -188,7 +188,7 @@ window.SF2AIFINISHERS=(()=>{
     const d=c.players[s.victim],dr=s.victimPose.rect,dx=d.X/256+(d.FACE?-dr[4]-dr[2]:dr[4])-12,dy=ground-d.Y/256+dr[5]-8;
     for(const t of s.trails){const age=clamp((c.tick-t.tick)/config.trailLife,0,1),r=t.rect,drift=(t.face?-1:1)*age*config.trailDrift,x=t.x+drift,left=x+(t.face?-r[4]-r[2]:r[4]),top=ground-t.y+r[5],ox=Math.max(0,Math.min(left+r[2],dx+dr[2]+24)-Math.max(left,dx)),oy=Math.max(0,Math.min(top+r[3],dy+dr[3]+16)-Math.max(top,dy)),contactFade=s.finalStrike?1:1-.85*clamp(ox/(dr[2]+24),0,1)*clamp(oy/(dr[3]+16),0,1),alpha=.84*Math.pow(1-age,.6)*contactFade;ctx.save();ctx.globalAlpha*=alpha;ctx.translate(Math.round(x-camera),Math.round(ground-t.y));ctx.scale(t.face?-1:1,1);ctx.drawImage(t.image,r[0],r[1],r[2],r[3],r[4],r[5],r[2],r[3]);ctx.restore();}
    }
-   else for(const p of s.pieces)drawPart(ctx,p.part,p.x-camera,ground-p.y,p.face,1,p.angle);
+   else for(const p of s.pieces)paintPart(ctx,p.part,p.x-camera,ground-p.y,p.face,1,p.angle);
    ctx.restore();
   }
   function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,contacts:s.contacts,request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
@@ -198,5 +198,5 @@ window.SF2AIFINISHERS=(()=>{
   function view(){return state?{winner:state.winner,victim:state.victim,phase:state.phase,age:context().tick-state.started,completed:state.completed,completedAt:state.completedAt??null}:null;}
   return{offer,request,input,notify,step,art,draw,clear,info,view,active,blocksRound,fragmentBounds,sourceArt:actor=>state?.prepared&&actor.i===state.victim?state.victimPose:null,hidden:actor=>!!state?.finalStrike&&actor.i===state.victim,owns:actor=>active()&&!!state&&[state.winner,state.victim].includes(actor.i),isVictim:actor=>active()&&!!state&&state.victim===actor.i,retained:()=>!!state?.completed};
  }
- return{VERSION,LIMITS,PARTS,BUTTONS,create,partition};
+ return{VERSION,LIMITS,PARTS,BUTTONS,create,partition,paintPart};
 })();

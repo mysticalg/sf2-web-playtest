@@ -20,6 +20,7 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
    ({w,d}=await setup(side));d.HP=1;w.THV={d:side?-1:1,dmg:99};relth(w);phase();rows.push({test:'throw-lethal-offer',side,phase:FIN.info().phase,round:G.gph});
    ({w,d}=await setup(side));arm(d);w.HP=0;phase();rows.push({test:'double-ko',side,active:FIN.active(),mask:G.winmask,wins:P.map(p=>p.WINS),states:P.map(p=>p.ST)});
    ({w,d}=await setup(side));arm(d);for(let n=0;n<330;n++)tick();rows.push({test:'prompt-timeout',side,active:FIN.active(),wins:w.WINS,hp:d.HP,protect:!!d.AIFinishProtected});for(let n=0;n<70;n++)tick();
+   ({w,d}=await setup(side));startspec(w,[],1);d.HP=0;FIN.offer(d,{unblocked:true,special:true,projectile:true});const beforeEcho=soundStats.koEchoRequests||0;for(let n=0;n<330;n++)tick();rows.push({test:'special-timeout-preserves-sko',side,active:FIN.active(),wins:w.WINS,echoKind:soundStats.lastKOEcho?.kind,echoes:(soundStats.koEchoRequests||0)-beforeEcho});
    ({w,d}=await setup(side));w.KEYS=144;arm(d);let keys=[0,0];keys[side]=144;for(let n=0;n<40;n++)tick(keys);const heldPhase=FIN.info().phase;tick();tick(keys);const fresh=FIN.info().phase;rows.push({test:'held-shortcut-release',side,heldPhase,fresh,complete:complete()});
    ({w,d}=await setup(side));arm(d);waitPhase('prompt');let accepted=FIN.request(d.i,{index:0},{fresh:true,serial:G.tick}),foreign=FIN.request(w.i,{index:999},{fresh:true,serial:G.tick});rows.push({test:'reject-other-player-and-foreign',side,accepted,foreign,phase:FIN.info().phase});
    ({w,d}=await setup(side));arm(d);waitPhase('prompt');const forward=side?1:2;for(const key of[8,8|forward,forward,forward|16]){const pair=[0,0];pair[side]=key;tick(pair);}rows.push({test:'original-qcf',side,phase:FIN.info().phase,request:FIN.info().request,complete:complete()});
@@ -33,6 +34,12 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
    }
    ({w,d}=await setup(side,'andore'));arm(d);waitPhase('special',SF2AIRULES.mapping(w).find(m=>m.index===3));for(let n=0;n<80&&!w.AIFFThrow;n++)tick();const attached=!!w.AIFFThrow;shot('pile-grip-'+side);const pure=JSON.stringify(FIN.info());for(let n=0;n<4;n++)SF2.render();rows.push({test:'real-pile-interrupt',side,attached,pure:pure===JSON.stringify(FIN.info())});SF2AI.skipFinisher();rows.push({test:'pile-cleanup',side,held:P.some(q=>q.AIFFHeld||q.AIFFThrow||q.THV),protect:!!d.AIFinishProtected,wins:w.WINS});for(let n=0;n<40;n++)tick();
    ({w,d}=await setup(side));arm(d);waitPhase('prompt');shot('prompt-'+side);FIN.request(w.i,SF2AIRULES.mapping(w)[0],{fresh:true,serial:G.tick});complete();for(let n=0;n<1200&&G.scene!=='win';n++)tick();for(let n=0;n<90;n++)tick();shot('result-'+side);const resultState=FIN.info();rows.push({test:'result-persistence',side,scene:G.scene,phase:resultState.phase,trails:resultState.trails,pieces:resultState.parts.length,stains:AI_BLOOD.stains.length});
+  }
+  for(const side of[0,1]){
+   let{w,d}=await setup(side,'andore');delete G.cep;arm(d);waitPhase('prompt');FIN.request(w.i,SF2AIRULES.mapping(w)[0],{fresh:true,serial:G.tick});complete();for(let n=0;n<1800&&G.scene!=='select';n++)tick();SF2.render();
+   rows.push({test:'configured-auto-return',side,scene:G.scene,grid:G.cep?.slice(),prototype:AICFG.prototype,retained:FIN.retained(),protected:P.some(q=>q.AIFinishProtected)});
+   const target=12+ffGuestIds().indexOf('sodom'),pulse=(key,slot=0)=>{const keys=[0,0];keys[slot]=key;tick(keys);tick();};
+   if(G.scene==='select'&&G.cep){for(let n=0;n<8&&Math.floor(G.cep[0]/6)!==Math.floor(target/6);n++)pulse(8);for(let n=0;n<6&&G.cep[0]!==target;n++)pulse(2);pulse(16);const chosen=P[0].aiProfile; pulse(16);for(let n=0;n<4&&G.scene==='select';n++)pulse(16,G.mode2p?G.selstep:0);for(let n=0;n<900&&G.scene!=='fight';n++)tick();SF2.render();rows.push({test:'configured-return-reselect',side,chosen,profile:P[0].aiProfile,scene:G.scene,active:FIN.active(),protected:P.some(q=>q.AIFinishProtected)});}
   }
   let{w,d}=await setup(1,'andore',null,true);arm(d);const cpuComplete=complete();rows.push({test:'cpu-automatic',phase:cpuComplete,request:FIN.info().request,wins:w.WINS});
   ({w,d}=await setup(0));arm(d);waitPhase('prompt');const originalStart=startspec;startspec=()=>{throw new Error('regression injected native startup failure');};FIN.request(w.i,SF2AIRULES.mapping(w)[0],{fresh:true,serial:G.tick});for(let n=0;n<1200&&FIN.active();n++)tick();startspec=originalStart;const errorFallback={test:'native-error-fallback',phase:FIN.info().phase,hp:d.HP,protect:!!d.AIFinishProtected,wins:w.WINS,reason:G.AIFinisherAbort};for(let n=0;n<40;n++)tick();rows.push(errorFallback);delete G.AIFinisherAbort;
@@ -49,6 +56,7 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
   if(r.test==='throw-lethal-offer'&&(r.phase!=='ready'||r.round!==1))bad.push(r);
   if(r.test==='double-ko'&&(r.active||r.mask!==3||r.wins.reduce((a,b)=>a+b,0)!==3||r.states.some(s=>s!==8)))bad.push(r);
   if(r.test==='prompt-timeout'&&(r.active||r.wins!==2||r.hp!==0||r.protect))bad.push(r);
+  if(r.test==='special-timeout-preserves-sko'&&(r.active||r.wins!==2||r.echoKind!=='fb'||r.echoes!==1))bad.push(r);
   if(r.test==='held-shortcut-release'&&(r.heldPhase!=='prompt'||!['approach','combo'].includes(r.fresh)||r.complete!=='result'))bad.push(r);
   if(r.test==='reject-other-player-and-foreign'&&(r.accepted||r.foreign||r.phase!=='prompt'))bad.push(r);
   if(['original-qcf','original-charge'].includes(r.test)&&(!r.request||r.complete!=='result'))bad.push(r);
@@ -56,6 +64,8 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
   if(r.test==='cleanup'&&(r.reached!==r.phase||r.active||r.protect||r.attached||r.action!=='skip'&&r.retained||r.action==='skip'&&r.wins!==2||r.action==='reset'&&r.hp<=0))bad.push(r);
   if(r.test==='real-pile-interrupt'&&(!r.attached||!r.pure)||r.test==='pile-cleanup'&&(r.held||r.protect||r.wins!==2))bad.push(r);
   if(r.test==='result-persistence'&&(r.scene!=='win'||r.phase!=='result'||r.trails!==24||r.pieces!==6||!r.stains))bad.push(r);
+  if(r.test==='configured-auto-return'&&(r.scene!=='select'||!Array.isArray(r.grid)||r.prototype||r.retained||r.protected))bad.push(r);
+  if(r.test==='configured-return-reselect'&&(r.chosen!=='sodom'||r.profile!=='sodom'||r.scene!=='fight'||r.active||r.protected))bad.push(r);
   if(r.test==='cpu-automatic'&&(r.phase!=='result'||r.wins!==2)||r.test==='edition-clear'&&(r.edition!=='ce'||r.active||r.retained||r.marks))bad.push(r);
   if(r.test==='native-error-fallback'&&(r.phase!=='idle'||r.hp!==0||r.protect||r.wins!==2||!r.reason?.startsWith('host-error:')))bad.push(r);
   if(r.test==='bounded-blood'&&(r.phase!=='result'||r.maximum>384||r.stains!==1536||r.pieces!==6||r.trails!==24))bad.push(r);

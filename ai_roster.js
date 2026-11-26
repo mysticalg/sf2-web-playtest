@@ -16,7 +16,7 @@ window.SF2AI_ROSTER={
     {key:'ce:sagat',fighterId:9,name:'Sagat',ready:true},
     {key:'ce:bison',fighterId:8,name:'M.Bison',ready:true}
   ],
-  additions:[...Object.entries(window.SF2AIFF.specs).map(([key,p])=>({key:"ai:"+key,baseFighterId:10,name:p.name,origin:"Final Fight",district:p.district,status:"playable",ready:true,selectable:true,maxHP:p.hp})),{key:'ai:damnd',baseFighterId:10,name:'Damnd',origin:'Final Fight',status:'playable',ready:true,selectable:true,maxHP:360},{key:'ai:evil-ken',baseFighterId:4,name:'Evil Ken',status:'playable',ready:true,selectable:true,maxHP:272}],
+  additions:[...Object.entries(window.SF2AIHeroes.specs).map(([key,p])=>({key:"ai:"+key,baseFighterId:10,name:p.name,origin:"Final Fight",district:"Slum Courtyard",status:"playable",ready:true,selectable:true,maxHP:p.hp})),...Object.entries(window.SF2AIFF.specs).map(([key,p])=>({key:"ai:"+key,baseFighterId:10,name:p.name,origin:"Final Fight",district:p.district,status:"playable",ready:true,selectable:true,maxHP:p.hp})),{key:'ai:damnd',baseFighterId:10,name:'Damnd',origin:'Final Fight',status:'playable',ready:true,selectable:true,maxHP:360},{key:'ai:evil-ken',baseFighterId:4,name:'Evil Ken',status:'playable',ready:true,selectable:true,maxHP:272}],
   developmentProfiles:[
     {key:'ai:evil-ryu',baseFighterId:0,name:'Evil Ryu',status:'prototype',ready:false,selectablePrototype:true,maxHP:272}
   ]

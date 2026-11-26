@@ -39,7 +39,10 @@ jobs:
           cp ai-ff/*.png _site/ai-ff/
           mkdir -p _site/ai-ff/audio
           cp ai-ff/audio/*.mp3 _site/ai-ff/audio/
-          cp ai_ff.js ai_ff_data.js ai_ff_chair.js ai_sodom_blades.js ai_finishers.js ai_finishers_sf2.js _site/
+          cp ai_ff.js ai_ff_data.js ai_ff_chair.js ai_sodom_blades.js ai_finishers.js ai_finishers_sf2.js ai_heroes.js ai_heroes_data.js ai_hero_weapons.js ai_victory_quotes.js _site/
+          mkdir -p _site/ai-heroes/audio
+          cp ai-heroes/*.png _site/ai-heroes/
+          cp ai-heroes/audio/*.mp3 _site/ai-heroes/audio/
           cp ai_chain.js ai_damnd_stage.js ai_damnd_data.js ai_damnd.js ai_reels_data.js ai_shadows.js ai_scene.js ai_atmosphere.js ai_stage_materials.js _site/
           mkdir -p _site/ai-effects
           cp ai-effects/particles-lights.png ai-effects/ryu-skies.png ai-effects/room-extensions.png ai-effects/ryu-roof.png ai-effects/ryu-crest.png ai-effects/cherry-petals.png ai-effects/rose-petals.png ai-effects/cloud-mist.png ai-effects/cloud-bank.png ai-effects/mist-bank.png ai-effects/india-wall.png ai-effects/india-native-top.png ai-effects/china-foreground.png ai-effects/china-far.png _site/ai-effects/
@@ -47,6 +50,7 @@ jobs:
           cp ai/index.html ai/edition.json _site/ai/
       - name: Stamp release metadata and browser asset revisions
         run: |
+          node tests/ai-victory-quotes.test.cjs
           node tests/preview-build.test.cjs
           node scripts/stamp-preview-build.cjs _site "$GITHUB_SHA"
       - id: pages-artifact

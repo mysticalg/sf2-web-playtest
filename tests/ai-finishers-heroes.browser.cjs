@@ -1,0 +1,34 @@
+const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=require('node:fs'),assert=require('node:assert/strict');
+(async()=>{
+ const b=await chromium.launch({args:['--disable-http2']}),page=await b.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));await install(page);await page.goto(url,{waitUntil:'domcontentloaded',timeout:90000});await page.waitForFunction(()=>SF2.VER.loading===2&&window.FIN&&window.SF2AIHeroWeapons,null,{timeout:90000});
+ const result=await page.evaluate(async()=>{
+  const rows=[],shots={},tick=(keys=[0,0])=>SF2.step(keys);
+  async function setup(side,profile='cody',cpu=false,seed=42){await SF2AI.configure({p1:side?'ryu':profile,p2:side?profile:'ryu',mode:cpu?'cpu':'versus',training:false,seed});SF2.freeze=1;G.gph=1;G.hfz=G.slow=0;const w=P[side],d=w.opp;w.X=(side?500:330)*256;d.X=(side?330:500)*256;w.FACE=side?0:1;d.FACE=side?1:0;w.WINS=1;d.WINS=0;return{w,d};}
+  function finish(w,d,choice){d.HP=0;FIN.offer(d,{unblocked:true});for(let n=0;n<25;n++)tick();const accepted=FIN.request(w.i,choice,{fresh:true,serial:G.tick});let normalFlight=false,normalThrow=false,frames=0,oldUID=w.AIHeroWeapon?.uid,heldChanged=false;
+   for(;frames<1800&&FIN.active();frames++){tick();const info=FIN.info();if(info.phase==='combo'){normalFlight||=!!w.FBON;normalThrow||=!!w.anim.heroKnifeThrow;if(oldUID!==undefined&&w.AIHeroWeapon?.uid!==oldUID)heldChanged=true;}}
+   return{accepted,phase:FIN.info().phase,frames,normalFlight,normalThrow,heldChanged,weaponUID:w.AIHeroWeapon?.uid,items:SF2AIHeroWeapons.info(),wins:w.WINS,hp:d.HP,protected:!!d.AIFinishProtected};
+  }
+  for(const side of[0,1]){
+   let{w,d}=await setup(side);const knife=SF2AIRULES.mapping(w).find(m=>w.F.moves[m.index]?.style==='hero-knife');const initial=w.AIHeroWeapon.uid;rows.push({test:'held-knife',side,initial,...finish(w,d,knife)});
+   ({w,d}=await setup(side));SF2AIHeroes.launchKnife(w);const old=SF2AIHeroWeapons.info().find(i=>i.phase==='flight').uid;const upper=SF2AIRULES.mapping(w).find(m=>w.F.moves[m.index]?.style==='hero-uppercut');const flight=finish(w,d,upper);rows.push({test:'preexisting-flight',side,old,...flight});
+   ({w,d}=await setup(side));SF2AIHeroes.launchKnife(w);const prior=SF2AIHeroWeapons.info().find(i=>i.phase==='flight').uid,loose=SF2AIHeroWeapons.info().find(i=>i.phase==='floor'&&i.type===0);w.X=loose.x*256;d.X=(side?40:800)*256;w.FACE=side?0:1;SF2AIHeroWeapons.pickup(w,{keys:24,nw:16,anim:setanim});for(let n=0;n<24;n++)tick();const replacement=SF2AIHeroWeapons.held(w)?.uid;
+   d.X=w.X+(side?-170:170)*256;const replaced=finish(w,d,SF2AIRULES.mapping(w).find(m=>w.F.moves[m.index]?.style==='hero-knife'));rows.push({test:'replacement-held-with-old-flight',side,old:prior,replacement,...replaced});
+   ({w,d}=await setup(side));SF2AIHeroWeapons.disarm(w,side?1:-1);SF2AIHeroWeapons.cancelFlights(w,aiRoom());d.HP=0;FIN.offer(d,{unblocked:true});for(let n=0;n<25;n++)tick();const invalid=SF2AIRULES.mapping(w).filter(m=>['hero-knife','hero-knife-throw'].includes(w.F.moves[m.index]?.style));rows.push({test:'reject-empty-knife',side,hasKnife:SF2AIHeroWeapons.hasKnife(w),accepted:invalid.map(m=>FIN.request(w.i,m,{fresh:true,serial:G.tick})),phase:FIN.info().phase});
+   for(const profile of['haggar','andore']){
+    ({w,d}=await setup(side,profile));const index=profile==='andore'?3:1,choice=SF2AIRULES.mapping(w).find(m=>m.index===index);d.HP=0;FIN.offer(d,{unblocked:true});for(let n=0;n<25;n++)tick();FIN.request(w.i,choice,{fresh:true,serial:G.tick});const phases=[],trajectory=[];let reboundStart=null,reboundPeak=0,reboundEnd=null,lastVy=null;
+    for(let n=0;n<1800&&FIN.active();n++){
+     tick();const s=w.AIHeroGrab||w.AIFFThrow;if(s&&phases.at(-1)!==s.phase){phases.push(s.phase);SF2CECAMERA.latch(P);SF2.render();shots[profile+'-'+side+'-'+s.phase]=c.toDataURL();}
+     if(s?.phase==='rebound'){reboundStart??=w.X/256;reboundPeak=Math.max(reboundPeak,w.Y/256);if(lastVy>0&&w.VY<=0){SF2CECAMERA.latch(P);SF2.render();shots[profile+'-'+side+'-rebound-peak']=c.toDataURL();}lastVy=w.VY;reboundEnd=w.X/256;}
+     if(s)trajectory.push({phase:s.phase,age:s.age,x:w.X/256,y:w.Y/256,victimX:d.X/256,victimY:d.Y/256});
+    }
+    rows.push({test:'real-grab-pile-rebound',side,profile,phase:FIN.info().phase,phases,trajectory,reboundStart,reboundEnd,reboundPeak,wins:w.WINS});
+   }
+   ({w,d}=await setup(side,'haggar'));const hold=SF2AIRULES.mapping(w).find(m=>m.index===2);d.HP=0;FIN.offer(d,{unblocked:true});for(let n=0;n<25;n++)tick();FIN.request(w.i,hold,{fresh:true,serial:G.tick});let inverted=false,jumped=false;for(let n=0;n<1800&&FIN.active();n++){tick();jumped||=w.AIHeroGrab?.phase==='jump';inverted||=!!w.AIHeroGrab?.pile;}rows.push({test:'haggar-manual-hold-pile',side,jumped,inverted,phase:FIN.info().phase,wins:w.WINS});
+  }
+  for(let seed=0;seed<8;seed++){const{w,d}=await setup(1,'cody',true,seed+41);SF2AIHeroWeapons.disarm(w,1);SF2AIHeroWeapons.cancelFlights(w,aiRoom());d.HP=0;FIN.offer(d,{unblocked:true});for(let n=0;n<1800&&FIN.active();n++)tick();const info=FIN.info();rows.push({test:'no-knife-cpu',seed:seed+41,phase:info.phase,style:w.F.moves[info.request?.index]?.style,wins:w.WINS,items:SF2AIHeroWeapons.info()});}
+  return{rows,shots};
+ });
+ for(const[name,data]of Object.entries(result.shots))fs.writeFileSync(artifacts('hero-'+name+'.png'),Buffer.from(data.split(',')[1],'base64'));delete result.shots;fs.writeFileSync(artifacts('heroes.json'),JSON.stringify({result,errors},null,2));
+ const bad=[];for(const r of result.rows){if(r.phase!=='result'&&r.test!=='reject-empty-knife')bad.push(r);if(r.test==='held-knife'&&(r.normalFlight||r.normalThrow||r.heldChanged||r.weaponUID!==r.initial))bad.push(r);if(r.test==='preexisting-flight'&&(r.normalFlight||r.items.find(i=>i.uid===r.old)?.phase==='flight'))bad.push(r);if(r.test==='replacement-held-with-old-flight'&&(r.replacement===undefined||r.weaponUID!==r.replacement||r.normalFlight||r.heldChanged||r.items.find(i=>i.uid===r.old)?.phase==='flight'))bad.push(r);if(r.test==='reject-empty-knife'&&(r.hasKnife||r.accepted.some(Boolean)||r.phase!=='prompt'))bad.push(r);if(r.test==='no-knife-cpu'&&['hero-knife','hero-knife-throw'].includes(r.style))bad.push(r);if(r.test==='real-grab-pile-rebound'&&r.profile==='andore'&&(r.reboundPeak<80||Math.abs(r.reboundEnd-r.reboundStart)<180))bad.push(r);if(r.test==='haggar-manual-hold-pile'&&(!r.jumped||!r.inverted))bad.push(r);if(r.items&&new Set(r.items.map(i=>i.uid)).size!==r.items.length)bad.push(r);}
+ console.log(JSON.stringify({cases:result.rows.length,errors,bad},null,2));assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);await b.close();
+})().catch(e=>{console.error(e);process.exit(1)});
