@@ -2662,11 +2662,11 @@ function audioInit(){if(AC){if(AC.state==='suspended')AC.resume().catch(()=>{});
 
   MG=AC.createGain();MG.gain.value=muted?0:1;MG.connect(AC.destination);window.SF2AIDamnd?.prepareSound(AC);window.SF2AIFF?.prepareSound(AC).catch(()=>{});
 
-  musInit();if(MUS===-1)music(G.scene==='title'?MUSC.title:G.scene==='fight'?STM[G.stage]:MUSC[G.scene]);}
+  window.SF2AIFF?.setMusic(FFMUS,AC,MG);musInit();if(MUS===-1)music(G.scene==='title'?MUSC.title:G.scene==='fight'?STM[G.stage]:MUSC[G.scene]);}
 
 // ---- sound board: the game's own Z80 sound program + YM2151 (ymfm) + OKI in an AudioWorklet, driven by sound commands
 
-let SN=null,SNQ=[],MUS=-1,MUSINIT=0;const LVL=[];
+let SN=null,SNQ=[],MUS=-1,MUSINIT=0,FFMUS=null;const LVL=[];
 
 const b64=s=>{const b=atob(s),r=new Uint8Array(b.length);for(let i=0;i<b.length;i++)r[i]=b.charCodeAt(i);return r;};
 
@@ -2694,7 +2694,7 @@ const STM=[0x01,0x02,0x03,0x05,0x04,0x06,0x07,0x08,0x0c,0x0b,0x09,0x0a];
 
 const MUSC={title:0x16,select:0x0e,vs:0x0f,win:0x14,lose:0x10,cont:0x11,over:0x13,end:0x0d,stop:0xf0};
 
-function music(c){if(c===MUS)return;MUS=c;(G.muslog||(G.muslog=[])).push(c);if(netReplaying)return;if(SN)SN.port.postMessage({c});else SNQ.push({c});}
+function music(c){const ff=aiFFStage()&&c===STM[G.stage]?SF2AIFFData.music.arenas[P[1].aiProfile]:null;if(c===MUS&&ff===FFMUS)return;MUS=c;FFMUS=ff;(G.muslog||(G.muslog=[])).push(c);if(netReplaying)return;window.SF2AIFF?.setMusic(ff,AC,MG);const command=ff?MUSC.stop:c;if(SN)SN.port.postMessage({c:command});else SNQ.push({c:command});}
 
 function snd(id,vol=0.6){(G.sndlog||(G.sndlog=[])).push(id);if(G.sndlog.length>64)G.sndlog.shift();if(netReplaying)return;
 
