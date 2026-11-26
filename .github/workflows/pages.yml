@@ -45,6 +45,10 @@ jobs:
           cp ai-effects/particles-lights.png ai-effects/ryu-skies.png ai-effects/room-extensions.png ai-effects/ryu-roof.png ai-effects/ryu-crest.png ai-effects/cherry-petals.png ai-effects/rose-petals.png ai-effects/cloud-mist.png ai-effects/cloud-bank.png ai-effects/mist-bank.png ai-effects/india-wall.png ai-effects/india-native-top.png ai-effects/china-foreground.png ai-effects/china-far.png _site/ai-effects/
           mkdir -p _site/ai
           cp ai/index.html ai/edition.json _site/ai/
+      - name: Stamp release metadata and browser asset revisions
+        run: |
+          node tests/preview-build.test.cjs
+          node scripts/stamp-preview-build.cjs _site "$GITHUB_SHA"
       - id: pages-artifact
         uses: actions/upload-pages-artifact@v4
         with:

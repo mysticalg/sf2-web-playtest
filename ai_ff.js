@@ -2,7 +2,7 @@
    Sprite/arena provenance and adaptation notes: FF-BOSSES.md. */
 'use strict';
 window.SF2AIFF=(()=>{
- const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[];
+ const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[],assetURL=file=>file+'?v='+(window.SF2BUILD?.commit||'ff-rolento-roll-26');
  const specs={
   sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19,20],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[4,5,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]]]},
@@ -12,16 +12,16 @@ window.SF2AIFF=(()=>{
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
  for(const[id,s]of Object.entries(specs)){
-  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-rolento-roll-26';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
+  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=assetURL(d.image);stage.src=assetURL('ai-ff/'+id+'-stage.png');portraitImage.src=assetURL('ai-ff/'+id+'-profile.png');
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
- const grenadeImage=new Image();grenadeImage.src=SF2AIFFData.rolento.grenades.image;pending.push(grenadeImage.decode());
- const boltImage=new Image();boltImage.src=SF2AIFFData.belger.bolt.image;pending.push(boltImage.decode());
- const bulletImage=new Image();bulletImage.src=SF2AIFFData.edi.bullet.image;pending.push(bulletImage.decode());
- const metro=new Image();metro.src='ai-ff/metro-map.png';pending.push(metro.decode());
+ const grenadeImage=new Image();grenadeImage.src=assetURL(SF2AIFFData.rolento.grenades.image);pending.push(grenadeImage.decode());
+ const boltImage=new Image();boltImage.src=assetURL(SF2AIFFData.belger.bolt.image);pending.push(boltImage.decode());
+ const bulletImage=new Image();bulletImage.src=assetURL(SF2AIFFData.edi.bullet.image);pending.push(bulletImage.decode());
+ const metro=new Image();metro.src=assetURL('ai-ff/metro-map.png');pending.push(metro.decode());
  let audioContext=null,audioReady=null;const soundBuffers=new Map(),soundCounts={played:0,byCommand:{}};
- function prepareSound(ac){if(audioContext===ac&&audioReady)return audioReady;audioContext=ac;soundBuffers.clear();audioReady=Promise.all([0,6,13,16,38,41,44,47].map(async code=>{const response=await fetch('ai-ff/audio/'+code.toString(16).padStart(2,'0')+'.mp3');if(!response.ok)throw Error('Final Fight sound '+code+' unavailable');soundBuffers.set(code,await ac.decodeAudioData(await response.arrayBuffer()));}));return audioReady;}
+ function prepareSound(ac){if(audioContext===ac&&audioReady)return audioReady;audioContext=ac;soundBuffers.clear();audioReady=Promise.all([0,6,13,16,38,41,44,47].map(async code=>{const response=await fetch(assetURL('ai-ff/audio/'+code.toString(16).padStart(2,'0')+'.mp3'));if(!response.ok)throw Error('Final Fight sound '+code+' unavailable');soundBuffers.set(code,await ac.decodeAudioData(await response.arrayBuffer()));}));return audioReady;}
  function playSound(code,ac,dest){if(!ac||!dest)return false;const play=()=>{const buffer=soundBuffers.get(code);if(!buffer)return;const voice=ac.createBufferSource();voice.buffer=buffer;const gain=ac.createGain();gain.gain.value=.7;voice.connect(gain);gain.connect(dest);voice.start();soundCounts.played++;soundCounts.byCommand[code]=(soundCounts.byCommand[code]||0)+1;};if(audioContext!==ac||!soundBuffers.has(code)){prepareSound(ac).then(play).catch(()=>{});return true;}play();return true;}
  const ready=Promise.all(pending),get=id=>packs[id],ids=()=>['damnd','sodom','andore','edi','rolento','abigail','belger'];
  function sequence(p,which,ticks=5){const list=typeof which==='string'?p.data.nativeActions[which]:which;return list.map(e=>Array.isArray(e)?[e[0],Math.max(1,Math.min(120,e[1]))]:[e,ticks]);}
