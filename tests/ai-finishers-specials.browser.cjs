@@ -10,7 +10,7 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
     const w=P[side],d=w.opp;if(profile.id!==null){AICFG.selectedProfiles[side]=null;setfighter(w,profile.id);resetround();G.gph=1;}w.X=(side?480:360)*256;d.X=(side?360:480)*256;w.FACE=side?0:1;d.FACE=side?1:0;w.WINS=1;d.HP=0;
     choices??=SF2AIRULES.mapping(w).filter(m=>m.command!=='rift').filter((m,i,a)=>a.findIndex(n=>n.index===m.index&&(n.command||null)===(m.command||null))===i);
     const choice=choices[choiceIndex];if(!choice)break;
-    const offered=FIN.offer(d,{unblocked:true});for(let t=0;t<25;t++)SF2.step([0,0]);const accepted=FIN.request(w.i,choice,{fresh:true,serial:G.tick});let frames=0,last=null,moves=[];
+    const offered=FIN.offer(d,{unblocked:true});for(let t=0;t<150&&FIN.info().phase!=='prompt';t++)SF2.step([0,0]);const accepted=FIN.request(w.i,choice,{fresh:true,serial:G.tick});let frames=0,last=null,moves=[];
     for(;frames<2100&&FIN.active();frames++){
      SF2.step([0,0]);const m=FIN.nativeMove();if(m&&last!==m.started){moves.push(m);last=m.started;}else if(m)moves[moves.length-1]=m;
     }
@@ -21,6 +21,6 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
  });
  fs.writeFileSync(artifacts('specials.json'),JSON.stringify({rows,errors},null,2));const bad=rows.filter(r=>r.info.phase!=='result'||!r.offered||!r.accepted||r.abort);
  console.log(JSON.stringify({cases:rows.length,errors,bad:bad.map(r=>({side:r.side,profile:r.profile,choice:r.choice,stage:r.info.stage,abort:r.abort,moves:r.moves.map(m=>[m.nativeName,m.contacts])}))},null,2));
- assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);for(const r of rows){assert.equal(r.wins,2);assert.equal(r.hp,0);assert.equal(r.protect,false);assert.deepEqual(r.moves.filter(m=>m.action.kind==='normal').map(m=>m.action.button),[0,1,2,3,4,5]);assert.ok(r.moves.every(m=>m.contacts>0));}
+ assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);for(const r of rows){assert.equal(r.wins,2);assert.equal(r.hp,0);assert.equal(r.protect,false);assert.deepEqual(r.moves.filter(m=>m.action.kind==='normal').map(m=>m.action.button),r.info.normalOrder);assert.equal(r.info.contacts,r.info.targetHits);assert.ok(r.info.contacts>=16&&r.info.contacts<=40);for(let n=0;n+6<=r.info.normalOrder.length;n+=6)assert.deepEqual([...r.info.normalOrder.slice(n,n+6)].sort(),[0,1,2,3,4,5]);assert.ok(r.moves.every(m=>m.contacts>0));}
  await browser.close();
 })().catch(e=>{console.error(e);process.exit(1)});
