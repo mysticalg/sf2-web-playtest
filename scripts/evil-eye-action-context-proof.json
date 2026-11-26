@@ -1,0 +1,5512 @@
+[
+  {
+    "base": "ryu",
+    "frame": 16,
+    "mask": [
+      [
+        18,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      942,
+      0,
+      57,
+      69,
+      -32,
+      -66
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        18,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        19,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "crouch",
+      "standup"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 19,
+    "mask": [
+      [
+        26,
+        13,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      118,
+      94,
+      56,
+      104,
+      -24,
+      -107
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        26,
+        13,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        27,
+        13,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "jumpn",
+      "biteland"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 22,
+    "mask": [
+      [
+        9,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      281,
+      94,
+      48,
+      70,
+      -20,
+      -101
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        9,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        10,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "jumpn",
+      "jP",
+      "jK",
+      "jMP",
+      "jHP",
+      "jMK",
+      "jHK",
+      "uMP",
+      "uHP",
+      "uLK",
+      "uMK",
+      "biteland"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 24,
+    "mask": [
+      [
+        25,
+        19,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      379,
+      94,
+      55,
+      109,
+      -23,
+      -113
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        25,
+        19,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        26,
+        19,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "jumpn",
+      "jumpf",
+      "jP",
+      "jK",
+      "jMP",
+      "jHP",
+      "jMK",
+      "jHK",
+      "uMP",
+      "uHP",
+      "uLK",
+      "uMK",
+      "uHK",
+      "biteland"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 31,
+    "mask": [
+      [
+        23,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      907,
+      94,
+      64,
+      91,
+      -32,
+      -88
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        23,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        24,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 33,
+    "mask": [
+      [
+        24,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      93,
+      204,
+      60,
+      94,
+      -32,
+      -91
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        24,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        25,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sMP",
+      "sHP",
+      "sLK",
+      "sMK",
+      "nLP",
+      "nMP",
+      "nHP",
+      "nLK",
+      "nHK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 34,
+    "mask": [
+      [
+        25,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      154,
+      204,
+      74,
+      95,
+      -45,
+      -92
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        25,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        26,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sMP",
+      "sHP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 37,
+    "mask": [
+      [
+        91,
+        11,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      405,
+      204,
+      114,
+      94,
+      -46,
+      -95
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        91,
+        11,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        92,
+        11,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLK",
+      "sMK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 43,
+    "mask": [
+      [
+        22,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      300,
+      69,
+      61,
+      -44,
+      -58
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        22,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        23,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 45,
+    "mask": [
+      [
+        17,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      166,
+      300,
+      64,
+      61,
+      -39,
+      -58
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        17,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        18,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cMP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 46,
+    "mask": [
+      [
+        17,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      231,
+      300,
+      66,
+      61,
+      -41,
+      -58
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        17,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        18,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cMP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 51,
+    "mask": [
+      [
+        28,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      584,
+      300,
+      70,
+      64,
+      -44,
+      -60
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        28,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        29,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLK",
+      "cMK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 53,
+    "mask": [
+      [
+        67,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      768,
+      300,
+      97,
+      60,
+      -82,
+      -55
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        67,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        68,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cMK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 55,
+    "mask": [
+      [
+        21,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      427,
+      52,
+      60,
+      -40,
+      -57
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        21,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        22,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 87,
+    "mask": [
+      [
+        31,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      430,
+      637,
+      106,
+      77,
+      -83,
+      -76
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        31,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        32,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 117,
+    "mask": [
+      [
+        31,
+        11,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      500,
+      866,
+      66,
+      98,
+      -40,
+      -95
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        31,
+        11,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        32,
+        11,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nLP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 121,
+    "mask": [
+      [
+        9,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      774,
+      866,
+      66,
+      93,
+      -38,
+      -91
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        9,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        10,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nHP"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 124,
+    "mask": [
+      [
+        18,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      980,
+      48,
+      94,
+      -42,
+      -91
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        18,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        19,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nLK",
+      "nHK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 125,
+    "mask": [
+      [
+        52,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      49,
+      980,
+      80,
+      93,
+      -83,
+      -90
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        52,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        53,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nLK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 127,
+    "mask": [
+      [
+        25,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      195,
+      980,
+      53,
+      102,
+      -60,
+      -99
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        25,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        26,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nMK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 128,
+    "mask": [
+      [
+        24,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      249,
+      980,
+      54,
+      94,
+      -48,
+      -91
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        24,
+        9,
+        170,
+        187,
+        187,
+        255
+      ],
+      [
+        25,
+        9,
+        136,
+        153,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nHK"
+    ]
+  },
+  {
+    "base": "ryu",
+    "frame": 143,
+    "mask": [
+      [
+        47,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      363,
+      1103,
+      74,
+      69,
+      -25,
+      -66
+    ],
+    "sourcePNGsha256": "64ba9885beffb4ba83a5b35bb31db7a6c2e6eed5202691f2a26a2a3d2f5341e3",
+    "sourceEyeRGBA": [
+      [
+        47,
+        9,
+        136,
+        153,
+        153,
+        255
+      ],
+      [
+        48,
+        9,
+        170,
+        187,
+        187,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          408,
+          1110,
+          6,
+          5
+        ],
+        "contextRGBAsha256": "43efdb6161a14246bda5702e991b318bcad0e69c1357c076bad67935dc26ed08"
+      },
+      {
+        "seed": 18,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          409,
+          1110,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "94c5e6490333cf9b8fe698fb914350ce88634641894adef957f949b6b54d5b44"
+      }
+    ],
+    "animationNames": [
+      "throwk"
+    ]
+  },
+  {
+    "base": "ken",
+    "frame": 172,
+    "mask": [
+      [
+        38,
+        9,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      847,
+      1290,
+      59,
+      90,
+      -33,
+      -87
+    ],
+    "sourcePNGsha256": "885cabb7c016821fde38f724e4c0bc6df458c36d5c1df49ff8c66bfe8651ac63",
+    "sourceEyeRGBA": [
+      [
+        38,
+        9,
+        238,
+        238,
+        255,
+        255
+      ],
+      [
+        39,
+        9,
+        238,
+        238,
+        255,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          881,
+          1296,
+          10,
+          7
+        ],
+        "contextRGBAsha256": "ccec57944ae5fc7a1bf75465af0a4c70962ec36db9aba32ff67e297d948707bf"
+      }
+    ],
+    "animationNames": [
+      "ken-turn-standing"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 29,
+    "mask": [
+      [
+        26,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      163,
+      209,
+      71,
+      91,
+      -48,
+      -88
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        26,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLP",
+      "nLP"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 31,
+    "mask": [
+      [
+        34,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      338,
+      209,
+      79,
+      91,
+      -56,
+      -88
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        34,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLP",
+      "nLP"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 32,
+    "mask": [
+      [
+        18,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      418,
+      209,
+      98,
+      78,
+      -81,
+      -75
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        18,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          434,
+          217,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6efd2689dd2497657a7115db195f9fa9eaa4887fba10145c05c64a78e8212709"
+      }
+    ],
+    "animationNames": [
+      "sMP"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 60,
+    "mask": [
+      [
+        40,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      735,
+      425,
+      89,
+      60,
+      -61,
+      -55
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        40,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          773,
+          433,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6efd2689dd2497657a7115db195f9fa9eaa4887fba10145c05c64a78e8212709"
+      }
+    ],
+    "animationNames": [
+      "cMP"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 74,
+    "mask": [
+      [
+        59,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      108,
+      671,
+      90,
+      61,
+      -77,
+      -63
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        59,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cMK",
+      "cHK"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 109,
+    "mask": [
+      [
+        21,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      71,
+      979,
+      56,
+      91,
+      -47,
+      -88
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        21,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          90,
+          987,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6efd2689dd2497657a7115db195f9fa9eaa4887fba10145c05c64a78e8212709"
+      }
+    ],
+    "animationNames": [
+      "sho",
+      "sho",
+      "sho",
+      "uLK",
+      "uMK"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 110,
+    "mask": [
+      [
+        14,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      128,
+      979,
+      54,
+      67,
+      -41,
+      -87
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        14,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          140,
+          987,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6efd2689dd2497657a7115db195f9fa9eaa4887fba10145c05c64a78e8212709"
+      }
+    ],
+    "animationNames": [
+      "sho",
+      "sho",
+      "sho"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 124,
+    "mask": [
+      [
+        59,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      512,
+      1092,
+      90,
+      63,
+      -51,
+      -92
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        59,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 74,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          567,
+          1099,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "a8162a4fb5c293f4bb6add12e03fc3234e7a9e80627a4cef35da49666c419be9"
+      }
+    ],
+    "animationNames": [
+      "jK",
+      "jHK",
+      "uHK"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 130,
+    "mask": [
+      [
+        49,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      80,
+      1185,
+      100,
+      92,
+      -69,
+      -89
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        49,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          127,
+          1193,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6efd2689dd2497657a7115db195f9fa9eaa4887fba10145c05c64a78e8212709"
+      }
+    ],
+    "animationNames": [
+      "nMP"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 139,
+    "mask": [
+      [
+        21,
+        10,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      754,
+      1185,
+      56,
+      105,
+      -41,
+      -106
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        21,
+        10,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          773,
+          1193,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6efd2689dd2497657a7115db195f9fa9eaa4887fba10145c05c64a78e8212709"
+      }
+    ],
+    "animationNames": [
+      "nMK"
+    ]
+  },
+  {
+    "base": "guile",
+    "frame": 161,
+    "mask": [
+      [
+        59,
+        52,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      729,
+      1423,
+      90,
+      63,
+      -50,
+      -108
+    ],
+    "sourcePNGsha256": "896373b1c6b5a5a612bd6eb38c2ac342d7d44f2763f522da05d891645ee05cfe",
+    "sourceEyeRGBA": [
+      [
+        59,
+        52,
+        0,
+        119,
+        221,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 74,
+        "rotation": 2,
+        "mirrored": true,
+        "sourceContext": [
+          784,
+          1472,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "18e19bfe22fbc3045f95e9153fcbcf1d2dec03d8c84d64e0a3df7d48b0ef276a"
+      }
+    ],
+    "animationNames": [
+      "fHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 27,
+    "mask": [
+      [
+        25,
+        93,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      957,
+      92,
+      52,
+      104,
+      -24,
+      -135
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        25,
+        93,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 2,
+        "mirrored": true,
+        "sourceContext": [
+          980,
+          183,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "34c05bf2e07457b40575ed4db3121a116fd3284c55ad06739daabeb995e89914"
+      }
+    ],
+    "animationNames": [
+      "jumpf",
+      "jumpb",
+      "bitetoss"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 32,
+    "mask": [
+      [
+        53,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      406,
+      203,
+      101,
+      89,
+      -66,
+      -87
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        53,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLP"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 40,
+    "mask": [
+      [
+        35,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      353,
+      300,
+      66,
+      89,
+      -43,
+      -89
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        35,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLK",
+      "sMK",
+      "hado",
+      "hado",
+      "hado",
+      "nHK",
+      "legs0",
+      "legs1",
+      "legs2",
+      "legsland0",
+      "legsland1",
+      "legsland2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 43,
+    "mask": [
+      [
+        82,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      599,
+      300,
+      109,
+      95,
+      -85,
+      -93
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        82,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sMK",
+      "nHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 62,
+    "mask": [
+      [
+        66,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      474,
+      496,
+      77,
+      63,
+      -63,
+      -60
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        66,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          536,
+          504,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "9904a3aa5f56715eea3aa3d8256e1a8aa1cfdafaa6f78e814faed6c4aa924afb"
+      }
+    ],
+    "animationNames": [
+      "cMK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 86,
+    "mask": [
+      [
+        65,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      747,
+      657,
+      106,
+      60,
+      -54,
+      -47
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        65,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          808,
+          665,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "getup",
+      "ceDizzy40_0"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 88,
+    "mask": [
+      [
+        36,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      928,
+      657,
+      68,
+      97,
+      -32,
+      -94
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        36,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          960,
+          665,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "26154e16605f01ffe2ce4cafd2a1b48e4dde83cd13689a62e363699d20c7a126"
+      }
+    ],
+    "animationNames": [
+      "win",
+      "win2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 92,
+    "mask": [
+      [
+        80,
+        15,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      207,
+      755,
+      107,
+      99,
+      -87,
+      -97
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        80,
+        15,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          283,
+          767,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 93,
+    "mask": [
+      [
+        96,
+        19,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      315,
+      755,
+      123,
+      103,
+      -103,
+      -101
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        96,
+        19,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          407,
+          771,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 94,
+    "mask": [
+      [
+        92,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      439,
+      755,
+      119,
+      95,
+      -99,
+      -93
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        92,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          527,
+          763,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 95,
+    "mask": [
+      [
+        109,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      559,
+      755,
+      136,
+      95,
+      -116,
+      -93
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        109,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          664,
+          763,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 96,
+    "mask": [
+      [
+        92,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      696,
+      755,
+      121,
+      93,
+      -101,
+      -91
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        92,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          784,
+          763,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 97,
+    "mask": [
+      [
+        125,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      818,
+      755,
+      152,
+      95,
+      -132,
+      -93
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        125,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          939,
+          763,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 98,
+    "mask": [
+      [
+        73,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      859,
+      102,
+      93,
+      -82,
+      -91
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        73,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          69,
+          867,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado",
+      "legs0",
+      "legs1",
+      "legs2"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 103,
+    "mask": [
+      [
+        25,
+        93,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      472,
+      859,
+      55,
+      122,
+      -23,
+      -136
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        25,
+        93,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 2,
+        "mirrored": true,
+        "sourceContext": [
+          495,
+          950,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "34c05bf2e07457b40575ed4db3121a116fd3284c55ad06739daabeb995e89914"
+      }
+    ],
+    "animationNames": [
+      "tats",
+      "tat",
+      "tat",
+      "tat",
+      "birdstart"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 105,
+    "mask": [
+      [
+        10,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      584,
+      859,
+      53,
+      74,
+      -26,
+      -94
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        10,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          590,
+          867,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "jP",
+      "jLP",
+      "jMP",
+      "jHP"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 110,
+    "mask": [
+      [
+        24,
+        17,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      925,
+      859,
+      63,
+      99,
+      -37,
+      -110
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        24,
+        17,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          947,
+          874,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6471190adcb133ac7613c1edfa3e98d7d53f307bb289496b9089f3e62865ae9c"
+      }
+    ],
+    "animationNames": [
+      "jK",
+      "jHK",
+      "uLK",
+      "uMK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 111,
+    "mask": [
+      [
+        54,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      982,
+      86,
+      93,
+      -67,
+      -104
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        54,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          50,
+          990,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "jK",
+      "jHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 112,
+    "mask": [
+      [
+        26,
+        18,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      87,
+      982,
+      62,
+      99,
+      -43,
+      -112
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        26,
+        18,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          109,
+          997,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "jK",
+      "jHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 123,
+    "mask": [
+      [
+        40,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      106,
+      1082,
+      85,
+      86,
+      -51,
+      -84
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        40,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          144,
+          1091,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "922a64af7b10a947ff70ba837206963f413c3f214c5da5abf6f98ada48bb2149"
+      }
+    ],
+    "animationNames": [
+      "nHP"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 124,
+    "mask": [
+      [
+        41,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      192,
+      1082,
+      101,
+      83,
+      -67,
+      -81
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        41,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          229,
+          1090,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "nHP"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 125,
+    "mask": [
+      [
+        40,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      294,
+      1082,
+      96,
+      98,
+      -65,
+      -95
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        40,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          330,
+          1090,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "nLK",
+      "uHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 126,
+    "mask": [
+      [
+        32,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      391,
+      1082,
+      86,
+      96,
+      -63,
+      -94
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        32,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          419,
+          1090,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "nLK",
+      "uHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 127,
+    "mask": [
+      [
+        20,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      478,
+      1082,
+      62,
+      96,
+      -71,
+      -94
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        20,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          496,
+          1091,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "922a64af7b10a947ff70ba837206963f413c3f214c5da5abf6f98ada48bb2149"
+      }
+    ],
+    "animationNames": [
+      "nLK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 128,
+    "mask": [
+      [
+        40,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      541,
+      1082,
+      96,
+      98,
+      -65,
+      -95
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        40,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          577,
+          1090,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "nMK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 129,
+    "mask": [
+      [
+        32,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      638,
+      1082,
+      86,
+      96,
+      -64,
+      -94
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        32,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          666,
+          1090,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "228c1a6bf388ae283a52a269056691332d76fe0caaadbb907dc7ff1d06f28fba"
+      }
+    ],
+    "animationNames": [
+      "nMK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 131,
+    "mask": [
+      [
+        24,
+        17,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      813,
+      1082,
+      64,
+      103,
+      -75,
+      -101
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        24,
+        17,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          835,
+          1097,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "6471190adcb133ac7613c1edfa3e98d7d53f307bb289496b9089f3e62865ae9c"
+      }
+    ],
+    "animationNames": [
+      "nMK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 135,
+    "mask": [
+      [
+        23,
+        25,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      112,
+      1186,
+      66,
+      89,
+      -39,
+      -109
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        23,
+        25,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "uLP",
+      "uMP",
+      "uHP"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 136,
+    "mask": [
+      [
+        10,
+        25,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      179,
+      1186,
+      53,
+      90,
+      -26,
+      -110
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        10,
+        25,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "uLP",
+      "uMP",
+      "uHP"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 142,
+    "mask": [
+      [
+        31,
+        81,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      706,
+      1186,
+      86,
+      93,
+      -43,
+      -150
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        31,
+        81,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 2,
+        "mirrored": false,
+        "sourceContext": [
+          733,
+          1264,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "9118bfebff43323241a3047a3407fef288d16fb8ad85cf5cdf8cc71ad4c6815f"
+      }
+    ],
+    "animationNames": [
+      "uHK"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 144,
+    "mask": [
+      [
+        25,
+        93,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      895,
+      1186,
+      55,
+      115,
+      -24,
+      -135
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        25,
+        93,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 2,
+        "mirrored": true,
+        "sourceContext": [
+          918,
+          1277,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "34c05bf2e07457b40575ed4db3121a116fd3284c55ad06739daabeb995e89914"
+      }
+    ],
+    "animationNames": [
+      "throwk"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 163,
+    "mask": [
+      [
+        20,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      451,
+      1431,
+      62,
+      100,
+      -28,
+      -106
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        20,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 3,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          469,
+          1440,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "922a64af7b10a947ff70ba837206963f413c3f214c5da5abf6f98ada48bb2149"
+      }
+    ],
+    "animationNames": [
+      "stompn",
+      "stompd"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 167,
+    "mask": [
+      [
+        68,
+        58,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      773,
+      1431,
+      146,
+      69,
+      -63,
+      -93
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        68,
+        58,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 2,
+        "mirrored": false,
+        "sourceContext": [
+          839,
+          1487,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "9eefefd83d325b23e875f663af702d2632fd13c3b88105579dc57e870d0d04d7"
+      }
+    ],
+    "animationNames": [
+      "bird0_0",
+      "bird0_1",
+      "bird0_2",
+      "bird0_3",
+      "bird1_0",
+      "bird1_1",
+      "bird1_2",
+      "bird1_3",
+      "bird2_0",
+      "bird2_1",
+      "bird2_2",
+      "bird2_3"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 171,
+    "mask": [
+      [
+        77,
+        58,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      136,
+      1548,
+      146,
+      69,
+      -67,
+      -93
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        77,
+        58,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 2,
+        "mirrored": true,
+        "sourceContext": [
+          211,
+          1604,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "34c05bf2e07457b40575ed4db3121a116fd3284c55ad06739daabeb995e89914"
+      }
+    ],
+    "animationNames": [
+      "bird0_0",
+      "bird0_1",
+      "bird0_2",
+      "bird0_3",
+      "bird0_4",
+      "bird0_5",
+      "bird0_6",
+      "bird0_7",
+      "bird1_0",
+      "bird1_1",
+      "bird1_2",
+      "bird1_3",
+      "bird1_4",
+      "bird1_5",
+      "bird1_6",
+      "bird1_7",
+      "bird2_0",
+      "bird2_1",
+      "bird2_2",
+      "bird2_3",
+      "bird2_4",
+      "bird2_5",
+      "bird2_6",
+      "bird2_7"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 172,
+    "mask": [
+      [
+        29,
+        93,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      283,
+      1548,
+      55,
+      122,
+      -32,
+      -136
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        29,
+        93,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 2,
+        "mirrored": false,
+        "sourceContext": [
+          310,
+          1639,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "9eefefd83d325b23e875f663af702d2632fd13c3b88105579dc57e870d0d04d7"
+      }
+    ],
+    "animationNames": [
+      "birdland"
+    ]
+  },
+  {
+    "base": "chun-li",
+    "frame": 177,
+    "mask": [
+      [
+        19,
+        11,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      716,
+      1548,
+      47,
+      110,
+      -21,
+      -108
+    ],
+    "sourcePNGsha256": "c85ac6099a51d05217bba93139f29df914df0d367adefe807771989768daec2e",
+    "sourceEyeRGBA": [
+      [
+        19,
+        11,
+        0,
+        0,
+        0,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 20,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          731,
+          1556,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "f8e1f1e0f30bcd99a4d96d119a948ca58266283b4d9468cc56c7f559dfb7ced6"
+      }
+    ],
+    "animationNames": [
+      "birdland"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 26,
+    "mask": [
+      [
+        35,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      367,
+      121,
+      84,
+      -70,
+      -79
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        35,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 24,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          33,
+          379,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "23c682df1f5167ee6c9cf60f67ab99e0306815a3881674a904887b44d6f4b1fd"
+      }
+    ],
+    "animationNames": [
+      "sMP",
+      "nMP"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 32,
+    "mask": [
+      [
+        27,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      763,
+      367,
+      102,
+      88,
+      -57,
+      -91
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        27,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLK",
+      "sMK",
+      "sHK",
+      "nHK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 38,
+    "mask": [
+      [
+        35,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      526,
+      486,
+      128,
+      67,
+      -80,
+      -62
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        35,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 24,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          559,
+          498,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "23c682df1f5167ee6c9cf60f67ab99e0306815a3881674a904887b44d6f4b1fd"
+      }
+    ],
+    "animationNames": [
+      "cMP"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 40,
+    "mask": [
+      [
+        48,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      805,
+      486,
+      123,
+      74,
+      -78,
+      -69
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        48,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          851,
+          498,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "48251a29c2e365bf8c3c7d755721e9ba49c87be71ad922750ac69feb865e5517"
+      }
+    ],
+    "animationNames": [
+      "cHP"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 41,
+    "mask": [
+      [
+        68,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      567,
+      155,
+      67,
+      -116,
+      -62
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        68,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          66,
+          579,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "48251a29c2e365bf8c3c7d755721e9ba49c87be71ad922750ac69feb865e5517"
+      }
+    ],
+    "animationNames": [
+      "cHP"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 44,
+    "mask": [
+      [
+        48,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      412,
+      567,
+      108,
+      74,
+      -55,
+      -68
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        48,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLK",
+      "cMK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 45,
+    "mask": [
+      [
+        62,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      521,
+      567,
+      118,
+      72,
+      -62,
+      -66
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        62,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLK",
+      "cMK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 46,
+    "mask": [
+      [
+        92,
+        16,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      640,
+      567,
+      146,
+      71,
+      -88,
+      -65
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        92,
+        16,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLK",
+      "cMK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 47,
+    "mask": [
+      [
+        49,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      787,
+      567,
+      109,
+      74,
+      -56,
+      -68
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        49,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 32,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          832,
+          578,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "ae8392214a0a24ac626f235fcdad76aa6b54fbe8ca03ff107065e084f2558e3f"
+      }
+    ],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 49,
+    "mask": [
+      [
+        73,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      141,
+      642,
+      82,
+      75,
+      -24,
+      -66
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        73,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 32,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          210,
+          653,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "bba71450d93d25f39188db6977e6c4235e82248307f42b2cb9b8e27e9c5cf18a"
+      }
+    ],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 51,
+    "mask": [
+      [
+        19,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      334,
+      642,
+      93,
+      73,
+      -16,
+      -69
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        19,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 32,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          349,
+          653,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "ae8392214a0a24ac626f235fcdad76aa6b54fbe8ca03ff107065e084f2558e3f"
+      }
+    ],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 60,
+    "mask": [
+      [
+        36,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      212,
+      742,
+      95,
+      80,
+      -44,
+      -72
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        36,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 0,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          246,
+          754,
+          5,
+          5
+        ],
+        "contextRGBAsha256": "48251a29c2e365bf8c3c7d755721e9ba49c87be71ad922750ac69feb865e5517"
+      }
+    ],
+    "animationNames": [
+      "blockC",
+      "ceReaction22_0",
+      "ceReaction22_1",
+      "ceReaction24_1",
+      "ceReaction32_0",
+      "ceReaction32_1",
+      "ceReaction32_2"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 82,
+    "mask": [
+      [
+        105,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      104,
+      1043,
+      148,
+      80,
+      -91,
+      -120
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        105,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 32,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          205,
+          1054,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "ae8392214a0a24ac626f235fcdad76aa6b54fbe8ca03ff107065e084f2558e3f"
+      }
+    ],
+    "animationNames": [
+      "jK",
+      "jHK",
+      "uLK",
+      "uMK",
+      "uHK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 86,
+    "mask": [
+      [
+        37,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      582,
+      1043,
+      116,
+      92,
+      -63,
+      -86
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        37,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 32,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          615,
+          1054,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "ae8392214a0a24ac626f235fcdad76aa6b54fbe8ca03ff107065e084f2558e3f"
+      }
+    ],
+    "animationNames": [
+      "nLK",
+      "nMK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 87,
+    "mask": [
+      [
+        60,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      699,
+      1043,
+      155,
+      78,
+      -96,
+      -73
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        60,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 32,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          755,
+          1054,
+          9,
+          7
+        ],
+        "contextRGBAsha256": "ae8392214a0a24ac626f235fcdad76aa6b54fbe8ca03ff107065e084f2558e3f"
+      }
+    ],
+    "animationNames": [
+      "nLK",
+      "nMK"
+    ]
+  },
+  {
+    "base": "honda",
+    "frame": 88,
+    "mask": [
+      [
+        16,
+        14,
+        1,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      855,
+      1043,
+      70,
+      100,
+      -47,
+      -103
+    ],
+    "sourcePNGsha256": "c074b758b49d38f1d5e71b456d48b1e875caa47cfa25fe8e9dcd9a00b2605c80",
+    "sourceEyeRGBA": [
+      [
+        16,
+        14,
+        255,
+        221,
+        153,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "nHK"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 24,
+    "mask": [
+      [
+        17,
+        18,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      71,
+      221,
+      70,
+      85,
+      -47,
+      -101
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        17,
+        18,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        18,
+        18,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        19,
+        18,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 21,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          86,
+          237,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "129abc2f303a2d299842f78a89cfdaa4fa0000503847ddd3c174b32ae2a0742f"
+      }
+    ],
+    "animationNames": [
+      "jumpn",
+      "jumpf",
+      "jumpb"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 25,
+    "mask": [
+      [
+        13,
+        19,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      142,
+      221,
+      73,
+      74,
+      -48,
+      -98
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        13,
+        19,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        14,
+        19,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        15,
+        19,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 21,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          153,
+          238,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "129abc2f303a2d299842f78a89cfdaa4fa0000503847ddd3c174b32ae2a0742f"
+      }
+    ],
+    "animationNames": [
+      "jumpn",
+      "jumpf",
+      "jumpb"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 31,
+    "mask": [
+      [
+        32,
+        15,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      736,
+      221,
+      109,
+      97,
+      -77,
+      -93
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        32,
+        15,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        33,
+        15,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        34,
+        15,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sLP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 35,
+    "mask": [
+      [
+        27,
+        15,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      252,
+      353,
+      103,
+      93,
+      -73,
+      -89
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        27,
+        15,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        28,
+        15,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        29,
+        15,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 31,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          275,
+          365,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "627a5a3bfef3e28b4d99c21bb1111f17b4c0f2224333c3df8fe042d5660d0151"
+      }
+    ],
+    "animationNames": [
+      "sMP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 39,
+    "mask": [
+      [
+        28,
+        14,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      694,
+      353,
+      81,
+      97,
+      -45,
+      -93
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        28,
+        14,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        29,
+        14,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        30,
+        14,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 29,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          720,
+          365,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "5f1148f8cf9eda878ac605488bbe1cca2b5199afd96c3ff9cf63a383133f0ca5"
+      }
+    ],
+    "animationNames": [
+      "sLK"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 48,
+    "mask": [
+      [
+        35,
+        77,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      701,
+      472,
+      88,
+      128,
+      -45,
+      -123
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        35,
+        77,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        36,
+        77,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        37,
+        77,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sHK",
+      "nHK",
+      "bitefinish",
+      "bitetoss"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 49,
+    "mask": [
+      [
+        18,
+        48,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      790,
+      472,
+      138,
+      99,
+      -44,
+      -94
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        18,
+        48,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        19,
+        48,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        20,
+        48,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sHK",
+      "nHK",
+      "bitefinish",
+      "bitetoss"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 50,
+    "mask": [
+      [
+        4,
+        27,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      601,
+      103,
+      70,
+      -44,
+      -72
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        4,
+        27,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        5,
+        27,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        6,
+        27,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "sHK",
+      "nHK",
+      "bitefinish",
+      "bitetoss"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 51,
+    "mask": [
+      [
+        27,
+        17,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      104,
+      601,
+      110,
+      57,
+      -80,
+      -54
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        27,
+        17,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        28,
+        17,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        29,
+        17,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 52,
+    "mask": [
+      [
+        60,
+        18,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      215,
+      601,
+      155,
+      51,
+      -126,
+      -47
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        60,
+        18,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        61,
+        18,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        62,
+        18,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [],
+    "animationNames": [
+      "cLP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 55,
+    "mask": [
+      [
+        21,
+        18,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      599,
+      601,
+      140,
+      63,
+      -117,
+      -59
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        21,
+        18,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        22,
+        18,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        23,
+        18,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 29,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          618,
+          617,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "5f1148f8cf9eda878ac605488bbe1cca2b5199afd96c3ff9cf63a383133f0ca5"
+      }
+    ],
+    "animationNames": [
+      "cMP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 64,
+    "mask": [
+      [
+        54,
+        15,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      783,
+      672,
+      72,
+      81,
+      -45,
+      -82
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        54,
+        15,
+        170,
+        170,
+        204,
+        255
+      ],
+      [
+        55,
+        15,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        56,
+        15,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 29,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          833,
+          684,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "338c9bc7a646cded7b87640069191c748a3559fac942ea7e34830f78e061a6d7"
+      }
+    ],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 65,
+    "mask": [
+      [
+        74,
+        15,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      856,
+      672,
+      91,
+      76,
+      -65,
+      -76
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        74,
+        15,
+        170,
+        170,
+        204,
+        255
+      ],
+      [
+        75,
+        15,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        76,
+        15,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 29,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          926,
+          684,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "338c9bc7a646cded7b87640069191c748a3559fac942ea7e34830f78e061a6d7"
+      }
+    ],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 66,
+    "mask": [
+      [
+        136,
+        15,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      0,
+      757,
+      161,
+      69,
+      -125,
+      -70
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        136,
+        15,
+        170,
+        170,
+        204,
+        255
+      ],
+      [
+        137,
+        15,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        138,
+        15,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 29,
+        "rotation": 0,
+        "mirrored": true,
+        "sourceContext": [
+          132,
+          769,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "338c9bc7a646cded7b87640069191c748a3559fac942ea7e34830f78e061a6d7"
+      }
+    ],
+    "animationNames": [
+      "cHK"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 76,
+    "mask": [
+      [
+        12,
+        22,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      81,
+      859,
+      87,
+      53,
+      -53,
+      -49
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        12,
+        22,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        13,
+        22,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        14,
+        22,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 21,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          91,
+          879,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "129abc2f303a2d299842f78a89cfdaa4fa0000503847ddd3c174b32ae2a0742f"
+      }
+    ],
+    "animationNames": [
+      "blockC",
+      "ceReaction22_0",
+      "ceReaction24_0",
+      "ceReaction24_1"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 95,
+    "mask": [
+      [
+        40,
+        40,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      181,
+      1055,
+      136,
+      87,
+      -77,
+      -82
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        40,
+        40,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        41,
+        40,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        42,
+        40,
+        119,
+        119,
+        136,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 21,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          219,
+          1093,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "129abc2f303a2d299842f78a89cfdaa4fa0000503847ddd3c174b32ae2a0742f"
+      }
+    ],
+    "animationNames": [
+      "hado",
+      "hado",
+      "hado"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 107,
+    "mask": [
+      [
+        36,
+        26,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      296,
+      1143,
+      98,
+      85,
+      -73,
+      -105
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        36,
+        26,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        37,
+        26,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        38,
+        26,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 29,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          330,
+          1167,
+          7,
+          5
+        ],
+        "contextRGBAsha256": "5f1148f8cf9eda878ac605488bbe1cca2b5199afd96c3ff9cf63a383133f0ca5"
+      }
+    ],
+    "animationNames": [
+      "jP",
+      "jHP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 108,
+    "mask": [
+      [
+        4,
+        26,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      395,
+      1143,
+      72,
+      89,
+      -46,
+      -103
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        4,
+        26,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        5,
+        26,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        6,
+        26,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 48,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          395,
+          1166,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "38d143ef0e629839ed56f893461796eb40ad0a82e5770bf3d92ba74b5993450d"
+      }
+    ],
+    "animationNames": [
+      "jP",
+      "jHP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 116,
+    "mask": [
+      [
+        48,
+        12,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      256,
+      1261,
+      111,
+      94,
+      -79,
+      -91
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        48,
+        12,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        49,
+        12,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        50,
+        12,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 31,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          300,
+          1270,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "627a5a3bfef3e28b4d99c21bb1111f17b4c0f2224333c3df8fe042d5660d0151"
+      }
+    ],
+    "animationNames": [
+      "nLP"
+    ]
+  },
+  {
+    "base": "blanka",
+    "frame": 119,
+    "mask": [
+      [
+        44,
+        12,
+        3,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      654,
+      1261,
+      107,
+      94,
+      -75,
+      -91
+    ],
+    "sourcePNGsha256": "21f519527977b6fc6dbd2d736a56bca0d0301e1a8a8a929af9ebce37c8a6e550",
+    "sourceEyeRGBA": [
+      [
+        44,
+        12,
+        119,
+        119,
+        136,
+        255
+      ],
+      [
+        45,
+        12,
+        255,
+        255,
+        204,
+        255
+      ],
+      [
+        46,
+        12,
+        170,
+        170,
+        204,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Visually inspected full native pose and 5x before/after eye crop; exact character-specific RGBA context match only proposes candidates. No runtime matching or headbox placement.",
+    "matchingContext": [
+      {
+        "seed": 31,
+        "rotation": 0,
+        "mirrored": false,
+        "sourceContext": [
+          694,
+          1270,
+          11,
+          7
+        ],
+        "contextRGBAsha256": "627a5a3bfef3e28b4d99c21bb1111f17b4c0f2224333c3df8fe042d5660d0151"
+      }
+    ],
+    "animationNames": [
+      "nMP"
+    ]
+  },
+  {
+    "base": "sodom",
+    "frame": 18,
+    "mask": [
+      [
+        47,
+        38,
+        1,
+        1
+      ],
+      [
+        46,
+        39,
+        1,
+        1
+      ],
+      [
+        54,
+        39,
+        1,
+        1
+      ],
+      [
+        52,
+        40,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      489,
+      120,
+      108,
+      130,
+      -64,
+      -127
+    ],
+    "sourcePNGsha256": "fd72dba428ce962a2ca02b79d34e5f775e350e4186cfe3d5417840aaa6057f02",
+    "sourceEyeRGBA": [
+      [
+        47,
+        38,
+        187,
+        221,
+        255,
+        255
+      ],
+      [
+        46,
+        39,
+        255,
+        238,
+        187,
+        255
+      ],
+      [
+        54,
+        39,
+        187,
+        221,
+        255,
+        255
+      ],
+      [
+        52,
+        40,
+        187,
+        221,
+        255,
+        255
+      ],
+      [
+        53,
+        40,
+        255,
+        255,
+        255,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Original pale oni-mask eye pixels retain the reviewed source3 shape translated(+12,+15); no forehead/mouthguard fill.",
+    "referenceFrame": 3,
+    "semanticReview": "Viewed original full pose and enlarged source-mask head crop."
+  },
+  {
+    "base": "abigail",
+    "frame": 35,
+    "mask": [
+      [
+        79,
+        8,
+        2,
+        1
+      ]
+    ],
+    "sourceFrameRect": [
+      216,
+      707,
+      117,
+      92,
+      -78,
+      -89
+    ],
+    "sourcePNGsha256": "e8cce1fc7a46630a0a3d9167d8707af3627b979d337e0acfd7806b039909e9eb",
+    "sourceEyeRGBA": [
+      [
+        79,
+        8,
+        17,
+        17,
+        17,
+        255
+      ],
+      [
+        80,
+        8,
+        17,
+        17,
+        17,
+        255
+      ]
+    ],
+    "sourceContextMethod": "Exact24x18 original head block equals source34 without pixel changes, at identical local position. Source34 corrected eye79/80,8 retained.",
+    "referenceFrame": 34,
+    "semanticReview": "Viewed original full pose and enlarged source-mask head crop."
+  }
+]
