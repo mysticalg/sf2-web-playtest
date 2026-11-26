@@ -4,7 +4,7 @@ Replaced Abigail and Belger profiles and added Damnd's new generated roster/prof
 
 These are authored portraits generated with the built-in `image_gen` tool, not recovered Capcom portraits. Each selected raw output is preserved in the authoring workspace. Runtime PNGs are normalized to96x96 with nearest-neighbour sampling; no manual face painting or smoothing was applied.
 
-The final Belger request supersedes all earlier shoulder, neck and expression trials: it follows the creator-supplied original head closely and uses a tight head-only crop. Revised portraits show their complete96x96head area, retaining the crown and beard instead of clipping the bottom of the previous72pixel crop.
+LATEST CREATOR SELECTION: the creator explicitly chose the earlier broad-face, high-shoulder, bow-tie portrait with dense cheek/jaw beard and crooked grin. That supplied image supersedes the later head-only/straight-mouth trials below. It is used exactly as selected, with only96x96nearest-neighbour size normalization. No new generation or facial repainting was performed for this final selection. Revised portraits show their complete96x96head area, retaining the crown and beard instead of clipping the bottom of the previous72pixel crop.
 
 ## Final assets
 
