@@ -12,7 +12,7 @@ window.SF2AIFF=(()=>{
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
  for(const[id,s]of Object.entries(specs)){
-  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-sodom-buttons-25';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
+  const d=SF2AIFFData[id],image=new Image(),stage=new Image(),portraitImage=new Image();image.src=d.image+'?v=ff-rolento-roll-26';stage.src='ai-ff/'+id+'-stage.png';portraitImage.src='ai-ff/'+id+'-profile.png';
   const pack={id,...s,data:d,image,stage,portraitImage,loaded:false,template:null,portraits:new Map()};packs[id]=pack;
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
@@ -83,11 +83,11 @@ window.SF2AIFF=(()=>{
   }
   if(p.id==='rolento'){
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
-   put(107,'Rolento Shoulder Grip',[[16,8]],{loop:true});put(108,'Rolento Shoulder Lift',[[16,8]],{loop:true});put(109,'Rolento Shoulder Release',[[17,8],[10,12]]);
+   put(118,'Rolento Shoulder Grip',[[16,8]],{loop:true});put(119,'Rolento Shoulder Lift',[[16,8]],{loop:true});put(120,'Rolento Shoulder Release',[[17,8],[10,12]]);
    put(101,'Rolento Grenade Throw',[[10,6],[20,12],[10,16]]);
    put(106,'Rolento Grenade Barrage',[[10,6],[20,7],[10,3],[20,7],[10,3],[20,7],[10,18]]);
    put(110,'Rolento Wall Air',[[18,12]],{loop:true});Object.assign(f.anims[110].ents[0],{6:[-45,20,35,32],7:24,8:2,9:1,10:-1});
-   put(102,'Rolento Wall Kick',[[9,5],[5,4],[6,4],[7,4],[18,12],[10,8]],{attack:false});
+   put(102,'Rolento Wall Kick',[[9,5],...p.data.acrobaticFrames.map(i=>[i,3]),[18,12],[10,8]],{attack:false});put(117,'Rolento Acrobatic Roll',p.data.acrobaticFrames.map(i=>[i,3]),{loop:true});
   }
   if(p.id==='edi'){
    put(100,'Edi Police Pistol',[[0,4],[24,4],[25,6],[28,6],[29,3],[28,8],[25,5],[4,10]]);
@@ -238,11 +238,11 @@ window.SF2AIFF=(()=>{
   if((gut?[17]:[17,27,37]).includes(s.age)){s.pulses++;h.chokeDamage(player,gut?32:s.pulses===3?16:8);h.sound(0x2b);h.anim(o,22,0);if(o.HP<=0){holdRelease(player,h,true);return;}}
   if(s.age>=(gut?29:49)){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;h.drop(o);h.idle(player);}
  }
- function shoulderStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,KB:0,RETCR:0,Y:0,VX:0,VY:0,THAN:107,THV:{t:999,dmg:34,d:player.FACE?-1:1},hitdone:1,AIFFThrow:{kind:'shoulder',age:0,phase:'grip',dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,107,0);h.anim(o,22,0);h.sound(0x2b);return true;}
+ function shoulderStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,KB:0,RETCR:0,Y:0,VX:0,VY:0,THAN:118,THV:{t:999,dmg:34,d:player.FACE?-1:1},hitdone:1,AIFFThrow:{kind:'shoulder',age:0,phase:'grip',dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,118,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function shoulderStep(player,h){const s=player.AIFFThrow,o=player.opp;s.age++;
   if(s.phase!=='recover'&&(!player.THV||o.HP<=0)){cancelThrow(player,h);return;}
-  if(s.age===8){s.phase='lift';h.anim(player,108,0);}
-  if(s.age===20){delete o.AIFFHeld;h.release(player);s.phase='recover';h.anim(player,109,0);h.sound(0x2b);}
+  if(s.age===8){s.phase='lift';h.anim(player,119,0);}
+  if(s.age===20){delete o.AIFFHeld;h.release(player);s.phase='recover';h.anim(player,120,0);h.sound(0x2b);}
   if(s.phase!=='recover'){const t=s.phase==='lift'?(s.age-8)/12:0,scale=bodyScale(player);o.X=player.X+s.dir*(34-46*t)*scale*256;o.Y=(18+68*t)*scale*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;o.AIFFHeld.inverted=t>.4;}
   else if(s.age>=42){delete player.AIFFThrow;h.idle(player);}
  }
@@ -300,7 +300,7 @@ window.SF2AIFF=(()=>{
   if(['grenade','grenade-barrage'].includes(m.style)){
    const release=m.style==='grenade'?[9]:[9,19,29];if(release.includes(a)){spawnGrenade(player,s.shots++);h.sound(0x25);}if(player.Y>0)h.gravity(player);if(a>=(m.style==='grenade'?35:52)&&player.Y<=0){delete player.AIFFMove;h.idle(player);}return;
   }
-  if(!s.launched&&a>=5){s.launched=true;s.wallDir=m.style==='wallkick'?(player.X/256<(h.room().left+h.room().right)/2?-1:1):-s.dir;player.VX=s.wallDir*(m.style==='wallkick'?0x780:0x540);player.VY=0x640;player.AY=0x44;player.AX=0;}
+  if(!s.launched&&a>=5){s.launched=true;s.wallDir=m.style==='wallkick'?(player.X/256<(h.room().left+h.room().right)/2?-1:1):-s.dir;player.VX=s.wallDir*(m.style==='wallkick'?0x780:0x540);player.VY=0x640;player.AY=0x44;player.AX=0;h.anim(player,117,0);}
   const room=h.room(),x=player.X/256;
   if(s.launched){
    if(!s.bounced&&m.style==='wallkick'&&(x<=room.left+44||x>=room.right-44)){s.bounced=true;player.FACE=x<=room.left+44?1:0;player.VX=(player.FACE?1:-1)*0x880;player.VY=0x180;player.AY=0x18;h.anim(player,110,0);player.hitdone=0;player.SPKD=1;h.sound(0x25);}
