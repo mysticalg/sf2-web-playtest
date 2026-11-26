@@ -99,8 +99,8 @@ window.SF2AIFF=(()=>{
    put(111,'Edi Arrest and Batter',[[12,12],[14,5],[15,4],[14,6],[15,4],[14,6],[15,4],[12,12]]);
   }
   if(p.id==='abigail'){
-   put(100,'Abigail Rage Charge',[[10,18],...[11,12,13,14,11,12,13,14].map(i=>[i,4]),[15,4],[16,5],[17,20]],{attack:false});
-   for(let i=1;i<=10;i++){const e=f.anims[100].ents[i];e[6]=[-35,57,32,30];e[7]=40;e[8]=2;e[9]=1;}
+   put(100,'Abigail Rage Charge',[[10,18],...[11,12,13,14,11,12,13,14].map(i=>[i,3]),[16,20]],{attack:false});
+   for(let i=1;i<=8;i++){const e=f.anims[100].ents[i];e[6]=[-35,57,32,30];e[7]=40;e[8]=2;e[9]=1;}
    for(const slot of[101,105])f.anims[slot].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(107,'Abigail Throw Grip',[[19,9]],{loop:true});put(108,'Abigail Throw Lift',[[21,12]],{loop:true});put(109,'Abigail Throw Recovery',[[17,20],[4,8]]);
   }
@@ -219,13 +219,14 @@ window.SF2AIFF=(()=>{
  function rageStep(player,h){chargeStep(player,h,20,0x500+player.SPSTR*0x40);}
  function chargeStep(player,h,recovery,speed){const s=player.AIFFMove,animation=player.F.anims[100],last=animation.ents.length-1;
   const stop=()=>{s.contact=true;s.stop=s.age+recovery;s.skid=5;h.anim(player,100,last);};
+  if(!s.contact&&s.age<19){if(player.aidx!==0)h.anim(player,100,0);player.acc=-1;}
   if(s.age===19)h.sound(0x2b);
   if(!s.contact&&player.hitdone)stop();
   if(!s.contact&&s.age>=19){
    const room=h.room(),edge=(s.dir>0?room.right-40:room.left+40)*256;
    player.X+=s.dir*speed;
    if(s.dir>0?player.X>=edge:player.X<=edge){player.X=edge;stop();}
-   else{const frame=1+Math.floor((s.age-19)/3)%(last-1);if(player.aidx!==frame)h.anim(player,100,frame);}
+   else{const frame=1+Math.floor((s.age-19)/3)%(last-1);if(player.aidx!==frame)h.anim(player,100,frame);player.acc=-1;}
   }
   if(s.contact){player.X+=s.dir*s.skid*256;s.skid*=.75;}
   player.SPKD=1;if(s.stop&&s.age>=s.stop){delete player.AIFFMove;h.idle(player);}
