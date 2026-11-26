@@ -22,7 +22,7 @@ window.SF2AIFF=(()=>{
  const metro=new Image();metro.src=assetURL('ai-ff/metro-map.png');pending.push(metro.decode());
  let audioContext=null,audioReady=null;const soundBuffers=new Map(),soundCounts={played:0,byCommand:{}};
  function prepareSound(ac){if(audioContext===ac&&audioReady)return audioReady;audioContext=ac;soundBuffers.clear();audioReady=Promise.all([0,6,13,16,38,41,44,47].map(async code=>{const response=await fetch(assetURL('ai-ff/audio/'+code.toString(16).padStart(2,'0')+'.mp3'));if(!response.ok)throw Error('Final Fight sound '+code+' unavailable');soundBuffers.set(code,await ac.decodeAudioData(await response.arrayBuffer()));}));return audioReady;}
- function playSound(code,ac,dest){if(!ac||!dest)return false;const play=()=>{const buffer=soundBuffers.get(code);if(!buffer)return;const voice=ac.createBufferSource();voice.buffer=buffer;const gain=ac.createGain();gain.gain.value=.7;voice.connect(gain);gain.connect(dest);voice.start();soundCounts.played++;soundCounts.byCommand[code]=(soundCounts.byCommand[code]||0)+1;};if(audioContext!==ac||!soundBuffers.has(code)){prepareSound(ac).then(play).catch(()=>{});return true;}play();return true;}
+ function playSound(code,ac,dest,options={}){if(!ac||!dest)return false;const play=()=>{const buffer=soundBuffers.get(code);if(!buffer)return;const voice=ac.createBufferSource();voice.buffer=buffer;const gain=ac.createGain();gain.gain.value=options.volume??.7;voice.playbackRate.value=options.rate??1;voice.connect(gain);gain.connect(dest);voice.start(ac.currentTime+(options.delay||0));soundCounts.played++;soundCounts.byCommand[code]=(soundCounts.byCommand[code]||0)+1;};if(audioContext!==ac||!soundBuffers.has(code)){prepareSound(ac).then(play).catch(()=>{});return true;}play();return true;}
  const ready=Promise.all(pending),get=id=>packs[id],ids=()=>['damnd','sodom','andore','edi','rolento','abigail','belger'];
  function sequence(p,which,ticks=5){const list=typeof which==='string'?p.data.nativeActions[which]:which;return list.map(e=>Array.isArray(e)?[e[0],Math.max(1,Math.min(120,e[1]))]:[e,ticks]);}
  function anim(p,name,list,{loop=false,attack=false,strength=1,low=false,crouch=false,kd=false}={}){
@@ -78,6 +78,7 @@ window.SF2AIFF=(()=>{
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(112,'Andore Flying Seat Drop',[[p.data.airborneFrame,10]],{loop:true});f.anims[112].ents[0][6]=[0,18,34,30];f.anims[112].ents[0][7]=28;f.anims[112].ents[0][8]=2;f.anims[112].ents[0][9]=1;f.anims[112].ents[0][10]=-1;put(113,'Andore Seat Drop Landing',[[11,14],[0,10]]);
    put(111,'Andore Choke Hold',sequence(p,'choke'),{loop:true});put(114,'Andore Carry Straight',sequence(p,'carryStraight'),{loop:true});put(115,'Andore Carry Shake',sequence(p,'carryBent'),{loop:true});
+   put(121,'Andore Piledriver Choke',sequence(p,'choke'),{loop:true});
    put(116,'Andore Piledriver Squat',[[11,10]],{loop:true});
    put(107,'Andore Piledriver Lift',[[p.data.liftFrame,10]],{loop:true});put(108,'Andore Piledriver Air',[[p.data.airborneFrame,8]],{loop:true});put(109,'Andore Piledriver Land',[[12,14],[0,12]]);
   }
@@ -177,8 +178,8 @@ window.SF2AIFF=(()=>{
  }
  function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='rolento')return shoulderStart(player,h);if(p.id==='edi'||p.id==='sodom')return batterStart(player,h);if(p.id==='abigail')return tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
   if(p.id==='andore'){
-   const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:107,THV:{t:999,dmg:40,d:player.FACE?1:-1},hitdone:1,AIFFThrow:{age:0,phase:'grip',dir:player.FACE?1:-1}});
-   Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,107,0);h.anim(o,22,0);h.sound(0x2b);return true;
+   const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:121,THV:{t:999,dmg:40,d:player.FACE?1:-1},hitdone:1,AIFFThrow:{age:0,phase:'grip',dir:player.FACE?1:-1}});
+   Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,121,0);h.anim(o,22,0);headGrip(player,h,player.AIFFThrow.dir);h.sound(0x2b);return true;
   }Object.assign(player,{MV:h.move,SPK:0,SPKD:0,SPSTR:atk%3,RETCR:0,KB:0,SCNT:34,ST:11,THAN:46,THV:{t:14,dmg:['andore','abigail'].includes(p.id)?40:32,d:player.FACE?-1:1},hitdone:1});h.anim(player,46,0);Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0,Y:0});h.anim(player.opp,22,0);h.sound(0x2b);return true;}
  function sodomStep(player,h){const s=player.AIFFMove,m=player.MV;
   if(m.style==='sodom-charge'){
@@ -267,20 +268,22 @@ window.SF2AIFF=(()=>{
   if(h.cpu?.(o)&&s.age>18&&s.age%6===0)points+=2;s.escape=Math.min(14,s.escape+Math.min(3,points));
   if(s.escape>=14){s.escaped=true;holdRelease(player,h,false);return;}
   const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10;const move=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);if(move){const room=h.room(),margin=96;player.X=Math.max((room.left+margin)*256,Math.min((room.right-margin)*256,player.X+move*0x180));s.walk++;}const chokeAnim=move?(shaking?115:114):111,chokeIndex=move?Math.floor(s.walk/4)%6:shaking?((phase>>1)%2):0;if(player.cur!==chokeAnim||player.aidx!==chokeIndex)h.anim(player,chokeAnim,chokeIndex);player.acc=-1;
-  const grip=art(player).rect,head=h.head?.(o),gx=player.X/256+s.dir*(-grip[4]-4),gy=-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+s.dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;
+  headGrip(player,h,s.dir);
   if(s.age>=20&&(s.age-20)%24===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0){holdRelease(player,h,true);return;}h.anim(o,22,0);}
  }
+ function headGrip(player,h,dir){const o=player.opp,grip=art(player).rect,head=h.head?.(o),gx=player.X/256+dir*(-grip[4]-4),gy=-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
  function holdRelease(player,h,fatal=false){const o=player.opp;delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;if(fatal){h.drop?.(o);}else if(o.Y>0&&h.releaseHeld){h.releaseHeld(o);}else{o.ST=5;o.STUN=12;o.KB=0;o.Y=0;}h.idle(player);}
  function pileStep(player,h){
   const s=player.AIFFThrow,o=player.opp;s.age++;
   if((!player.THV||o.HP<=0)&&s.phase!=='recover'){cancelThrow(player,h);return;}
-  if(s.phase==='grip'&&s.age>=6){s.phase='squat';s.squatAt=s.age;o.AIFFHeld.inverted=true;h.anim(player,116,0);}
-  if(s.phase==='squat'&&s.age-s.squatAt>=10){s.phase='jump';player.VY=0x1000;player.AY=0xb0;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
+  if(s.phase==='grip'&&s.age>=60){s.phase='squat';s.squatAt=s.age;o.AIFFHeld.inverted=true;h.anim(player,116,0);}
+  if(s.phase==='squat'&&s.age-s.squatAt>=24){s.phase='jump';player.VY=0x1000;player.AY=0x90;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
   if(s.phase==='jump'){
-   if(!h.gravity(player)){s.phase='recover';s.landed=s.age;delete o.AIFFHeld;h.slam(player);h.anim(player,109,0);h.sound(0x2f);}
+   if(!h.gravity(player)){s.phase='recover';s.landed=s.age;delete o.AIFFHeld;h.slam(player);h.groundImpact?.(player);h.anim(player,109,0);h.sound(0x2f);}
   }
-  if(s.phase!=='recover'){o.X=player.X+s.dir*7*bodyScale(player)*256;o.Y=player.Y+(s.phase==='grip'?48:s.phase==='squat'?85:66)*bodyScale(player)*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
-  else if(s.age-s.landed>=26){delete player.AIFFThrow;h.idle(player);}
+  if(s.phase==='grip'){const pose=Math.floor(s.age/10)%2;if(player.aidx!==pose)h.anim(player,121,pose);player.acc=-1;headGrip(player,h,s.dir);if(s.age===20||s.age===40)h.sound(0x2b);}
+  else if(s.phase!=='recover'){o.X=player.X+s.dir*7*bodyScale(player)*256;o.Y=player.Y+(s.phase==='squat'?85:66)*bodyScale(player)*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
+  else if(s.age-s.landed>=48){delete player.AIFFThrow;h.idle(player);}
  }
  function cancelThrow(player,h){const o=player.opp;delete o.AIFFHeld;delete player.AIFFThrow;delete player.AIFFHold;player.THV=null;if(o.ST===5&&o.STUN>500){o.STUN=12;o.KB=0;if(o.Y>0)h.drop?.(o);} }
  const heldImages=new WeakMap();
