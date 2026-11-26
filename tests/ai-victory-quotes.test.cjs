@@ -16,7 +16,7 @@ assert.deepStrictEqual(failures,[],'All quote identities/pairs must fit before i
 for(const [alias,id]of Object.entries({'E. Honda':'honda','M.Bison':'bison','ChunLi':'chun-li','Edi. E':'edi','ai:evilken':'evil-ken','SSF2T:T. Hawk':'thawk','Fei Long':'feilong','Dee Jay':'deejay','Gouki':'akuma'}))assert.strictEqual(Q.identity(alias).id,id);
 for(let n=0;n<12;n++)assert.strictEqual(Q.identity(n).id,['ryu','honda','blanka','guile','ken','chun-li','zangief','dhalsim','bison','sagat','balrog','vega'][n]);
 for(const evil of['evil-ryu','evil-ken']){const base=Q.identity(evil).base;assert(base!==evil);for(const loser of ids)for(const death of[false,true]){const a=Q.variants(evil,loser,{death}),b=new Set(Q.variants(base,loser,{death}).map(x=>x.text));for(const line of a)assert(!b.has(line.text),'Evil winners must retain their own voice');}}
-assert.strictEqual(Q.variants('sagat','evil-ryu')[0].source,'matchup-base');assert(Q.variants('sagat','evil-ryu')[0].text.includes('Evil Ryu'));
+assert.strictEqual(Q.variants('sagat','evil-ryu')[0].source,'matchup-base');assert(Q.variants('sagat','evil-ryu')[0].text.includes('Possessed Ryu'));
 assert(Q.variants('ken','chun-li')[0].text.includes('spinning bird kick is no match for my dragon punch'));
 assert(Q.variants('evil-ryu','ken',{death:true}).every(q=>q.lines.length));
 assert.strictEqual(new Set(Array.from({length:100},(_,matchSerial)=>Q.choose('ken','chun-li',{seed:7,matchSerial}).index)).size,3);
