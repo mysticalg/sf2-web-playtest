@@ -121,16 +121,17 @@ function aiBloodStep(){
   }
   AI_BLOOD.particles=AI_BLOOD.particles.filter(p=>!p.landed&&G.tick-p.tick<p.life);
 }
-function aiBloodFloorX(stain,camera){if(aiFFStage())return stain.x-camera;
-  const y=GROUND+stain.depth,map=window.SF2CESTAGESCROLL,stage=map?.data.stages.find(s=>s.stage===G.stage),floor=stage?.layers.find(l=>l.nativeLayer===2);
-  if(floor){const ground=map.mapX(G.stage,floor.index,camera,GROUND),row=map.mapX(G.stage,floor.index,camera,y),delta=((row-ground+floor.width/2)%floor.width+floor.width)%floor.width-floor.width/2,scale=G.stage===5&&aiViewWidth()>W?map.view(G.stage,floor.index,camera,aiViewWidth(),y).scale:1;return(stain.x-camera-delta)*scale;}
+function aiBloodFloorProjection(depth,camera){if(aiFFStage())return{delta:0,scale:1};
+  const y=GROUND+depth,map=window.SF2CESTAGESCROLL,stage=map?.data.stages.find(s=>s.stage===G.stage),floor=stage?.layers.find(l=>l.nativeLayer===2);
+  if(floor){const ground=map.mapX(G.stage,floor.index,camera,GROUND),row=map.mapX(G.stage,floor.index,camera,y),delta=((row-ground+floor.width/2)%floor.width+floor.width)%floor.width-floor.width/2,scale=G.stage===5&&aiViewWidth()>W?map.view(G.stage,floor.index,camera,aiViewWidth(),y).scale:1;return{delta,scale};}
   const layer=D.stages[G.stage].find(l=>l.rows?.some(r=>r[0]<=GROUND&&r[1]>GROUND)),at=depth=>layer?.rows.find(r=>r[0]<=depth&&r[1]>depth);
   const row=at(y),ground=at(GROUND),delta=row&&ground?Math.round(row[2]*camera+row[3])-Math.round(ground[2]*camera+ground[3]):0;
-  return stain.x-camera-delta;
+  return{delta,scale:1};
 }
+function aiBloodFloorX(stain,camera){const p=aiBloodFloorProjection(stain.depth,camera);return(stain.x-camera-p.delta)*p.scale;}
 function aiBloodDraw(camera,ground,stains=false){
   if(!aiEnabled())return;cx.save();
-  if(stains){cx.globalAlpha=.94;for(const s of AI_BLOOD.stains){const x=Math.round(aiBloodFloorX(s,camera)),y=ground+s.depth,h=aiFXHash(Math.floor(s.x*256),'floor:'+s.depth);cx.fillStyle=s.color;
+  if(stains){const projections=[];cx.globalAlpha=.94;for(const s of AI_BLOOD.stains){const p=projections[s.depth]||(projections[s.depth]=aiBloodFloorProjection(s.depth,camera)),x=Math.round((s.x-camera-p.delta)*p.scale),y=ground+s.depth,h=aiFXHash(Math.floor(s.x*256),'floor:'+s.depth);cx.fillStyle=s.color;
     if(h%3===0){cx.fillRect(x,y,1,1);cx.fillRect(x+2,y+1,1,1);if(s.size>2)cx.fillRect(x-2,y,1,1);}
     else if(h%3===1)cx.fillRect(x-1,y,Math.min(4,Math.ceil(s.size)),1);
     else{cx.fillRect(x,y,1,2);if(s.size>2)cx.fillRect(x-1,y+1,2,1);}
@@ -2470,7 +2471,9 @@ let SCE=null; // CE select/VS art from the CE program's VRAM (screens_ce.js)
 function ceFadeState(){return VER.cur==='CE'&&window.SF2CEFADE?G.fade:null;}
 
 let aiSceneryLayer=-1;
-function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){const shade=aiEnabled()&&G.stage===7&&aiSceneryLayer>=0&&cx.filter!=='none'?SF2AISCENE.nativeShade(out,cx.filter):null;if(shade){cx.save();cx.filter='none';cx.drawImage(shade,...args);cx.restore();}else cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
+// Fractional sampling must retain Canvas's original filter/coverage rounding.
+function aiStageSampleUnscaled(im,args){return args.every(Number.isInteger)&&(args.length===2||args.length===4&&args[2]===(im.naturalWidth||im.width)&&args[3]===(im.naturalHeight||im.height)||args.length===8&&args[2]===args[6]&&args[3]===args[7]);}
+function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){const shade=aiEnabled()&&aiSceneryLayer>=0&&cx.filter!=='none'&&(G.stage===7||aiStageSampleUnscaled(out,args))?SF2AISCENE.nativeShade(out,cx.filter,out instanceof HTMLCanvasElement&&!window.SF2CESTAGEANIMATIONS?.isSnapshot?.(out)?G.tick:null):null;if(shade){cx.save();cx.filter='none';cx.drawImage(shade,...args);cx.restore();}else cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
 
 function fimg(im,...args){fimgKind('scroll',im,...args);}
 

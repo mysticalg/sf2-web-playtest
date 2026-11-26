@@ -6,11 +6,12 @@ window.SF2AISCENE=(()=>{
  const ready=Promise.all([...[[image,'room-extensions'],[roof,'ryu-roof'],[crest,'ryu-crest'],[indiaWall,'india-wall'],[indiaTop,'india-native-top'],[chinaFront,'china-foreground'],[chinaFar,'china-far']].map(([im,name])=>new Promise(resolve=>{im.onload=()=>resolve(true);im.onerror=()=>{console.error('AI scenery artwork failed to load',im.src);resolve(false);};im.src='ai-effects/'+name+'.png?v='+(window.SF2BUILD?.commit||'130');})),...materials.flatMap(d=>['floor','ceiling','wall','top'].filter(k=>d[k]).map(k=>new Promise(resolve=>{const im=d.images[k]=new Image();im.onload=()=>resolve(true);im.onerror=()=>{console.error('AI native material failed to load',d.stage,k);resolve(false);};im.src=d[k];}))) ]).then(a=>a.every(Boolean));
  const indiaFloors=new Map();
  const shadedImages=new WeakMap(),shadedRecent=[];
- function nativeShade(im,filter){
+ function nativeShade(im,filter,revision=null){
   let cache=shadedImages.get(im);if(!cache){cache=new Map();shadedImages.set(im,cache);}
-  if(cache.has(filter)){const index=shadedRecent.findIndex(e=>e.cache===cache&&e.key===filter);if(index>=0)shadedRecent.push(...shadedRecent.splice(index,1));return cache.get(filter);}
+  const cached=cache.get(filter),index=shadedRecent.findIndex(e=>e.cache===cache&&e.key===filter);
+  if(cached?.revision===revision){if(index>=0)shadedRecent.push(...shadedRecent.splice(index,1));return cached.image;}
   const c=document.createElement('canvas');c.width=im.naturalWidth||im.width;c.height=im.naturalHeight||im.height;if(!c.width||!c.height)return null;
-  const x=c.getContext('2d');x.filter=filter;x.drawImage(im,0,0);cache.set(filter,c);shadedRecent.push({cache,key:filter});if(shadedRecent.length>16){const old=shadedRecent.shift();old.cache.delete(old.key);}return c;
+  const x=c.getContext('2d');x.filter=filter;x.drawImage(im,0,0);cache.set(filter,{image:c,revision});if(index>=0)shadedRecent.splice(index,1);shadedRecent.push({cache,key:filter});if(shadedRecent.length>16){const old=shadedRecent.shift();old.cache.delete(old.key);}return c;
  }
  const indiaWalls=new Map();
  function wallFrame(filter){

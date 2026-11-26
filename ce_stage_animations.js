@@ -4,7 +4,7 @@
 (()=>{
  const D=window.SF2CESTAGEANIMATIONDATA;if(!D)throw Error('CE stage animation data missing');
  const images=D.images.map(url=>{const im=new Image();im.src=url;return im;}),ready=Promise.all(images.map(im=>im.decode()));
- let origin=null,lastStage=-1;const cache=new Map(),nativeCache=new Map();
+ let origin=null,lastStage=-1;const cache=new Map(),nativeCache=new Map(),snapshots=new WeakSet();
  let elephantState=null,elephantAge=0,elephantSeed=0x454c45,elephantChoice=null;let soundFn=null;
  let nativeStage=-1,nativeAge=0;const nativeSources=new Map(),nativeEvents=new Map();
  function elephantReset(){elephantState=D.elephants?JSON.parse(JSON.stringify(D.elephants.initial)):null;elephantAge=0;elephantSeed=0x454c45;}
@@ -40,7 +40,7 @@
   if(!base.complete||!base.naturalWidth||actors.some((a,i)=>!images[indices[i]].complete))return base;
   const canvas=document.createElement('canvas');canvas.width=base.naturalWidth;canvas.height=base.naturalHeight;const ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=false;ctx.drawImage(base,0,0);
   actors.forEach((a,i)=>{if(a.bands?.length){for(const b of a.bands){ctx.clearRect(b.x,a.y+b.y0,a.width,b.y1-b.y0);ctx.drawImage(images[indices[i]],0,b.y0,a.width,b.y1-b.y0,b.x,a.y+b.y0,a.width,b.y1-b.y0);}}else{ctx.clearRect(a.x,a.y,a.width,a.height);ctx.drawImage(images[indices[i]],a.x,a.y);}});
-  cache.set(index,{key,base,image:canvas});return canvas;
+  snapshots.add(canvas);cache.set(index,{key,base,image:canvas});return canvas;
  }
  function nativeVisible(a,cam,view){
   if(a.drawAlways)return true;
@@ -70,8 +70,10 @@
   for(const event of events){const a=event.actor,f=event.frame,id=f.paletteImages?f.paletteImages[1+(window.SF2CESTAGEPALETTES?.lampPhase(tick-origin)??-1)]:f.image;
    for(const [sx,sy,w,h]of (event.initial?[[0,0,a.width,a.height]]:f.writes||[[0,0,a.width,a.height]]))for(const dx of [a.nativeX-c.width,a.nativeX,a.nativeX+c.width]){x.clearRect(dx+sx,a.y+32+sy,w,h);x.drawImage(images[id],sx,sy,w,h,dx+sx,a.y+32+sy,w,h);}
   }
-  nativeCache.set(index,{base,image:c});nativeEvents.set(index,[]);return c;
+  // Updates copy the previous image into a new canvas; published snapshots
+  // are never repainted. Render caches may therefore retain their identity.
+  snapshots.add(c);nativeCache.set(index,{base,image:c});nativeEvents.set(index,[]);return c;
  }
  function top(stage,index,ctx,tick){for(const a of D.stages[stage]||[]){if(a.layer!==index||a.y>=0)continue;const s=frameAt(a,Math.max(0,tick-(origin??tick))),f=a.frames[s.index],id=f.paletteImages?f.paletteImages[1+(window.SF2CESTAGEPALETTES?.lampPhase(tick-origin)??-1)]:f.image,h=Math.min(a.height,-a.y);ctx.clearRect(a.x,a.y+32,a.width,h);ctx.drawImage(images[id],0,0,a.width,h,a.x,a.y+32,a.width,h);}}
- window.SF2CESTAGEANIMATIONS={ready,frameAt,reset,layer,nativeLayer,advanceNative,setElephantChoice(fn){elephantChoice=fn;},setSound(fn){soundFn=fn;},top,elephantStep,data:D,scope:'57 scroll2/scroll3 idle loops and four conditional elephants. Remaining sprite props and result-dependent branches pending.'};
+ window.SF2CESTAGEANIMATIONS={ready,frameAt,reset,layer,nativeLayer,isSnapshot:image=>snapshots.has(image),advanceNative,setElephantChoice(fn){elephantChoice=fn;},setSound(fn){soundFn=fn;},top,elephantStep,data:D,scope:'57 scroll2/scroll3 idle loops and four conditional elephants. Remaining sprite props and result-dependent branches pending.'};
 })();
