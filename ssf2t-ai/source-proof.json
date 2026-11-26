@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 181,
-  "sourceArchiveSHA256": "f0f0bfc64c915c4bebc838156afadc67836d1bcb3fa208fcf54566f12a9b4fde",
+  "sourceFiles": 184,
+  "sourceArchiveSHA256": "6ba1437970720b1fe2a98e17acc9250ba29db33aa982058430c5763895bbb139",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -71,9 +71,10 @@
     }
   },
   "remaining": [
-    "Other fighter endings",
+    "Other complete fighter playthroughs",
     "Every character mechanic and exceptional path",
-    "Hardware GPU/DSP parity including Q1 spatial DSP and ADPCM"
+    "Hardware GPU/DSP parity including Q1 spatial DSP and ADPCM",
+    "Main AI Edition Final Fight/blood/finishers integration"
   ],
   "artifacts": {
     "ssf2t-native.js": {
@@ -81,8 +82,8 @@
       "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
     },
     "ssf2t-native.wasm": {
-      "bytes": 15262415,
-      "sha256": "6ca7d1741e0bba5c616b32121f7c955f10fa655c8b7453a1275d1b4adb79ab4b"
+      "bytes": 15264690,
+      "sha256": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41"
     },
     "bridge.js": {
       "bytes": 8904,
@@ -98,7 +99,7 @@
     }
   },
   "compiledSourceUnits": 90,
-  "nativeEntries": 9096,
+  "nativeEntries": 9098,
   "strictMatrixReferenceMode": "Earlier Native-mode reference: translated functions plus instruction fallback only at untranslated sites",
   "commonOutcomeFixes": [
     {
@@ -129,7 +130,7 @@
   "newOracleRGBPictures": 934,
   "newOraclePCMBytes": 137692732,
   "previousRyuContinueGameOverReferenceMode": "Earlier Native-mode reference, not independent full instruction interpretation",
-  "fullActualArcadeClears": 1,
+  "fullActualArcadeClears": 2,
   "mechanicsRecovery": {
     "entries": [
       "08BCD4",
@@ -156,6 +157,57 @@
     "noStateLoads": true,
     "reusableQA": "qa/test-mechanics.cjs"
   },
-  "packageVersion": "9280e012b1dd7d261e0acf9fee00a72d472395d64168d463bbf65d6f5f645c98",
-  "wasmCacheVersion": "6ca7d1741e0bba5c616b32121f7c955f10fa655c8b7453a1275d1b4adb79ab4b"
+  "kenRecovery": {
+    "entries": [
+      "0A943C",
+      "0A945A"
+    ],
+    "ordinaryInputOnly": true,
+    "settingWrites": [
+      "original operator difficulty1"
+    ],
+    "healthLadderStageTimerRNGWrites": false,
+    "stateLoadsInReplay": false,
+    "frames": 5500,
+    "stateSamples": 183,
+    "rgbPictures": 78,
+    "audioBytes": 8867388,
+    "inputSHA256": "f07006564abc4ec5c283036cc4759b8f0efe3eb323220fd34c871c5c8f3bc8e6",
+    "cpuFallback": 0,
+    "z80Fallback": 0,
+    "oracle": "Full Mode::Blocks for both68000andZ80; offline only",
+    "browserFrames": 5500,
+    "browserStateSamples": 183,
+    "browserRGBPictures": 78,
+    "reusableQA": "qa/test-ken.cjs"
+  },
+  "kenOrdinaryInputArcade": {
+    "fighter": "Ken",
+    "roundWins": 24,
+    "roundLosses": 0,
+    "matches": 12,
+    "cpuAkumaFinal": false,
+    "toolAssistedInputGeneration": true,
+    "stateLoadsInReplay": 0,
+    "healthLadderStageTimerRNGWrites": false,
+    "settingWrites": [
+      "original operator difficulty1"
+    ],
+    "strictFrames": 68425,
+    "stateSamples": 2280,
+    "rgbPictures": 630,
+    "audioBytes": 110319900,
+    "inputSHA256": "a49a9e56da55a5240f1de64e65f00568c8b3469f99e18d7db17ecb8b0f7ba3f0",
+    "endingFrame": 52428,
+    "titleFrame": 59324,
+    "cpuFallback": 0,
+    "z80Fallback": 0,
+    "oracle": "Full Mode::Blocks for both68000andZ80; offline only",
+    "browserFrames": 68425,
+    "browserStateSamples": 2280,
+    "browserRGBPictures": 630,
+    "reusableQA": "qa/test-ken.cjs; SSF_FIXTURE=./ken-arcade-fixture.json"
+  },
+  "packageVersion": "03eaa9275edcdbaa8983162ee68c4e898ef60cbdc987d9a839bcc516b965fcd0",
+  "wasmCacheVersion": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41"
 }

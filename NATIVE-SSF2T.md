@@ -10,12 +10,12 @@ The common-outcome update recovers Balrog and Vega's original victory controller
 
 For the full Ryu clear and the three repaired outcomes, an offline Mode::Blocks oracle interprets every original 68000 and Z80 instruction. Its 85,403 frames, 2,845 state samples, 934 RGB pictures and all 137,692,732 PCM bytes match static execution. Earlier Native-reference matrices execute translated functions with original-instruction fallback only at uncovered sites; those checks do not independently interpret every covered instruction. Neither reference establishes hardware GPU/DSP parity.
 
-The corresponding-source archive contains all 181 source/support files and 90 compilation units, licenses, portable build instructions and twelve reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
+The corresponding-source archive contains all 184 source/support files and 90 compilation units, licenses, portable build instructions and fourteen reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `ssf2t-native.wasm` (15,262,415 bytes) | `6ca7d1741e0bba5c616b32121f7c955f10fa655c8b7453a1275d1b4adb79ab4b` |
-| `corresponding-source.zip` (2,353,231 bytes) | `f0f0bfc64c915c4bebc838156afadc67836d1bcb3fa208fcf54566f12a9b4fde` |
+| `ssf2t-native.wasm` (15,264,690 bytes) | `a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41` |
+| `corresponding-source.zip` (2,413,734 bytes) | `6ba1437970720b1fe2a98e17acc9250ba29db33aa982058430c5763895bbb139` |
 
 Only the twelve files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
 
@@ -27,4 +27,11 @@ The special-input follow-up recovers original dispatch branches `08BCD4` (Dhalsi
 All 32 standard fighter/slot input-family sweeps complete without an uncovered branch; these sweeps include naturally occurring KO/round transitions and do not establish activation of every attempted command. All 17 old/Akuma browser cases pass again. The updated build also matches the existing 98-case/560,877-frame native-reference matrix and 196 RGB pictures, and repeats Ryu's full arcade clear and the Balrog/Vega/Honda common-outcome fixtures. Reference-mode and hardware-parity limits above remain applicable. A clean source extraction reproduces the updated WASM, JavaScript and source ZIP exactly.
 
 
-A separate forced-ending diagnostic now covers all17 standard/hidden fighters on the published native code. Static execution and offline full Mode::Blocks 68000/Z80 instruction execution match1,088event samples,2,386complete captured RGB pictures and387,556,744PCM bytes across240,380frames. Every case reaches its native ending and returns to title with zero strict fallback. Inputs and explicit final-ladder/health fixture writes match between both runs. The saved [diagnostic evidence](SSF2T-ENDING-DIAGNOSTICS.json) records these writes and hashes. These are forced ending diagnostics, not additional genuine arcade clears; the comparison does not cover every RAM byte, a browser replay or hardware DSP/graphics parity.
+A separate forced-ending diagnostic now covers all17 standard/hidden fighters on the earlier published `6ca7d174` native build. Static execution and offline full Mode::Blocks 68000/Z80 instruction execution match1,088event samples,2,386complete captured RGB pictures and387,556,744PCM bytes across240,380frames. Every case reaches its native ending and returns to title with zero strict fallback. Inputs and explicit final-ladder/health fixture writes match between both runs. The saved [diagnostic evidence](SSF2T-ENDING-DIAGNOSTICS.json) records these writes and hashes. These are forced ending diagnostics, not additional genuine arcade clears; the comparison does not cover every RAM byte, a browser replay or hardware DSP/graphics parity.
+
+
+Ken original-input recovery restores European entries `0A943C` and `0A945A`. The previous browser build aborts on the authored input-only regression; the new5500-frame replay matches183state samples,78RGB pictures and8,867,388PCM bytes against a full68000/Z80 instruction oracle. The original functions are recovered as static native C++; no decoder or fallback is added.
+
+A second genuine arcade clear now wins24rounds and12matches as Ken with no round losses, then plays his original ending, staff roll and return to title. The independently replayed68,425frames match2,280state samples,630completeRGB pictures and110,319,900PCM bytes against full original-instruction execution for both CPUs. The candidate browser independently matches every saved state and picture. Ken reaches the ending at52,428and returns to title at59,324. Only the original easiest operator difficulty is set; replay injects no health, stage, ladder, RNG, timers or results and loads no game state. The inputs were planned offline, not generated by a replacement browser AI. The source includes `qa/test-ken.cjs`, the short regression fixture and the complete Ken input/hash fixture.
+
+The updated candidate also matches the previous98-case/560,877-frame native-reference matrix, all196pictures, six mechanics browser fixtures, seventeen old/Akuma cases, and Ryu's complete60,200-frame/642-picture arcade tape. Its184source/support files compile without a ROM, and clean extraction reproduces the WASM, JavaScript and source ZIP byte for byte. Full main-AI Edition integration, other genuine fighter clears and hardware DSP/graphics parity remain incomplete.
