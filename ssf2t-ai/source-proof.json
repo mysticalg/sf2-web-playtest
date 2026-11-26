@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 178,
-  "sourceArchiveSHA256": "79cddb7714f43b71e1fdbc7e53df7019806a6ee101917c71b4e09d4a8a1a855f",
+  "sourceFiles": 181,
+  "sourceArchiveSHA256": "f0f0bfc64c915c4bebc838156afadc67836d1bcb3fa208fcf54566f12a9b4fde",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -81,8 +81,8 @@
       "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
     },
     "ssf2t-native.wasm": {
-      "bytes": 15017816,
-      "sha256": "4f74bd991fcb2448c57b5b8a6632d5715c46390ec2713b94710cf149dabd617c"
+      "bytes": 15262415,
+      "sha256": "6ca7d1741e0bba5c616b32121f7c955f10fa655c8b7453a1275d1b4adb79ab4b"
     },
     "bridge.js": {
       "bytes": 8904,
@@ -97,8 +97,8 @@
       "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
     }
   },
-  "compiledSourceUnits": 89,
-  "nativeEntries": 9093,
+  "compiledSourceUnits": 90,
+  "nativeEntries": 9096,
   "strictMatrixReferenceMode": "Earlier Native-mode reference: translated functions plus instruction fallback only at untranslated sites",
   "commonOutcomeFixes": [
     {
@@ -130,6 +130,32 @@
   "newOraclePCMBytes": 137692732,
   "previousRyuContinueGameOverReferenceMode": "Earlier Native-mode reference, not independent full instruction interpretation",
   "fullActualArcadeClears": 1,
-  "packageVersion": "a57efdf716f5993db063ca4be2173e1618bdcfac0a2f99c9adb85a7f35cd7e2d",
-  "wasmCacheVersion": "4f74bd991fcb2448c57b5b8a6632d5715c46390ec2713b94710cf149dabd617c"
+  "mechanicsRecovery": {
+    "entries": [
+      "08BCD4",
+      "092CCC",
+      "0947C8"
+    ],
+    "fighters": [
+      "Dhalsim",
+      "Cammy",
+      "T. Hawk"
+    ],
+    "ordinaryInputSweepCases": 32,
+    "sweepInputFamiliesPerCase": 16,
+    "sweepCaveat": "Input families can include commands attempted in KO/transition states; not every attempted command is claimed as an activated special.",
+    "fullInstructionOracleCases": 6,
+    "fullInstructionOracleFrames": 34015,
+    "fullInstructionOracleStateSamples": 1136,
+    "fullInstructionOracleRGBPictures": 570,
+    "fullInstructionOraclePCMBytes": 54840792,
+    "sampledRAMAndVRAMEqual": true,
+    "browserIndependentStateSamples": 1136,
+    "browserIndependentRGBPictures": 570,
+    "noGameRAMWrites": true,
+    "noStateLoads": true,
+    "reusableQA": "qa/test-mechanics.cjs"
+  },
+  "packageVersion": "9280e012b1dd7d261e0acf9fee00a72d472395d64168d463bbf65d6f5f645c98",
+  "wasmCacheVersion": "6ca7d1741e0bba5c616b32121f7c955f10fa655c8b7453a1275d1b4adb79ab4b"
 }

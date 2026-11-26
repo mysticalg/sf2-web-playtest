@@ -15,3 +15,10 @@ All sixteen standard fighters in both slots and sixteen old forms plus Akuma hav
 Remaining: other full fighter playthroughs, every mechanic/exceptional branch, and hardware graphics/DSP parity. Additional ending discovery uses explicitly logged diagnostic health/ladder fixtures and is not counted as actual arcade completion. Existing AI Edition blood, finishers and Final Fight additions remain separate. The original 1.04 sound program drives a reference mixer still lacking Q1 spatial DSP and three ADPCM voices. Internal equality does not establish hardware parity.
 
 Controls: P1 arrows; A/S/D punches, Z/X/C kicks, 5 coin, Enter start. P2 I/J/K/L; numpad 7/8/9 punches, 4/5/6 kicks, with U/O/P and N/M/comma aliases; 6 coin, 2 start. F fullscreen, Esc exits. The player supplies the original Europe 940223 ZIP locally; it is never uploaded. No ROM is included.
+
+
+## Special-input branch recovery
+
+Three ordinary-input stops are repaired at original European dispatch entries 08BCD4 (Dhalsim), 092CCC (Cammy) and 0947C8 (T.Hawk). All 16 fighters in both slots complete the tested motion/charge input-family sweeps without a native stop. These are input sequences, not proof that every attempted command was admitted as a special; some sequences naturally reach KO and next-round states.
+
+Six dual-input replays for the repaired fighters match a full independent Mode::Blocks 68000 + Z80 oracle across 34,015 native frames, 1,136 state samples, 570 complete RGB pictures and 54,840,792 PCM bytes. Whole sampled RAM/video RAM bytes also match. The browser independently matches every saved state and picture. Fixtures and reusable `qa/test-mechanics.cjs` are included in the source ZIP; no health/stage/ladder/timer/RNG/result writes or state loads occur. Ryu's full 60,200-frame arcade clear and the Balrog/Vega/Honda common outcomes still match their earlier oracle fixtures on this updated WASM.

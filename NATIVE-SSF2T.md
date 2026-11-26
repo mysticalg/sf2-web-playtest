@@ -10,13 +10,18 @@ The common-outcome update recovers Balrog and Vega's original victory controller
 
 For the full Ryu clear and the three repaired outcomes, an offline Mode::Blocks oracle interprets every original 68000 and Z80 instruction. Its 85,403 frames, 2,845 state samples, 934 RGB pictures and all 137,692,732 PCM bytes match static execution. Earlier Native-reference matrices execute translated functions with original-instruction fallback only at uncovered sites; those checks do not independently interpret every covered instruction. Neither reference establishes hardware GPU/DSP parity.
 
-The corresponding-source archive contains all 178 source/support files and 89 compilation units, licenses, portable build instructions and six reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
+The corresponding-source archive contains all 181 source/support files and 90 compilation units, licenses, portable build instructions and twelve reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `ssf2t-native.wasm` (15,017,816 bytes) | `4f74bd991fcb2448c57b5b8a6632d5715c46390ec2713b94710cf149dabd617c` |
-| `corresponding-source.zip` (2,310,770 bytes) | `79cddb7714f43b71e1fdbc7e53df7019806a6ee101917c71b4e09d4a8a1a855f` |
+| `ssf2t-native.wasm` (15,262,415 bytes) | `6ca7d1741e0bba5c616b32121f7c955f10fa655c8b7453a1275d1b4adb79ab4b` |
+| `corresponding-source.zip` (2,353,231 bytes) | `f0f0bfc64c915c4bebc838156afadc67836d1bcb3fa208fcf54566f12a9b4fde` |
 
 Only the twelve files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
 
 Remaining work includes other fighter endings and exceptional mechanics, Q1 spatial DSP and three ADPCM voices, and integrating the main AI Edition's Final Fight roster, blood and finishers into this native game. A full Ryu clear is one verified playthrough, not proof of all character paths or full-game parity.
+
+
+The special-input follow-up recovers original dispatch branches `08BCD4` (Dhalsim), `092CCC` (Cammy) and `0947C8` (T. Hawk), which previously stopped in both player slots. Six ordinary dual-stick tapes match a full independent 68000/Z80 instruction oracle for 34,015 frames, 1,136 state samples, 570 complete RGB pictures, sampled full RAM/video RAM and 54,840,792 PCM bytes. The browser independently matches all 1,136 states and 570 pictures. The source includes `qa/test-mechanics.cjs` and the six authored input/hash fixtures.
+
+All 32 standard fighter/slot input-family sweeps complete without an uncovered branch; these sweeps include naturally occurring KO/round transitions and do not establish activation of every attempted command. All 17 old/Akuma browser cases pass again. The updated build also matches the existing 98-case/560,877-frame native-reference matrix and 196 RGB pictures, and repeats Ryu's full arcade clear and the Balrog/Vega/Honda common-outcome fixtures. Reference-mode and hardware-parity limits above remain applicable. A clean source extraction reproduces the updated WASM, JavaScript and source ZIP exactly.
