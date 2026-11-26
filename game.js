@@ -1839,11 +1839,13 @@ function aiEditionCPU(p){
   }
   const reach=isFFGuest(p)?isDamnd(p)?92:['sodom','rolento'].includes(p.aiProfile)?76:56:[78,98,88,92,78,108,90,150,100,125,105,122][p.fid];
   if(isFFHero(p)&&d<70&&G.tick>=s.specialReady&&chance<.22)return special(0);
+  if(p.aiProfile==='abigail'&&d<=64&&o.Y===0&&[S_FREE,S_ATK,S_CR,S_UP,S_HIT,S_BLK].includes(o.ST)&&G.tick>=s.specialReady&&chance<[.08,.16,.3,.48][diff])return special(3);
   if(d<thrr(p,0)-3&&o.Y===0&&[S_FREE,S_CR,S_UP].includes(o.ST)&&chance<[.1,.2,.35,.5][diff])return commit(forward|(K_ATK<<(p.aiProfile==='andore'?((r>>>18)&1?1:2):((r>>>18)&1?2:5))),'throw',attackDelay);
   const farMoves=isFFHero(p)?AP.far.filter(i=>SF2AIHeroWeapons.validMove(p,p.F.moves[i])&&(p.F.moves[i].style!=='hero-wall'||d<280&&(p.X/256<aiRoom().left+96||p.X/256>aiRoom().right-96))):AP.far;if(d>105&&farMoves.length&&!p.FBON&&G.tick>=s.specialReady&&chance<[.16,.26,.38,.5][diff]*(isDamnd(p)?.65:1))return special(farMoves[(r>>>16)%farMoves.length]);
   if(d<=reach){
     if(G.tick<s.attackReady)return commit(0,'recover-spacing',Math.min(8,s.attackReady-G.tick));
-    if(d>45&&d<100&&AP.mid.length&&G.tick>=s.specialReady&&chance<[.08,.14,.2,.28][diff]*(isDamnd(p)?.3:1))return special(AP.mid[(r>>>16)%AP.mid.length]);
+    const midMoves=p.aiProfile==='abigail'?AP.mid.filter(i=>!['grab','abigail-spd'].includes(p.F.moves[i].style)||o.Y===0&&[S_FREE,S_ATK,S_CR,S_UP,S_HIT,S_BLK].includes(o.ST)):AP.mid;
+    if(d>45&&d<100&&midMoves.length&&G.tick>=s.specialReady&&chance<[.08,.14,.2,.28][diff]*(isDamnd(p)?.3:1))return special(midMoves[(r>>>16)%midMoves.length]);
     const punish=[S_HIT,S_GETUP].includes(o.ST)||o.ST===S_ATK&&o.aidx>0,low=((r>>>20)&3)===0;
     const button=isDamnd(p)?(punish?2:(r>>>17)%3):d<52?(punish&&diff>=2?2:(r>>>17)%3):(r>>>18)&1?4:5;
     return commit((low?K_D:0)|(K_ATK<<button),punish?'punish':'normal',attackDelay);
@@ -2927,7 +2929,7 @@ function drawResultProfiles(w,l){
 
 
 function arcadeDefeated(){return G.arc&&!G.mode2p?[...new Set(G.ladder.slice(0,G.li))]:[];}
-function aiSelectionName(e,slot,fid){if(!guestSelected(slot,fid)){dimg(e,0,false,'object');return;}tx(selectedProfileLabel(slot,fid),e.x+e.im.naturalWidth/2,e.y+e.im.naturalHeight-2,16,'#ffb060','#0044aa');}
+function aiSelectionName(e,slot,fid){if(!guestSelected(slot,fid)){dimg(e,0,false,'object');return;}const label=selectedProfileLabel(slot,fid);tx(label,e.x+e.im.naturalWidth/2,e.y+e.im.naturalHeight-2,label.length>6?9:16,'#ffb060','#0044aa');}
 function selce(){const bl=(G.tick>>4)&1;
 
   if(SCE&&SCE.bg.complete){if(!window.SF2CEWORLDMAP?.drawSelectBackground(cx,{defeated:arcadeDefeated(),activeFids:[G.sel[0]],image:(im,kind)=>ceFadeState()?SF2CEFADE.image(im,G.fade,kind):im}))fimg(SCE.bg,0,0);const a=SCE.f[G.sel[0]],two=G.mode2p,b=SCE.f[G.sel[1]];
@@ -3301,4 +3303,3 @@ Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...AI_REEL
 restoreEditionSettings('ce');G.wantce=1;loadce();
 
 try{const query=new URLSearchParams(location.search),explicit=query.get('edition');let saved=null;try{saved=localStorage.getItem('sf2:edition:v1');}catch{}const edition=['ww','ce','ai'].includes(explicit)?explicit:query.has('online')?null:saved;if(['ww','ce','ai'].includes(edition)){if(explicit==='ai'&&query.get('mode')==='arcade')SF2AI.startArcade(Object.hasOwn(AI_PROFILES,query.get('fighter'))?query.get('fighter'):'ryu').catch(console.error);else if(explicit==='ai'&&(ffGuestIds().includes(query.get('fighter'))||ffGuestIds().includes(query.get('opponent'))))SF2AI.configure({p1:Object.hasOwn(AI_PROFILES,query.get('fighter'))?query.get('fighter'):'ryu',p2:Object.hasOwn(AI_PROFILES,query.get('opponent'))?query.get('opponent'):'ken',training:false,mode:'cpu',dummy:'cpu'}).catch(console.error);else if(explicit==='ai'&&query.get('prototype')==='evil-ryu')SF2AI.configure({p1:'evil-ryu',p2:'ryu',training:query.get('mode')==='practice',mode:query.get('mode')==='versus'?'versus':'cpu',dummy:['stand','block','cpu'].includes(query.get('dummy'))?query.get('dummy'):'stand'}).catch(console.error);else setEdition(edition).catch(console.error);}}catch(e){console.error(e);}
-
