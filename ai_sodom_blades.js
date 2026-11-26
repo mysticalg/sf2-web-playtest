@@ -9,7 +9,7 @@ window.SF2AISodomBlades=(()=>{
   if(pack.id!=='sodom'||pack.sodomBladeBase)return;
   const source=pack.image;
   const placements=Object.keys(layers).map(i=>({frame:+i,source:+i,shiftX:0,shiftY:0}));
-  // Generated low slashes retain their +6 waist registration. Draw the native
+  // Generated low slashes retain their approved waist registration. Draw the native
   // weapon objects after joining the body so neither katana is cut at the waist.
   for(let b=3;b<6;b++){const a=f.sodomArmed[14+b];for(const e of a.ents)if(e[6]?.[2]>0&&e[0]!==f.sodomDoubleLow.frame&&!placements.some(p=>p.frame===e[0]))placements.push({frame:e[0],source:19,shiftX:f.sodomCrouchJoin.shiftX,shiftY:f.sodomCrouchJoin.shiftY});}
   placements.push({frame:f.sodomDoubleLow.frame,source:20,shiftX:f.sodomDoubleLow.shiftX,shiftY:f.sodomDoubleLow.shiftY});
