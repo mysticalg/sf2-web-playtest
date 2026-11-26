@@ -6,6 +6,7 @@ window.SF2AIRULES=(()=>{
  function mapping(p){
   const id=p.aiProfile||'ryu',base=id==='evil-ryu'?'ryu':id==='evil-ken'?'ken':id,moves=p.F.moves,names=NAMES[base]||[];
   const order=id==='andore'?[0,3,4,1,2,5]:null,out=PAIRS.slice(0,Math.max(3,moves.length)).map((mask,i)=>{const index=order?.[i]??(i<moves.length?i:0);return{mask,label:LABELS[i],index,strength:Math.min(i,2),name:(names[index]||moves[index]?.inp)+(id==='cody'&&['hero-knife','hero-knife-throw'].includes(moves[index]?.style)&&SF2AIHeroWeapons.held(p)?.type!==0?' (pick up a knife)':'')};});
+  if(id==='edi'){out.splice(0,out.length,...[[144,0,'LP + LK'],[288,1,'MP + MK'],[576,2,'HP + HK'],[544,5,'MP + HK'],[768,0,'MK + HK'],[192,3,'HP + LK'],[272,4,'LP + MK']].map(([mask,index,label])=>({mask,index,label,strength:2,name:moves[index].name||names[index]})));}
   if(id==='evil-ryu')out.push({mask:544,label:LABELS[3],command:'rift',name:'Rift Step'});
   if(id==='evil-ken')for(const [i,command]of ['ember-kick','furnace-kick','cinder-break'].entries())out.push({mask:PAIRS[i+3],label:LABELS[i+3],command,name:['Ember Kick','Furnace Kick (chain)','Cinder Break (chain + heat)'][i]});
   return out;
@@ -18,7 +19,7 @@ window.SF2AIRULES=(()=>{
   for(let bit=16;bit<=512;bit<<=1)if(pressed&bit&&!(s.locked&bit)){if(s.pending&bit&&tick-s.times[bit]>=pairFrames){s.pending&=~bit;s.pulse|=bit;}s.times[bit]=tick;s.pending|=bit;}
   for(const m of mapping(p))if(attack===m.mask&&!(s.locked&m.mask)&&(s.pending&m.mask)===m.mask){
    const times=[];for(let bit=16;bit<=512;bit<<=1)if(m.mask&bit)times.push(s.times[bit]);
-   if(Math.max(...times)-Math.min(...times)<=pairFrames&&tick-Math.min(...times)<=pairFrames){const eligible=[0,2,3,4].includes(p.ST)&&!(p.ST===2&&p.PJ)||m.command&&m.command!=='rift'&&p.MV?.kind==='evil-ken-heat'||m.command==='rift'&&p.ST===1&&p.AICombo?.active&&p.AIConfirm===p.AIAttackSerial;if(eligible)s.queue={...m,tick};s.pending&=~m.mask;s.pulse&=~m.mask;s.locked|=m.mask;break;}
+   if(Math.max(...times)-Math.min(...times)<=pairFrames&&tick-Math.min(...times)<=pairFrames){const eligible=p.aiProfile==='edi'&&p.ST===11&&p.MV?.style==='pistol'&&p.AIFFMove?.age>=10&&p.F.moves[m.index]?.style==='pistol'&&p.F.moves[m.index].hand!==p.MV.hand||[0,2,3,4].includes(p.ST)&&!(p.ST===2&&p.PJ)||m.command&&m.command!=='rift'&&p.MV?.kind==='evil-ken-heat'||m.command==='rift'&&p.ST===1&&p.AICombo?.active&&p.AIConfirm===p.AIAttackSerial;if(eligible)s.queue={...m,tick};s.pending&=~m.mask;s.pulse&=~m.mask;s.locked|=m.mask;break;}
   }
   for(let bit=16;bit<=512;bit<<=1)if(s.pending&bit&&tick-s.times[bit]>=pairFrames){s.pending&=~bit;s.pulse|=bit;}
   s.raw=attack;s.keys=(keys&15)|(attack&~s.pending&~s.locked)|s.pulse;
