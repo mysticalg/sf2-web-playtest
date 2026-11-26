@@ -2,7 +2,7 @@
    records are retained; six-button timing/health/commands are SF2 adaptations. */
 'use strict';
 window.SF2AIHeroes=(()=>{
- const clone=x=>JSON.parse(JSON.stringify(x)),data=SF2AIHeroesData,packs={},pending=[],url=file=>file+'?v='+(window.SF2BUILD?.commit||'ff-heroes-native-1');
+ const clone=x=>JSON.parse(JSON.stringify(x)),data=SF2AIHeroesData,packs={},pending=[],url=file=>file+'?v='+(window.SF2BUILD?.assetRevisions?.[file]||window.SF2BUILD?.commit||'ff-heroes-native-1');
  function canonicalLeft(source,frames){const cv=document.createElement('canvas');cv.width=source.width;cv.height=source.height;const g=cv.getContext('2d');g.imageSmoothingEnabled=false;for(const r of frames){g.save();g.translate(r[0]+r[2],r[1]);g.scale(-1,1);g.drawImage(source,...r.slice(0,4),0,0,r[2],r[3]);g.restore();}return cv;}
  const leftFrames=(frames,shift=0)=>frames.map(r=>[...r.slice(0,4),-r[4]-r[2],r[5]+shift]);
  const specs={

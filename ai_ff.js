@@ -2,7 +2,7 @@
    Sprite/arena provenance and adaptation notes: FF-BOSSES.md. */
 'use strict';
 window.SF2AIFF=(()=>{
- const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[],assetURL=file=>file+'?v='+(window.SF2BUILD?.commit||'ff-rolento-roll-26');
+ const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[],assetURL=file=>file+'?v='+(window.SF2BUILD?.assetRevisions?.[file]||window.SF2BUILD?.commit||'ff-rolento-roll-26');
  const specs={
   sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[5,6,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]],['Left Holster Fire','pistol',[12,13,14]]]},

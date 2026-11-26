@@ -10,6 +10,13 @@ function stamp(directory,commit,builtAt=new Date().toISOString()){
     const target=path.join(root,file);
     if(fs.existsSync(target))assetRevisions[file]=hash(target).slice(0,16);
   }
+  // Guest media is requested dynamically, outside the HTML reference rewrite.
+  // Keep unchanged art/audio cached while invalidating an edited file itself.
+  const media=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?media(path.join(dir,e.name)):e.isFile()&&/\.(png|mp3)$/i.test(e.name)?[path.join(dir,e.name)]:[]);
+  for(const name of ['ai-ff','ai-heroes']){
+    const directory=path.join(root,name);
+    if(fs.existsSync(directory))for(const file of media(directory))assetRevisions[path.relative(root,file).split(path.sep).join('/')]=hash(file).slice(0,16);
+  }
   const meta={status:previous.status,version:previous.version,commit,builtAt,assetRevisions};
   const walk=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):e.isFile()?[path.join(dir,e.name)]:[]);
   const files=walk(root).sort();let stamped=0;

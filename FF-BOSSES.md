@@ -340,3 +340,10 @@ Validation: input-driven Edi standing/low HP and alternating four-shot chains at
 ### Rolento input regression checkpoint (2026-11-26)
 
 `node tests/rolento-movement.browser.cjs` exercises both player slots with ordinary held-down/up+P or +K inputs, plus the LP+MK grenade shortcut. All four wall dives traverse approach, brace, dive and landing recovery, land one genuine hit and return to control. Both barrage cases produce three distinct damage events and clear all three grenade objects. Six crouching kick cases use original slide pose18 with increasing light/medium/heavy travel (17.77/41.57/73.46 pixels). Neutral jumps use all four original roll frames27/5/6/7; each edge permits an input-driven wall rebound and grounded recovery. Sixteen local cases pass without browser errors; source screenshots of the wall dives and third FF explosion were inspected. This confirms the current authored AI controls, not full original Final Fight AI parity or every exceptional matchup.
+
+
+### Guest media cache (2026-11-26)
+
+Published builds now assign SHA256 content revisions to each deployed Final Fight PNG/MP3 under ai-ff and ai-heroes. Boss/hero sprite, portrait, stage, weapon and lazy sound/music loaders use these per-file revisions, with the existing commit fallback for unstamped development builds. Belger chair and Sodom blade overlays share the same revision as their corresponding files. An unrelated release retains the URLs; changing one sprite invalidates only that sprite. This removes unnecessary repeat downloads after updates; it does not claim a runtime FPS improvement or reduce the first download.
+
+Verification: stamp tests cover stable cross-release keys, changed-media invalidation, metadata and manifest hashes; real browser requests verify49media URLs across eight guest fighters and native gun SFX. Rolento16 and Edi12 input cases still pass with no browser errors. The skill input-loop capture and gameplay screenshots were inspected. Broader boss and native SSF2T integration work remains active.

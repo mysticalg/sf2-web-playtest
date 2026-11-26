@@ -3,7 +3,7 @@
 'use strict';
 window.SF2AIFFChair=(()=>{
  const pack=SF2AIFFData.belger,native=pack.nativeRecovery,data=native.chair,frames=pack.frames,image=new Image();
- image.src=pack.image+'?v='+(window.SF2BUILD?.commit||'belger-native-1');const ready=image.decode(),guest=p=>p.aiProfile==='belger';
+ image.src=pack.image+'?v='+(window.SF2BUILD?.assetRevisions?.[pack.image]||window.SF2BUILD?.commit||'belger-native-1');const ready=image.decode(),guest=p=>p.aiProfile==='belger';
  const word=n=>n<<16>>16,flash=[1,0,0,1,0,0,1,0,1,0,1,1,1,1,1,1];
  function clear(p){delete p.AIFFChair;delete p.AIFFDismounted;}
  function reset(p){clear(p);if(guest(p))p.AIFFChair={phase:'mounted',x:p.X/256,face:p.FACE,hp:p.HP,maxHP:p.maxHP||320,age:0,breaks:0,pieces:[],tick:null,contactSerial:[]};window.SF2AIFF?.belgerSync?.(p);}

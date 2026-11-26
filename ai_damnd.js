@@ -4,7 +4,7 @@
 window.SF2AIDamnd=(()=>{
  const D=window.SF2AIDamndData,image=new Image(),barrelImage=new Image();image.src=D.img;barrelImage.src=D.barrel.image;let loaded=false,template=null;
  // Original arcade intro TV close-up, preserved colours; sprite rip: ScrollBoss.
- const portraitImage=new Image();portraitImage.src='ai-ff/damnd-profile.png?v='+(window.SF2BUILD?.commit||'damnd-profile-2');
+ const portraitImage=new Image();portraitImage.src='ai-ff/damnd-profile.png?v='+(window.SF2BUILD?.assetRevisions?.['ai-ff/damnd-profile.png']||window.SF2BUILD?.commit||'damnd-profile-2');
  const ready=Promise.all([image.decode(),portraitImage.decode(),barrelImage.decode()]).then(()=>{loaded=true;});
  const clone=x=>JSON.parse(JSON.stringify(x)),pose=name=>D.actions[name],one=(name,n=0,ticks=8)=>[{...pose(name)[n],ticks}];
  function boxes(frame){const f=D.frames[frame],r=f.rect,low=r[3]<85,headY=Math.max(24,Math.min(94,-r[5]-12));
