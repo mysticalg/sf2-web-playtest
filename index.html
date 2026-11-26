@@ -9,13 +9,14 @@ canvas{image-rendering:pixelated;image-rendering:crisp-edges;width:min(100vw,cal
 canvas:fullscreen{width:100vw;height:100vh;object-fit:contain;background:#000}@media(any-pointer:coarse){html,body{height:auto;min-height:100%;justify-content:flex-start}canvas{width:min(100vw,calc((100dvh - 190px)*384/224));margin-top:4px}body>div{max-width:100%;font-size:10px;text-align:center;line-height:1.4}}
 
 html:has(#ai-rule-help[open]:not([hidden])),body:has(#ai-rule-help[open]:not([hidden])){height:auto;min-height:100%;justify-content:flex-start}
+#ssf2t-native-link{display:none}body:has(#ai-rule-help:not([hidden])) #ssf2t-native-link{display:inline}
 </style></head>
 
 <body><canvas id="c" width="384" height="224" aria-label="Street Fighter II game"></canvas>
 
 <div>P1 arrows + A S D (punch) Z X C (kick) &middot; P2 I J K L + numpad 7 8 9 / 4 5 6 &middot; Tab CPU/2P &middot; Space restart &middot; F fullscreen &middot; M mute</div>
 
-<div>Work in progress &middot; <span id="build-version">Local development</span> &middot; VERSION: WW / CE / AI &middot; AI: FF native Andore + faster zoom r2 &middot; Enter / punch to start &middot; Esc back &middot; <a href="lobby.html?v=ad4f131c65d55afb83ed356db3f4ffadb2d5e9cb" style="color:#bbb">Online versus</a></div>
+<div>Work in progress &middot; <span id="build-version">Local development</span> &middot; VERSION: WW / CE / AI <span id="ssf2t-native-link">&middot; <a href="./ssf2t-ai/" style="color:#bbb">SSF2T native preview</a></span> &middot; Enter / punch to start &middot; Esc back &middot; <a href="lobby.html?v=ad4f131c65d55afb83ed356db3f4ffadb2d5e9cb" style="color:#bbb">Online versus</a></div>
 
 <script>if(window.SF2BUILD)document.getElementById('build-version').textContent='Version '+SF2BUILD.version+' ('+SF2BUILD.commit.slice(0,8)+')';</script>
 

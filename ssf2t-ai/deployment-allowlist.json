@@ -1,0 +1,29 @@
+{
+  "targetRoute": "ssf2t-ai/",
+  "mainLink": "./ssf2t-ai/",
+  "backLink": "../?edition=ai",
+  "files": [
+    "index.html",
+    "bridge.js",
+    "rom-loader.js",
+    "rom-manifest.js",
+    "ssf2t-native.js",
+    "ssf2t-native.wasm",
+    "about.html",
+    "SCOPE.md",
+    "SOURCE-LICENSES.md",
+    "corresponding-source.zip",
+    "source-proof.json",
+    "deployment-allowlist.json"
+  ],
+  "neverCopy": [
+    "private/",
+    "reference/",
+    "*.data",
+    "*.bin",
+    "*.rom",
+    "ssf2t.zip",
+    "opcode dumps"
+  ],
+  "totalBytesWithoutThisManifest": 16556751
+}

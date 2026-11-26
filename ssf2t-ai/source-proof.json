@@ -1,0 +1,101 @@
+{
+  "edition": "SSF2T Europe 940223",
+  "referencePin": "e266571432b12552a986fb66e702810df32947b3",
+  "cpuOpcodeDecodersLinked": false,
+  "uncoveredAddressPolicy": "Abort; no interpreter fallback",
+  "fixedNativeSites": {
+    "0x0b3164": "DIVS D3,D1",
+    "0x0b3248": "DIVS D3,D1",
+    "0x0b3180": "DIVS D3,D2",
+    "0x0b3260": "DIVS D3,D2",
+    "0x0a3480": "DIVS D3,D1",
+    "0x0a3554": "DIVS D3,D1",
+    "0x0a349c": "DIVS D3,D2",
+    "0x0a356c": "DIVS D3,D2",
+    "0x0a0850": "DIVS #20,D0",
+    "0x005aa4": "DIVU D0,D1",
+    "0x090f78": "DIVS D3,D1",
+    "0x09104c": "DIVS D3,D1",
+    "0x090f94": "DIVS D3,D2",
+    "0x091064": "DIVS D3,D2",
+    "0x096c7e": "MOVE (A0),CCR",
+    "0x09b396": "DIVU D4,D3",
+    "0x0074": "post-EI RET",
+    "0x007d": "post-EI LD B,04",
+    "0x00e6": "post-EI LD HL,F005"
+  },
+  "standardBrowserCases": 32,
+  "oldAndAkumaBrowserCases": 17,
+  "strictNativeCases": 98,
+  "strictNativeFrames": 560877,
+  "strictReferencePictures": 196,
+  "strictReferencePictureBytes": 50580348,
+  "fixedInstructionEdgeCases": 131072,
+  "romPreloadDistributed": false,
+  "localFilesVerified": 23,
+  "soundProgramVersion": "1.04",
+  "sourceFiles": 175,
+  "sourceArchiveSHA256": "39223a7c7e4f93bc8c7208b3ddace5f9ba5161bdbbb116ea3887156a99d5e8ab",
+  "ordinaryInputArcade": {
+    "winner": "Ryu",
+    "roundWins": 24,
+    "roundLosses": 0,
+    "matches": 12,
+    "cpuAkumaFinal": true,
+    "toolAssistedInputGeneration": true,
+    "stateLoadsInReplay": 0,
+    "strictFrames": 80000,
+    "strictRGBPictures": 675,
+    "strictAudioBytes": 128982000,
+    "browserFrames": 60200,
+    "browserStateSamples": 2006,
+    "browserRGBPictures": 642,
+    "endingFrame": 51188,
+    "titleFrame": 59903,
+    "cpuFallback": 0,
+    "z80Fallback": 0
+  },
+  "postEndingKeyboardStartAndResetButton": true,
+  "ordinaryInputCommonFlows": {
+    "gameOver": {
+      "frames": 18000,
+      "stateSamples": 600,
+      "rgbPictures": 147
+    },
+    "continue": {
+      "frames": 20000,
+      "stateSamples": 666,
+      "rgbPictures": 243,
+      "creditSpent": true
+    }
+  },
+  "remaining": [
+    "Other fighter endings",
+    "Every character mechanic and exceptional path",
+    "Hardware GPU/DSP parity including Q1 spatial DSP and ADPCM"
+  ],
+  "artifacts": {
+    "ssf2t-native.js": {
+      "bytes": 19103,
+      "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
+    },
+    "ssf2t-native.wasm": {
+      "bytes": 14277561,
+      "sha256": "262fe757b0c91db4b954aa05a8166143c40a21e13cbe645d4756b73af662cef9"
+    },
+    "bridge.js": {
+      "bytes": 8904,
+      "sha256": "af0e5bcb9e0da826fb5c2e645ef0b1469693ae0c268d4404ee9d313b111e2671"
+    },
+    "rom-loader.js": {
+      "bytes": 5183,
+      "sha256": "abd3157c488e318544d955e5d1b11a193e390841d7d71ba9e4f0bcd9237f3dae"
+    },
+    "rom-manifest.js": {
+      "bytes": 4604,
+      "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
+    }
+  },
+  "packageVersion": "dbf1bfe09f7769f5b76e2fe290b46fff980a5dcec7ba1b90cfedc98a73cb16ac",
+  "wasmCacheVersion": "262fe757b0c91db4b954aa05a8166143c40a21e13cbe645d4756b73af662cef9"
+}

@@ -1,0 +1,15 @@
+# Native preview scope
+
+Playable: original European title, character select, CPU arcade opponents, local two-player input, seventeen standard/hidden fighters and all sixteen old forms. Original controllers, collisions, sprites, stage code and sound program run as static native functions. No Champion Edition game implementation is substituted.
+
+Verified: 32 standard roster/slot browser scenarios; sixteen old forms and Akuma through original hidden codes; 98 strict native scenarios over 560,877 frames. The strict matrix matches whole RAM, video RAM and every audio-sample hash, plus 196 RGB pictures. Stage diagnostics set the original stage index before its native build, separately from the input-only arcade proof below.
+
+One complete Ryu arcade playthrough is verified from ordinary stick/button input: 24 round wins, twelve matches, the native CPU Akuma intrusion, country travel, original Ryu ending, staff roll, CAPCOM group and return to title. Its input tape was selected with offline tool-assisted planning; the independent reference, strict and browser replays contain no state restoration. The only setting write selects the original easiest operator difficulty. Health, result, stage, RNG and timer are never injected. This is one Ryu clear, not a claim of seventeen complete character playthroughs.
+
+The independent strict replay runs 80,000 frames, matches 675 complete RGB pictures and every audio sample against the original-instruction reference, and reaches the title at native frame 59,903. The production browser replays 60,200 frames, matches all 2,006 state samples and 642 reference RGB pictures. Native Continue acceptance and credit spending, resumed combat, Game Over timeout and return to title pass separate 20,000/18,000-frame reference, strict and browser replays. All paths have zero CPU or Z80 fallback. The corresponding-source archive includes reusable ordinary-input QA tapes, expected state values and picture hashes; no ROM graphics or audio are included.
+
+Natural original Ryu super charge, activation, gauge consumption and blocked contact pass in the production loader. Difficulty and Turbo options use the original native operator parameters. Pause, keyboard, local ZIP validation and real audio playback pass browser tests. Guile-stage pacing measured 59.39 fps over a short 3.18-second test, not a universal performance guarantee.
+
+Still being checked: other character endings, every character mechanic, exceptional native branches and hardware GPU/DSP parity. Existing AI Edition blood, finishers and Final Fight additions remain separate. Audio executes the original 1.04 sound program through a reference mixer lacking Q1 spatial DSP and three ADPCM voices. Internal picture/audio equality does not establish hardware parity.
+
+Controls: P1 arrows; A/S/D punches, Z/X/C kicks, 5 coin, Enter start. P2 I/J/K/L; numpad 7/8/9 punches, 4/5/6 kicks, with U/O/P and N/M/comma aliases; 6 coin, 2 start. F fullscreen, Esc exits. The local ROM file never leaves the device. No ROM is included in the package.
