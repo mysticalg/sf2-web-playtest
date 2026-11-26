@@ -1,7 +1,7 @@
 /* Deterministic AI Edition adapters. No device reads or gameplay RNG draws. */
 'use strict';
 window.SF2AIRULES=(()=>{
- const WINDOW=2,ATTACK=1008,PAIRS=[144,288,576,544,272,192],LABELS=['LP + LK','MP + MK','HP + HK','MP + HK','LP + MK','HP + LK'];
+ const WINDOW=2,ATTACK=1008,PAIRS=[144,288,576,544,272,192,528],LABELS=['LP + LK','MP + MK','HP + HK','MP + HK','LP + MK','HP + LK','LP + HK'];
  const NAMES={...Object.fromEntries(Object.entries(window.SF2AIFF.specs).map(([id,p])=>[id,p.specials.map(m=>m[0])])),damnd:['Street Rush','Somersault Kick','Rising Smash','Barrel Call'],ryu:['Hadoken','Shoryuken','Tatsumaki'],honda:['Hundred Hand Slap','Sumo Headbutt'],blanka:['Electric Thunder','Rolling Attack'],guile:['Sonic Boom','Flash Kick'],ken:['Hadoken','Shoryuken','Tatsumaki'],'chun-li':['Lightning Legs','Spinning Bird Kick'],zangief:['Spinning Piledriver','Double Lariat'],dhalsim:['Yoga Flame','Yoga Fire'],bison:['Psycho Crusher','Double Knee Press','Head Press'],sagat:['High Tiger Shot','Low Tiger Shot','Tiger Uppercut','Tiger Knee'],balrog:['Dash Straight','Dash Upper','Turn Punch (punch)','Turn Punch (kick)'],vega:['Rolling Crystal Flash','Flying Barcelona','Backflip']};
  function mapping(p){
   const id=p.aiProfile||'ryu',base=id==='evil-ryu'?'ryu':id==='evil-ken'?'ken':id,moves=p.F.moves,names=NAMES[base]||[];
