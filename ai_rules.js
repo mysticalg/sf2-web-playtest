@@ -5,7 +5,7 @@ window.SF2AIRULES=(()=>{
  const NAMES={...Object.fromEntries(Object.entries(window.SF2AIFF.specs).map(([id,p])=>[id,p.specials.map(m=>m[0])])),damnd:['Street Rush','Somersault Kick','Rising Smash','Barrel Call'],ryu:['Hadoken','Shoryuken','Tatsumaki'],honda:['Hundred Hand Slap','Sumo Headbutt'],blanka:['Electric Thunder','Rolling Attack'],guile:['Sonic Boom','Flash Kick'],ken:['Hadoken','Shoryuken','Tatsumaki'],'chun-li':['Lightning Legs','Spinning Bird Kick'],zangief:['Spinning Piledriver','Double Lariat'],dhalsim:['Yoga Flame','Yoga Fire'],bison:['Psycho Crusher','Double Knee Press','Head Press'],sagat:['High Tiger Shot','Low Tiger Shot','Tiger Uppercut','Tiger Knee'],balrog:['Dash Straight','Dash Upper','Turn Punch (punch)','Turn Punch (kick)'],vega:['Rolling Crystal Flash','Flying Barcelona','Backflip']};
  function mapping(p){
   const id=p.aiProfile||'ryu',base=id==='evil-ryu'?'ryu':id==='evil-ken'?'ken':id,moves=p.F.moves,names=NAMES[base]||[];
-  const out=PAIRS.slice(0,Math.max(3,moves.length)).map((mask,i)=>({mask,label:LABELS[i],index:i<moves.length?i:0,strength:Math.min(i,2),name:names[i<moves.length?i:0]||moves[i<moves.length?i:0]?.inp}));
+  const order=id==='andore'?[0,3,4,1,2,5]:null,out=PAIRS.slice(0,Math.max(3,moves.length)).map((mask,i)=>{const index=order?.[i]??(i<moves.length?i:0);return{mask,label:LABELS[i],index,strength:Math.min(i,2),name:names[index]||moves[index]?.inp};});
   if(id==='evil-ryu')out.push({mask:544,label:LABELS[3],command:'rift',name:'Rift Step'});
   if(id==='evil-ken')for(const [i,command]of ['ember-kick','furnace-kick','cinder-break'].entries())out.push({mask:PAIRS[i+3],label:LABELS[i+3],command,name:['Ember Kick','Furnace Kick (chain)','Cinder Break (chain + heat)'][i]});
   return out;

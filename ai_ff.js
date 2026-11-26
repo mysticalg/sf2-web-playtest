@@ -79,7 +79,7 @@ window.SF2AIFF=(()=>{
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(112,'Andore Flying Seat Drop',[[p.data.airborneFrame,10]],{loop:true});f.anims[112].ents[0][6]=[0,18,34,30];f.anims[112].ents[0][7]=28;f.anims[112].ents[0][8]=2;f.anims[112].ents[0][9]=1;f.anims[112].ents[0][10]=-1;put(113,'Andore Seat Drop Landing',[[11,14],[0,10]]);
    put(111,'Andore Choke Hold',sequence(p,'choke'),{loop:true});put(114,'Andore Carry Straight',sequence(p,'carryStraight'),{loop:true});put(115,'Andore Carry Shake',sequence(p,'carryBent'),{loop:true});
-   put(121,'Andore Piledriver Choke',sequence(p,'choke'),{loop:true});
+   put(121,'Andore Piledriver Choke',sequence(p,'choke'),{loop:true});put(132,'Andore Carry Jump',[[20,12]],{loop:true});
    put(116,'Andore Piledriver Squat',[[11,10]],{loop:true});
    put(107,'Andore Piledriver Lift',[[p.data.liftFrame,10]],{loop:true});put(108,'Andore Piledriver Air',[[p.data.airborneFrame,8]],{loop:true});put(109,'Andore Piledriver Land',[[12,14],[0,12]]);
   }
@@ -264,7 +264,7 @@ window.SF2AIFF=(()=>{
    const room=h.room(),edge=(s.dir>0?room.right-40:room.left+40)*256;
    player.X+=s.dir*speed;
    if(s.dir>0?player.X>=edge:player.X<=edge){player.X=edge;stop();}
-   else{const frame=1+Math.floor((s.age-19)/3)%(last-1);if(player.aidx!==frame)h.anim(player,100,frame);player.acc=-1;}
+   else{const frame=1+Math.floor((s.age-19)/(player.aiProfile==='sodom'?3:6))%(last-1);if(player.aidx!==frame)h.anim(player,100,frame);player.acc=-1;}
   }
   if(s.contact){player.X+=s.dir*s.skid*256;s.skid*=.75;}
   player.SPKD=1;if(s.stop&&s.age>=s.stop){delete player.AIFFMove;h.idle(player);}
@@ -297,30 +297,44 @@ window.SF2AIFF=(()=>{
  function bulletStep(player,room){for(const b of player.AIFFBullets||[]){b.x+=b.vx;if(b.ay){b.y+=b.vy;b.vy-=b.ay;}b.age++;}player.AIFFBullets=player.AIFFBullets.filter(b=>!b.hit&&b.y>=0&&b.age<=120&&b.x>=room.left-32&&b.x<=room.right+32);const b=player.AIFFBullets[0];player.FBON=b?1:0;if(b){player.FBX=Math.round(b.x*256);player.FBY=b.y*256;player.FBVX=b.vx*256;}else delete player.AIFFBullets;}
  function bulletContacts(player){return(player.AIFFBullets||[]).filter(b=>!b.hit).map(b=>({bullet:b,box:[b.x,b.y,b.type==='bolt'?8:6,3]}));}
  function bulletDraw(ctx,player,camera,ground){ctx.save();ctx.imageSmoothingEnabled=false;for(const b of player.AIFFBullets||[]){if(b.hit)continue;ctx.save();ctx.translate(Math.round(b.x-camera),Math.round(ground-b.y));if(b.type==='bolt'){ctx.rotate(Math.atan2(-(b.vy||0),b.vx));ctx.scale(-1,1);ctx.drawImage(boltImage,-7,-1);}else{if(b.dir>0)ctx.scale(-1,1);ctx.drawImage(bulletImage,-5,-1);}ctx.restore();}ctx.restore();}
- function holdStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{age:0,pulses:0,escape:0,walk:0,ownerPrevious:player.AIButtons?.raw||0,previous:((o.AIButtons?.raw||0)|(o.KEYS&15)),dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false,choke:true}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
+ function holdStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{age:0,pulses:0,escape:0,walk:0,ownerPrevious:player.AIButtons?.raw||0,ownerDirections:player.KEYS&15,previous:((o.AIButtons?.raw||0)|(o.KEYS&15)),dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false,choke:true}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function holdStep(player,h){const s=player.AIFFHold,o=player.opp;s.age++;
-  const attack=player.AIButtons?.raw||0,punch=(attack&~s.ownerPrevious)&112;s.ownerPrevious=attack;if((attack&544)===544||(s.age>5&&punch)){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;throwStart(player,2,{...h,move:h.throwMove,special:true});return;}if((attack&192)===192){holdRelease(player,h,false);start(player,player.F.moves[5],2,h);return;}
+  const attack=player.AIButtons?.raw||0,punch=(attack&~s.ownerPrevious)&112,jump=!!(player.KEYS&4)&&!(s.ownerDirections&4);s.ownerPrevious=attack;s.ownerDirections=player.KEYS&15;
+  if(!s.airborne&&(attack&288)===288){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;throwStart(player,2,{...h,move:h.throwMove,special:true});return;}
+  if(!s.airborne&&(attack&192)===192){holdRelease(player,h,false);start(player,player.F.moves[5],2,h);return;}
   if(!player.THV||o.HP<=0){holdRelease(player,h,true);return;}
   const raw=(o.AIButtons?.raw||0)|(o.KEYS&15),fresh=(raw&~s.previous)&1008,direction=raw&15;let points=0;if(fresh)points+=2;if(direction&&direction!==(s.previous&15))points++;s.previous=raw;
   if(h.cpu?.(o)&&s.age>18&&s.age%6===0)points+=2;s.escape=Math.min(14,s.escape+Math.min(3,points));
   if(s.escape>=14){s.escaped=true;holdRelease(player,h,false);return;}
+  if(!s.airborne&&(jump||h.cpu?.(player)&&s.pulses>=2)){
+   s.airborne=true;s.airAge=0;player.VX=(((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0))*0x180;player.VY=0x780;player.AY=0x60;player.AX=0;player.THAN=132;h.anim(player,132,0);h.sound(0x2b);
+  }
+  if(s.airborne){
+   s.airAge++;
+   if(player.Y>12*256&&(punch||h.cpu?.(player)&&s.airAge>=12)){
+    delete player.AIFFHold;player.MV=h.throwMove;player.THV={t:999,dmg:40,d:s.dir};player.AIFFThrow={age:0,phase:'jump',dir:s.dir,manual:true};o.AIFFHeld={owner:player.i,inverted:true};player.THAN=108;player.VY=Math.min(player.VY,-0x300);player.AY=0x90;h.anim(player,108,0);invertedGrip(player,h,s.dir);h.sound(0x2b);return;
+   }
+   if(h.gravity(player)){const room=h.room();player.X=Math.max((room.left+96)*256,Math.min((room.right-96)*256,player.X));headGrip(player,h,s.dir);return;}
+   s.airborne=false;player.THAN=111;h.anim(player,111,0);h.sound(0x2f);
+  }
   const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10;const move=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);if(move){const room=h.room(),margin=96;player.X=Math.max((room.left+margin)*256,Math.min((room.right-margin)*256,player.X+move*0x180));s.walk++;}const chokeAnim=move?(shaking?115:114):111,chokeIndex=move?Math.floor(s.walk/4)%6:shaking?((phase>>1)%2):0;if(player.cur!==chokeAnim||player.aidx!==chokeIndex)h.anim(player,chokeAnim,chokeIndex);player.acc=-1;
   headGrip(player,h,s.dir);
   if(s.age>=20&&(s.age-20)%24===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0){holdRelease(player,h,true);return;}h.anim(o,22,0);}
  }
- function headGrip(player,h,dir){const o=player.opp,grip=art(player).rect,head=h.head?.(o),gx=player.X/256+dir*(-grip[4]-4),gy=-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
- function holdRelease(player,h,fatal=false){const o=player.opp;delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;if(fatal){h.drop?.(o);}else if(o.Y>0&&h.releaseHeld){h.releaseHeld(o);}else{o.ST=5;o.STUN=12;o.KB=0;o.Y=0;}h.idle(player);}
+ function headGrip(player,h,dir){const o=player.opp,grip=art(player).rect,head=h.head?.(o),gx=player.X/256+dir*(-grip[4]-4),gy=player.Y/256-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
+ function invertedGrip(player,h,dir,impact=false){const o=player.opp,scale=bodyScale(player),squat=player.cur===116||impact,head=h.invertedHead?.(o),x=player.X/256-dir*(squat?2:12)*scale,y=player.Y/256+(squat?14:8)*scale;if(head){o.X+=Math.round((x-head.x)*256);o.Y=Math.max(Math.round(head.minimumY*256),o.Y+Math.round((y-head.y)*256));}else{o.X=player.X+dir*7*scale*256;o.Y=player.Y+66*scale*256;}if(impact&&head)o.Y=Math.round(head.minimumY*256);o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
+ function holdRelease(player,h,fatal=false){const o=player.opp;delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;if(fatal){h.drop?.(o);}else if(o.Y>0&&h.releaseHeld){h.releaseHeld(o);}else{o.ST=5;o.STUN=12;o.KB=0;o.Y=0;}if(player.Y>0&&h.releaseHeld){player.MV=null;h.releaseHeld(player,true);}else h.idle(player);}
  function pileStep(player,h){
   const s=player.AIFFThrow,o=player.opp;s.age++;
   if((!player.THV||o.HP<=0)&&s.phase!=='recover'){cancelThrow(player,h);return;}
   if(s.phase==='grip'&&s.age>=60){s.phase='squat';s.squatAt=s.age;o.AIFFHeld.inverted=true;h.anim(player,116,0);}
   if(s.phase==='squat'&&s.age-s.squatAt>=24){s.phase='jump';player.VY=0x1000;player.AY=0x90;player.VX=s.dir*0x80;player.AX=0;h.anim(player,108,0);o.AIFFHeld.inverted=true;h.sound(0x2b);}
   if(s.phase==='jump'){
-   if(!h.gravity(player)){s.phase='recover';s.landed=s.age;delete o.AIFFHeld;h.slam(player);h.groundImpact?.(player);h.anim(player,109,0);h.sound(0x2f);}
+   if(!h.gravity(player)){s.phase='recover';s.landed=s.age;s.impactHeld=true;h.slam(player);h.anim(player,109,0);invertedGrip(player,h,s.dir,true);h.groundImpact?.(player);h.sound(0x2f);}
   }
   if(s.phase==='grip'){const pose=Math.floor(s.age/10)%2;if(player.aidx!==pose)h.anim(player,121,pose);player.acc=-1;headGrip(player,h,s.dir);if(s.age===20||s.age===40)h.sound(0x2b);}
-  else if(s.phase!=='recover'){o.X=player.X+s.dir*7*bodyScale(player)*256;o.Y=player.Y+(s.phase==='squat'?85:66)*bodyScale(player)*256;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
-  else if(s.age-s.landed>=48){delete player.AIFFThrow;h.idle(player);}
+  else if(s.phase!=='recover')invertedGrip(player,h,s.dir);
+  else{if(s.impactHeld){invertedGrip(player,h,s.dir,true);if(s.age-s.landed>=8){s.impactHeld=false;h.releaseSlam(player);}}if(s.age-s.landed>=48){delete player.AIFFThrow;h.idle(player);}}
  }
  function cancelThrow(player,h){const o=player.opp;delete o.AIFFHeld;delete player.AIFFThrow;delete player.AIFFHold;player.THV=null;if(o.ST===5&&o.STUN>500){o.STUN=12;o.KB=0;if(o.Y>0)h.drop?.(o);} }
  const heldImages=new WeakMap();
