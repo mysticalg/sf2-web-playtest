@@ -40,7 +40,7 @@ window.SF2AIFF=(()=>{
    const source=ac.createBufferSource(),gain=ac.createGain();source.buffer=buffer;source.loop=true;source.loopStart=record.loopStart;source.loopEnd=Math.min(record.loopEnd,buffer.duration);gain.gain.value=.65;source.connect(gain);gain.connect(dest);musicVoice={source,gain};musicState='playing';musicStarts++;source.start();
   }catch(error){if(request!==musicRequest)return;musicBuffers.delete(key);musicError=error.message;musicState='error';console.warn(error.message);}
  }
- const ready=Promise.all([...pending,SF2AIFFChair.ready]),get=id=>packs[id],ids=()=>['damnd','sodom','andore','edi','rolento','abigail','belger'];
+ const ready=Promise.all([...pending,SF2AIFFChair.ready,window.SF2AISodomBlades?.ready]),get=id=>packs[id],ids=()=>['damnd','sodom','andore','edi','rolento','abigail','belger'];
  function sequence(p,which,ticks=5){const list=typeof which==='string'?p.data.nativeActions[which]:which;return list.map(e=>Array.isArray(e)?[e[0],Math.max(1,Math.min(120,e[1]))]:[e,ticks]);}
  function anim(p,name,list,{loop=false,attack=false,strength=1,low=false,crouch=false,kd=false}={}){
   const seq=sequence(p,list);return{name,guest:true,crouch,mode:loop?0:1,loop:0,source:0,flags:seq.map((_,i)=>i===seq.length-1?(loop?32768:32769):0),ents:seq.map(([f,t],i)=>{
@@ -149,7 +149,7 @@ window.SF2AIFF=(()=>{
    put(105,'Belger Escape Hop',[[9,5],[8,10],[7,8]],{loop:true});
   }
   const scale=p.data.sizeAdjustment?.factor||1;if(scale!==1)for(const a of f.anims)for(const e of a.ents)for(let k=2;k<=6;k++)if(Array.isArray(e[k]))e[k]=e[k].map(n=>Math.round(n*scale));
-  retimeNormals(f);andoreCrouchPunch(p,f);andorePalmNormals(p,f);if(p.id==='sodom'){sodomUnarmed(p,f);sodomDoubleNormals(p,f);}delete f._ai;return p.template=f;
+  retimeNormals(f);andoreCrouchPunch(p,f);andorePalmNormals(p,f);if(p.id==='sodom'){sodomUnarmed(p,f);sodomDoubleNormals(p,f);window.SF2AISodomBlades?.apply(p,f);}delete f._ai;return p.template=f;
  }
  function sodomUnarmed(pack,f){
   const source=pack.image,lower=f.frames[42],atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+130;const g=atlas.getContext('2d');g.drawImage(source,0,0);const low=[];
@@ -197,8 +197,8 @@ window.SF2AIFF=(()=>{
  }
  function swordEquipped(player){return player.aiProfile!=='sodom'||!player.AIFFSword;}
  function swordAnims(player,armed){const list=armed?player.F?.sodomArmed:player.F?.sodomUnarmed;if(!list)return;for(const [i,a]of Object.entries(list))player.F.anims[i]=a;if(player.anim?.guest){player.anim=player.F.anims[player.cur];player.aidx=Math.min(player.aidx,player.anim.ents.length-1);player.acc=Math.min(player.acc,player.anim.ents[player.aidx][1]-1);}}
- function resetSword(player){swordAnims(player,true);delete player.AIFFSword;delete player.AIFFNormal;}
- function disarm(player,dir){if(player.aiProfile!=='sodom'||player.AIFFSword)return false;player.AIFFSword={x:player.X/256,y:player.Y/256+78,vx:dir*1.5,vy:3.5,age:0,bounce:0,phase:'toss'};swordAnims(player,false);return true;}
+ function resetSword(player){swordAnims(player,true);delete player.AIFFSword;delete player.AIFFNormal;if(player.aiProfile==='sodom')window.SF2AISodomBlades?.sync(get('sodom'),player);}
+ function disarm(player,dir){if(player.aiProfile!=='sodom'||player.AIFFSword)return false;player.AIFFSword={x:player.X/256,y:player.Y/256+78,vx:dir*1.5,vy:3.5,age:0,bounce:0,phase:'toss'};swordAnims(player,false);window.SF2AISodomBlades?.sync(get('sodom'),player);return true;}
  function swordStep(player,room,sound){const w=player.AIFFSword;if(!w)return;w.age++;if(w.phase==='floor')return;w.vy-=.34375;w.vx-=Math.sign(w.vx)*Math.min(Math.abs(w.vx),2/256);w.x+=w.vx;w.y+=w.vy;w.x=Math.max(room.left+44,Math.min(room.right-44,w.x));
   if(w.y<=0){w.y=0;sound?.();if(!w.bounce){w.bounce=1;w.vx=Math.sign(w.vx||1);w.vy=3;}else{w.phase='floor';w.vx=w.vy=0;}}
  }
@@ -216,7 +216,7 @@ window.SF2AIFF=(()=>{
   if(p.id==='belger'&&SF2AIFFChair.dismounted(player)&&frame<=6)frame=player.Y>0?8:7;
   // Shared airborne poses retain their air pivot; grounded reuse meets the same sole line.
   let rect=f.frames[frame];const groundShift=p.data.floorAlignment?.groundFrameOffsets?.[frame];if(player.Y===0&&player.ST<=4&&groundShift)rect=[...rect.slice(0,5),rect[5]+groundShift];
-  return{image:p.image,rect,alternate:false,burning:!!player.CESpecial&&player.anim?.name?.startsWith('ceSpecialBurn')};
+  return{image:p.id==='sodom'&&window.SF2AISodomBlades?SF2AISodomBlades.artImage(p,player):p.image,rect,alternate:false,burning:!!player.CESpecial&&player.anim?.name?.startsWith('ceSpecialBurn')};
  }
  function portrait(id,original,kind){const p=get(id),w=original.naturalWidth||original.width,h=original.naturalHeight||original.height,key=w+':'+h+kind;if(p.portraits.has(key))return p.portraits.get(key);const c=document.createElement('canvas');c.width=w;c.height=h;const g=c.getContext('2d');g.imageSmoothingEnabled=false;if(!kind.endsWith('R')){g.translate(w,0);g.scale(-1,1);}const top=kind.startsWith('sel')?32:0,scale=Math.max(w/76,(h-top)/72),dw=76*scale,dh=72*scale;g.save();g.beginPath();g.rect(0,top,w,h-top);g.clip();g.drawImage(p.portraitImage,8,0,76,72,(w-dw)/2,top+(h-top-dh)/2,dw,dh);g.restore();p.portraits.set(key,c);return c;}
  function victoryStep(player){
