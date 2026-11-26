@@ -70,7 +70,7 @@ Verified mirrored grounded soles,206 normal/special lifecycles, allguest normal 
 
 Original detached crossbow bolts are removed from body frames and emitted as independent projectiles. Volley releases three horizontal bolts; Sky Bolt Rain fires three bolts upward with gravity so they descend across the opponent's position. Escape Leap is a backward leap; Escape Hop retreats while firing three bolts. Standing shooting poses are registered by their visible soles rather than detached projectile bounds.
 
-Belger starts mounted and stays dismounted after attacking, jumping, taking damage or guarding. He no longer instantly returns to the chair between standing attack/hurt poses. A new round resets the mounted state. The body sprites retain native pixel dimensions.
+Belger starts mounted. A separate simulation-owned chair now persists while he stands or jumps away; he can re-seat when he returns. An unblocked hit or knockdown breaks it once and leaves him on foot until the next round. Guarding and nonlethal chip preserve it. The body sprites retain native pixel dimensions.
 
 Mirrored volley/rain/hop lifecycles verify three independent shots, rise/fall trajectories, actual volley/rain damage, backward movement, full recovery and projectile cleanup. Chair damage/attack persistence and reset, all206 normal/special lifecycles, seven-guest floor baselines and twelve-hit chains pass; guard/dizzy/fire recovery and original WW/CE combat traces pass. Action-client and projectile screenshots were inspected. Andore's previous high-piledriver release also passed live actual-shortcut verification after using DOM-ready navigation. Further Sodom move-controller and global audio-fidelity work remains.
 
@@ -235,3 +235,18 @@ Edi now uses his original entrance chewing/spit sequence as his victory: native 
 All four existing body crops match the reconstructed native graphics/placement pixel-for-pixel with the admitted original palette. The gum uses the complete original8x5 sprite from the Edi arcade sheet at943,118, with its blue/white palette. Its mask matches native item35 / preview image999; the preview's Slum food palette would turn it brown and is excluded. Gum follows an authored SF2 arc from the actor's mouth, then remains on the floor in world coordinates until the next round. Its release count and motion are simulation-driven; drawing does not advance it.
 
 Validation: six actual-round KO/time-over/mirror victories across both slots verify native pose order, release at age90, one spit only, final pose held, no loser spit, floor persistence without drift and round reset. Original source crop/palette comparisons and actual keyboard victory screenshots were inspected. WW/CE240frame traces, chain and release checks pass. This reuses original entrance artwork/timing for the requested SF2 victory; it is not a claim that the Final Fight NPC had a native playable victory controller.
+
+
+## Belger chair ownership and break transitions
+
+The chair is a world prop with mounted, parked and broken phases. Ordinary attacks and jumps leave the intact chair at the unseating position; it does not follow an airborne or standing actor. Returning close to it aligns by at most2pixels per tick and re-seats. An unblocked hit or knockdown/throw/KO breaks it into three original pieces. They bounce, settle on the floor and persist; he stays on foot until round reset. Nonlethal blocked chip does not break it. Repeated sprite/head/camera queries are now pure: rendering cannot dismount him or change chair state.
+
+The intact chair, body and two wheel poses are complete original arcade Objects-sheet crops by jin315, with source rectangles and RGBA hashes in ai_ff_chair.js. Four source-pixel comparisons pass. The physical prop, parking/re-seat and break scheduling are authored SF2 adaptations; native Final Fight chair controller timing/trigger parity has not been established.
+
+Validation:44both-slot ordinary-action/guard/chip/hit/knockdown/KO/interrupted-break/on-foot-KO/reset cases plus two full jump-away/return cases. Airborne chair drift is zero, return alignment is bounded, break count is one with three bounded pieces, and render queries do not mutate simulation. Actual keyboard jump and opponent-punch break captures were inspected. All208guest combat lifecycles and original WW/CE traces pass.
+
+## Abigail original normal walking cycle
+
+Normal forward/back walking now uses the six original walking poses4..9 instead of the four first-row running poses0..3. Their common upper body is registered at[-57,-106], retaining the existing idle reference. This removes the old walk's37pixel horizontal/7pixel vertical head jumps, and the six walking poses now have zero upper-body registration spread. Forward/back cadence remains5ticks per pose; movement stays1.875pixels/tick forward and1.34765625backward.
+
+Only the six frame origins and walk selection change. The atlas bitmap is byte-identical; source pixels, scale, idle reference, red charge frames11..14, approved crouching joins and all other guest data are unchanged. Original toe positions naturally range0..3pixels above/below the sole plane while the actor's physicalY stays zero. Four actual-input traces cover both slots and directions, all six poses, cadence, body registration and unchanged velocity. Before/after strips and actual keyboard forward/back captures were inspected. This uses original walking art with the existing SF2 cadence; an exact native Final Fight walking timing trace has not been established.

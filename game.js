@@ -370,7 +370,7 @@ function aiAllowedFids(){const roster=window.SF2AI_ROSTER?.baseRoster;return Arr
 
 const CE_KEYS=['ryu','honda','blanka','guile','ken','chun-li','zangief','dhalsim','bison','sagat','balrog','vega'];
 
-function aiClearProfile(p){
+function aiClearProfile(p){window.SF2AIFFChair?.clear(p);
 
   for(const key of Object.keys(p))if(key.startsWith('AI')&&key!=='AIPC'||key==='_AI_SOURCE'||['aiProfile','fighterKey','profileName','maxHP'].includes(key))delete p[key];
 
@@ -396,7 +396,7 @@ function aiSetProfile(p,fid){
 
 function aiResetPlayer(p){if(!aiEnabled()){aiClearProfile(p);return;}SF2AIFF.resetSword(p);
 
-  delete p.AIComboBreaker;delete p.AIBreakInput;delete p.AIComboBreakInvuln;delete p.AIComboBreakNotice;delete p.AIBreakAttempt;delete p.AIDamndMove;delete p.AIDamndBarrel;delete p.AIFFMove;delete p.AIFFProjectile;delete p.AIFFThrow;delete p.AIFFHold;delete p.AIFFHeld;delete p.AIFFGrenades;delete p.AIFFBullets;delete p.AIFFWall;delete p.AIFFSlide;delete p.AIFFVictory;delete p.AIFFDismounted;delete p.AICPU;delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:isFFGuest(p)?{clothing:p.i===1&&P[0].aiProfile===p.aiProfile?0:-2,skin:-2}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i+':'+(p.AIColorChoice?.clothing??-1)+':'+(p.AIColorChoice?.skin??-1);p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,p.AIColorChoice);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
+  delete p.AIComboBreaker;delete p.AIBreakInput;delete p.AIComboBreakInvuln;delete p.AIComboBreakNotice;delete p.AIBreakAttempt;delete p.AIDamndMove;delete p.AIDamndBarrel;delete p.AIFFMove;delete p.AIFFProjectile;delete p.AIFFThrow;delete p.AIFFHold;delete p.AIFFHeld;delete p.AIFFGrenades;delete p.AIFFBullets;delete p.AIFFWall;delete p.AIFFSlide;delete p.AIFFVictory;delete p.AIFFDismounted;SF2AIFFChair.reset(p);delete p.AICPU;delete p.AIButtons;delete p.AIAir;p.AIColorChoice=AICFG.colors[p.i]?{...AICFG.colors[p.i]}:isFFGuest(p)?{clothing:p.i===1&&P[0].aiProfile===p.aiProfile?0:-2,skin:-2}:null;p.AIPaletteKey=G.AIMatchSeed+':'+p.fighterKey+':'+p.i+':'+(p.AIColorChoice?.clothing??-1)+':'+(p.AIColorChoice?.skin??-1);p.AIPalette=SF2AIRULES.colors(p.F.pal,G.AIMatchSeed,p.fighterKey,p.i,p.AIColorChoice);p.AIRift=null;p.AIRiftInput={stage:0,time:0,prev:0};p.AIRiftRequest=0;p.AIIdleTick=0;p.AIAttackSerial=0;p.AIConfirm=-1;
   SF2AICHAIN.reset(p);p.AICombo={active:false,id:0,hits:0,damage:0,riftUsed:false};
 
   p.AIMetrics={riftStarts:0,riftCancels:0,riftCost:0,riftRejected:0,groundHits:0,blockedNormals:0,maxCombo:0,lastRift:null};
@@ -1415,7 +1415,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
       }}if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.hurt(d,{rand});return lethalProjectileChip?undefined:'blk';}}
 
-  aiImpact(impact,str,false);if(isFFGuest(d.opp))ffSound(d.opp,'hit');
+  aiImpact(impact,str,false);if(aiEnabled())SF2AIFFChair.breakChair(d,dir);if(isFFGuest(d.opp))ffSound(d.opp,'hit');
   const specialReaction=VER.cur==='CE'&&G.scene==='fight'&&SF2CESPECIAL.accepts(d,reaction);if(!localStop&&!specialReaction)G.hfz=HFRZ;
 
   const nativeScore=VER.edition==='ce'&&reaction?.scoreCommand!==undefined?SF2CECOMBAT.scoreAmount((VER.edition==='ce'?dmg>d.HP:dmg>=d.HP)?reaction.koScoreCommand:reaction.scoreCommand):null;
@@ -1441,7 +1441,7 @@ function applyhit(d,dmg,str,kd,low,dir,chip,region=0,localStop=false,reaction=nu
 
   setanim(d,named>=0?named:body>=0?body:(c?AN_CHITL:AN_HITL)+str,0);d.ST=S_HIT;d.KB=dir*PUSHKB[str];d.STUN=HSTUN[str];}
 
-function fallst(d,s,dir){if(aiEnabled()&&G.scene==='fight'&&SF2AIFF.disarm(d,dir))ffSound(d,'weapon');const previous=VER.edition==='ce'&&d.CE_FatalHitPending&&!d.CE_FatalHitPending.special&&(d.Y>>8)===0&&!d.CETHV&&!d.CEBV?ceProjectilePose(d):null;delete d.CE_FatalHitPending;if(VER.cur==='CE'){if(d.CES?.kind==='vegawall'||d.CES?.kind==='vegaflip'){d.CES=null;d.MV=null;}delete d.CEVLAND;delete d.CER;delete d.CERSTOP;delete d.CEGUARD;delete d.CESHAKE;delete d.CERHOSTTICK;delete d.CERRESUME;}d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});if(previous){Object.assign(d,previous);d.anim=d.F.anims[d.cur];d.CEKO_GROUND=true;d.CEKO_DIR=dir;}}
+function fallst(d,s,dir){if(aiEnabled())SF2AIFFChair.breakChair(d,dir);if(aiEnabled()&&G.scene==='fight'&&SF2AIFF.disarm(d,dir))ffSound(d,'weapon');const previous=VER.edition==='ce'&&d.CE_FatalHitPending&&!d.CE_FatalHitPending.special&&(d.Y>>8)===0&&!d.CETHV&&!d.CEBV?ceProjectilePose(d):null;delete d.CE_FatalHitPending;if(VER.cur==='CE'){if(d.CES?.kind==='vegawall'||d.CES?.kind==='vegaflip'){d.CES=null;d.MV=null;}delete d.CEVLAND;delete d.CER;delete d.CERSTOP;delete d.CEGUARD;delete d.CESHAKE;delete d.CERHOSTTICK;delete d.CERRESUME;}d.DOWNT=0;d.FALLW=0;d.STUN=0;d.ST=s;setanim(d,AN_FALL,0);Object.assign(d,{VY:0x500,AY:0x48,VX:0x200*dir,AX:0,KB:0});if(previous){Object.assign(d,previous);d.anim=d.F.anims[d.cur];d.CEKO_GROUND=true;d.CEKO_DIR=dir;}}
 
 // ---- projectile ----
 
@@ -2114,7 +2114,7 @@ function step0(net){
 
   if(!net){if(G.fade&&!G.fade.entered){CONTROL.padPrev=pd.map(p=>p.menu||0);CONTROL.keyPrev=held('Escape')?1:0;if(Array.isArray(window.SF2Input?.commands))SF2Input.commands.length=0;k1=k2=0;}else{const menu=localCommands(pd,k1,k2);if(menu.stop)return;k1=menu.k1;k2=menu.k2;}}
 
-  G.stepacc+=5; G.fr=G.stepacc>=12; if(G.fr)G.stepacc-=12; G.tick++;if(aiEnabled()&&G.scene==='fight'&&G.gph===1)SF2AIWEATHER.sound(aiWeather(),G.AIMatchSeed,G.round,G.stage,AC,MG,muted);if(VER.edition==='ce')G.CEStageTick=(G.CEStageTick??0)+1;
+  G.stepacc+=5; G.fr=G.stepacc>=12; if(G.fr)G.stepacc-=12; G.tick++;if(aiEnabled())for(const q of P)SF2AIFFChair.step(q,aiRoom(),G.tick);if(aiEnabled()&&G.scene==='fight'&&G.gph===1)SF2AIWEATHER.sound(aiWeather(),G.AIMatchSeed,G.round,G.stage,AC,MG,muted);if(VER.edition==='ce')G.CEStageTick=(G.CEStageTick??0)+1;
 
   if(VER.cur==='CE'&&G.scene==='fight')window.SF2CECAMERA?.latch(P);
 
@@ -2574,7 +2574,7 @@ function renderGame(){if(G.scene==='bonus')return bonusrender();if(G.scene!=='fi
   aiBloodDraw(c,ground,true);
   if(aiEnabled()){for(const p of view){const art=fighterArt(p);SF2AISHADOW.draw(cx,art.image,art.rect,p,(p.X>>8)-c,ground,G.round,p.fid===11&&p.CECLAW?.equipped!==false?{bounds:fighterBounds(p),paint:g=>SF2CEVEGACLAW.draw(g,p,0,0,art.alternate)}:null);}}else if(VER.cur==='CE'&&window.SF2CESHADOW)for(const p of view){const f=isEvilKen(p)?SF2AIEvilKen.shadow(p,G.stage):SF2CESHADOW.frame(p,G.stage);if(f)fimgKind('object',f.image,(p.X>>8)-c+f.x,ground+f.y);}
 
-  aiDeathDraw(c,ground);
+  if(aiEnabled())for(const q of P)SF2AIFFChair.draw(cx,q,c,ground);aiDeathDraw(c,ground);
   const drawp=p=>{const art=fighterArt(p),alternate=art.alternate;spr(art.image,art.rect,(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p):0),ground-(p.Y>>8),p.FACE);
     if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.draw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c+(VER.edition==='ce'&&window.SF2CEREACTION?SF2CEREACTION.renderOffset(p,true):0),ground-(p.Y>>8),p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready);if(VER.edition==='ce'){if(p.anim?.name?.startsWith('ceWinner'))SF2CEWINNER.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);else if(p.anim?.name?.startsWith('ceDizzy'))SF2CEDIZZY.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);else window.SF2CEROUND?.claw(CE_OBJECT_CONTEXT,p,(p.X>>8)-c,ground-(p.Y>>8),alternate);}
 

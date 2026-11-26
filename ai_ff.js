@@ -7,7 +7,7 @@ window.SF2AIFF=(()=>{
   sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[4,5,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]]]},
   rolento:{name:'Rolento',district:'Industrial Area',hp:300,speed:0x500,jump:0x740,point:[221,118],idle:[10,11],walk:[10,11,12,13],hurt:[8,25],crouch:[9],fall:[25,26,21],lie:[22],recover:[17,8,10],throw:[14,15],win:[0,1,2,3],normal:[[13,14,13],[13,15,13],[13,14,15,13],[17,18,19,17],[17,19,18,17],[17,18,19,17]],specials:[['Patriot Circle','spin',[13,14,15,14]],['Grenade Throw','grenade',[20]],['Wall Kick','wallkick',[9,5,6,7,18]],['Shoulder Toss','grab',[14,15]],['Grenade Barrage','grenade-barrage',[20]],['Grenade Retreat','retreat',[20,5,6,7]],['Wall Punch','wallpunch',[16]]]},
-  abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[0,1,2,3],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Crushing Toss','grab',[19,21]],['Power Punch','power',[15,16,18]]]},
+  abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[4,5,6,7,8,9],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Crushing Toss','grab',[19,21]],['Power Punch','power',[15,16,18]]]},
   belger:{name:'Belger',district:'Uptown Penthouse',hp:320,speed:0x240,jump:0x630,point:[220,99],idle:[0,1,2,3],walk:[0,1,2,3,4,5],hurt:[9,10],crouch:[10],fall:[9,13,18],lie:[18],recover:[10,9,7],throw:[7,12],win:[7,8],normal:[[7,14,7],[7,15,7],[7,12,7],[10,8,10],[10,8,10],[7,8,7]],specials:[['Crossbow Volley','bolts',[7,14,15,16]],['Escape Leap','belger-hop',[9,8,7]],['Sky Bolt Rain','bolt-rain',[7,12]],['Escape Hop','belger-retreat',[9,8,7]],['Crossbow Butt','power',[7,12]]]},
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
@@ -40,7 +40,7 @@ window.SF2AIFF=(()=>{
    const source=ac.createBufferSource(),gain=ac.createGain();source.buffer=buffer;source.loop=true;source.loopStart=record.loopStart;source.loopEnd=Math.min(record.loopEnd,buffer.duration);gain.gain.value=.65;source.connect(gain);gain.connect(dest);musicVoice={source,gain};musicState='playing';musicStarts++;source.start();
   }catch(error){if(request!==musicRequest)return;musicBuffers.delete(key);musicError=error.message;musicState='error';console.warn(error.message);}
  }
- const ready=Promise.all(pending),get=id=>packs[id],ids=()=>['damnd','sodom','andore','edi','rolento','abigail','belger'];
+ const ready=Promise.all([...pending,SF2AIFFChair.ready]),get=id=>packs[id],ids=()=>['damnd','sodom','andore','edi','rolento','abigail','belger'];
  function sequence(p,which,ticks=5){const list=typeof which==='string'?p.data.nativeActions[which]:which;return list.map(e=>Array.isArray(e)?[e[0],Math.max(1,Math.min(120,e[1]))]:[e,ticks]);}
  function anim(p,name,list,{loop=false,attack=false,strength=1,low=false,crouch=false,kd=false}={}){
   const seq=sequence(p,list);return{name,guest:true,crouch,mode:loop?0:1,loop:0,source:0,flags:seq.map((_,i)=>i===seq.length-1?(loop?32768:32769):0),ents:seq.map(([f,t],i)=>{
@@ -185,7 +185,7 @@ window.SF2AIFF=(()=>{
   else if(player.CESpecial&&player.anim?.name?.startsWith('ceSpecialBurn'))frame=sequence(p,p.hurt)[0][0];
   else if(player.anim?.guest)frame=player.anim.ents[Math.min(player.aidx,player.anim.ents.length-1)][0];
   else frame=f.anims[[7,8].includes(player.ST)?player.Y>8*256?28:29:player.ST===10?30:player.ST===5?22:0].ents[0][0];
-  if(p.id==='belger'){if(player.HP<player.maxHP||[1,2,5,6,7,8,10,11].includes(player.ST))player.AIFFDismounted=true;if(player.AIFFDismounted&&frame<=6)frame=player.Y>0?8:7;}
+  if(p.id==='belger'&&SF2AIFFChair.dismounted(player)&&frame<=6)frame=player.Y>0?8:7;
   // Shared airborne poses retain their air pivot; grounded reuse meets the same sole line.
   let rect=f.frames[frame];const groundShift=p.data.floorAlignment?.groundFrameOffsets?.[frame];if(player.Y===0&&player.ST<=4&&groundShift)rect=[...rect.slice(0,5),rect[5]+groundShift];
   return{image:p.image,rect,alternate:false,burning:!!player.CESpecial&&player.anim?.name?.startsWith('ceSpecialBurn')};
@@ -257,7 +257,7 @@ window.SF2AIFF=(()=>{
   }else player.SPKD=1;
   if(player.adone||s.age>75){delete player.AIFFMove;h.idle(player);}
  }
- function belgerStep(player,h){const s=player.AIFFMove,m=player.MV;player.AIFFDismounted=true;
+ function belgerStep(player,h){const s=player.AIFFMove,m=player.MV;
   if(m.style==='bolts'||m.style==='bolt-rain'){
    const release=m.style==='bolts'?[13,24,35]:[12,23,34];
    if(release.includes(s.age)){spawnBolt(player,m.style==='bolt-rain',s.shots++);h.sound(0x25);}
