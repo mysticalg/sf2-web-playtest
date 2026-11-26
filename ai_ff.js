@@ -4,7 +4,7 @@
 window.SF2AIFF=(()=>{
  const clone=x=>JSON.parse(JSON.stringify(x)),packs={},pending=[],assetURL=file=>file+'?v='+(window.SF2BUILD?.commit||'ff-rolento-roll-26');
  const specs={
-  sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19,20],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
+  sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[4,5,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]]]},
   rolento:{name:'Rolento',district:'Industrial Area',hp:300,speed:0x500,jump:0x740,point:[221,118],idle:[10,11],walk:[10,11,12,13],hurt:[8,25],crouch:[9],fall:[25,26,21],lie:[22],recover:[17,8,10],throw:[14,15],win:[0,1,2,3],normal:[[13,14,13],[13,15,13],[13,14,15,13],[17,18,19,17],[17,19,18,17],[17,18,19,17]],specials:[['Patriot Circle','spin',[13,14,15,14]],['Grenade Throw','grenade',[20]],['Wall Kick','wallkick',[9,5,6,7,18]],['Shoulder Toss','grab',[14,15]],['Grenade Barrage','grenade-barrage',[20]],['Grenade Retreat','retreat',[20,5,6,7]],['Wall Punch','wallpunch',[16]]]},
   abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[0,1,2,3],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Crushing Toss','grab',[19,21]],['Power Punch','power',[15,16,18]]]},
@@ -17,6 +17,7 @@ window.SF2AIFF=(()=>{
   pending.push(Promise.all([image.decode(),stage.decode(),portraitImage.decode()]).then(()=>pack.loaded=true));
  }
  const swordImage=new Image();swordImage.src=assetURL(SF2AIFFData.sodom.katana.image);pending.push(swordImage.decode());
+ const explosionImage=new Image();explosionImage.src=assetURL(SF2AIFFData.rolento.explosion.image);pending.push(explosionImage.decode());const explosionTicks=SF2AIFFData.rolento.explosion.ticks.reduce((a,b)=>a+b,0);
  const grenadeImage=new Image();grenadeImage.src=assetURL(SF2AIFFData.rolento.grenades.image);pending.push(grenadeImage.decode());
  const boltImage=new Image();boltImage.src=assetURL(SF2AIFFData.belger.bolt.image);pending.push(boltImage.decode());
  const bulletImage=new Image();bulletImage.src=assetURL(SF2AIFFData.edi.bullet.image);pending.push(bulletImage.decode());
@@ -84,7 +85,8 @@ window.SF2AIFF=(()=>{
    put(107,'Andore Piledriver Lift',[[p.data.liftFrame,10]],{loop:true});put(108,'Andore Piledriver Air',[[p.data.airborneFrame,8]],{loop:true});put(109,'Andore Piledriver Land',[[12,14],[0,12]]);
   }
   if(p.id==='rolento'){
-   Object.assign(f.moves[2],{inp:'dp',btn:'K'});
+   Object.assign(f.moves[2],{inp:'cdu',btn:'K'});Object.assign(f.moves[6],{inp:'cdu',btn:'P'});
+   for(let strength=0;strength<3;strength++){const a=put(17+strength,'Rolento Low Slide '+strength,[[9,[3,6,10][strength]],[18,[3,5,7][strength]],[9,[6,10,16][strength]]],{crouch:true});Object.assign(a.ents[1],{6:[-46,14,37,15],7:[10,17,25][strength],8:strength,9:strength===2?1:0,10:1});}
    f.anims[105].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(118,'Rolento Shoulder Grip',[[16,8]],{loop:true});put(119,'Rolento Shoulder Lift',[[16,8]],{loop:true});put(120,'Rolento Shoulder Release',[[17,8],[10,12]]);
    put(101,'Rolento Grenade Throw',[[10,6],[20,12],[10,16]]);
@@ -93,8 +95,10 @@ window.SF2AIFF=(()=>{
    put(123,'Rolento Wall Brace',[[17,5]],{loop:true});put(124,'Rolento Wall Punch Dive',[[16,12]],{loop:true});Object.assign(f.anims[124].ents[0],{6:[-38,52,34,28],7:32,8:2,9:1,10:-1});put(125,'Rolento Wall Dive Landing',[[9,5],[10,7]]);
    f.anims[126].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(102,'Rolento Wall Kick',[[9,5],...p.data.acrobaticFrames.map(i=>[i,3]),[18,12],[10,8]],{attack:false});put(117,'Rolento Acrobatic Roll',p.data.acrobaticFrames.map(i=>[i,3]),{loop:true});
+   for(let i=5;i<=7;i++)put(i,['jumpn','jumpf','jumpb'][i-5],p.data.acrobaticFrames.map(frame=>[frame,3]),{loop:true});
+   for(const base of[53,59])for(let strength=0;strength<3;strength++){const a=put(base+3+strength,'Rolento Flying Kick '+strength,[[17,[3,6,10][strength]],[18,[3,5,7][strength]],[17,[6,10,16][strength]]]);Object.assign(a.ents[1],{6:[-45,20,35,28],7:[10,17,25][strength],8:strength,10:-1});}
    // Compact rolling bodies do not retain the empty standing push-box space.
-   for(const e of f.anims[117].ents){e[2]=[0,64,20,12];e[3]=[0,48,23,14];e[4]=[0,32,21,10];e[5]=[0,48,23,22];}
+   for(const slot of[5,6,7,117])for(const e of f.anims[slot].ents){e[2]=[0,64,20,12];e[3]=[0,48,23,14];e[4]=[0,32,21,10];e[5]=[0,48,23,22];}
   }
   if(p.id==='edi'){
    put(100,'Edi Police Pistol',[[0,4],[24,4],[25,6],[28,6],[29,3],[28,8],[25,5],[4,10]]);
@@ -339,18 +343,19 @@ window.SF2AIFF=(()=>{
  function cancelThrow(player,h){const o=player.opp;delete o.AIFFHeld;delete player.AIFFThrow;delete player.AIFFHold;player.THV=null;if(o.ST===5&&o.STUN>500){o.STUN=12;o.KB=0;if(o.Y>0)h.drop?.(o);} }
  const heldImages=new WeakMap();
  function heldArt(player,art){if(!player.AIFFHeld?.inverted)return art;let cache=heldImages.get(art.image);if(!cache){cache=new Map();heldImages.set(art.image,cache);}const r=art.rect,key=r.slice(0,4).join(',');let c=cache.get(key);if(!c){c=document.createElement('canvas');c.width=r[2];c.height=r[3];const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.translate(c.width,c.height);g.rotate(Math.PI);g.drawImage(art.image,r[0],r[1],r[2],r[3],0,0,r[2],r[3]);cache.set(key,c);}return{...art,image:c,rect:[0,0,c.width,c.height,-Math.floor(c.width/2),-Math.floor(c.height/2)]};}
+ function grenadeTravel(y,vy,fuse){let range=0,speed=1,bounced=false;for(let age=0;age<fuse;age++){range+=speed;y+=vy;vy-=.23;if(y<6){y=6;if(!bounced){vy=Math.abs(vy)*.28;bounced=true;}else vy=0;speed*=.78;}}return range;}
  function spawnGrenade(player,index=0){
   const dir=player.FACE?1:-1,pool=player.AIFFGrenades||(player.AIFFGrenades=[]);if(pool.length>=8)return;
-  const gap=Math.abs(player.X-player.opp.X)/256,velocity=Math.max(1.3,Math.min(5.4,gap/46))+(index-1)*1.1;
-  pool.push({x:player.X/256+dir*28*bodyScale(player),y:player.Y/256+67*bodyScale(player),vx:dir*velocity,vy:2.6+index*.3,age:0,fuse:58+index*6,dir,blast:0,hit:false,strength:player.SPSTR});player.FBON=1;player.FBK='ff-grenades';
+  const combo=['grenade-barrage','retreat'].includes(player.MV?.style),x=player.X/256+dir*28*bodyScale(player),y=player.Y/256+67*bodyScale(player),vy=2.6+index*.3,fuse=58+index*6,target=player.opp.X/256+dir*(combo?(index-1)*8:0),velocity=dir*Math.max(.5,Math.min(6.5,dir*(target-x)/grenadeTravel(y,vy,fuse)));
+  pool.push({x,y,vx:velocity,vy,age:0,fuse,dir,blast:0,hit:false,strength:player.SPSTR,combo,index});player.FBON=1;player.FBK='ff-grenades';
  }
  function grenadeStep(player,room,onBlast){
   const pool=player.AIFFGrenades;if(!pool)return;
-  for(const g of pool){g.age++;if(g.blast){g.blast++;continue;}g.x+=g.vx;g.y+=g.vy;g.vy-=.23;if(g.y<6){g.y=6;if(!g.bounced){g.vy=Math.abs(g.vy)*.28;g.bounced=true;}else g.vy=0;g.vx*=.78;}if(g.age>=g.fuse){g.blast=1;onBlast?.();g.y=Math.max(15,g.y);g.vx=g.vy=0;}if(g.x<room.left-80||g.x>room.right+80)g.blast=16;}
-  player.AIFFGrenades=pool.filter(g=>g.blast<=14);const first=player.AIFFGrenades[0];player.FBON=first?1:0;if(first){player.FBX=Math.round(first.x*256);player.FBY=Math.round(first.y*256);player.FBVX=Math.round(first.vx*256);}else delete player.AIFFGrenades;
+  for(const g of pool){g.age++;if(g.blast){g.blast=Math.max(g.blast+1,(window.SF2?.G.tick??0)-(g.blastAt??window.SF2?.G.tick??0)+1);continue;}g.x+=g.vx;g.y+=g.vy;g.vy-=.23;if(g.y<6){g.y=6;if(!g.bounced){g.vy=Math.abs(g.vy)*.28;g.bounced=true;}else g.vy=0;g.vx*=.78;}if(g.age>=g.fuse){g.blast=1;g.blastAt=window.SF2?.G.tick;onBlast?.();g.y=Math.max(15,g.y);g.vx=g.vy=0;}if(g.x<room.left-80||g.x>room.right+80)g.blast=explosionTicks+1;}
+  player.AIFFGrenades=pool.filter(g=>g.blast<=explosionTicks);const first=player.AIFFGrenades[0];player.FBON=first?1:0;if(first){player.FBX=Math.round(first.x*256);player.FBY=Math.round(first.y*256);player.FBVX=Math.round(first.vx*256);}else delete player.AIFFGrenades;
  }
  function grenadeContacts(player){return(player.AIFFGrenades||[]).filter(g=>g.blast>0&&g.blast<=8&&!g.hit).map(g=>({grenade:g,box:[g.x,g.y,29,29]}));}
- function grenadeDraw(ctx,player,camera,ground){const D=SF2AIFFData.rolento.grenades;ctx.save();ctx.imageSmoothingEnabled=false;for(const g of player.AIFFGrenades||[]){const x=Math.floor(g.x-camera),y=Math.floor(ground-g.y);if(g.blast){const t=g.blast,r=Math.max(4,26-Math.abs(t-4)*2);for(let i=0;i<8;i++){const a=i*Math.PI/4,px=Math.round(x+Math.cos(a)*r*.65),py=Math.round(y+Math.sin(a)*r*.65);ctx.fillStyle=t<7?'#ff7420':'#8b3b35';ctx.fillRect(px-5,py-5,10,10);ctx.fillStyle=t<5?'#fff5a0':'#ebac43';ctx.fillRect(px-2,py-2,4,4);}}else{const f=D.frames[Math.floor(g.age/3)%8];ctx.drawImage(grenadeImage,f[0],f[1],f[2],f[3],x-Math.floor(f[2]/2),y-Math.floor(f[3]/2),f[2],f[3]);}}ctx.restore();}
+ function grenadeDraw(ctx,player,camera,ground){const D=SF2AIFFData.rolento.grenades,E=SF2AIFFData.rolento.explosion;ctx.save();ctx.imageSmoothingEnabled=false;for(const g of player.AIFFGrenades||[]){const x=Math.floor(g.x-camera),y=Math.floor(ground-g.y);if(g.blast){let elapsed=g.blastAt===undefined?g.blast-1:(window.SF2?.G.tick??g.blastAt)-g.blastAt,index=0;if(elapsed>=explosionTicks)continue;while(index<E.frames.length-1&&elapsed>=E.ticks[index])elapsed-=E.ticks[index++];const f=E.frames[index];ctx.drawImage(explosionImage,...f.slice(0,4),x+f[4],y+f[5],f[2],f[3]);}else{const f=D.frames[Math.floor(g.age/3)%8];ctx.drawImage(grenadeImage,f[0],f[1],f[2],f[3],x-Math.floor(f[2]/2),y-Math.floor(f[3]/2),f[2],f[3]);}}ctx.restore();}
  function rolentoStep(player,h){const s=player.AIFFMove,m=player.MV,a=s.age;
   if(m.style==='wallkick'||m.style==='wallpunch'){wallDiveStep(player,h);return;}
   if(['grenade','grenade-barrage'].includes(m.style)){
@@ -384,6 +389,13 @@ window.SF2AIFF=(()=>{
   }
   if(s.phase==='recover'&&s.age-s.landed>=12){delete player.AIFFMove;h.idle(player);}
  }
+ function normalStep(player){
+  if(player.aiProfile!=='rolento'||player.ST!==1||!player.RETCR||player.cur<17||player.cur>19||player.Y!==0){delete player.AIFFSlide;return;}
+  let s=player.AIFFSlide;if(!s||s.slot!==player.cur||s.serial!==player.AIAttackSerial)s=player.AIFFSlide={slot:player.cur,serial:player.AIAttackSerial,dir:player.FACE?1:-1,speed:0,contact:false};
+  if(player.hitdone)s.contact=true;const current=player.anim.ents[player.aidx],next=player.acc+1>=current[1]?player.anim.ents[player.aidx+1]:current,active=!!next?.[6]?.[2];
+  if(active&&!s.contact)s.speed=[3,5,7][player.cur-17];else s.speed*=.78;
+  if(s.speed>.1)player.X+=Math.round(s.dir*s.speed*256);
+ }
  function wallJump(player,h){
   if(player.aiProfile!=='rolento')return;const ratio=player.HP/player.maxHP;player.ft[0]=ratio<=.33?0x680:0x500;player.ft[1]=ratio<=.33?0x540:0x400;
   if(player.Y<=0||player.ST!==2){delete player.AIFFWall;return;}const w=player.AIFFWall||(player.AIFFWall={cool:0,count:0});if(w.cool>0){w.cool--;return;}
@@ -395,5 +407,5 @@ window.SF2AIFF=(()=>{
  function damage(player,strength){if(player.ST!==11)return(swordEquipped(player)?[10,17,25]:[8,14,21])[Math.min(2,strength)]*(get(player.aiProfile).hp>=400?1.1:1)|0;return player.MV?.style==='wallkick'?30:player.MV?.style==='wallpunch'?32:player.MV?.style==='sodom-charge'?30:player.MV?.style==='sodom-chop'?(swordEquipped(player)?34:26):player.MV?.style==='sodom-double'?(swordEquipped(player)?18:14):player.MV?.style==='rage'?40:player.MV?.style==='baton'||player.MV?.style==='baton-rush'?30:player.MV?.style==='dash'||player.MV?.style==='spin'?player.AIFFMove?.phase===2?17:11:player.MV?.style==='seatdrop'?34:player.MV?.style==='power'?36:27;}
  function stageDraw(ctx,id,camera,width,top,height,ground){const p=get(id),y=ground-220;ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#151b2b';ctx.fillRect(0,top,width,height);for(let xx=-camera;xx<width;xx+=720)ctx.drawImage(p.stage,xx,y);for(let yy=y;yy>top;yy-=16)ctx.drawImage(p.stage,0,0,720,16,-camera,yy-16,720,16);for(let yy=y+256;yy<top+height;yy+=16)ctx.drawImage(p.stage,0,236,720,16,-camera,yy,720,16);ctx.restore();}
  function mapDraw(ctx,s,defeated){ctx.save();ctx.imageSmoothingEnabled=false;ctx.fillStyle='#070c16';ctx.fillRect(0,0,384,224);ctx.drawImage(metro,0,20,384,180);for(const id of ids()){const point=id==='damnd'?[135,103]:get(id).point;ctx.fillStyle=id===s.id?(s.tick%20<10?'#fff':'#ff3030'):defeated.includes(id)?'#777':'#ffe050';ctx.fillRect(point[0]-3,point[1]-3,6,6);if(id===s.id){ctx.strokeStyle='#fff';ctx.strokeRect(point[0]-7,point[1]-7,14,14);}}ctx.restore();}
- return{resetSword,disarm,swordStep,swordDraw,swordPickup,swordCPU,swordEquipped,soundCode(player,kind){if(kind==='weapon')return 16;if(kind!=='hit')return null;const pack=get(player.aiProfile);if(!pack?.data.nativeFrames||!pack.data.combat)return null;const frame=player.anim?.ents[player.aidx]?.[0],attack=pack.data.nativeFrames[frame]?.attack;return pack.data.combat.attacks[attack]?.sound??null;},retimeNormals,canProbe(player){if(player.MV?.kind==='ff'&&((player.aiProfile==='sodom'&&player.MV.style==='sodom-charge')||(player.aiProfile==='andore'&&player.MV.style==='dash')||(player.aiProfile==='abigail'&&player.MV.style==='rage')))return player.AIFFMove?.age>=19&&!player.AIFFMove?.contact;if(player.aiProfile==='rolento'&&['wallkick','wallpunch'].includes(player.MV?.style))return player.AIFFMove?.phase==='dive';return !(player.ST===11&&player.MV?.kind==='ff'&&player.MV.style==='seatdrop'&&player.AIFFMove?.phase!=='drop');},soundBuffer:code=>soundBuffers.get(code)||null,holdStart,bulletStep,bulletContacts,bulletDraw,grenadeStep,grenadeContacts,grenadeDraw,wallJump,heldArt,cancelThrow,prepareSound,playSound,soundCounts,ready,get,ids,specs,bind,art,portrait,mouth,start,step,throwStart,projectileStep,projectileDraw,damage,stageDraw,mapDraw};
+ return{normalStep,resetSword,disarm,swordStep,swordDraw,swordPickup,swordCPU,swordEquipped,soundCode(player,kind){if(kind==='weapon')return 16;if(kind!=='hit')return null;const pack=get(player.aiProfile);if(!pack?.data.nativeFrames||!pack.data.combat)return null;const frame=player.anim?.ents[player.aidx]?.[0],attack=pack.data.nativeFrames[frame]?.attack;return pack.data.combat.attacks[attack]?.sound??null;},retimeNormals,canProbe(player){if(player.MV?.kind==='ff'&&((player.aiProfile==='sodom'&&player.MV.style==='sodom-charge')||(player.aiProfile==='andore'&&player.MV.style==='dash')||(player.aiProfile==='abigail'&&player.MV.style==='rage')))return player.AIFFMove?.age>=19&&!player.AIFFMove?.contact;if(player.aiProfile==='rolento'&&['wallkick','wallpunch'].includes(player.MV?.style))return player.AIFFMove?.phase==='dive';return !(player.ST===11&&player.MV?.kind==='ff'&&player.MV.style==='seatdrop'&&player.AIFFMove?.phase!=='drop');},soundBuffer:code=>soundBuffers.get(code)||null,holdStart,bulletStep,bulletContacts,bulletDraw,grenadeStep,grenadeContacts,grenadeDraw,wallJump,heldArt,cancelThrow,prepareSound,playSound,soundCounts,ready,get,ids,specs,bind,art,portrait,mouth,start,step,throwStart,projectileStep,projectileDraw,damage,stageDraw,mapDraw};
 })();
