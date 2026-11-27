@@ -35,10 +35,6 @@ for d in rows:
  actions=json.loads(Path('scripts/evil-eye-reviewed-actions.json').read_text())if Path('scripts/evil-eye-reviewed-actions.json').exists()else{}
  found.update({int(k):v for k,v in actions.get(ident,{}).items()})
  for hidden in excluded.get(ident,{}):found.pop(int(hidden),None)
- if ident=='sodom':
-  for fi,pp in list(found.items()):
-   if len(pp)==2:
-    x,y=pp[0][:2];found[fi]=[[x+1,y-1,1,1],[x,y,1,1],[x+8,y,1,1],[x+6,y+1,2,1]]
  result[ident]=found;proof[ident]={'sourceSHA256':hashlib.sha256(Path('work/'+ident+'-eye-source.png').read_bytes()).hexdigest(),'reviewedFrame':frame,'templateRect':[left,top,pw,ph],'eyes':points,'matchedFrames':len(found),'totalFrames':len(d['frames'])}
  print(ident,len(found),'/',len(d['frames']))
 Path('ai_evil_eyes_data.js').write_text('/* Original source-bound eye coordinates. Reviewed idle/walk registration and visible face-patch matches. */\nwindow.SF2AIEVILEYES='+json.dumps({'schema':1,'frames':result,'sources':proof,'excluded':excluded},separators=(',',':'))+';\n',encoding='utf-8')

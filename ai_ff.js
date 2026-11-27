@@ -59,10 +59,14 @@ window.SF2AIFF=(()=>{
    a.ents=out;a.flags=out.map((_,i)=>i===out.length-1?32769:0);a.normalTiming={strength,startup:out.slice(0,out.findIndex(e=>e[6]?.[2]>0)).reduce((n,e)=>n+e[1],0),total:out.reduce((n,e)=>n+e[1],0)};
   }return f;
  }
+ function sodomFrontKnee(ctx,source,lower,left,top){
+  // The raised front knee crosses the waist seam; retain the native lower pixels.
+  ctx.save();ctx.beginPath();ctx.rect(-48-left,-45-top,37,18);ctx.clip();ctx.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);ctx.restore();
+ }
  function sodomCrouchAttacks(pack,f){const lower=f.frames[pack.data.crouchFrames[1]],source=pack.image,atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+170;const g=atlas.getContext('2d');g.drawImage(source,0,0);let x=1;
-  for(let b=0;b<6;b++){const upper=f.frames[b<3?24:19],shiftX=8,shiftY=30,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();if(x+pose.width>=atlas.width)x=1;const index=f.frames.length;g.drawImage(pose,x,source.height+1);f.frames.push([x,source.height+1,pose.width,pose.height,left,top]);x+=pose.width+2;const a=f.anims[14+b];for(const e of a.ents){if(e[6][2]>0){e[0]=index;for(const k of[2,3,6]){e[k][0]+=shiftX;e[k][1]+=2;}}else e[0]=pack.data.crouchFrames[1];}}
+  for(let b=0;b<6;b++){const upper=f.frames[b<3?24:19],shiftX=8,shiftY=27,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();sodomFrontKnee(c,source,lower,left,top);if(x+pose.width>=atlas.width)x=1;const index=f.frames.length;g.drawImage(pose,x,source.height+1);f.frames.push([x,source.height+1,pose.width,pose.height,left,top]);x+=pose.width+2;const a=f.anims[14+b];for(const e of a.ents){if(e[6][2]>0){e[0]=index;for(const k of[2,3,6]){e[k][0]+=shiftX;e[k][1]+=2;}}else e[0]=pack.data.crouchFrames[1];}}
   // Keep frame origins and native kneeling legs fixed; register only the upper body.
-  f.sodomCrouchJoin={lower:42,shiftX:8,shiftY:30,seam:-27};
+  f.sodomCrouchJoin={lower:42,shiftX:8,shiftY:27,seam:-27};
   pack.originalImage=source;pack.image=atlas;
  }
  function andoreCrouchPunch(pack,f){
@@ -194,8 +198,8 @@ window.SF2AIFF=(()=>{
  function sodomUnarmed(pack,f){
   const source=pack.image,lower=f.frames[42],atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+130;const g=atlas.getContext('2d');g.drawImage(source,0,0);const low=[];
   for(const [j,index]of[25,24].entries()){
-   const upper=f.frames[index],shiftX=8,shiftY=30,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');
-   c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();
+   const upper=f.frames[index],shiftX=8,shiftY=27,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');
+   c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();sodomFrontKnee(c,source,lower,left,top);
    const x=1+j*150;g.drawImage(pose,x,source.height+1);low.push(f.frames.length);f.frames.push([x,source.height+1,pose.width,pose.height,left,top]);
   }
   pack.image=atlas;const air=f.frames.length,r=f.frames[0];f.frames.push([...r.slice(0,4),-Math.floor(r[2]/2),r[5]]);
@@ -211,8 +215,8 @@ window.SF2AIFF=(()=>{
  }
  function sodomDoubleNormals(pack,f){
   // Retain the approved kneeling legs; only the second blade torso is new.
-  const source=pack.image,lower=f.frames[42],upper=f.frames[20],shiftX=8,shiftY=30,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');
-  c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();
+  const source=pack.image,lower=f.frames[42],upper=f.frames[20],shiftX=8,shiftY=27,seam=-27,left=Math.min(lower[4],upper[4]),top=Math.min(lower[5],upper[5]+shiftY),right=Math.max(lower[4]+lower[2],upper[4]+upper[2]+shiftX),pose=document.createElement('canvas');pose.width=right-left;pose.height=3-top;const c=pose.getContext('2d');
+  c.save();c.beginPath();c.rect(0,seam-top,pose.width,pose.height);c.clip();c.drawImage(source,...lower.slice(0,4),lower[4]-left,lower[5]-top,lower[2],lower[3]);c.restore();c.save();c.beginPath();c.rect(0,0,pose.width,seam-top);c.clip();c.drawImage(source,...upper.slice(0,4),upper[4]+shiftX-left,upper[5]+shiftY-top,upper[2],upper[3]);c.restore();sodomFrontKnee(c,source,lower,left,top);
   const atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+pose.height+2;const g=atlas.getContext('2d');g.drawImage(source,0,0);g.drawImage(pose,1,source.height+1);const lowBlade=f.frames.length;f.frames.push([1,source.height+1,pose.width,pose.height,left,top]);pack.image=atlas;f.sodomDoubleLow={frame:lowBlade,lower:42,upper:20,shiftX,shiftY,seam};
   for(const armed of[true,false])for(const base of[8,14,47,53,59])for(const button of[2,4,5]){
    const list=armed?f.anims:f.sodomUnarmed,a=list[base+button],strength=button%3,first=a.ents.findIndex(e=>e[6]?.[2]>0);let last=first;for(let i=first;i<a.ents.length;i++)if(a.ents[i][6]?.[2]>0)last=i;
