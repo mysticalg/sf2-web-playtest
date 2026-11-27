@@ -33,3 +33,11 @@ At the blood cap, Guile floor draw now uses 14 map queries instead of 3,072; ful
 - Actual keyboard browser-client movement/jump/attack screenshots inspected. The skill client's forced SwiftShader backend failed image decoding on this machine; its unchanged action/capture loop passed with only those backend flags removed.
 
 Private measurements and reproducible baseline/candidate scripts are preserved in this worktree's `work/performance/`, including `abba-final.json`, `pixel-check.json`, `pixel-moving.json`, `projection-and-revision-proof.json`, `faithful-proof.json` and `evil-cache-compatibility.json`. Baseline commit: `cd3dab1657179734dbb6968991de6b235fd7f1aa`. No deployment is implied by these local checks.
+
+## Facial injury texture stability - 2026-11-27
+
+Native head collision centres use integer world pixels, but the injury region previously subtracted fractional player coordinates. Moving at subpixel positions therefore moved the wound within the sprite and created a different canvas/cache key almost every frame. A fixed-pose512sample sweep created514canvases for Ryu and1026for Possessed Ryu, including the dependent eye textures.
+
+The local region now subtracts the same integer origin used by the head box. Fractional movement reuses one wound image per pose; severity, original pose and source-image changes retain their existing invalidation. Guest mouth landmarks already use consistent fractional coordinates and are unchanged. Integer-position injury geometry is identical to48d9b70; movement no longer makes bruises drift across the face. No gameplay, hitboxes or faithful-edition rendering changes.
+
+Validation: tests/injury-cache.browser.cjs checks528pose/identity/slot/facing combinations across44identities and135168fractional positions, with zero warm canvas allocations and stable image identity. All528integer reference regions match48d9b70. Existing220injury/eye cases,648hero weapon cases andWWCE60state/4pixel checks pass; officialskill low-health jumping capture inspected. This confirms removal of allocation churn, not reproduction or resolution of the reported recurring4-5second pause.

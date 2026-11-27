@@ -190,7 +190,10 @@ function aiFaceInjuryLevel(p){const ratio=p.HP/aiMax(p);return !aiEnabled()||rat
 function aiFaceRegion(p,art){
   const r=art.rect,head=boxw(p,0);
   if(isFFGuest(p)){const mouth=ffMouth(p);return{x:(mouth.x-p.X/256)*(p.FACE?-1:1)-r[4]+2,y:p.Y/256-mouth.y-r[5]-4,rx:7,ry:6};}
-  if(head)return{x:(head[0]-p.X/256)*(p.FACE?-1:1)-r[4]-head[2]*.22,y:p.Y/256-head[1]-r[5]+head[3]*.22,rx:Math.max(4,head[2]*.7),ry:Math.max(4,head[3]*.65)};
+  // Collision head centres use integer world pixels. Remove that same origin
+  // before locating the bruise in the sprite; subpixel movement must not create
+  // a new wound texture (and another canvas) every rendered frame.
+  if(head)return{x:(head[0]-(p.X>>8))*(p.FACE?-1:1)-r[4]-head[2]*.22,y:(p.Y>>8)-head[1]-r[5]+head[3]*.22,rx:Math.max(4,head[2]*.7),ry:Math.max(4,head[3]*.65)};
   const point=p.cur===AN_FALL+1?AI_LIE_MOUTHS[p.fid]:p.cur===AN_FALL?AI_KO_MOUTHS[p.fid]?.[p.aidx]:null;
   if(!point)return null;return{x:point[0]-1,y:point[1]-3,rx:5,ry:4};
 }
