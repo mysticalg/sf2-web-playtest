@@ -10,16 +10,16 @@ The common-outcome update recovers Balrog and Vega's original victory controller
 
 For the full Ryu clear and the three repaired outcomes, an offline Mode::Blocks oracle interprets every original 68000 and Z80 instruction. Its 85,403 frames, 2,845 state samples, 934 RGB pictures and all 137,692,732 PCM bytes match static execution. Earlier Native-reference matrices execute translated functions with original-instruction fallback only at uncovered sites; those checks do not independently interpret every covered instruction. Neither reference establishes hardware GPU/DSP parity.
 
-The corresponding-source archive contains all 186 source/support files and 90 compilation units, licenses, portable build instructions and fifteen reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
+The corresponding-source archive contains all 196 source/support files and 90 compilation units, licenses, portable build instructions and fifteen reusable input-only QA fixtures. An independent extraction and build reproduced the published WASM, JavaScript and source ZIP byte for byte:
 
 | Artifact | SHA-256 |
 | --- | --- |
-| `ssf2t-native.wasm` (15,264,690 bytes) | `a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41` |
-| `corresponding-source.zip` (2,469,961 bytes) | `9fa94a9b4e83f1839affbe758dae3f6c548a74158f519f21d6a6b5c869ad2b5f` |
+| `ssf2t-native.wasm` (15,266,816 bytes) | `d8e0cc463a7661ba40899e668af58f0441138456881b9eb9a332d4f75356c631` |
+| `corresponding-source.zip` (2,564,173 bytes) | `c2af4c347bbdc8e35d773a114058d657bf038d89ed75d461cfee76292f8f8e77` |
 
 Only the thirteen files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
 
-Remaining work includes other fighter endings and exceptional mechanics, Q1 spatial DSP and three ADPCM voices, and integrating the main AI Edition's Final Fight roster, blood and finishers into this native game. A full Ryu clear is one verified playthrough, not proof of all character paths or full-game parity.
+Remaining work includes other fighter endings and exceptional mechanics, Q1 spatial DSP and three ADPCM voices, and integrating the main AI Edition's Final Fight roster, possessed variants, combos and finishers into this native game. A full Ryu clear is one verified playthrough, not proof of all character paths or full-game parity.
 
 
 The special-input follow-up recovers original dispatch branches `08BCD4` (Dhalsim), `092CCC` (Cammy) and `0947C8` (T. Hawk), which previously stopped in both player slots. Six ordinary dual-stick tapes match a full independent 68000/Z80 instruction oracle for 34,015 frames, 1,136 state samples, 570 complete RGB pictures, sampled full RAM/video RAM and 54,840,792 PCM bytes. The browser independently matches all 1,136 states and 570 pictures. The source includes `qa/test-mechanics.cjs` and the six authored input/hash fixtures.
@@ -51,3 +51,12 @@ The observer has no game-memory writer, independent cosmetic noise and no calls 
 This is the first native AI presentation feature. Native integration of Final Fight guests, possessed variants, combos and finishers remains unfinished. Bundled startup assets requested on 2026-11-27 are also not yet integrated or published.
 
 2026-11-27 native display allocation follow-up: reuse one RGBA ImageData screen buffer. Ordinary4800-frame replay preserves30enhanced-picture hashes, final native state and effects; unique submitted buffers fall4803to1. The192-file corresponding-source package includes the previous bridge and standalone benchmark; the source ZIP repacks byte-for-byte. All162native source files and WASM/JS binaries remain unchanged from the prior clean rebuild. This reduces allocation pressure; it does not establish the cause of the reported periodic pause.
+
+
+## Guile reversal recovery and fourth genuine arcade clear
+
+Native reversal paths at `083EC4` and `084068` were missing. Standalone controller tapes reproduce both old-build stops at frame 13,208 after back-charge/forward+punch and down-charge/up+kick. The restored original functions now complete both 14,000-frame tapes. Static execution matches the full independent 68000/Z80 instruction oracle at 932 state samples, 321 RGB pictures and all 45,143,484 PCM bytes; the browser matches every saved state and picture. The initial non-triggering prefix check was insufficient, so the failing look-ahead branches were exported as their own ordinary-input tapes and verified directly.
+
+Guile also genuinely clears all 12 matches with 24 round wins and no losses, defeats CPU Akuma, plays his ending and credits, and returns to title. His 69,000-frame replay matches 2,300 state samples, 683 RGB pictures and all 111,246,956 PCM bytes against the full instruction oracle. Offline planning authored the tape; independent replay has no planner, state loads, health or result edits. Only the original easiest operator difficulty is selected.
+
+All 98 native compatibility cases retain identical RAM, video, audio hashes and 196 pictures. Ryu, Ken and Cammy's existing full browser clears still match. Existing AI blood behavior is preserved. Clean extraction of the 196-file source archive reproduces WASM, JavaScript, presentation files and source ZIP exactly. Two charge regressions and Guile's full arcade fixture are included in the portable QA package. Native AI roster/combos/finishers, bundled startup assets, remaining exceptional paths and hardware DSP parity are still unfinished.

@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 192,
-  "sourceArchiveSHA256": "52b35c2cca8a51c247b441743e347ab1777b7956141624cafaf29cddf338078a",
+  "sourceFiles": 196,
+  "sourceArchiveSHA256": "c2af4c347bbdc8e35d773a114058d657bf038d89ed75d461cfee76292f8f8e77",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -82,8 +82,8 @@
       "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
     },
     "ssf2t-native.wasm": {
-      "bytes": 15264690,
-      "sha256": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41"
+      "bytes": 15266816,
+      "sha256": "d8e0cc463a7661ba40899e668af58f0441138456881b9eb9a332d4f75356c631"
     },
     "bridge.js": {
       "bytes": 9917,
@@ -134,7 +134,7 @@
   "newOracleRGBPictures": 934,
   "newOraclePCMBytes": 137692732,
   "previousRyuContinueGameOverReferenceMode": "Earlier Native-mode reference, not independent full instruction interpretation",
-  "fullActualArcadeClears": 3,
+  "fullActualArcadeClears": 4,
   "mechanicsRecovery": {
     "entries": [
       "08BCD4",
@@ -255,7 +255,7 @@
     "browserRGBPictures": 630,
     "reusableQA": "qa/test-ken.cjs; SSF_FIXTURE=./ken-arcade-fixture.json"
   },
-  "packageVersion": "a60643a560d6f27107e44585c9dbbe4e2f7b0237f0d1c7014bfdb0e003d8d7d9",
+  "packageVersion": "301d481c77948a6e910fe388fddb58350fdbb1daf284728031d66f7569e7e4d0",
   "wasmCacheVersion": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41",
   "nativeAIPresentation": {
     "readOnly": true,
@@ -285,5 +285,167 @@
     "baselineSubmittedBuffers": 4803,
     "currentSubmittedBuffers": 1,
     "nativeCodeChanged": false
+  },
+  "guileReversalRecovery": {
+    "entries": [
+      "083EC4",
+      "084068"
+    ],
+    "inputs": [
+      "charge-back then forward+punch",
+      "charge-down then up+kick"
+    ],
+    "context": "original Guile reversal admission",
+    "baselineStopsAtFrame": 13208,
+    "independentReference": "Full Mode::Blocks for both 68000 and Z80",
+    "shortReplayFrames": 28000,
+    "shortStateSamples": 932,
+    "shortRGBPictures": 321,
+    "shortPCMBytes": 45143484,
+    "browserShortProof": {
+      "results": [
+        {
+          "name": "charge-forward-punch",
+          "frame": 14000,
+          "stateChecks": 466,
+          "pictureChecks": 163,
+          "error": null
+        },
+        {
+          "name": "charge-up-kick",
+          "frame": 14000,
+          "stateChecks": 466,
+          "pictureChecks": 158,
+          "error": null
+        }
+      ],
+      "errors": []
+    },
+    "nativeMatrix": {
+      "normal": {
+        "cases": 32,
+        "pictures": 64
+      },
+      "old": {
+        "cases": 32,
+        "pictures": 64
+      },
+      "stage": {
+        "cases": 32,
+        "pictures": 64
+      },
+      "akuma": {
+        "cases": 2,
+        "pictures": 4
+      }
+    },
+    "compatibilityArcade": {
+      "ryu": {
+        "frame": 60200,
+        "stateChecks": 2006,
+        "pictureChecks": 642,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      },
+      "ken": {
+        "frame": 68425,
+        "stateChecks": 2280,
+        "pictureChecks": 630,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      },
+      "cammy": {
+        "frame": 68473,
+        "stateChecks": 2282,
+        "pictureChecks": 693,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      }
+    },
+    "nativeDecoderLinked": false,
+    "stateLoadsInReplay": false,
+    "onlySettingWrite": "original operator difficulty after frame3001"
+  },
+  "guileArcadeClear": {
+    "fighter": "Guile",
+    "frames": 69000,
+    "stateSamples": 2300,
+    "RGBPictures": 683,
+    "PCMBytes": 111246956,
+    "roundWins": 24,
+    "roundLosses": 0,
+    "matches": 12,
+    "cpuAkumaFinal": true,
+    "nativeEnding": true,
+    "staffRoll": true,
+    "returnedToTitle": true,
+    "reference": "Full Mode::Blocks for both 68000 and Z80",
+    "offlinePlanningOnly": true,
+    "inputReplayContainsStateLoads": false,
+    "browser": {
+      "frame": 69000,
+      "stateChecks": 2300,
+      "pictureChecks": 683,
+      "roundWins": 24,
+      "roundLosses": 0,
+      "maxLadder": 12,
+      "ending": true,
+      "title": true,
+      "finalAkuma": true
+    }
+  },
+  "independentSourceRebuild": {
+    "sourceFiles": 196,
+    "compilationUnits": 90,
+    "requiresROMToCompile": false,
+    "artifacts": {
+      "ssf2t-native.wasm": {
+        "match": true,
+        "bytes": 15266816,
+        "sha256": "d8e0cc463a7661ba40899e668af58f0441138456881b9eb9a332d4f75356c631"
+      },
+      "ssf2t-native.js": {
+        "match": true,
+        "bytes": 19103,
+        "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
+      },
+      "bridge.js": {
+        "match": true,
+        "bytes": 9917,
+        "sha256": "c769923eeec5a10fc07d3e442577f405507d9d585a74caa365ac03c3e007e63b"
+      },
+      "ai-combat.js": {
+        "match": true,
+        "bytes": 6525,
+        "sha256": "8f15a6d98e5193194fcafc01ec6ecfe91080260dba1d3ca2f26e1c6ff155a420"
+      },
+      "rom-loader.js": {
+        "match": true,
+        "bytes": 5183,
+        "sha256": "abd3157c488e318544d955e5d1b11a193e390841d7d71ba9e4f0bcd9237f3dae"
+      },
+      "rom-manifest.js": {
+        "match": true,
+        "bytes": 4604,
+        "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
+      },
+      "corresponding-source.zip": {
+        "match": true,
+        "bytes": 2564173,
+        "sha256": "c2af4c347bbdc8e35d773a114058d657bf038d89ed75d461cfee76292f8f8e77"
+      }
+    }
   }
 }

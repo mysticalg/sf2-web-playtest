@@ -44,3 +44,10 @@ A 68,473-frame Cammy input replay with effects enabled preserves 2,282 native st
 ## Native display buffer reuse
 
 Native paint reuses its RGBA ImageData buffer instead of allocating a complete screen on every repaint. A 4,800-frame ordinary-input replay matches all 30 sampled enhanced-canvas hashes, final game state and effect state against the previous bridge; submitted screen-buffer identities fall from 4,803 to 1. This reduces allocation pressure, not a verified diagnosis of the reported periodic pause.
+
+
+## Guile reversal recovery and genuine arcade clear
+
+Two original Guile reversal dispatch entries,083EC4 and084068, are restored after genuine back-charge/forward+punch and down-charge/up+kick inputs stopped the prior native build. Both old-build stops reproduce at frame13208. The two repaired14000-frame ordinary-input tapes match932state samples,321completeRGBpictures and45143484PCMbytes against a full68000/Z80 instruction oracle. The browser independently matches every saved state and picture. No health, stage, ladder, timer, RNG or result writes or state loads occur; only original operator difficulty1 is selected.
+
+A new Guile tape genuinely wins24rounds and12matches without losses, defeats CPUAkuma, plays his original ending and credits, and returns to title. Its69000frames match2300state samples,683completeRGBpictures and111246956PCMbytes against full instruction execution for both CPUs; the browser independently matches all states/pictures and counts the wins, final opponent and ending/title. Offline planning generated the controller tape, but independent replay has no planner or state restoration. All98existing native/reference cases and196pictures remain identical, and Ryu/Ken/Cammy browser arcade tapes still pass. Other mechanics and native AI/Final Fight integration remain incomplete.
