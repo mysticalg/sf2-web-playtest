@@ -1,0 +1,73 @@
+{
+  "scope": "AI world-layer 2x MMPX only. HUD, original pixels and faithful WW/CE retain their existing paths. Hardware GPU readiness is verified against the CPU pixel reference before use.",
+  "primitiveCases": 24,
+  "stageProjectionCases": 144,
+  "binary3x3Patterns": 512,
+  "pixelDifferences": 0,
+  "CPUWorldReadbacksWithGPU": 0,
+  "contextLossFallback": true,
+  "unavailableFallback": true,
+  "softwareRendererRejected": true,
+  "hardware": {
+    "hardware": "NVIDIA RTX4060Ti, ANGLE D3D11, in-app browser",
+    "implementation": "Current graphics_mmpx_gpu.js with bounded reusable texture storage, pixel preflight, explicit producer flush and CPU fallback",
+    "matched": {
+      "states": 12,
+      "renderCalls": 48,
+      "order": [
+        "CPU",
+        "GPU",
+        "GPU",
+        "CPU"
+      ],
+      "completionFence": "display Canvas2D getImageData included in each timing",
+      "meanCPUMs": 10.308333336065212,
+      "meanGPUMs": 7.620833333581686,
+      "mismatchedPictureHashes": 0,
+      "hashes": [
+        535587620,
+        3998656610,
+        3021894592,
+        2249472156,
+        2389662507,
+        878388987,
+        1025409988,
+        1060695154,
+        1652244274,
+        558547096,
+        3090427674,
+        1719731488
+      ]
+    },
+    "realtime": {
+      "elapsedMs": 20668.40000000596,
+      "rafFrames": 1237,
+      "audio": "running",
+      "visibility": "visible",
+      "graphics": "smooth2x",
+      "stage": 3,
+      "profiles": [
+        "evil-andore",
+        "evil-guile"
+      ],
+      "gapsMs": [
+        33.29999999999927,
+        50
+      ],
+      "last240FilterMeanMs": 3.273750000198682,
+      "last240FilterP95Ms": 5.5,
+      "gpuCanvasAllocations": 1,
+      "gpuTextureAllocations": 2,
+      "gpuReady": true
+    },
+    "scope": "Renderer-call timings and one bounded interactive run, not universal FPS or proof that the user-reported4-5second pause is resolved.",
+    "rejectedObservations": "Earlier private test pages reused stale HTML/renderer URLs. Long1Hzstartup gaps also occurred with the old CPU renderer, so they are not attributed to GPU code. Current results verify the versioned renderer URL, GPU readiness and NVIDIA backend."
+  },
+  "faithfulWWCE": {
+    "stateHashes": 60,
+    "pixelHashes": 4
+  },
+  "CPUBufferReuseRegressionPictures": 120,
+  "test": "tests/graphics-gpu.browser.cjs",
+  "reportedPeriodicPauseResolved": false
+}
