@@ -2477,7 +2477,9 @@ function ceFadeState(){return VER.cur==='CE'&&window.SF2CEFADE?G.fade:null;}
 let aiSceneryLayer=-1;
 // Fractional sampling must retain Canvas's original filter/coverage rounding.
 function aiStageSampleUnscaled(im,args){return args.every(Number.isInteger)&&(args.length===2||args.length===4&&args[2]===(im.naturalWidth||im.width)&&args[3]===(im.naturalHeight||im.height)||args.length===8&&args[2]===args[6]&&args[3]===args[7]);}
-function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){const shade=aiEnabled()&&aiSceneryLayer>=0&&cx.filter!=='none'&&(G.stage===7||aiStageSampleUnscaled(out,args))?SF2AISCENE.nativeShade(out,cx.filter,out instanceof HTMLCanvasElement&&!window.SF2CESTAGEANIMATIONS?.isSnapshot?.(out)?G.tick:null):null;if(shade){cx.save();cx.filter='none';cx.drawImage(shade,...args);cx.restore();}else cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
+// Chun-Li's opaque paving rows can reuse source shading before horizontal
+// projection. This avoids a full Canvas filter pass for every one-pixel row.
+function fimgKind(kind,im,...args){const state=ceFadeState(),out=state?SF2CEFADE.image(im,state,kind):im;if(out){const shade=aiEnabled()&&aiSceneryLayer>=0&&cx.filter!=='none'&&(G.stage===7||G.stage===5&&aiSceneryLayer===2&&args.length===8&&args[1]>=192&&args[1]<256&&args[3]===1&&args[7]===1||aiStageSampleUnscaled(out,args))?SF2AISCENE.nativeShade(out,cx.filter,out instanceof HTMLCanvasElement&&!window.SF2CESTAGEANIMATIONS?.isSnapshot?.(out)?G.tick:null):null;if(shade){cx.save();cx.filter='none';cx.drawImage(shade,...args);cx.restore();}else cx.drawImage(out,...args);if(aiEnabled()&&aiSceneryLayer>=0)SF2AIWEATHER.paintLights(cx,SF2AIWEATHER.lightLayers(G.stage,aiSceneryLayer,im,G.round),args,G.tick);}}
 
 function fimg(im,...args){fimgKind('scroll',im,...args);}
 
