@@ -1554,7 +1554,20 @@ function drawfb(p,ground,camera){if(isFFHero(p)&&p.FBK==='hero-knife')return;if(
 
   else fx(D.pfx[p.FBK][(p.FBT>>1)&1],sx,sy,p.FBVX>=0);}
 
+function aiProjectileClashLive(p,q){return q===p?!!p.FBON:p.AIFFBullets?!q.hit:!q.blast&&!q.hit;}
+function aiProjectileClashConsume(p,q){
+  if(q===p){if(!isFFHero(p)||!SF2AIHeroes.projectileClash(p))p.FBON=0;}
+  else if(p.AIFFBullets)q.hit=true;
+  else{q.blast=1;q.blastAt=G.tick;q.fuse=0;ffSound(p,'hit');}
+}
+function aiProjectilePoolClash(a,b){
+  const first=a.AIFFBullets||a.AIFFGrenades||[a],second=b.AIFFBullets||b.AIFFGrenades||[b];
+  for(const x of first){if(!aiProjectileClashLive(a,x))continue;const px=x===a?a.FBX:Math.round(x.x*256),py=x===a?a.FBY:Math.round(x.y*256);
+    for(const y of second)if(aiProjectileClashLive(b,y)&&Math.abs(px-(y===b?b.FBX:Math.round(y.x*256)))<(24<<8)&&Math.abs(py-(y===b?b.FBY:Math.round(y.y*256)))<(20<<8)){aiProjectileClashConsume(a,x);aiProjectileClashConsume(b,y);break;}
+  }
+}
 function fbclash(){const a=P[0],b=P[1];if(ceYogaProjectile(a)||ceYogaProjectile(b))return;if(ceBoundProjectile(a)&&ceBoundProjectile(b))return;if(!(a.FBON&&b.FBON)||ceShotoProjectile(a)&&a.FBIMPACT||ceShotoProjectile(b)&&b.FBIMPACT)return;
+  if(aiEnabled()&&(a.AIFFBullets||a.AIFFGrenades||b.AIFFBullets||b.AIFFGrenades)){aiProjectilePoolClash(a,b);return;}
 
   if(Math.abs(a.FBX-b.FBX)<24<<8&&Math.abs(a.FBY-b.FBY)<20<<8)for(const p of[a,b]){if(isFFHero(p)&&SF2AIHeroes.projectileClash(p)){}else if(aiEnabled()&&p.AIFFBullets)p.AIFFBullets[0].hit=true;else if(aiEnabled()&&p.AIFFGrenades){const g=p.AIFFGrenades[0];if(!g.blast){g.blast=1;g.blastAt=G.tick;g.fuse=0;ffSound(p,'hit');}}else p.FBON=0;}}
 
