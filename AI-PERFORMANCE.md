@@ -56,3 +56,10 @@ Each new floor stain now retains its deterministic shape at landing. Previously 
 Validation:96complete world/display comparisons across12stages,2camera positions,close/wide views andoriginal/2x modes are exact. All1536landed patterns match the prior calculation; saturated merging does zero new pattern hashes; legacy fallback and reset pass. WWCE60state/4picture checks pass. Officialskill movement and a real LP hit over a saturated Dhalsim floor were inspected. This removes demonstrated repeated work; it does not prove the reported4-5secondpause is resolved.
 
 A separate cloud-filter-state experiment preserved168pictures but did not reduce a60secondgameplay trace; it was discarded, with no atmosphere code changes published.
+
+
+## Native audio streaming - 2026-11-27
+
+Where AudioWorklet supports the original 24038Hz context, one persistent node plays the unchanged interleaved native PCM through a fixed8192-frame stereo ring. Browser output resampling remains in place; the adapter does not synthesize new game audio. The queue starts with512frames available and discards stale backlog above7211frames. Mute, pause, reset and title boot clear queued audio. Unsupported worklets or sample rates retain the previous AudioBuffer playback path.
+
+A local8-second real-time comparison replaced483AudioBuffers and483single-use source nodes with one worklet node, no AudioBuffers/source nodes, and483small transferred PCM chunks. It retained the per-frame PCM copy. The worklet reported zero underruns/drops, and a real WebAudio analyser measured nonzero output. Native state, raw rendered pixels and original mixer PCM match at21samples across4200ordinary-input frames.48076sample-level unit checks preserve stereo order, signed amplitude and original0.35gain exactly; startup, underflow, overflow and reset are covered. The no-worklet fallback and mute/re-enable flow pass. These are bounded playback/allocation measurements, not proof that the reported4-5second pause is fixed or that hardware QSound DSP parity has been achieved. Full AI roster/rules integration remains unfinished.

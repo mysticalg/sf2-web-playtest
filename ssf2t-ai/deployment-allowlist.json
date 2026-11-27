@@ -6,6 +6,7 @@
     "index.html",
     "bridge.js",
     "ai-combat.js",
+    "audio-worklet.js",
     "ai-shortcuts.js",
     "rom-loader.js",
     "rom-manifest.js",
@@ -27,5 +28,5 @@
     "ssf2t.zip",
     "opcode dumps"
   ],
-  "totalBytesWithoutThisManifest": 18420496
+  "totalBytesWithoutThisManifest": 18442133
 }

@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 206,
-  "sourceArchiveSHA256": "5fe1e7f4e16059a0c15620759a67765e3de40dcbf0a7f36431ca84c9d78f2488",
+  "sourceFiles": 213,
+  "sourceArchiveSHA256": "6d89a903bb48b5eab69052b10e8f45536257618584ed64953c0713f8aa30073b",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -86,8 +86,8 @@
       "sha256": "4bbbe2c3526639404c7bc0670dfaac438c5fa17c804ff315fdc293cc2abc6e67"
     },
     "bridge.js": {
-      "bytes": 11650,
-      "sha256": "f84e6b0472fff846ed0f154dbb90550c93390089f588e927843082cb54e3d91a"
+      "bytes": 13019,
+      "sha256": "215541e47c6434c94a064d4b8e371b4abf22036c61e6afe19300556028d9df02"
     },
     "rom-loader.js": {
       "bytes": 5183,
@@ -104,6 +104,10 @@
     "ai-shortcuts.js": {
       "bytes": 9805,
       "sha256": "0d74539303cf2156432d6cc92b3f5460ee07fb855fdab4a9440a76effa784332"
+    },
+    "audio-worklet.js": {
+      "bytes": 1945,
+      "sha256": "dbdb5eea76308936b702c65c9c1a1b5e56b3621af39337d4c5eff33f68cec73c"
     }
   },
   "compiledSourceUnits": 91,
@@ -259,7 +263,7 @@
     "browserRGBPictures": 630,
     "reusableQA": "qa/test-ken.cjs; SSF_FIXTURE=./ken-arcade-fixture.json"
   },
-  "packageVersion": "781055c4b85471a3c7b2b73bca55282588c7e69dcafa84710cad5e3b55e0b111",
+  "packageVersion": "4a19b021c2ad0ca96934508b1dea83b46a396c5bbcbf9b4285258f59ac2bd1cd",
   "wasmCacheVersion": "4bbbe2c3526639404c7bc0670dfaac438c5fa17c804ff315fdc293cc2abc6e67",
   "nativeAIPresentation": {
     "readOnly": true,
@@ -2915,7 +2919,7 @@
     "inputAdapterWritesRAM": false,
     "diagnosticSetup": "Logged gauge/position writes and heap checkpoints are test-only; input tapes replay independently. No native state writes in the product adapter."
   },
-  "cleanSourceRebuild": {
+  "previousCleanSourceRebuild": {
     "sourceFiles": 206,
     "compiledSourceUnits": 91,
     "artifacts": {
@@ -2953,5 +2957,111 @@
       }
     },
     "runtimeChecksRerunFromPackagedQA": true
+  },
+  "nativeAudioStreaming": {
+    "browser": {
+      "allocations": {
+        "buffers": 0,
+        "sources": 0,
+        "worklets": 1
+      },
+      "info": {
+        "backend": "worklet",
+        "submitted": 483,
+        "sampleRate": 24038,
+        "enabled": true,
+        "report": {
+          "queued": 756,
+          "received": 191860,
+          "dropped": 0,
+          "underruns": 0,
+          "capacity": 8192
+        }
+      },
+      "peak": 0.21731337904930115,
+      "frameGaps": [],
+      "muted": {
+        "backend": "worklet",
+        "submitted": 485,
+        "sampleRate": 24038,
+        "enabled": false,
+        "report": {
+          "queued": 0,
+          "received": 195487,
+          "dropped": 0,
+          "underruns": 0,
+          "capacity": 8192
+        }
+      },
+      "reenabled": {
+        "info": {
+          "backend": "worklet",
+          "submitted": 515,
+          "sampleRate": 24038,
+          "enabled": true,
+          "report": {
+            "queued": 0,
+            "received": 195487,
+            "dropped": 0,
+            "underruns": 0,
+            "capacity": 8192
+          }
+        },
+        "allocations": {
+          "buffers": 0,
+          "sources": 0,
+          "worklets": 1
+        }
+      }
+    },
+    "samples": 21,
+    "frames": 4200,
+    "rawNativeStatePixelsPCMUnchanged": true,
+    "nativeSourcesUnchanged": true
+  },
+  "cleanSourceRebuild": {
+    "sourceFiles": 213,
+    "compilationUnits": 91,
+    "nativeLibraryFilesUnchanged": 163,
+    "artifacts": {
+      "ssf2t-native.js": {
+        "bytes": 19103,
+        "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
+      },
+      "ssf2t-native.wasm": {
+        "bytes": 15577741,
+        "sha256": "4bbbe2c3526639404c7bc0670dfaac438c5fa17c804ff315fdc293cc2abc6e67"
+      },
+      "bridge.js": {
+        "bytes": 13019,
+        "sha256": "215541e47c6434c94a064d4b8e371b4abf22036c61e6afe19300556028d9df02"
+      },
+      "audio-worklet.js": {
+        "bytes": 1945,
+        "sha256": "dbdb5eea76308936b702c65c9c1a1b5e56b3621af39337d4c5eff33f68cec73c"
+      },
+      "ai-combat.js": {
+        "bytes": 6525,
+        "sha256": "8f15a6d98e5193194fcafc01ec6ecfe91080260dba1d3ca2f26e1c6ff155a420"
+      },
+      "ai-shortcuts.js": {
+        "bytes": 9805,
+        "sha256": "0d74539303cf2156432d6cc92b3f5460ee07fb855fdab4a9440a76effa784332"
+      },
+      "rom-loader.js": {
+        "bytes": 5183,
+        "sha256": "abd3157c488e318544d955e5d1b11a193e390841d7d71ba9e4f0bcd9237f3dae"
+      },
+      "rom-manifest.js": {
+        "bytes": 4604,
+        "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
+      },
+      "corresponding-source.zip": {
+        "bytes": 2709791,
+        "sha256": "6d89a903bb48b5eab69052b10e8f45536257618584ed64953c0713f8aa30073b"
+      }
+    },
+    "packagedUnitQA": true,
+    "fullBrowserQAFromPackageRerun": false
   }
 }

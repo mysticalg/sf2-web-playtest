@@ -54,3 +54,10 @@ A new Guile tape genuinely wins24rounds and12matches without losses, defeats CPU
 
 
 Optional two-button special shortcuts send ordinary original controller motions. All 300 listed new/old-style activations across both slots pass. Charge, meter and grab eligibility remain native; 720 supers use jump buffering, and Vega flying grabs require a second airborne chord. Seven newly exposed native dispatch paths are recovered. Ten diagnostic tapes match independent instruction execution in state, RGB and PCM; documented setup writes are confined to tests. All 98 compatibility cases and four full browser arcade clears pass on this build. Native Final Fight/possessed/death-combo integration remains unfinished.
+
+
+## Native audio streaming - 2026-11-27
+
+Where AudioWorklet supports the original 24038Hz context, one persistent node plays the unchanged interleaved native PCM through a fixed8192-frame stereo ring. Browser output resampling remains in place; the adapter does not synthesize new game audio. The queue starts with512frames available and discards stale backlog above7211frames. Mute, pause, reset and title boot clear queued audio. Unsupported worklets or sample rates retain the previous AudioBuffer playback path.
+
+A local8-second real-time comparison replaced483AudioBuffers and483single-use source nodes with one worklet node, no AudioBuffers/source nodes, and483small transferred PCM chunks. It retained the per-frame PCM copy. The worklet reported zero underruns/drops, and a real WebAudio analyser measured nonzero output. Native state, raw rendered pixels and original mixer PCM match at21samples across4200ordinary-input frames.48076sample-level unit checks preserve stereo order, signed amplitude and original0.35gain exactly; startup, underflow, overflow and reset are covered. The no-worklet fallback and mute/re-enable flow pass. These are bounded playback/allocation measurements, not proof that the reported4-5second pause is fixed or that hardware QSound DSP parity has been achieved. Full AI roster/rules integration remains unfinished.
