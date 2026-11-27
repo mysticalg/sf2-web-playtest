@@ -47,3 +47,12 @@ Validation: tests/injury-cache.browser.cjs checks528pose/identity/slot/facing co
 The previously documented fractional-panorama hotspot is now narrowed: only scroll2 paving source rows192..255, drawn one pixel high to one pixel high, reuse the existing native shade before horizontal projection. The original draw arguments, row positions, width, alpha, camera and source pixels stay the same. Other fractional/scaled scenery still uses the original Canvas filter path, and weather light overlays retain their original identity and placement. The bounded nativeShade cache already owns these source images; no new per-row canvases or cache family are added.
 
 On the local software Canvas benchmark,36close/wide,3camera,3round,original/2x comparisons pass. The final correctly positioned camera sweep has exact world/display RGBA matches; an earlier sweep saw two RGB channels differ by1/255, so regression tolerance is capped at2/255 with zero alpha changes. Mean filtered wide render calls improve from422.2ms to33.0ms in the final sweep (an earlier sweep299.8ms to29.4ms). These are renderer-call timings, not universal FPS. Original WWCE60state/4pixel and native cache/snapshot tests pass; actual wide-rain skill screenshot inspected. This addresses a measured stage stall without claiming the user-reported recurring pause is fully resolved.
+
+
+## Persistent blood floor patterns - 2026-11-27
+
+Each new floor stain now retains its deterministic shape at landing. Previously all visible and offscreen stains rebuilt the same floor key and hash every repaint. At the1536-stain limit this removes1536hash calls and temporary shape-key strings per frame. Size growth at saturation keeps the original pattern, and older stain objects retain the original fallback calculation. No stain count, placement, colour, projection or combat logic changes.
+
+Validation:96complete world/display comparisons across12stages,2camera positions,close/wide views andoriginal/2x modes are exact. All1536landed patterns match the prior calculation; saturated merging does zero new pattern hashes; legacy fallback and reset pass. WWCE60state/4picture checks pass. Officialskill movement and a real LP hit over a saturated Dhalsim floor were inspected. This removes demonstrated repeated work; it does not prove the reported4-5secondpause is resolved.
+
+A separate cloud-filter-state experiment preserved168pictures but did not reduce a60secondgameplay trace; it was discarded, with no atmosphere code changes published.

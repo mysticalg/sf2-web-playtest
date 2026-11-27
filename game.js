@@ -115,7 +115,8 @@ function aiBloodStep(){
     if(p.y+p.vy*t-.13*t*t<=-p.depth){
       p.landed=true;const camera=Math.floor(G.cam),landX=p.x+p.vx*t,zero=aiBloodFloorX({x:camera,depth:p.depth},camera),scale=aiBloodFloorX({x:camera+1,depth:p.depth},camera)-zero;
       const stain={x:camera+(landX-camera-zero)/(scale||1),depth:p.depth,size:p.size+1,color:p.color};
-      if(AI_BLOOD.stains.length<1536)AI_BLOOD.stains.push(stain);
+      // Landing coordinates stay fixed; hash the floor shape once, not each repaint.
+      if(AI_BLOOD.stains.length<1536){stain.pattern=aiFXHash(Math.floor(stain.x*256),'floor:'+stain.depth)%3;AI_BLOOD.stains.push(stain);}
       else{const closest=AI_BLOOD.stains.reduce((a,b)=>Math.abs(b.x-stain.x)<Math.abs(a.x-stain.x)?b:a);closest.size=Math.min(6,closest.size+.2);}
     }
   }
@@ -131,9 +132,9 @@ function aiBloodFloorProjection(depth,camera){if(aiFFStage())return{delta:0,scal
 function aiBloodFloorX(stain,camera){const p=aiBloodFloorProjection(stain.depth,camera);return(stain.x-camera-p.delta)*p.scale;}
 function aiBloodDraw(camera,ground,stains=false){
   if(!aiEnabled())return;cx.save();
-  if(stains){const projections=[];cx.globalAlpha=.94;for(const s of AI_BLOOD.stains){const p=projections[s.depth]||(projections[s.depth]=aiBloodFloorProjection(s.depth,camera)),x=Math.round((s.x-camera-p.delta)*p.scale),y=ground+s.depth,h=aiFXHash(Math.floor(s.x*256),'floor:'+s.depth);cx.fillStyle=s.color;
-    if(h%3===0){cx.fillRect(x,y,1,1);cx.fillRect(x+2,y+1,1,1);if(s.size>2)cx.fillRect(x-2,y,1,1);}
-    else if(h%3===1)cx.fillRect(x-1,y,Math.min(4,Math.ceil(s.size)),1);
+  if(stains){const projections=[];cx.globalAlpha=.94;for(const s of AI_BLOOD.stains){const p=projections[s.depth]||(projections[s.depth]=aiBloodFloorProjection(s.depth,camera)),x=Math.round((s.x-camera-p.delta)*p.scale),y=ground+s.depth,pattern=s.pattern??aiFXHash(Math.floor(s.x*256),'floor:'+s.depth)%3;cx.fillStyle=s.color;
+    if(pattern===0){cx.fillRect(x,y,1,1);cx.fillRect(x+2,y+1,1,1);if(s.size>2)cx.fillRect(x-2,y,1,1);}
+    else if(pattern===1)cx.fillRect(x-1,y,Math.min(4,Math.ceil(s.size)),1);
     else{cx.fillRect(x,y,1,2);if(s.size>2)cx.fillRect(x-1,y+1,2,1);}
   }}else for(const p of AI_BLOOD.particles){const t=G.tick-p.tick;if(p.landed||t>=p.life)continue;const x=Math.floor(p.x+p.vx*t)-camera,y=ground-Math.floor(p.y+p.vy*t-.13*t*t),vy=p.vy-.26*t,speed=Math.hypot(p.vx,vy);cx.fillStyle=p.color;
     if(speed>2){const length=Math.min(p.retch?5:3,Math.floor(speed/1.5));cx.globalAlpha=p.retch?.9:.55;for(let n=1;n<=length;n++)cx.fillRect(x-Math.round(p.vx/speed*n),y+Math.round(vy/speed*n),1,1);}
