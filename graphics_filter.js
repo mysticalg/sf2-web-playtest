@@ -127,7 +127,8 @@
       if(!c.capacity||pixels>c.capacity){c.capacity=Math.max(pixels,Math.ceil((c.capacity||0)*1.5),65536);c.previousBuffer=new Uint32Array(c.capacity);c.twoBuffer=new Uint32Array(c.capacity*4);c.fourBuffer=null;c.allocations=(c.allocations||0)+1;}
       if(factor===4&&!c.fourBuffer){c.fourBuffer=new Uint32Array(c.capacity*16);c.allocations=(c.allocations||0)+1;}
       c.w=w;c.h=h;c.factor=factor;c.previous=c.previousBuffer.subarray(0,pixels);c.two=c.twoBuffer.subarray(0,pixels*4);c.four=factor===4?c.fourBuffer.subarray(0,pixels*16):null;
-      c.canvas.width=pw;c.canvas.height=ph;c.context=c.canvas.getContext('2d');const output=factor===4?c.four:c.two;c.image=new ImageData(new Uint8ClampedArray(output.buffer,output.byteOffset,pw*ph*4),pw,ph);c.valid=false;
+      // Keep the backing surface at capacity too; draw only the active rectangle.
+      if(c.canvas.width<pw||c.canvas.height<ph||!c.context){c.canvas.width=Math.max(pw,Math.ceil(c.canvas.width*1.25));c.canvas.height=Math.max(ph,Math.ceil(c.canvas.height*1.25));c.context=c.canvas.getContext('2d');c.surfaceAllocations=(c.surfaceAllocations||0)+1;}const output=factor===4?c.four:c.two;c.image=new ImageData(new Uint8ClampedArray(output.buffer,output.byteOffset,pw*ph*4),pw,ph);c.valid=false;
     }
     let changed=!c.valid;if(!changed)for(let i=0;i<src.length;i++)if(src[i]!==c.previous[i]){changed=true;break;}
     if(changed){acceleratedScale2x(src,w,h,c.two);if(factor===4)acceleratedScale2x(c.two,w*2,h*2,c.four);c.context.putImageData(c.image,0,0);c.previous.set(src);c.valid=true;c.updates=(c.updates||0)+1;}else c.hits=(c.hits||0)+1;
@@ -153,8 +154,8 @@
     const worldFactor=mode==='original'||factor*Math.abs(m.a)<1.5?1:2;
     const source=magnify(f.surface,worldFactor,'world',crop);
     displayContext.setTransform(factor*m.a,factor*m.b,factor*m.c,factor*m.d,factor*m.e,factor*m.f);
-    if(worldFactor===1)displayContext.drawImage(source,crop.x,crop.y,crop.w,crop.h,crop.x,f.top+crop.y,crop.w,crop.h);else displayContext.drawImage(source,0,0,source.width,source.height,crop.x,f.top+crop.y,crop.w,crop.h);
-    displayContext.setTransform(1,0,0,1,0,0);const hud=magnify(overlay,scale(),'hud');displayContext.drawImage(hud,0,0,width*factor,height*factor);
+    if(worldFactor===1)displayContext.drawImage(source,crop.x,crop.y,crop.w,crop.h,crop.x,f.top+crop.y,crop.w,crop.h);else displayContext.drawImage(source,0,0,crop.w*worldFactor,crop.h*worldFactor,crop.x,f.top+crop.y,crop.w,crop.h);
+    displayContext.setTransform(1,0,0,1,0,0);const hud=magnify(overlay,scale(),'hud');displayContext.drawImage(hud,0,0,width*scale(),height*scale(),0,0,width*factor,height*factor);
   }
   function present(){
     if(!display)return;const start=performance.now();if(worldFrame){presentWorld();lastMs=performance.now()-start;durations.push(lastMs);if(durations.length>240)durations.shift();frames++;filtered++;return;}if(display.width!==width*scale()||display.height!==height*scale())sizeDisplay();
@@ -194,7 +195,7 @@
     for(const type of ['keydown','keyup'])select.addEventListener(type,e=>e.stopPropagation());
     select.addEventListener('change',()=>{setMode(select.value);display.focus({preventScroll:true});});sizeDisplay();return native;
   }
-  function stats(){const sorted=durations.slice().sort((a,b)=>a-b);return {mode,scale:scale(),magnification:Object.fromEntries([...magnifyCaches].map(([k,c])=>[k,{updates:c.updates||0,hits:c.hits||0,bufferAllocations:c.allocations||0,capacity:c.capacity||0}])),frames,filtered,cached,lastMs,samples:sorted.length,avgMs:durations.reduce((a,b)=>a+b,0)/(durations.length||1),p95Ms:sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)]||0,maxMs:sorted[sorted.length-1]||0};}
+  function stats(){const sorted=durations.slice().sort((a,b)=>a-b);return {mode,scale:scale(),magnification:Object.fromEntries([...magnifyCaches].map(([k,c])=>[k,{updates:c.updates||0,hits:c.hits||0,bufferAllocations:c.allocations||0,surfaceAllocations:c.surfaceAllocations||0,capacity:c.capacity||0}])),frames,filtered,cached,lastMs,samples:sorted.length,avgMs:durations.reduce((a,b)=>a+b,0)/(durations.length||1),p95Ms:sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)]||0,maxMs:sorted[sorted.length-1]||0};}
   addEventListener('keydown',e=>{
     if(!display||e.code!=='KeyG'||e.repeat||e.ctrlKey||e.altKey||e.metaKey||e.target instanceof Element&&e.target.closest('select,input,textarea,[contenteditable=true]'))return;
     e.preventDefault();e.stopImmediatePropagation();setMode(modes[(modes.indexOf(mode)+1)%modes.length]);display.focus({preventScroll:true});
