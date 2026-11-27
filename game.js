@@ -1073,7 +1073,7 @@ function startspec(p,ev,force){const air=aiEnabled()&&p.ST===S_AIR&&!p.PJ;const 
 
   if(!m)return false; if(str>2)str=2;
   if(isFFHero(p)&&m.hero){if(air&&['hero-hold','hero-pile','hero-grab'].includes(m.style))return false;const code=m.style==='hero-escape'?SF2AIHeroes.get(p.aiProfile).data.nativeSounds.escape:m.style.startsWith('hero-knife')?14:47,voice={commands:[],sample:null,heroCode:code,kind:'hero',tick:G.tick};AI_SPECIAL_VOICES[p.i]={last:voice,projectile:m.style==='hero-knife-throw'?voice:AI_SPECIAL_VOICES[p.i]?.projectile};return SF2AIHeroes.start(p,m,str,{anim:setanim,sound:c=>{if(!muted&&!netReplaying)SF2AIHeroes.playSound(c,AC,MG);}});}
-  if(isFFGuest(p)&&!isDamnd(p)&&m.kind==='ff'){if(air&&!(p.aiProfile==='rolento'&&['grenade','grenade-barrage','wallkick','wallpunch'].includes(m.style))&&!(p.aiProfile==='andore'&&m.style==='seatdrop'))return false;const voice={commands:[],sample:null,ffCode:p.aiProfile==='edi'&&['pistol','pistol-burst'].includes(m.style)?18:['andore','abigail'].includes(p.aiProfile)?41:47,kind:'ff',tick:G.tick};AI_SPECIAL_VOICES[p.i]={last:voice,projectile:['pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','retreat','belger-retreat'].includes(m.style)?voice:AI_SPECIAL_VOICES[p.i]?.projectile};return SF2AIFF.start(p,m,str,{anim:setanim,sound:()=>ffSound(p,'special')});}if(isDamnd(p)&&m.kind==='damnd'){if(air)return false;AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,0x25]],sample:null,kind:'damnd',tick:G.tick}};return SF2AIDamnd.start(p,m,str,{anim:setanim,sound:sfxc});}if(VER.edition==='ce'&&p.fid===1&&m.inp==='mash'&&p.ST===S_ATK&&!p.CEHHSCancel)return false;if(p.CES?.kind==='hundredhands'&&p.MV===m)return false;
+  if(isFFGuest(p)&&!isDamnd(p)&&m.kind==='ff'){if(air&&!(p.aiProfile==='rolento'&&['grenade','grenade-barrage','wallkick','wallpunch'].includes(m.style))&&!(p.aiProfile==='andore'&&m.style==='seatdrop'))return false;const voice={commands:[],sample:null,ffCode:p.aiProfile==='edi'&&['pistol','pistol-burst'].includes(m.style)?18:['andore','abigail'].includes(p.aiProfile)?41:47,kind:'ff',tick:G.tick};const projectileVoice=p.aiProfile==='rolento'&&['grenade','grenade-barrage','retreat'].includes(m.style)?{...voice,ffCode:21}:voice;AI_SPECIAL_VOICES[p.i]={last:voice,projectile:['pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','retreat','belger-retreat'].includes(m.style)?projectileVoice:AI_SPECIAL_VOICES[p.i]?.projectile};return SF2AIFF.start(p,m,str,{anim:setanim,sound:()=>ffSound(p,'special')});}if(isDamnd(p)&&m.kind==='damnd'){if(air)return false;AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,0x25]],sample:null,kind:'damnd',tick:G.tick}};return SF2AIDamnd.start(p,m,str,{anim:setanim,sound:sfxc});}if(VER.edition==='ce'&&p.fid===1&&m.inp==='mash'&&p.ST===S_ATK&&!p.CEHHSCancel)return false;if(p.CES?.kind==='hundredhands'&&p.MV===m)return false;
   if(aiEnabled()&&p.AIButtons)p.AIButtons.motion=null;
   if(m.kind==='fb'&&p.FBON)return false;if(VER.cur==='CE'&&p.fid===7&&(p.CEYogaLink||m.inp==='hcf'&&p.FBON))return false;
 
@@ -1525,7 +1525,7 @@ function fbmove(p){if(aiEnabled())SF2AIHeroWeapons.stepWorld(G.scene==='bonus'?{
 
 function fbafter(p){if(p.FBDEFER){p.FBDEFER=0;fbadvance(p);}}
 
-function fbadvance(p){if(isFFHero(p)&&p.FBK==='hero-knife')return;if(aiEnabled()&&p.AIFFBullets){SF2AIFF.bulletStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom());return;}if(aiEnabled()&&p.AIFFGrenades){SF2AIFF.grenadeStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom(),()=>ffSound(p,'hit'));return;}if(aiEnabled()&&p.AIFFProjectile){SF2AIFF.projectileStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom());return;}if(isDamnd(p)&&p.FBK==='ff-barrel'){SF2AIDamnd.barrelStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom());return;}if(!p.FBON||ceYogaProjectile(p))return;if((ceShotoProjectile(p)||ceBoundProjectile(p))&&p.FBIMPACT){if(--p.FBIMPACT===0)p.FBON=0;return;}
+function fbadvance(p){if(isFFHero(p)&&p.FBK==='hero-knife')return;if(aiEnabled()&&p.AIFFBullets){SF2AIFF.bulletStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom());return;}if(aiEnabled()&&p.AIFFGrenades){SF2AIFF.grenadeStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom(),()=>ffSound(p,'explosion'));return;}if(aiEnabled()&&p.AIFFProjectile){SF2AIFF.projectileStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom());return;}if(isDamnd(p)&&p.FBK==='ff-barrel'){SF2AIDamnd.barrelStep(p,G.scene==='bonus'?{left:0,right:W}:aiRoom());return;}if(!p.FBON||ceYogaProjectile(p))return;if((ceShotoProjectile(p)||ceBoundProjectile(p))&&p.FBIMPACT){if(--p.FBIMPACT===0)p.FBON=0;return;}
 
   if(p.FBDEF&&p.FBINIT){p.FBINIT=0;return;} // initialization does not also execute the movement state
 
@@ -1558,7 +1558,7 @@ function aiProjectileClashLive(p,q){return q===p?!!p.FBON:p.AIFFBullets?!q.hit:!
 function aiProjectileClashConsume(p,q){
   if(q===p){if(!isFFHero(p)||!SF2AIHeroes.projectileClash(p))p.FBON=0;}
   else if(p.AIFFBullets)q.hit=true;
-  else{q.blast=1;q.blastAt=G.tick;q.fuse=0;ffSound(p,'hit');}
+  else{q.blast=1;q.blastAt=G.tick;q.fuse=0;ffSound(p,'explosion');}
 }
 function aiProjectilePoolClash(a,b){
   const first=a.AIFFBullets||a.AIFFGrenades||[a],second=b.AIFFBullets||b.AIFFGrenades||[b];
@@ -1569,7 +1569,7 @@ function aiProjectilePoolClash(a,b){
 function fbclash(){const a=P[0],b=P[1];if(ceYogaProjectile(a)||ceYogaProjectile(b))return;if(ceBoundProjectile(a)&&ceBoundProjectile(b))return;if(!(a.FBON&&b.FBON)||ceShotoProjectile(a)&&a.FBIMPACT||ceShotoProjectile(b)&&b.FBIMPACT)return;
   if(aiEnabled()&&(a.AIFFBullets||a.AIFFGrenades||b.AIFFBullets||b.AIFFGrenades)){aiProjectilePoolClash(a,b);return;}
 
-  if(Math.abs(a.FBX-b.FBX)<24<<8&&Math.abs(a.FBY-b.FBY)<20<<8)for(const p of[a,b]){if(isFFHero(p)&&SF2AIHeroes.projectileClash(p)){}else if(aiEnabled()&&p.AIFFBullets)p.AIFFBullets[0].hit=true;else if(aiEnabled()&&p.AIFFGrenades){const g=p.AIFFGrenades[0];if(!g.blast){g.blast=1;g.blastAt=G.tick;g.fuse=0;ffSound(p,'hit');}}else p.FBON=0;}}
+  if(Math.abs(a.FBX-b.FBX)<24<<8&&Math.abs(a.FBY-b.FBY)<20<<8)for(const p of[a,b]){if(isFFHero(p)&&SF2AIHeroes.projectileClash(p)){}else if(aiEnabled()&&p.AIFFBullets)p.AIFFBullets[0].hit=true;else if(aiEnabled()&&p.AIFFGrenades){const g=p.AIFFGrenades[0];if(!g.blast){g.blast=1;g.blastAt=G.tick;g.fuse=0;ffSound(p,'explosion');}}else p.FBON=0;}}
 
 const ceProjectilePose=p=>({cur:p.cur,aidx:p.aidx,acc:p.acc,adone:p.adone,hitdone:p.hitdone,MH2:p.MH2});
 

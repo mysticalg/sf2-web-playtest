@@ -1,0 +1,32 @@
+{
+  "originalProgram": {
+    "grenadeController": "020358",
+    "nativeUpdates": 115,
+    "constructor": "020908",
+    "explosion": "05472E",
+    "object": "0xffb9a8",
+    "type": 15,
+    "sounds": [
+      21
+    ],
+    "animation": "0x547b8"
+  },
+  "recording": {
+    "command": 21,
+    "commandHex": "15",
+    "commandTime": 3.001472,
+    "rate": 48000,
+    "samples": 30070,
+    "duration": 0.6264583333333333,
+    "activeSamples": 27566,
+    "peak": 10994,
+    "preCommandPeak": 0,
+    "pcmSHA256": "fe2f5f9eacf04f53db4f57850795bccba699d8a0203f2d0b7a2786c29e942aac",
+    "mp3Bytes": 8396,
+    "mp3SHA256": "79d1e05eee5cb49cbd7edeb0987bc611ad141036b48e302e5d9ad5638fd643e1"
+  },
+  "reproductionExact": true,
+  "scope": "Original Final Fight world program grenade fuse dispatch and original Z80/YM2151/OKI sound-driver recording. Test-only offline main-CPU parking isolates the command; browser uses decoded MP3 only. No original ROM bytes included.",
+  "browserTest": "tests/rolento-grenade-audio.browser.cjs",
+  "visualTiming": "Existing authored grenade/explosion timing is unchanged; original visual timing has not been established."
+}
