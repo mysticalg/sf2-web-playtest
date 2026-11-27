@@ -4,7 +4,7 @@
  */
 'use strict';
 window.SF2AIFINISHERS.bindSF2=()=>{
- let finisher,banner='',fire=null,portrait=null,pendingEcho=null,savedDeathVoice=null,contactSerial=0,lastMove=null,inputPrevious=0,promptPrevious=0;const normalPlans=new Map();
+ let finisher,banner='',fire=null,portrait=null,pendingEcho=null,savedDeathVoice=null,contactSerial=0,lastMove=null,inputPrevious=0,promptPrevious=0,cinema=null;const normalPlans=new Map();
  function portraitCutout(w,d){
   const source=CWIN?.[w.fid]?.win;if(!source)return null;const base=window.SF2CEFADE?.mirrorWinner?.(w.i,w.fid,d.fid)||source,image=aiPortraitImage(base,w.i,w.fid,'win'),c=document.createElement('canvas');c.width=image.width;c.height=image.height;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(image,0,0);const p=g.getImageData(0,0,c.width,c.height),data=p.data,key=data.slice(0,4),seen=new Uint8Array(c.width*c.height),queue=[];
   const enqueue=i=>{if(i<0||i>=seen.length||seen[i])return;seen[i]=1;const k=i*4;if(data[k]===key[0]&&data[k+1]===key[1]&&data[k+2]===key[2]&&data[k+3]===key[3])queue.push(i);};
@@ -135,17 +135,17 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   impact:e=>{if(!e.special)G.hfz=Math.min(G.hfz,Math.round(4*(1-(e.progress??0))**2));G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
   fire:e=>{fire={tick:G.tick,x:e.point.x,y:e.point.y};AI_RETCH[e.victim.i]=AI_TEETH[e.victim.i]=AI_FLOOR_COUGHS[e.victim.i]=null;},
   echo:(w,request)=>{if(lastMove?.nativeSlot===-1)pendingEcho={owner:w,request};else aiSpecialKOEcho(w,{special:true,projectile:!!w.FBON});},
-  camera(w,active){if(active)AI_SKO_VIEW={slot:w.i,start:G.tick-24};else AI_SKO_VIEW=null;},
+  camera(w,active,meta={}){AI_SKO_VIEW=null;if(!active||cinema||!['combo','special','settle'].includes(meta.phase))return;const f=measureFraming(false);if(!f)return;const v=SF2CECAMERA.state,ground=GROUND+v.main,room=aiRoom(),width=Math.min(room.right-room.left,Math.max(aiViewWidth(),f.width)),centre=(f.left+f.right)/2;cinema={started:G.tick,fromCam:G.cam,fromWidth:aiViewWidth(),cam:Math.max(room.left,Math.min(room.right-width,centre-width/2)),width,inset:G.AICamera?.inset||0,vertical:{...v,video:{...v.video}},frame:f,focus:{zoom:f.zoom,screenY:Math.min(H*.66,H-10-(f.top-f.bottom)/2*Math.max(W/width,f.zoom)),x:centre,y:ground-(f.top+f.bottom)/2,top:ground-f.top}};},
   banner:text=>{banner=text;},
   complete(w,d){savedDeathVoice=null;resetActor(w);resetActor(d);delete d.AIFinishProtected;d.HP=d.HPD=0;d.ST=8;pose(w,'win');portrait=portraitCutout(w,d);endround(1<<w.i);},
   fallback(w,d,source={special:false}){resetActor(w);resetActor(d);if(savedDeathVoice)AI_SPECIAL_VOICES[w.i]=savedDeathVoice;savedDeathVoice=null;delete d.AIFinishProtected;d.HP=d.HPD=0;aiDeathBegin(d,{...source,special:source.special&&!source.alreadyFinished});fallst(d,8,d.FACE?-1:1);endround(1<<w.i);},
-  cleanup(reason,w,d,meta={}){if(w)resetActor(w);if(d){resetActor(d);if(d.AIFinishProtected){delete d.AIFinishProtected;d.HP=d.HPD=0;}}if(reason==='winner-ko'){for(const p of[w,d])if(p&&p.HP<=0)fallst(p,8,p.FACE?-1:1);}if(!meta.fallback)savedDeathVoice=null;banner='';fire=portrait=pendingEcho=null;lastMove=null;AI_SKO_VIEW=null;},
+  cleanup(reason,w,d,meta={}){cinema=null;if(w)resetActor(w);if(d){resetActor(d);if(d.AIFinishProtected){delete d.AIFinishProtected;d.HP=d.HPD=0;}}if(reason==='winner-ko'){for(const p of[w,d])if(p&&p.HP<=0)fallst(p,8,p.FACE?-1:1);}if(!meta.fallback)savedDeathVoice=null;banner='';fire=portrait=pendingEcho=null;lastMove=null;AI_SKO_VIEW=null;},
   aborted:reason=>{G.AIFinisherAbort=reason;}
  };
  finisher=SF2AIFINISHERS.create(host);
  window.render_game_to_text??=()=>JSON.stringify({edition:VER.edition,scene:G.scene,phase:G.gph,players:P.map(p=>({slot:p.i,profile:aiIdentity(p),baseProfile:p.aiProfile||CE_KEYS[p.fid],x:p.X/256,y:p.Y/256,hp:finisher.isVictim(p)?0:p.HP,maxHP:aiMax(p),wins:p.WINS,state:p.ST,animation:p.anim?.name,frame:p.aidx})),finisher:finisher.info(),blood:{particles:AI_BLOOD.particles.length,stains:AI_BLOOD.stains.length},camera:{x:G.cam,width:aiViewWidth()},coordinates:'world pixels; Y upwards'});
- function framing(render=false){
-  const state=finisher.view();if(!state||G.scene!=='fight'||state.completed&&G.tick-state.completedAt>=36)return null;const actors=render?SF2CECAMERA.poses||P:P,bounds=[];
+ function measureFraming(render=false){
+  const state=finisher.view();if(!state||G.scene!=='fight')return null;const actors=render?SF2CECAMERA.poses||P:P,bounds=[];
   for(const p of actors){if(finisher.hidden(p))continue;const r=nativeArt(p).rect,x=p.X/256,y=p.Y/256,left=x+(p.FACE?-r[4]-r[2]:r[4]);bounds.push({left,right:left+r[2],top:y-r[5],bottom:y-r[5]-r[3]});}
   if(fire){bounds.push({left:fire.x-12,right:fire.x+12,top:12,bottom:0});for(const b of finisher.fragmentBounds())if(Math.abs((b.left+b.right)/2-fire.x)<=120)bounds.push(b);}
   if(!bounds.length)return null;const left=Math.min(...bounds.map(b=>b.left)),right=Math.max(...bounds.map(b=>b.right)),top=Math.max(...bounds.map(b=>b.top)),bottom=Math.min(...bounds.map(b=>b.bottom)),width=right-left+28,height=top-bottom+12,zoom=Math.min(2.2,W/width,(H-72)/height);
@@ -157,8 +157,9 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   nativeMove:()=>lastMove?{...lastMove,action:{...lastMove.action}}:null,
   sourceBox(p,k){const selected=p.AIFinishPose;if(!protectedVictim(p)||k>2||!selected||!(p.AIFFHeld||p.CETHV||p.CEBV))return undefined;const b=p.F.anims[selected.slot].ents[selected.entry][2+k];return b?.[2]?[(p.FACE?-b[0]:b[0])+p.X/256,b[1]+p.Y/256,b[2],b[3]]:null;},
   banner:()=>banner,
-  framing,
-  focus(ground){const f=framing(true),s=finisher.view();if(!f||!s)return null;const t=Math.min(1,s.age/18),weight=s.completed?Math.max(0,1-(G.tick-s.completedAt)/36):t*t*(3-2*t);return{weight,zoom:f.zoom,screenY:H*.66,x:(f.left+f.right)/2,y:ground-(f.top+f.bottom)/2,top:ground-f.top};},
+  framing:()=>cinema&&G.scene==='fight'?cinema.frame:null,
+  cameraLock:()=>cinema&&G.scene==='fight'?cinema:null,
+  focus(){if(!cinema||G.scene!=='fight')return null;const t=Math.min(1,(G.tick-cinema.started)/18);return{...cinema.focus,weight:t*t*(3-2*t)};},
   drawFire(ctx,camera,ground){if(!fire)return;const age=G.tick-fire.tick;if(age>=24)return;const a=frames[Math.floor(age/2)%frames.length];if(!a.image.complete)return;ctx.save();ctx.globalAlpha=.9;spr(a.image,a.rect,fire.x-camera,ground-12,0);ctx.restore();},
   drawResult(ctx){if(G.scene!=='win'||!finisher.retained()||!portrait)return;const s=finisher.view();ctx.save();if(s.winner===1){ctx.translate(W,0);ctx.scale(-1,1);}ctx.beginPath();ctx.rect(0,16,192,144);ctx.clip();for(const offset of[18,12,6]){ctx.globalAlpha=.7-offset/40;ctx.drawImage(portrait,offset+Math.round(Math.sin(G.tick/9)),16);}ctx.globalAlpha=1;ctx.drawImage(portrait,0,16);ctx.restore();},
   ready:Promise.all(frames.map(a=>a.image.decode()))

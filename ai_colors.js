@@ -1,14 +1,18 @@
 /* AI Edition selection only. Choices are palette parameters, never sprite edits. */
 'use strict';
 window.SF2AICOLORS=(()=>{
+ const storageKey='sf2:ai-palettes:v1',saved=new Map(),valid=c=>c&&Number.isInteger(c.clothing)&&c.clothing>=-2&&c.clothing<12&&Number.isInteger(c.skin)&&c.skin>=-2&&c.skin<13&&Number.isInteger(c.seed)&&c.seed>=0&&c.seed<=0xffffffff;
+ try{const data=JSON.parse(localStorage.getItem(storageKey)||'{}');for(const[key,c]of Object.entries(data))if(/^[01]:(?:ce|ai):[a-z-]+$/.test(key)&&valid(c))saved.set(key,{clothing:c.clothing,skin:c.skin,seed:c.seed});}catch{}
+ function recall(slot,identity){const c=saved.get(slot+':'+identity);return c?{...c}:null;}
+ function remember(slot,identity,choice,seed){const c={clothing:choice.clothing,skin:choice.skin,seed:seed>>>0},key=slot+':'+identity;if(!/^[01]:(?:ce|ai):[a-z-]+$/.test(key)||!valid(c))return null;saved.set(key,c);try{localStorage.setItem(storageKey,JSON.stringify(Object.fromEntries(saved)));}catch{}return{...c};}
  const clothes=['RANDOM','ORIGINAL','RED','ORANGE','YELLOW','LIME','GREEN','MINT','CYAN','BLUE','INDIGO','PURPLE','MAGENTA','PINK'];
  const skinNames=['RANDOM','ORIGINAL','NEAR BLACK','DARK BROWN','BROWN','WARM BROWN','TAN','OLIVE','GOLDEN TAN','LIGHT TAN','PALE','NEAR WHITE','SPECIAL GREY','SPECIAL GREEN','SPECIAL RED'];
- function create(slot,choice){return{slot,row:0,clothing:choice?.clothing??-1,skin:choice?.skin??-1};}
- function cycle(s,row,d){const key=row?'skin':'clothing',n=row?13:12,values=[-1,-2,...Array.from({length:n},(_,i)=>i)];s[key]=values[(values.indexOf(s[key])+d+values.length)%values.length];}
+ function create(slot,choice){return{slot,row:0,clothing:choice?.clothing??-1,skin:choice?.skin??-1,seed:choice?.seed};}
+ function cycle(s,row,d){const key=row?'skin':'clothing',n=row?13:12,values=[-1,-2,...Array.from({length:n},(_,i)=>i)];delete s.seed;s[key]=values[(values.indexOf(s[key])+d+values.length)%values.length];}
  function label(value,names){return names[value===-1?0:value===-2?1:value+2];}
  // Cycle Random, Original, then material presets.
  function step(s,keys){if(keys&4)s.row=(s.row+2)%3;if(keys&8)s.row=(s.row+1)%3;if(s.row<2&&keys&3)cycle(s,s.row,keys&2?1:-1);return !!(keys&1008);}
- function point(s,x,y){if(x<148||x>366)return null;if(y>=185&&y<208)return'back';if(y>=157&&y<183)return'confirm';const row=y>=51&&y<100?0:y>=101&&y<151?1:-1;if(row<0)return null;s.row=row;
+ function point(s,x,y){if(x<148||x>366)return null;if(y>=185&&y<208)return'back';if(y>=157&&y<183)return'confirm';const row=y>=51&&y<100?0:y>=101&&y<151?1:-1;if(row<0)return null;s.row=row;delete s.seed;
   if(y>=(row?132:84)){const count=row?13:12,index=Math.floor((x-153)/(row?15:17));if(index>=0&&index<count)s[row?'skin':'clothing']=index;}
   else if(x<181)cycle(s,row,-1);else if(x>=337)cycle(s,row,1);else s[row?'skin':'clothing']=-1;return null;}
  function draw(ctx,s,p,image,sourcePalette,seed,text,portrait,reference){
@@ -23,5 +27,5 @@ window.SF2AICOLORS=(()=>{
   }
   ctx.fillStyle=s.row===2?'#516039':'#273e30';ctx.fillRect(148,157,216,25);text('READY / CONFIRM',256,173,9,'#ffe000','#000');text('BACK TO FIGHTER',256,201,8,'#ccc','#000');text('UP/DOWN ROW  LEFT/RIGHT COLOUR',192,214,6,'#aaa','#000');
  }
- return{create,cycle,step,point,draw,clothes,skinNames};
+ return{create,cycle,step,point,draw,clothes,skinNames,recall,remember};
 })();
