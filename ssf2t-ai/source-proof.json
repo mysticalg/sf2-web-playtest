@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 196,
-  "sourceArchiveSHA256": "c2af4c347bbdc8e35d773a114058d657bf038d89ed75d461cfee76292f8f8e77",
+  "sourceFiles": 206,
+  "sourceArchiveSHA256": "5fe1e7f4e16059a0c15620759a67765e3de40dcbf0a7f36431ca84c9d78f2488",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -82,12 +82,12 @@
       "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
     },
     "ssf2t-native.wasm": {
-      "bytes": 15266816,
-      "sha256": "d8e0cc463a7661ba40899e668af58f0441138456881b9eb9a332d4f75356c631"
+      "bytes": 15577741,
+      "sha256": "4bbbe2c3526639404c7bc0670dfaac438c5fa17c804ff315fdc293cc2abc6e67"
     },
     "bridge.js": {
-      "bytes": 9917,
-      "sha256": "c769923eeec5a10fc07d3e442577f405507d9d585a74caa365ac03c3e007e63b"
+      "bytes": 11650,
+      "sha256": "f84e6b0472fff846ed0f154dbb90550c93390089f588e927843082cb54e3d91a"
     },
     "rom-loader.js": {
       "bytes": 5183,
@@ -100,10 +100,14 @@
     "ai-combat.js": {
       "bytes": 6525,
       "sha256": "8f15a6d98e5193194fcafc01ec6ecfe91080260dba1d3ca2f26e1c6ff155a420"
+    },
+    "ai-shortcuts.js": {
+      "bytes": 9805,
+      "sha256": "0d74539303cf2156432d6cc92b3f5460ee07fb855fdab4a9440a76effa784332"
     }
   },
-  "compiledSourceUnits": 90,
-  "nativeEntries": 9098,
+  "compiledSourceUnits": 91,
+  "nativeEntries": 9107,
   "strictMatrixReferenceMode": "Earlier Native-mode reference: translated functions plus instruction fallback only at untranslated sites",
   "commonOutcomeFixes": [
     {
@@ -255,8 +259,8 @@
     "browserRGBPictures": 630,
     "reusableQA": "qa/test-ken.cjs; SSF_FIXTURE=./ken-arcade-fixture.json"
   },
-  "packageVersion": "301d481c77948a6e910fe388fddb58350fdbb1daf284728031d66f7569e7e4d0",
-  "wasmCacheVersion": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41",
+  "packageVersion": "781055c4b85471a3c7b2b73bca55282588c7e69dcafa84710cad5e3b55e0b111",
+  "wasmCacheVersion": "4bbbe2c3526639404c7bc0670dfaac438c5fa17c804ff315fdc293cc2abc6e67",
   "nativeAIPresentation": {
     "readOnly": true,
     "rawNativeOutputUnchanged": true,
@@ -447,5 +451,2507 @@
         "sha256": "c2af4c347bbdc8e35d773a114058d657bf038d89ed75d461cfee76292f8f8e77"
       }
     }
+  },
+  "nativeSpecialShortcuts": {
+    "originalDispatchEntries": [
+      "0747D0",
+      "09CF72",
+      "09E5C4",
+      "09F9C0",
+      "0A1806",
+      "0A385C",
+      "0A4AC2"
+    ],
+    "activation": {
+      "cases": 300,
+      "results": [
+        {
+          "id": 0,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1119254
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1120026
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1120370
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1119554
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1119106,
+          "spent": true
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1149082
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1150394
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1148218
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1146818
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1151146,
+          "spent": true
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1182058
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1174774
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1183302
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1184618
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1185778,
+          "spent": true
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1186830
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1187226
+        },
+        {
+          "id": 3,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1220476
+        },
+        {
+          "id": 3,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1221236
+        },
+        {
+          "id": 3,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1221868,
+          "spent": true
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1255500
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1255976
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1257448
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1253808
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1253808
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1253808
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1257120,
+          "spent": true
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1281494
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1289024
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1294328
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1292676
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1288200,
+          "spent": true
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1329164
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1327624
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1327988
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1325908
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1329556,
+          "spent": true
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1328920
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1363534
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1364342
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1365858
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1364782,
+          "spent": true
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": false,
+          "pair": 7,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1393180
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1396452
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1394824
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1397064
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1396796,
+          "spent": true
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1429806
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1429882
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1430470
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1426906
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1427374,
+          "spent": true
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1448442
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1449082
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1453138
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1450702
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1453334,
+          "spent": true
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1449794
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1450262
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1479786
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1480950
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1481170
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1483662
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1480950,
+          "spent": false
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1486218
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1486438
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1510840
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1509836
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1512748
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1513772
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1513088,
+          "spent": true
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1544750
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1543958
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1544426
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1545146,
+          "spent": true
+        },
+        {
+          "id": 14,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1573284
+        },
+        {
+          "id": 14,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1575384
+        },
+        {
+          "id": 14,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1572480
+        },
+        {
+          "id": 14,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1574688,
+          "spent": true
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1606260
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1605140
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1607016
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1603680
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1607500,
+          "spent": true
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1640660
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1642184
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1642848
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1640960
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 16,
+          "slot": 0,
+          "old": false,
+          "pair": 7,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1739672
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1740444
+        },
+        {
+          "id": 0,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1740788
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1766432
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1767744
+        },
+        {
+          "id": 1,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1766080
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1798466
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1791182
+        },
+        {
+          "id": 2,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1799710
+        },
+        {
+          "id": 3,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1832374
+        },
+        {
+          "id": 3,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1833134
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1863702
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1864178
+        },
+        {
+          "id": 4,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1865322
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1887652
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1894578
+        },
+        {
+          "id": 5,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1898382
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1931552
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1930744
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1931108
+        },
+        {
+          "id": 6,
+          "slot": 0,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 1929052
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1964368
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1965176
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": true,
+          "pair": 5,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": true,
+          "pair": 6,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 7,
+          "slot": 0,
+          "old": true,
+          "pair": 7,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1990810
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1994082
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1992454
+        },
+        {
+          "id": 8,
+          "slot": 0,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 1994426
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2025236
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2025312
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2025900
+        },
+        {
+          "id": 9,
+          "slot": 0,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 2022796
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2043752
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2044416
+        },
+        {
+          "id": 10,
+          "slot": 0,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 2045004
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2072510
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2073674
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2073894
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": true,
+          "pair": 5,
+          "nativeFrame": 2077582
+        },
+        {
+          "id": 11,
+          "slot": 0,
+          "old": true,
+          "pair": 6,
+          "nativeFrame": 2077802
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2102138
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2101134
+        },
+        {
+          "id": 12,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2104046
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2133522
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2132730
+        },
+        {
+          "id": 13,
+          "slot": 0,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2133198
+        },
+        {
+          "id": 14,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2160202
+        },
+        {
+          "id": 14,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2161898
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2192598
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2191478
+        },
+        {
+          "id": 15,
+          "slot": 0,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 2190018
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1119254
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1120026
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1120370
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1119554
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1119106,
+          "spent": true
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1149082
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1150394
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1148218
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1146818
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1151146,
+          "spent": true
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1182058
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1174774
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1183302
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1184618
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1185778,
+          "spent": true
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1186854
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1187250
+        },
+        {
+          "id": 3,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1220476
+        },
+        {
+          "id": 3,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1221236
+        },
+        {
+          "id": 3,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1221868,
+          "spent": true
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1255500
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1255976
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1257448
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1253808
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1253808
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1253808
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1257120,
+          "spent": true
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1281470
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1289000
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1294328
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1292676
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1288200,
+          "spent": true
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1329164
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1327624
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1327988
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1325908
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1329556,
+          "spent": true
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1328920
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1363534
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1364342
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1365858
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1364782,
+          "spent": true
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": false,
+          "pair": 7,
+          "nativeFrame": 1366006
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1393180
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1396452
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1394824
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1397064
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1396796,
+          "spent": true
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1429806
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1429882
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1430446
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1426930
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1427374,
+          "spent": true
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1448418
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1449082
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1453138
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1450702
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1453334,
+          "spent": true
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1449770
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1450262
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1479786
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1480950
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1481170
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1483662
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1480950,
+          "spent": false
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1486218
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1486438
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1510840
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1509836
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1512748
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1513772
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1513088,
+          "spent": true
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1544750
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1543958
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1544426
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1545146,
+          "spent": true
+        },
+        {
+          "id": 14,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1573284
+        },
+        {
+          "id": 14,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1575384
+        },
+        {
+          "id": 14,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1572480
+        },
+        {
+          "id": 14,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1574688,
+          "spent": true
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1606260
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1605140
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1607016
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1603680
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1607500,
+          "spent": true
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 0,
+          "nativeFrame": 1640660
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 1,
+          "nativeFrame": 1642184
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 2,
+          "nativeFrame": 1642848
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 3,
+          "nativeFrame": 1640960
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 4,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 5,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 6,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 16,
+          "slot": 1,
+          "old": false,
+          "pair": 7,
+          "nativeFrame": 1641744
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1739672
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1740444
+        },
+        {
+          "id": 0,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1740788
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1766432
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1767744
+        },
+        {
+          "id": 1,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1766080
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1798466
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1791182
+        },
+        {
+          "id": 2,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1799710
+        },
+        {
+          "id": 3,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1832374
+        },
+        {
+          "id": 3,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1833134
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1863702
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1864178
+        },
+        {
+          "id": 4,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1865322
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1887652
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1894578
+        },
+        {
+          "id": 5,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1898382
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1931552
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1930744
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1931108
+        },
+        {
+          "id": 6,
+          "slot": 1,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 1929052
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1964368
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1965176
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": true,
+          "pair": 5,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": true,
+          "pair": 6,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 7,
+          "slot": 1,
+          "old": true,
+          "pair": 7,
+          "nativeFrame": 1965616
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 1990810
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 1994082
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 1992454
+        },
+        {
+          "id": 8,
+          "slot": 1,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 1994426
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2025236
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2025312
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2025900
+        },
+        {
+          "id": 9,
+          "slot": 1,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 2022796
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2043752
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2044416
+        },
+        {
+          "id": 10,
+          "slot": 1,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 2045004
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2072510
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2073674
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2073894
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": true,
+          "pair": 5,
+          "nativeFrame": 2077558
+        },
+        {
+          "id": 11,
+          "slot": 1,
+          "old": true,
+          "pair": 6,
+          "nativeFrame": 2077778
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2102138
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2101134
+        },
+        {
+          "id": 12,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2104046
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2133522
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2132730
+        },
+        {
+          "id": 13,
+          "slot": 1,
+          "old": true,
+          "pair": 2,
+          "nativeFrame": 2133198
+        },
+        {
+          "id": 14,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2160202
+        },
+        {
+          "id": 14,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2161898
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": true,
+          "pair": 0,
+          "nativeFrame": 2192598
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": true,
+          "pair": 1,
+          "nativeFrame": 2191478
+        },
+        {
+          "id": 15,
+          "slot": 1,
+          "old": true,
+          "pair": 3,
+          "nativeFrame": 2190018
+        }
+      ],
+      "vegaContact": {
+        "spent": true,
+        "hp": [
+          144,
+          104
+        ],
+        "lift": 113
+      },
+      "errors": []
+    },
+    "browserDiagnostics": {
+      "results": [
+        {
+          "name": "7-4",
+          "frames": 4190,
+          "stateChecks": 140,
+          "pictureChecks": 70,
+          "audioBytes": 6755308,
+          "loggedWrites": 1,
+          "error": null
+        },
+        {
+          "name": "old-11-2",
+          "frames": 4517,
+          "stateChecks": 151,
+          "pictureChecks": 76,
+          "audioBytes": 7282516,
+          "loggedWrites": 0,
+          "error": null
+        },
+        {
+          "name": "old-12-0",
+          "frames": 4376,
+          "stateChecks": 146,
+          "pictureChecks": 73,
+          "audioBytes": 7055192,
+          "loggedWrites": 0,
+          "error": null
+        },
+        {
+          "name": "old-5-0",
+          "frames": 4427,
+          "stateChecks": 148,
+          "pictureChecks": 74,
+          "audioBytes": 7137412,
+          "loggedWrites": 0,
+          "error": null
+        },
+        {
+          "name": "old-6-0",
+          "frames": 4353,
+          "stateChecks": 146,
+          "pictureChecks": 73,
+          "audioBytes": 7018104,
+          "loggedWrites": 4,
+          "error": null
+        },
+        {
+          "name": "old-7-0",
+          "frames": 4364,
+          "stateChecks": 146,
+          "pictureChecks": 73,
+          "audioBytes": 7035840,
+          "loggedWrites": 0,
+          "error": null
+        },
+        {
+          "name": "old-9-0",
+          "frames": 4402,
+          "stateChecks": 147,
+          "pictureChecks": 74,
+          "audioBytes": 7097116,
+          "loggedWrites": 0,
+          "error": null
+        },
+        {
+          "name": "special-hawk-p1",
+          "frames": 4344,
+          "stateChecks": 145,
+          "pictureChecks": 73,
+          "audioBytes": 7003592,
+          "loggedWrites": 5,
+          "error": null
+        },
+        {
+          "name": "special-hawk-p2",
+          "frames": 4357,
+          "stateChecks": 146,
+          "pictureChecks": 73,
+          "audioBytes": 7024564,
+          "loggedWrites": 9,
+          "error": null
+        },
+        {
+          "name": "special-vega",
+          "frames": 4481,
+          "stateChecks": 150,
+          "pictureChecks": 75,
+          "audioBytes": 7224484,
+          "loggedWrites": 1,
+          "error": null
+        }
+      ],
+      "errors": []
+    },
+    "independentReference": "Full Mode::Blocks for both 68000 and Z80",
+    "offlineOldDiagnostics": [
+      {
+        "case": "old-11-2",
+        "frames": 4517,
+        "states": 151,
+        "files": {
+          "rgb.bin": {
+            "bytes": 19611952,
+            "sha256": "f030743bddee603ee3c17325c234fbc5171490ff56acda758a32de21a4bf9615"
+          },
+          "audio.pcm": {
+            "bytes": 7282516,
+            "sha256": "df7ef78c8bacdd23b8515223187b6dac30b6196c9970bcc3ee7336fb70515109"
+          }
+        }
+      },
+      {
+        "case": "old-12-0",
+        "frames": 4376,
+        "states": 146,
+        "files": {
+          "rgb.bin": {
+            "bytes": 18837796,
+            "sha256": "a240ec92e41792197855d7535cbe0c089d056520cbceca2d9f923b3b4f4ab327"
+          },
+          "audio.pcm": {
+            "bytes": 7055192,
+            "sha256": "b592f491e4dbb8699aae85ece216234165c81351b501d577dd28e07c13cce100"
+          }
+        }
+      },
+      {
+        "case": "old-5-0",
+        "frames": 4427,
+        "states": 148,
+        "files": {
+          "rgb.bin": {
+            "bytes": 19095848,
+            "sha256": "829b083830482859a10d5e4d3af1b529216639e5cd9abb394b65422abfeae6c8"
+          },
+          "audio.pcm": {
+            "bytes": 7137412,
+            "sha256": "5ade88a3b972584463219bca4bbd20e7a8572042fb19f3d8bdd8be1d7f8c80e5"
+          }
+        }
+      },
+      {
+        "case": "old-6-0",
+        "frames": 4353,
+        "states": 146,
+        "files": {
+          "rgb.bin": {
+            "bytes": 18837796,
+            "sha256": "679960921dafe3b673cfb98f7a4d70be59ef2dfc4dc5a82bd423c938b1fd9de4"
+          },
+          "audio.pcm": {
+            "bytes": 7018104,
+            "sha256": "a6f1574a37f05070d555596f0d86aaba5237b73647b0edefef6d174574ae77e8"
+          }
+        }
+      },
+      {
+        "case": "old-7-0",
+        "frames": 4364,
+        "states": 146,
+        "files": {
+          "rgb.bin": {
+            "bytes": 18837796,
+            "sha256": "ef8edc5073380d878dd586cf4def274a2f453d0bffe3979c1610b7bbbf9af7b8"
+          },
+          "audio.pcm": {
+            "bytes": 7035840,
+            "sha256": "e412d30b37ab74821fcd907b4aca33a8e4724e91b5136f6e580ffcceb58a6c40"
+          }
+        }
+      },
+      {
+        "case": "old-9-0",
+        "frames": 4402,
+        "states": 147,
+        "files": {
+          "rgb.bin": {
+            "bytes": 19095848,
+            "sha256": "8e7c53af5f0dd5ecdd22cec43cbcc892fa02f21ecb49fb20f8a3e8e54a23cd71"
+          },
+          "audio.pcm": {
+            "bytes": 7097116,
+            "sha256": "3b7f17b60f47a7956d08aa5a4540682183b39ce10807a52fe74c70adbb8b33c5"
+          }
+        }
+      }
+    ],
+    "offlineBufferedSpecials": [
+      {
+        "case": "special-hawk-p1",
+        "frames": 4344,
+        "states": 145,
+        "files": {
+          "rgb.bin": {
+            "bytes": 18837796,
+            "sha256": "e4a71dc45b5dcc34d5e5e94576a4343280be63276e0d3b2e5ccc9f83eae3bfdf"
+          },
+          "audio.pcm": {
+            "bytes": 7003592,
+            "sha256": "4983ca4cfbfe263f2d553d5269ebef994a0c558ef2e81bcee355843c91393073"
+          }
+        }
+      },
+      {
+        "case": "special-hawk-p2",
+        "frames": 4357,
+        "states": 146,
+        "files": {
+          "rgb.bin": {
+            "bytes": 18837796,
+            "sha256": "70ea1ebb2dd212a4442c6ac76665ed79501ef792b0bd93fc6cde04794e4322f8"
+          },
+          "audio.pcm": {
+            "bytes": 7024564,
+            "sha256": "de4d3fdcbb98b21d7d60124267521dbc3af35ca07224c1839bfa49504fdaef32"
+          }
+        }
+      },
+      {
+        "case": "special-vega",
+        "frames": 4481,
+        "states": 150,
+        "files": {
+          "rgb.bin": {
+            "bytes": 19353900,
+            "sha256": "c208b6f53ad089c064a12b8392169c9ef6fbc3ba8e7f0385ac34ab61c56eecbf"
+          },
+          "audio.pcm": {
+            "bytes": 7224484,
+            "sha256": "369d77f11f5a4b032a2d82dfc77e37e3e917f4aa0b758bb879b5e830b0e0de51"
+          }
+        }
+      }
+    ],
+    "compatibility": {
+      "normal": {
+        "cases": 32,
+        "pictures": 64,
+        "frames": 182763
+      },
+      "old": {
+        "cases": 32,
+        "pictures": 64,
+        "frames": 183142
+      },
+      "stage": {
+        "cases": 32,
+        "pictures": 64,
+        "frames": 182694
+      },
+      "akuma": {
+        "cases": 2,
+        "pictures": 4,
+        "frames": 12278
+      }
+    },
+    "arcade": {
+      "ryu": {
+        "frame": 60200,
+        "stateChecks": 2006,
+        "pictureChecks": 642,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      },
+      "ken": {
+        "frame": 68425,
+        "stateChecks": 2280,
+        "pictureChecks": 630,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      },
+      "cammy": {
+        "frame": 68473,
+        "stateChecks": 2282,
+        "pictureChecks": 693,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      },
+      "guile": {
+        "frame": 69000,
+        "stateChecks": 2300,
+        "pictureChecks": 683,
+        "roundWins": 24,
+        "roundLosses": 0,
+        "maxLadder": 12,
+        "ending": true,
+        "title": true,
+        "finalAkuma": true
+      }
+    },
+    "defaultEnabled": false,
+    "inputAdapterWritesRAM": false,
+    "diagnosticSetup": "Logged gauge/position writes and heap checkpoints are test-only; input tapes replay independently. No native state writes in the product adapter."
+  },
+  "cleanSourceRebuild": {
+    "sourceFiles": 206,
+    "compiledSourceUnits": 91,
+    "artifacts": {
+      "ssf2t-native.js": {
+        "bytes": 19103,
+        "sha256": "e446708cfc1a65f76bb0a7747d0ef46565487f3b3f1a5a052a1cc2cbe971cab8"
+      },
+      "ssf2t-native.wasm": {
+        "bytes": 15577741,
+        "sha256": "4bbbe2c3526639404c7bc0670dfaac438c5fa17c804ff315fdc293cc2abc6e67"
+      },
+      "bridge.js": {
+        "bytes": 11650,
+        "sha256": "f84e6b0472fff846ed0f154dbb90550c93390089f588e927843082cb54e3d91a"
+      },
+      "ai-combat.js": {
+        "bytes": 6525,
+        "sha256": "8f15a6d98e5193194fcafc01ec6ecfe91080260dba1d3ca2f26e1c6ff155a420"
+      },
+      "ai-shortcuts.js": {
+        "bytes": 9805,
+        "sha256": "0d74539303cf2156432d6cc92b3f5460ee07fb855fdab4a9440a76effa784332"
+      },
+      "rom-loader.js": {
+        "bytes": 5183,
+        "sha256": "abd3157c488e318544d955e5d1b11a193e390841d7d71ba9e4f0bcd9237f3dae"
+      },
+      "rom-manifest.js": {
+        "bytes": 4604,
+        "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
+      },
+      "corresponding-source.zip": {
+        "bytes": 2696219,
+        "sha256": "5fe1e7f4e16059a0c15620759a67765e3de40dcbf0a7f36431ca84c9d78f2488"
+      }
+    },
+    "runtimeChecksRerunFromPackagedQA": true
   }
 }

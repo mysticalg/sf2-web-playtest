@@ -1,0 +1,2702 @@
+[
+  {
+    "id": 0,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1119254,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1120026,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1120370,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Shakunetsu Hadouken",
+    "nativeFrame": 1119554,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Shinku Hadouken",
+    "nativeFrame": 1119106,
+    "spent": true
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Sumo Headbutt",
+    "nativeFrame": 1149082,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Sumo Smash",
+    "nativeFrame": 1150394,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Hundred Hand Slap",
+    "nativeFrame": 1148218,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Oicho Throw",
+    "nativeFrame": 1146818,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Oni Muso",
+    "nativeFrame": 1151146,
+    "spent": true
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Rolling Attack",
+    "nativeFrame": 1182058,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Vertical Rolling Attack",
+    "nativeFrame": 1174774,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Electric Thunder",
+    "nativeFrame": 1183302,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Backstep Rolling",
+    "nativeFrame": 1184618,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Ground Shave Rolling",
+    "nativeFrame": 1185778,
+    "spent": true
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Forward Hop",
+    "nativeFrame": 1186830,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": false,
+    "pair": 6,
+    "name": "Backward Hop",
+    "nativeFrame": 1187226,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Sonic Boom",
+    "nativeFrame": 1220476,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Flash Kick",
+    "nativeFrame": 1221236,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Double Somersault",
+    "nativeFrame": 1221868,
+    "spent": true
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1255500,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1255976,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1257448,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Light Command Kick",
+    "nativeFrame": 1253808,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Medium Command Kick",
+    "nativeFrame": 1253808,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 6,
+    "name": "Heavy Command Kick",
+    "nativeFrame": 1253808,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Shoryu Reppa",
+    "nativeFrame": 1257120,
+    "spent": true
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Kikoken",
+    "nativeFrame": 1281494,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Spinning Bird Kick",
+    "nativeFrame": 1289024,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Lightning Legs",
+    "nativeFrame": 1294328,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Up Kicks",
+    "nativeFrame": 1292676,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Senretsukyaku",
+    "nativeFrame": 1288200,
+    "spent": true
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Spinning Piledriver",
+    "nativeFrame": 1329164,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Double Lariat",
+    "nativeFrame": 1327624,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Quick Lariat",
+    "nativeFrame": 1327988,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Siberian Suplex / Bear Grab",
+    "nativeFrame": 1325908,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Final Atomic Buster",
+    "nativeFrame": 1329556,
+    "spent": true
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Banishing Flat",
+    "nativeFrame": 1328920,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Yoga Fire",
+    "nativeFrame": 1363534,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Yoga Flame",
+    "nativeFrame": 1364342,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Yoga Blast",
+    "nativeFrame": 1365858,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Forward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Yoga Inferno",
+    "nativeFrame": 1364782,
+    "spent": true
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Backward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 6,
+    "name": "Short Forward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": false,
+    "pair": 7,
+    "name": "Short Backward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Psycho Crusher",
+    "nativeFrame": 1393180,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Double Knee Press",
+    "nativeFrame": 1396452,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Head Press",
+    "nativeFrame": 1394824,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Devil Reverse",
+    "nativeFrame": 1397064,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Knee Press Nightmare",
+    "nativeFrame": 1396796,
+    "spent": true
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Tiger Shot",
+    "nativeFrame": 1429806,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Ground Tiger Shot",
+    "nativeFrame": 1429882,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Tiger Uppercut",
+    "nativeFrame": 1430470,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Tiger Knee",
+    "nativeFrame": 1426906,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Tiger Genocide",
+    "nativeFrame": 1427374,
+    "spent": true
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Dash Straight",
+    "nativeFrame": 1448442,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Dash Upper",
+    "nativeFrame": 1449082,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Buffalo Headbutt",
+    "nativeFrame": 1453138,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Turn Punch",
+    "nativeFrame": 1450702,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Crazy Buffalo",
+    "nativeFrame": 1453334,
+    "spent": true
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Low Dash Straight",
+    "nativeFrame": 1449794,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": false,
+    "pair": 6,
+    "name": "Low Dash Upper",
+    "nativeFrame": 1450262,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Rolling Crystal Flash",
+    "nativeFrame": 1479786,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Flying Barcelona / Izuna",
+    "nativeFrame": 1480950,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Sky High Claw",
+    "nativeFrame": 1481170,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Scarlet Terror",
+    "nativeFrame": 1483662,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Rolling Izuna Drop",
+    "nativeFrame": 1480950,
+    "spent": false
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Backflip",
+    "nativeFrame": 1486218,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": false,
+    "pair": 6,
+    "name": "Short Backflip",
+    "nativeFrame": 1486438,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Spiral Arrow",
+    "nativeFrame": 1510840,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Cannon Spike",
+    "nativeFrame": 1509836,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Spin Knuckle",
+    "nativeFrame": 1512748,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Hooligan Combination",
+    "nativeFrame": 1513772,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Spin Drive Smasher",
+    "nativeFrame": 1513088,
+    "spent": true
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Mexican Typhoon",
+    "nativeFrame": 1544750,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Tomahawk Buster",
+    "nativeFrame": 1543958,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Condor Dive",
+    "nativeFrame": 1544426,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Double Typhoon",
+    "nativeFrame": 1545146,
+    "spent": true
+  },
+  {
+    "id": 14,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Rekkaken",
+    "nativeFrame": 1573284,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Shienkyaku",
+    "nativeFrame": 1575384,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Rekkukyaku",
+    "nativeFrame": 1572480,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Rekka Shinken",
+    "nativeFrame": 1574688,
+    "spent": true
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Air Slasher",
+    "nativeFrame": 1606260,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Double Rolling Sobat",
+    "nativeFrame": 1605140,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Jackknife Maximum",
+    "nativeFrame": 1607016,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Machine Gun Upper",
+    "nativeFrame": 1603680,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Sobat Carnival",
+    "nativeFrame": 1607500,
+    "spent": true
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 0,
+    "name": "Gou Hadouken / Air Hadouken",
+    "nativeFrame": 1640660,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 1,
+    "name": "Gou Shoryuken",
+    "nativeFrame": 1642184,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1642848,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 3,
+    "name": "Shakunetsu Hadouken",
+    "nativeFrame": 1640960,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 4,
+    "name": "Forward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 5,
+    "name": "Backward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 6,
+    "name": "Short Forward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 0,
+    "old": false,
+    "pair": 7,
+    "name": "Short Backward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1739672,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1740444,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1740788,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Sumo Headbutt",
+    "nativeFrame": 1766432,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Sumo Smash",
+    "nativeFrame": 1767744,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Hundred Hand Slap",
+    "nativeFrame": 1766080,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Rolling Attack",
+    "nativeFrame": 1798466,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Vertical Rolling Attack",
+    "nativeFrame": 1791182,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Electric Thunder",
+    "nativeFrame": 1799710,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Sonic Boom",
+    "nativeFrame": 1832374,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Flash Kick",
+    "nativeFrame": 1833134,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1863702,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1864178,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1865322,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Kikoken",
+    "nativeFrame": 1887652,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Spinning Bird Kick",
+    "nativeFrame": 1894578,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Lightning Legs",
+    "nativeFrame": 1898382,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Spinning Piledriver",
+    "nativeFrame": 1931552,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Double Lariat",
+    "nativeFrame": 1930744,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Quick Lariat",
+    "nativeFrame": 1931108,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 0,
+    "old": true,
+    "pair": 3,
+    "name": "Siberian Suplex / Bear Grab",
+    "nativeFrame": 1929052,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Yoga Fire",
+    "nativeFrame": 1964368,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Yoga Flame",
+    "nativeFrame": 1965176,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": true,
+    "pair": 3,
+    "name": "Forward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": true,
+    "pair": 5,
+    "name": "Backward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": true,
+    "pair": 6,
+    "name": "Short Forward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 0,
+    "old": true,
+    "pair": 7,
+    "name": "Short Backward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Psycho Crusher",
+    "nativeFrame": 1990810,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Double Knee Press",
+    "nativeFrame": 1994082,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Head Press",
+    "nativeFrame": 1992454,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 0,
+    "old": true,
+    "pair": 3,
+    "name": "Devil Reverse",
+    "nativeFrame": 1994426,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Tiger Shot",
+    "nativeFrame": 2025236,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Ground Tiger Shot",
+    "nativeFrame": 2025312,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Tiger Uppercut",
+    "nativeFrame": 2025900,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 0,
+    "old": true,
+    "pair": 3,
+    "name": "Tiger Knee",
+    "nativeFrame": 2022796,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Dash Straight",
+    "nativeFrame": 2043752,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Dash Upper",
+    "nativeFrame": 2044416,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 0,
+    "old": true,
+    "pair": 3,
+    "name": "Turn Punch",
+    "nativeFrame": 2045004,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Rolling Crystal Flash",
+    "nativeFrame": 2072510,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Flying Barcelona / Izuna",
+    "nativeFrame": 2073674,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Sky High Claw",
+    "nativeFrame": 2073894,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": true,
+    "pair": 5,
+    "name": "Backflip",
+    "nativeFrame": 2077582,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 0,
+    "old": true,
+    "pair": 6,
+    "name": "Short Backflip",
+    "nativeFrame": 2077802,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Spiral Arrow",
+    "nativeFrame": 2102138,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Cannon Spike",
+    "nativeFrame": 2101134,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Spin Knuckle",
+    "nativeFrame": 2104046,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Mexican Typhoon",
+    "nativeFrame": 2133522,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Tomahawk Buster",
+    "nativeFrame": 2132730,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 0,
+    "old": true,
+    "pair": 2,
+    "name": "Condor Dive",
+    "nativeFrame": 2133198,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Rekkaken",
+    "nativeFrame": 2160202,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Shienkyaku",
+    "nativeFrame": 2161898,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": true,
+    "pair": 0,
+    "name": "Air Slasher",
+    "nativeFrame": 2192598,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": true,
+    "pair": 1,
+    "name": "Double Rolling Sobat",
+    "nativeFrame": 2191478,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 0,
+    "old": true,
+    "pair": 3,
+    "name": "Machine Gun Upper",
+    "nativeFrame": 2190018,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1119254,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1120026,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1120370,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Shakunetsu Hadouken",
+    "nativeFrame": 1119554,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Shinku Hadouken",
+    "nativeFrame": 1119106,
+    "spent": true
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Sumo Headbutt",
+    "nativeFrame": 1149082,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Sumo Smash",
+    "nativeFrame": 1150394,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Hundred Hand Slap",
+    "nativeFrame": 1148218,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Oicho Throw",
+    "nativeFrame": 1146818,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Oni Muso",
+    "nativeFrame": 1151146,
+    "spent": true
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Rolling Attack",
+    "nativeFrame": 1182058,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Vertical Rolling Attack",
+    "nativeFrame": 1174774,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Electric Thunder",
+    "nativeFrame": 1183302,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Backstep Rolling",
+    "nativeFrame": 1184618,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Ground Shave Rolling",
+    "nativeFrame": 1185778,
+    "spent": true
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Forward Hop",
+    "nativeFrame": 1186854,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": false,
+    "pair": 6,
+    "name": "Backward Hop",
+    "nativeFrame": 1187250,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Sonic Boom",
+    "nativeFrame": 1220476,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Flash Kick",
+    "nativeFrame": 1221236,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Double Somersault",
+    "nativeFrame": 1221868,
+    "spent": true
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1255500,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1255976,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1257448,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Light Command Kick",
+    "nativeFrame": 1253808,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Medium Command Kick",
+    "nativeFrame": 1253808,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 6,
+    "name": "Heavy Command Kick",
+    "nativeFrame": 1253808,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Shoryu Reppa",
+    "nativeFrame": 1257120,
+    "spent": true
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Kikoken",
+    "nativeFrame": 1281470,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Spinning Bird Kick",
+    "nativeFrame": 1289000,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Lightning Legs",
+    "nativeFrame": 1294328,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Up Kicks",
+    "nativeFrame": 1292676,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Senretsukyaku",
+    "nativeFrame": 1288200,
+    "spent": true
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Spinning Piledriver",
+    "nativeFrame": 1329164,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Double Lariat",
+    "nativeFrame": 1327624,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Quick Lariat",
+    "nativeFrame": 1327988,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Siberian Suplex / Bear Grab",
+    "nativeFrame": 1325908,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Final Atomic Buster",
+    "nativeFrame": 1329556,
+    "spent": true
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Banishing Flat",
+    "nativeFrame": 1328920,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Yoga Fire",
+    "nativeFrame": 1363534,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Yoga Flame",
+    "nativeFrame": 1364342,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Yoga Blast",
+    "nativeFrame": 1365858,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Forward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Yoga Inferno",
+    "nativeFrame": 1364782,
+    "spent": true
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Backward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 6,
+    "name": "Short Forward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": false,
+    "pair": 7,
+    "name": "Short Backward Teleport",
+    "nativeFrame": 1366006,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Psycho Crusher",
+    "nativeFrame": 1393180,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Double Knee Press",
+    "nativeFrame": 1396452,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Head Press",
+    "nativeFrame": 1394824,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Devil Reverse",
+    "nativeFrame": 1397064,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Knee Press Nightmare",
+    "nativeFrame": 1396796,
+    "spent": true
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Tiger Shot",
+    "nativeFrame": 1429806,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Ground Tiger Shot",
+    "nativeFrame": 1429882,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Tiger Uppercut",
+    "nativeFrame": 1430446,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Tiger Knee",
+    "nativeFrame": 1426930,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Tiger Genocide",
+    "nativeFrame": 1427374,
+    "spent": true
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Dash Straight",
+    "nativeFrame": 1448418,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Dash Upper",
+    "nativeFrame": 1449082,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Buffalo Headbutt",
+    "nativeFrame": 1453138,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Turn Punch",
+    "nativeFrame": 1450702,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Crazy Buffalo",
+    "nativeFrame": 1453334,
+    "spent": true
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Low Dash Straight",
+    "nativeFrame": 1449770,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": false,
+    "pair": 6,
+    "name": "Low Dash Upper",
+    "nativeFrame": 1450262,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Rolling Crystal Flash",
+    "nativeFrame": 1479786,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Flying Barcelona / Izuna",
+    "nativeFrame": 1480950,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Sky High Claw",
+    "nativeFrame": 1481170,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Scarlet Terror",
+    "nativeFrame": 1483662,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Rolling Izuna Drop",
+    "nativeFrame": 1480950,
+    "spent": false
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Backflip",
+    "nativeFrame": 1486218,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": false,
+    "pair": 6,
+    "name": "Short Backflip",
+    "nativeFrame": 1486438,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Spiral Arrow",
+    "nativeFrame": 1510840,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Cannon Spike",
+    "nativeFrame": 1509836,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Spin Knuckle",
+    "nativeFrame": 1512748,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Hooligan Combination",
+    "nativeFrame": 1513772,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Spin Drive Smasher",
+    "nativeFrame": 1513088,
+    "spent": true
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Mexican Typhoon",
+    "nativeFrame": 1544750,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Tomahawk Buster",
+    "nativeFrame": 1543958,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Condor Dive",
+    "nativeFrame": 1544426,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Double Typhoon",
+    "nativeFrame": 1545146,
+    "spent": true
+  },
+  {
+    "id": 14,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Rekkaken",
+    "nativeFrame": 1573284,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Shienkyaku",
+    "nativeFrame": 1575384,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Rekkukyaku",
+    "nativeFrame": 1572480,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Rekka Shinken",
+    "nativeFrame": 1574688,
+    "spent": true
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Air Slasher",
+    "nativeFrame": 1606260,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Double Rolling Sobat",
+    "nativeFrame": 1605140,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Jackknife Maximum",
+    "nativeFrame": 1607016,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Machine Gun Upper",
+    "nativeFrame": 1603680,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Sobat Carnival",
+    "nativeFrame": 1607500,
+    "spent": true
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 0,
+    "name": "Gou Hadouken / Air Hadouken",
+    "nativeFrame": 1640660,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 1,
+    "name": "Gou Shoryuken",
+    "nativeFrame": 1642184,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1642848,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 3,
+    "name": "Shakunetsu Hadouken",
+    "nativeFrame": 1640960,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 4,
+    "name": "Forward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 5,
+    "name": "Backward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 6,
+    "name": "Short Forward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 16,
+    "slot": 1,
+    "old": false,
+    "pair": 7,
+    "name": "Short Backward Teleport",
+    "nativeFrame": 1641744,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1739672,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1740444,
+    "spent": null
+  },
+  {
+    "id": 0,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1740788,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Sumo Headbutt",
+    "nativeFrame": 1766432,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Sumo Smash",
+    "nativeFrame": 1767744,
+    "spent": null
+  },
+  {
+    "id": 1,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Hundred Hand Slap",
+    "nativeFrame": 1766080,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Rolling Attack",
+    "nativeFrame": 1798466,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Vertical Rolling Attack",
+    "nativeFrame": 1791182,
+    "spent": null
+  },
+  {
+    "id": 2,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Electric Thunder",
+    "nativeFrame": 1799710,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Sonic Boom",
+    "nativeFrame": 1832374,
+    "spent": null
+  },
+  {
+    "id": 3,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Flash Kick",
+    "nativeFrame": 1833134,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Hadouken",
+    "nativeFrame": 1863702,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Shoryuken",
+    "nativeFrame": 1864178,
+    "spent": null
+  },
+  {
+    "id": 4,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Tatsumaki",
+    "nativeFrame": 1865322,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Kikoken",
+    "nativeFrame": 1887652,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Spinning Bird Kick",
+    "nativeFrame": 1894578,
+    "spent": null
+  },
+  {
+    "id": 5,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Lightning Legs",
+    "nativeFrame": 1898382,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Spinning Piledriver",
+    "nativeFrame": 1931552,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Double Lariat",
+    "nativeFrame": 1930744,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Quick Lariat",
+    "nativeFrame": 1931108,
+    "spent": null
+  },
+  {
+    "id": 6,
+    "slot": 1,
+    "old": true,
+    "pair": 3,
+    "name": "Siberian Suplex / Bear Grab",
+    "nativeFrame": 1929052,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Yoga Fire",
+    "nativeFrame": 1964368,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Yoga Flame",
+    "nativeFrame": 1965176,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": true,
+    "pair": 3,
+    "name": "Forward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": true,
+    "pair": 5,
+    "name": "Backward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": true,
+    "pair": 6,
+    "name": "Short Forward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 7,
+    "slot": 1,
+    "old": true,
+    "pair": 7,
+    "name": "Short Backward Teleport",
+    "nativeFrame": 1965616,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Psycho Crusher",
+    "nativeFrame": 1990810,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Double Knee Press",
+    "nativeFrame": 1994082,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Head Press",
+    "nativeFrame": 1992454,
+    "spent": null
+  },
+  {
+    "id": 8,
+    "slot": 1,
+    "old": true,
+    "pair": 3,
+    "name": "Devil Reverse",
+    "nativeFrame": 1994426,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Tiger Shot",
+    "nativeFrame": 2025236,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Ground Tiger Shot",
+    "nativeFrame": 2025312,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Tiger Uppercut",
+    "nativeFrame": 2025900,
+    "spent": null
+  },
+  {
+    "id": 9,
+    "slot": 1,
+    "old": true,
+    "pair": 3,
+    "name": "Tiger Knee",
+    "nativeFrame": 2022796,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Dash Straight",
+    "nativeFrame": 2043752,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Dash Upper",
+    "nativeFrame": 2044416,
+    "spent": null
+  },
+  {
+    "id": 10,
+    "slot": 1,
+    "old": true,
+    "pair": 3,
+    "name": "Turn Punch",
+    "nativeFrame": 2045004,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Rolling Crystal Flash",
+    "nativeFrame": 2072510,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Flying Barcelona / Izuna",
+    "nativeFrame": 2073674,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Sky High Claw",
+    "nativeFrame": 2073894,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": true,
+    "pair": 5,
+    "name": "Backflip",
+    "nativeFrame": 2077558,
+    "spent": null
+  },
+  {
+    "id": 11,
+    "slot": 1,
+    "old": true,
+    "pair": 6,
+    "name": "Short Backflip",
+    "nativeFrame": 2077778,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Spiral Arrow",
+    "nativeFrame": 2102138,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Cannon Spike",
+    "nativeFrame": 2101134,
+    "spent": null
+  },
+  {
+    "id": 12,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Spin Knuckle",
+    "nativeFrame": 2104046,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Mexican Typhoon",
+    "nativeFrame": 2133522,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Tomahawk Buster",
+    "nativeFrame": 2132730,
+    "spent": null
+  },
+  {
+    "id": 13,
+    "slot": 1,
+    "old": true,
+    "pair": 2,
+    "name": "Condor Dive",
+    "nativeFrame": 2133198,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Rekkaken",
+    "nativeFrame": 2160202,
+    "spent": null
+  },
+  {
+    "id": 14,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Shienkyaku",
+    "nativeFrame": 2161898,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": true,
+    "pair": 0,
+    "name": "Air Slasher",
+    "nativeFrame": 2192598,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": true,
+    "pair": 1,
+    "name": "Double Rolling Sobat",
+    "nativeFrame": 2191478,
+    "spent": null
+  },
+  {
+    "id": 15,
+    "slot": 1,
+    "old": true,
+    "pair": 3,
+    "name": "Machine Gun Upper",
+    "nativeFrame": 2190018,
+    "spent": null
+  }
+]
