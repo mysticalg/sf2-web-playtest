@@ -1,5 +1,5 @@
 const{chromium,url,install}=require('./browser-runtime.cjs'),fs=require('fs'),assert=require('assert/strict');
-(async()=>{const b=await chromium.launch({args:['--disable-http2']}),p=await b.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.message));try{await install(p);await p.goto(url,{waitUntil:'domcontentloaded',timeout:120000});await p.waitForFunction(()=>SF2.VER.loading===2&&window.FIN);const result=await p.evaluate(async()=>{
+(async()=>{const b=await chromium.launch({args:['--disable-http2']}),p=await b.newPage(),errors=[];p.on('pageerror',e=>errors.push(e.stack||e.message));try{await install(p);await p.goto(url,{waitUntil:'domcontentloaded',timeout:120000});await p.waitForFunction(()=>SF2.VER.loading===2&&window.FIN);const result=await p.evaluate(async()=>{
  const cases=[],shots={};let serial=0;
  async function setup(side,winner,victim,final=true){FIN.clear('test');await SF2AI.configure({p1:side?victim:winner,p2:side?winner:victim,mode:'versus',training:false,seed:42});SF2.freeze=1;G.gph=1;G.hfz=G.slow=0;IDEL=0;const w=P[side],d=w.opp;w.WINS=final?1:0;w.X=(side?500:340)*256;d.X=w.X+(side?-55:55)*256;w.FACE=side?0:1;d.FACE=side?1:0;
   // A still-mounted low-health Belger is possible after repeated guarded chip.
