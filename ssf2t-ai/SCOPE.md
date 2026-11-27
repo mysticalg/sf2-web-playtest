@@ -39,3 +39,8 @@ An additional Cammy tape genuinely wins24rounds and12matches without a loss, def
 Optional AI blood effects use original head colliders, confirmed health loss and original camera coordinates. Stronger hits and specials spray more blood; living fighters at 20% health or less drip from the face. Floor stains persist for the round and follow the native camera. Blocked chip emits no hit blood. The switch disables and clears the presentation effects without changing native game state. Final Fight fighters, possessed variants and death combos are not yet integrated into this native route.
 
 A 68,473-frame Cammy input replay with effects enabled preserves 2,282 native state samples and 693 raw-render hashes. Enhanced canvas output intentionally adds effects. Separate native-input tests cover hit spray, low-health drips, floor persistence, scrolling, guarded chip and reset/toggle cleanup; disabled canvas equals raw native output. Native C++ sources, WASM and JS glue are unchanged. The face anchor is an approximation inside the original head box, not a source-sprite anatomical mask.
+
+
+## Native display buffer reuse
+
+Native paint reuses its RGBA ImageData buffer instead of allocating a complete screen on every repaint. A 4,800-frame ordinary-input replay matches all 30 sampled enhanced-canvas hashes, final game state and effect state against the previous bridge; submitted screen-buffer identities fall from 4,803 to 1. This reduces allocation pressure, not a verified diagnosis of the reported periodic pause.
