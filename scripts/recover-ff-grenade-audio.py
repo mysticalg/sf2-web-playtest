@@ -20,7 +20,12 @@ def main():
     parser.add_argument('--rompath', required=True)
     parser.add_argument('--ffmpeg', default=shutil.which('ffmpeg'))
     parser.add_argument('--out', required=True)
+    parser.add_argument('--command', type=lambda x: int(x, 0), default=0x15)
+
     args = parser.parse_args()
+    if not 0 <= args.command <= 0x7f:
+        parser.error('command must be in 0..0x7f')
+    stem = f'{args.command:02x}'
     if not args.ffmpeg:
         parser.error('ffmpeg is required')
     out = Path(args.out).resolve()
@@ -37,11 +42,11 @@ capture_notifier=emu.add_machine_frame_notifier(function()
  if frame==3 then space:write_u16(0x800180,0xff) end
  if frame==60 then
   local f=io.open([[ONSET]],'w');f:write(tostring(manager.machine.time:as_double()));f:close()
-  space:write_u16(0x800180,0x15)
+  space:write_u16(0x800180,COMMAND)
  end
  if frame==61 then space:write_u16(0x800180,0xff) end
 end)
-""".replace('ONSET', (out / 'command-time.txt').as_posix())
+""".replace('ONSET', (out / 'command-time.txt').as_posix()).replace('COMMAND', hex(args.command))
     (out / 'capture.lua').write_text(lua, encoding='utf8')
     command = [str(Path(args.mame).resolve()), 'ffight', '-rompath', str(Path(args.rompath).resolve()),
                '-video', 'none', '-sound', 'none', '-nothrottle', '-skip_gameinfo',
@@ -73,17 +78,17 @@ end)
     if not active:
         raise ValueError('Original sound command was silent')
     pcm = tail[:active[-1] + rate // 20].tobytes()
-    with wave.open(str(out / '15.wav'), 'wb') as wav:
+    with wave.open(str(out / (stem + '.wav')), 'wb') as wav:
         wav.setparams((1, 2, rate, 0, 'NONE', 'not compressed'))
         wav.writeframes(pcm)
-    subprocess.run([args.ffmpeg, '-v', 'error', '-i', str(out / '15.wav'), '-map_metadata', '-1',
-                    '-codec:a', 'libmp3lame', '-b:a', '96k', str(out / '15.mp3')], check=True, **options)
-    proof = dict(command=21, commandHex='15', commandTime=onset, rate=rate,
+    subprocess.run([args.ffmpeg, '-v', 'error', '-i', str(out / (stem + '.wav')), '-map_metadata', '-1',
+                    '-codec:a', 'libmp3lame', '-b:a', '96k', str(out / (stem + '.mp3'))], check=True, **options)
+    proof = dict(command=args.command, commandHex=stem, commandTime=onset, rate=rate,
                  samples=len(pcm) // 2, duration=len(pcm) / 2 / rate,
                  activeSamples=len(active), peak=max(map(abs, tail)), preCommandPeak=pre_peak,
                  pcmSHA256=hashlib.sha256(pcm).hexdigest(),
-                 mp3Bytes=(out / '15.mp3').stat().st_size,
-                 mp3SHA256=hashlib.sha256((out / '15.mp3').read_bytes()).hexdigest())
+                 mp3Bytes=(out / (stem + '.mp3')).stat().st_size,
+                 mp3SHA256=hashlib.sha256((out / (stem + '.mp3')).read_bytes()).hexdigest())
     (out / 'capture-proof.json').write_text(json.dumps(proof, indent=2), encoding='utf8')
     print(json.dumps(proof))
 

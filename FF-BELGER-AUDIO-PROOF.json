@@ -1,0 +1,64 @@
+{
+  "nativeConstructors": [
+    {
+      "constructor": "0x4fdb4",
+      "face": 0,
+      "sounds": [
+        30
+      ]
+    },
+    {
+      "constructor": "0x4fdb4",
+      "face": 1,
+      "sounds": [
+        30
+      ]
+    },
+    {
+      "constructor": "0x4fe06",
+      "face": 0,
+      "sounds": [
+        30
+      ]
+    },
+    {
+      "constructor": "0x4fe06",
+      "face": 1,
+      "sounds": [
+        30
+      ]
+    },
+    {
+      "constructor": "0x4fe52",
+      "face": 0,
+      "sounds": [
+        30
+      ]
+    },
+    {
+      "constructor": "0x4fe52",
+      "face": 1,
+      "sounds": [
+        30
+      ]
+    }
+  ],
+  "recording": {
+    "command": 30,
+    "commandHex": "1e",
+    "commandTime": 3.001472,
+    "rate": 48000,
+    "samples": 26817,
+    "duration": 0.5586875,
+    "activeSamples": 24287,
+    "peak": 10994,
+    "preCommandPeak": 0,
+    "pcmSHA256": "5d2ef59c663f6db9f30a50d98a749db0a281fa2b6ace2751bb7c653dc8a87179",
+    "mp3Bytes": 7532,
+    "mp3SHA256": "42f317cc3d08407d77af35925a25674c8b8078bd65abd16a097431f3ee1f0b67"
+  },
+  "reproductionExact": true,
+  "nativeFixture": "Original belger-init snapshot, each original projectile constructor executed in both facings with visible actor and original sound gate enabled. Queue delta asserted [30].",
+  "boundary": "Offline original-driver capture only. No emulator/ROM bytes included in web game. SF2 move cadence remains authored and unchanged.",
+  "browserTest": "tests/belger-bolt-audio.browser.cjs"
+}
