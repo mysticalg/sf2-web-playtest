@@ -120,7 +120,15 @@
     let c=magnifyCaches.get(key);if(!c){c={canvas:document.createElement('canvas')};magnifyCaches.set(key,c);}
     const w=rect?.w||canvas.width,h=rect?.h||canvas.height,rgba=canvas.getContext('2d',{willReadFrequently:true}).getImageData(rect?.x||0,rect?.y||0,w,h),src=new Uint32Array(rgba.data.buffer);
     const pw=w*factor,ph=h*factor,changedSize=c.w!==w||c.h!==h||c.factor!==factor;
-    if(changedSize){c.w=w;c.h=h;c.factor=factor;c.previous=new Uint32Array(w*h);c.two=new Uint32Array(w*h*4);c.four=factor===4?new Uint32Array(w*h*16):null;c.canvas.width=pw;c.canvas.height=ph;c.context=c.canvas.getContext('2d');c.image=new ImageData(new Uint8ClampedArray((factor===4?c.four:c.two).buffer),pw,ph);c.valid=false;}
+    if(changedSize){
+      // Camera easing changes the visible crop by single pixels. Reuse the large
+      // MMPX buffers across those sizes instead of allocating megabytes per frame.
+      const pixels=w*h;
+      if(!c.capacity||pixels>c.capacity){c.capacity=Math.max(pixels,Math.ceil((c.capacity||0)*1.5),65536);c.previousBuffer=new Uint32Array(c.capacity);c.twoBuffer=new Uint32Array(c.capacity*4);c.fourBuffer=null;c.allocations=(c.allocations||0)+1;}
+      if(factor===4&&!c.fourBuffer){c.fourBuffer=new Uint32Array(c.capacity*16);c.allocations=(c.allocations||0)+1;}
+      c.w=w;c.h=h;c.factor=factor;c.previous=c.previousBuffer.subarray(0,pixels);c.two=c.twoBuffer.subarray(0,pixels*4);c.four=factor===4?c.fourBuffer.subarray(0,pixels*16):null;
+      c.canvas.width=pw;c.canvas.height=ph;c.context=c.canvas.getContext('2d');const output=factor===4?c.four:c.two;c.image=new ImageData(new Uint8ClampedArray(output.buffer,output.byteOffset,pw*ph*4),pw,ph);c.valid=false;
+    }
     let changed=!c.valid;if(!changed)for(let i=0;i<src.length;i++)if(src[i]!==c.previous[i]){changed=true;break;}
     if(changed){acceleratedScale2x(src,w,h,c.two);if(factor===4)acceleratedScale2x(c.two,w*2,h*2,c.four);c.context.putImageData(c.image,0,0);c.previous.set(src);c.valid=true;c.updates=(c.updates||0)+1;}else c.hits=(c.hits||0)+1;
     return c.canvas;
@@ -186,7 +194,7 @@
     for(const type of ['keydown','keyup'])select.addEventListener(type,e=>e.stopPropagation());
     select.addEventListener('change',()=>{setMode(select.value);display.focus({preventScroll:true});});sizeDisplay();return native;
   }
-  function stats(){const sorted=durations.slice().sort((a,b)=>a-b);return {mode,scale:scale(),magnification:Object.fromEntries([...magnifyCaches].map(([k,c])=>[k,{updates:c.updates||0,hits:c.hits||0}])),frames,filtered,cached,lastMs,samples:sorted.length,avgMs:durations.reduce((a,b)=>a+b,0)/(durations.length||1),p95Ms:sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)]||0,maxMs:sorted[sorted.length-1]||0};}
+  function stats(){const sorted=durations.slice().sort((a,b)=>a-b);return {mode,scale:scale(),magnification:Object.fromEntries([...magnifyCaches].map(([k,c])=>[k,{updates:c.updates||0,hits:c.hits||0,bufferAllocations:c.allocations||0,capacity:c.capacity||0}])),frames,filtered,cached,lastMs,samples:sorted.length,avgMs:durations.reduce((a,b)=>a+b,0)/(durations.length||1),p95Ms:sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)]||0,maxMs:sorted[sorted.length-1]||0};}
   addEventListener('keydown',e=>{
     if(!display||e.code!=='KeyG'||e.repeat||e.ctrlKey||e.altKey||e.metaKey||e.target instanceof Element&&e.target.closest('select,input,textarea,[contenteditable=true]'))return;
     e.preventDefault();e.stopImmediatePropagation();setMode(modes[(modes.indexOf(mode)+1)%modes.length]);display.focus({preventScroll:true});
