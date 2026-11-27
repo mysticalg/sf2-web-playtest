@@ -34,8 +34,8 @@
   "romPreloadDistributed": false,
   "localFilesVerified": 23,
   "soundProgramVersion": "1.04",
-  "sourceFiles": 186,
-  "sourceArchiveSHA256": "9fa94a9b4e83f1839affbe758dae3f6c548a74158f519f21d6a6b5c869ad2b5f",
+  "sourceFiles": 190,
+  "sourceArchiveSHA256": "53064d512e8c53714678e383bc9e1beec95c9c94c49cf5507fdac3d89505ae34",
   "ordinaryInputArcade": {
     "winner": "Ryu",
     "roundWins": 24,
@@ -86,8 +86,8 @@
       "sha256": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41"
     },
     "bridge.js": {
-      "bytes": 8904,
-      "sha256": "af0e5bcb9e0da826fb5c2e645ef0b1469693ae0c268d4404ee9d313b111e2671"
+      "bytes": 9821,
+      "sha256": "fbb7f7e94c8ef989fab5a68923552d7323e885792c6fcc18bfcb987d64c9098b"
     },
     "rom-loader.js": {
       "bytes": 5183,
@@ -96,6 +96,10 @@
     "rom-manifest.js": {
       "bytes": 4604,
       "sha256": "09806d669083dc62ea66a9471bdbe323a59919f62f62b51428f50152b95d64bc"
+    },
+    "ai-combat.js": {
+      "bytes": 6525,
+      "sha256": "8f15a6d98e5193194fcafc01ec6ecfe91080260dba1d3ca2f26e1c6ff155a420"
     }
   },
   "compiledSourceUnits": 90,
@@ -251,6 +255,27 @@
     "browserRGBPictures": 630,
     "reusableQA": "qa/test-ken.cjs; SSF_FIXTURE=./ken-arcade-fixture.json"
   },
-  "packageVersion": "902b857a366ea96f160e1b78ba85e80ecb0fc85e931fa4e6d65ce9a9f936aa2b",
-  "wasmCacheVersion": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41"
+  "packageVersion": "71c1ff9ba1b5cac1d2150d5668eaa8dfede9e20b143a489c2c82bdd6eca6d79e",
+  "wasmCacheVersion": "a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41",
+  "nativeAIPresentation": {
+    "readOnly": true,
+    "rawNativeOutputUnchanged": true,
+    "cammyReplayFrames": 68473,
+    "cammyStateSamples": 2282,
+    "cammyRawPictures": 693,
+    "browserCases": [
+      "hit",
+      "low-health drip",
+      "persistent floor stains",
+      "camera scroll",
+      "blocked chip",
+      "reset",
+      "toggle off equals raw canvas"
+    ],
+    "notYetIntegrated": [
+      "Final Fight roster",
+      "possessed variants",
+      "death combos"
+    ]
+  }
 }

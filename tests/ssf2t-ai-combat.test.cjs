@@ -1,0 +1,15 @@
+const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict');
+const context=vm.createContext({});vm.runInContext(fs.readFileSync('ssf2t-ai/ai-combat.js','utf8'),context);const C=context.SSF2TAICombat;
+const memory=new Map(),write=(a,v,size=1)=>{if(size===1)memory.set(a,v&255);else{memory.set(a,v>>>8&255);memory.set(a+1,v&255);}},long=(a,v)=>{write(a,v>>>16,2);write(a+2,v&65535,2);};
+const native={ready:true,frame:0,gameStep:4,matchStep:10,stage:0,playersIn:1,players:[{id:0,hp:144,state:0},{id:4,hp:144,state:0}]};
+const api={state:()=>JSON.parse(JSON.stringify(native)),read:(a,size=2)=>size===1?memory.get(a)||0:((memory.get(a)||0)<<8)|(memory.get(a+1)||0)};
+write(0xff8ed4,448,2);write(0xff8ed8,0,2);
+for(let i=0;i<2;i++){const base=C.BASE+i*C.STRIDE,frame=0x1000+i*0x100,tables=0x2000+i*0x100;write(base+2,2);write(base+6,552+i*160,2);write(base+10,40,2);write(base+0x12,i?0:1);long(base+0x1a,frame);long(base+0x34,tables);write(frame+8,1);write(tables,32,2);const b=tables+36;write(b,-4);write(b+1,80);write(b+2,12);write(b+3,8);}
+const saved=JSON.stringify([...memory]);let sample=C.snapshot(api);assert.equal(sample.players[0].boxes.head.x,556);assert.equal(sample.players[1].boxes.head.x,708);assert.equal(sample.players[0].boxes.head.y,120);assert.equal(C.project({x:556,y:120},sample.camera).y,119);assert.equal(JSON.stringify([...memory]),saved);
+const fx=C.createEffects();fx.step(api);native.frame++;native.players[1].hp=130;fx.step(api);assert.equal(fx.info().hits,1);assert.ok(fx.info().particles>0);const spawned=fx.info().spawned;fx.step(api);assert.equal(fx.info().spawned,spawned,'Duplicate render/frame cannot emit again');
+native.frame++;native.players[1].state=8;native.players[1].hp=129;write(C.BASE+C.STRIDE+0x49,1);fx.step(api);assert.equal(fx.info().blocked,1);assert.equal(fx.info().spawned,spawned,'Guard chip must not emit blood');
+native.players[1].hp=28;native.players[1].state=0;write(C.BASE+C.STRIDE+0x49,0);for(let n=0;n<120;n++){native.frame++;fx.step(api);}assert.ok(fx.info().drips>=14);assert.ok(fx.info().stains>0);assert.ok(fx.info().particles<=480&&fx.info().stains<=320);
+sample=C.snapshot(api);const point=C.project({x:600,y:40},sample.camera);write(0xff8ed4,480,2);const moved=C.project({x:600,y:40},C.snapshot(api).camera);assert.equal(point.x-moved.x,32);assert.equal(point.y,moved.y);
+const drips=fx.info().drips;native.players[1].hp=0;for(let n=0;n<9;n++){native.frame++;fx.step(api);}assert.ok(fx.info().drips>drips,'Native zero HP remains alive until negative');const hits=fx.info().hits;native.players[1].hp=-1;native.frame++;fx.step(api);assert.equal(fx.info().hits,hits+1);native.frame++;fx.step(api);assert.equal(fx.info().hits,hits+1,'KO cannot repeat damage');
+fx.setEnabled(false);assert.equal(fx.info().particles,0);assert.equal(fx.info().stains,0);native.frame++;native.players[1].hp=10;fx.step(api);assert.equal(fx.info().spawned,0);
+long(C.BASE+0x1a,0xffffff);assert.equal(C.box(api,C.BASE,'head'),null);console.log('Native projection, signed boxes, read purity, actual damage, blocked chip, low-HP drips, persistence and bounds passed');

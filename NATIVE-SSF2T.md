@@ -17,7 +17,7 @@ The corresponding-source archive contains all 186 source/support files and 90 co
 | `ssf2t-native.wasm` (15,264,690 bytes) | `a5b6da94b142f15f93e8cfa47b160192bf3b5e880a83efa8ff6063f6b37aed41` |
 | `corresponding-source.zip` (2,469,961 bytes) | `9fa94a9b4e83f1839affbe758dae3f6c548a74158f519f21d6a6b5c869ad2b5f` |
 
-Only the twelve files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
+Only the thirteen files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
 
 Remaining work includes other fighter endings and exceptional mechanics, Q1 spatial DSP and three ADPCM voices, and integrating the main AI Edition's Final Fight roster, blood and finishers into this native game. A full Ryu clear is one verified playthrough, not proof of all character paths or full-game parity.
 
@@ -40,3 +40,12 @@ The updated candidate also matches the previous98-case/560,877-frame native-refe
 Cammy now has a genuine complete arcade replay on the unchanged `a5b6da94` native binary. It wins 24 rounds and 12 matches without losses, defeats CPU Akuma, plays her original ending and staff roll, and returns to title. All 68,473 frames match 2,282 state samples, 693 complete captured RGB pictures and 110,397,288 PCM bytes against full original-instruction execution for both CPUs. The browser independently matches every saved state and picture. The ending begins at frame 45,851 and title returns at 56,920. Only original operator difficulty 1 is selected; replay loads no state and injects no health, stage, ladder, results, timers or RNG.
 
 `tests/ssf2t-arcade.browser.cjs` and its authored Cammy input/hash fixture are tracked in this repository; the source ZIP also includes `qa/test-cammy.cjs`. In addition to reference matching, this test counts actual round wins/losses, confirms the selected fighter and CPU Akuma final opponent, observes the ending/title cycle, and requires GET-only ROM-loader traffic. The prior Ken proof incorrectly reported `cpuAkumaFinal: false`; original final-fight state and an explicit public-browser replay establish that he also defeated CPU Akuma. This release corrects that reporting field. These are three genuine verified fighter clears, not full AI Edition integration or all-character/hardware parity.
+
+
+## Native AI blood layer - 2026-11-27
+
+The optional AI blood effects follow the original European head colliders and camera. Confirmed unblocked damage emits a spray, with additional particles for heavy damage and specials; living fighters at or below 20% health drip every eight native frames. Droplets settle at the original world floor and persist for the round. Blocked chip does not create a hit spray. Pool limits are 480 airborne particles and 320 floor stains. The mouth location is approximate within the native head box.
+
+The observer has no game-memory writer, independent cosmetic noise and no calls to the combat RNG. Switching effects off clears the layer and restores the raw native picture. A complete Cammy input replay with the layer enabled preserves 2,282 state samples and 693 raw native picture hashes over 68,473 frames. Separate actual-input checks cover hit/low-health/scroll/block/reset/toggle behavior; the official skill capture reaches the original super finish. The native C++ implementation, WASM and JS glue are unchanged.
+
+This is the first native AI presentation feature. Native integration of Final Fight guests, possessed variants, combos and finishers remains unfinished. Bundled startup assets requested on 2026-11-27 are also not yet integrated or published.

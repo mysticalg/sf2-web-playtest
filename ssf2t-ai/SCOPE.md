@@ -32,3 +32,10 @@ Original entries0A943C and0A945A are restored after a genuine Ken/Ryu input repl
 ## Cammy genuine arcade clear
 
 An additional Cammy tape genuinely wins24rounds and12matches without a loss, defeats CPUAkuma, plays her original ending and credits, and returns to title. Its68,473frames match2,282state samples,693capturedRGB pictures and110,397,288PCMbytes against full Mode::Blocks original-instruction execution for both68000andZ80. The browser independently matches every saved state and picture and counts the actual wins and final opponent. Only original operator difficulty1 is selected; replay contains no health/stage/ladder/RNG/timer/results writes or state loads. This uses the same unchanged a5b6da94 native binary. The previous Ken metadata erroneously said CPUAkumaFinal=false; original final-fight state confirms CPUAkuma and this report corrects that field. Other complete fighter clears, every exceptional mechanic and main AI Edition integration remain incomplete.
+
+
+## Native AI presentation - 2026-11-27
+
+Optional AI blood effects use original head colliders, confirmed health loss and original camera coordinates. Stronger hits and specials spray more blood; living fighters at 20% health or less drip from the face. Floor stains persist for the round and follow the native camera. Blocked chip emits no hit blood. The switch disables and clears the presentation effects without changing native game state. Final Fight fighters, possessed variants and death combos are not yet integrated into this native route.
+
+A 68,473-frame Cammy input replay with effects enabled preserves 2,282 native state samples and 693 raw-render hashes. Enhanced canvas output intentionally adds effects. Separate native-input tests cover hit spray, low-health drips, floor persistence, scrolling, guarded chip and reset/toggle cleanup; disabled canvas equals raw native output. Native C++ sources, WASM and JS glue are unchanged. The face anchor is an approximation inside the original head box, not a source-sprite anatomical mask.
