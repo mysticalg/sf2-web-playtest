@@ -25,7 +25,7 @@ window.SF2AIHeroWeapons=(()=>{
   const action=item?(item.type===0?(p.aiProfile==='cody'&&close?'weapon0':'weaponThrow'):'weapon'+item.type):null;
   const key=action||'bare';if(p.AIHeroWeaponAnimKey===key)return;p.AIHeroWeaponAnimKey=key;
   for(let i=0;i<slots.length;i++){
-   const strength=i%3,animation=action?H.weaponNormal(p,action,strength):clone(p.AIHeroBareAnims[i]);
+   const strength=i%3,animation=action?H.weaponNormal(p,action,strength,slots[i]>=14&&slots[i]<=19):clone(p.AIHeroBareAnims[i]);
    if(action){if(action==='weaponThrow')for(const entry of animation.ents){entry[6]=[0,0,0,0];entry[7]=0;}animation.heroWeapon=item.type;animation.heroKnifeThrow=action==='weaponThrow';animation.name=action==='weaponThrow'?'Hero Knife Throw':'Hero '+['Knife','Katana','Pipe'][item.type]+' '+strength;}
    p.F.anims[slots[i]]=animation;
   }
@@ -41,7 +41,7 @@ window.SF2AIHeroWeapons=(()=>{
  function stepWorld(room,tick){
   if(lastTick===tick)return;lastTick=tick;
   for(const item of items){if(item.phase==='held')continue;item.age++;if(item.phase==='floor')item.y=room.floor?.(item.x)||0;
-   if(item.phase==='flight'){item.x+=item.vx;if(item.hit||item.x<room.left+15||item.x>room.right-15){item.phase='toss';item.vx=-Math.sign(item.vx)*1.5;item.vy=2.8;item.hit=false;}}
+   if(item.phase==='flight'){if(item.age>1)item.sweepX=item.x;item.x+=item.vx;if(item.hit||item.x<room.left+15||item.x>room.right-15){item.phase='toss';item.vx=-Math.sign(item.vx)*1.5;item.vy=2.8;item.hit=false;}}
    else if(item.phase==='toss'){item.x=Math.max(room.left+12,Math.min(room.right-12,item.x+item.vx));item.y+=item.vy;item.vy-=.28;const floor=room.floor?.(item.x)||0;if(item.y<=floor){item.y=floor;item.x=Math.max(room.left+76,Math.min(room.right-76,item.x));item.phase='floor';item.vx=item.vy=0;}}
 
   }
@@ -82,7 +82,9 @@ window.SF2AIHeroWeapons=(()=>{
  function cpu(p,danger){if(!hero(p)||held(p)||danger||p.HP<=0)return null;const item=loose(p);if(!item)return null;const dx=item.x-p.X/256;return Math.abs(dx)<=22?8|16:dx>0?2:1;}
  H.bind=(p,native,id)=>{original.bind(p,native,id);delete p.AIHeroBareAnims;delete p.AIHeroWeaponAnimKey;bare(p);};
  H.reset=p=>{original.reset(p);delete p.AIHeroWeapon;delete p.AIHeroPickup;delete p.AIHeroWeaponAnimKey;delete p.AIHeroWeaponNormal;};
- H.knifeContacts=p=>items.filter(item=>item.owner===p.i&&item.type===0&&item.phase==='flight'&&!item.hit).map(item=>({knife:item,box:[item.x,item.y,8,4],damage:24,direction:item.vx>0?1:-1}));
+ // Sweep the release-to-hand path once, then each flight step, so a blade cannot
+ // spawn past a close crouching target or tunnel between collision samples.
+ H.knifeContacts=p=>items.filter(item=>item.owner===p.i&&item.type===0&&item.phase==='flight'&&!item.hit).map(item=>({knife:item,box:[(item.x+(item.sweepX??item.x))/2,item.y,8+Math.abs(item.x-(item.sweepX??item.x))/2,4],damage:24,direction:item.vx>0?1:-1}));
  H.projectileClash=p=>{const item=items.find(item=>item.owner===p.i&&item.type===0&&item.phase==='flight'&&!item.hit);if(!item)return false;item.phase='toss';item.vx=-Math.sign(item.vx)*1.5;item.vy=2.8;item.hit=false;p.FBON=0;return true;};
  H.step=step;H.normalStep=normalStep;H.disarm=disarm;H.knifePickup=pickup;H.knifeCPU=cpu;H.extraDraw=extraDraw;
  H.damage=(p,strength)=>p.anim?.heroWeapon!==undefined&&p.ST===1?H.get(p.aiProfile).normalDamage[Math.min(2,strength)]+[5,7,8][p.anim.heroWeapon]:original.damage(p,strength);
