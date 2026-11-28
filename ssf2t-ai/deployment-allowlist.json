@@ -1,7 +1,7 @@
 {
   "targetRoute": "ssf2t-ai/",
   "mainLink": "./ssf2t-ai/",
-  "backLink": "../?edition=ai",
+  "backLink": "../?edition=st",
   "files": [
     "index.html",
     "bridge.js",
@@ -17,7 +17,10 @@
     "SOURCE-LICENSES.md",
     "corresponding-source.zip",
     "source-proof.json",
-    "deployment-allowlist.json"
+    "deployment-allowlist.json",
+    "bundled-assets.js",
+    "asset-loader.js",
+    "native-assets.pack"
   ],
   "neverCopy": [
     "private/",
@@ -28,5 +31,6 @@
     "ssf2t.zip",
     "opcode dumps"
   ],
-  "totalBytesWithoutThisManifest": 18442133
+  "totalBytesWithoutThisManifest": 28992753,
+  "assetPackage": "Verified prepared runtime regions; original ZIP archives remain excluded."
 }

@@ -1,6 +1,6 @@
 # Native Super Street Fighter II Turbo preview
 
-The AI Edition now links to an independent native preview of the European 940223 game. Open `ssf2t-ai/` and select your own `ssf2t.zip`; its 23 files and five assembled regions are checked locally. The game does not upload the archive. The published package contains no ROM archive, raw program/graphics/audio regions or preload pack.
+Choose SUPER STREET FIGHTER II TURBO in the main title VERSION row, then 1P ARCADE or 2P VERSUS. The original European 940223 native game opens inside the main page and goes directly to character select. Runtime data prepared from the verified local set is bundled in `ssf2t-ai/native-assets.pack`; no file selection or upload is required. The browser verifies the package and all five original region hashes before starting. The original ZIP is not published.
 
 Original controllers, collisions, stages, sprites and the 1.04 sound program execute as statically translated native functions. No Champion Edition implementation replaces the game, and no CPU opcode decoder or interpreter fallback is linked. Uncovered native dispatch aborts so missing branches remain observable.
 
@@ -17,7 +17,7 @@ The corresponding-source archive contains all 196 source/support files and 90 co
 | `ssf2t-native.wasm` (15,266,816 bytes) | `d8e0cc463a7661ba40899e668af58f0441138456881b9eb9a332d4f75356c631` |
 | `corresponding-source.zip` (2,564,173 bytes) | `c2af4c347bbdc8e35d773a114058d657bf038d89ed75d461cfee76292f8f8e77` |
 
-Only the thirteen files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
+Only the files in `ssf2t-ai/deployment-allowlist.json` are published. The source links, current scope and original licenses are available from the preview's About page.
 
 Remaining work includes other fighter endings and exceptional mechanics, Q1 spatial DSP and three ADPCM voices, and integrating the main AI Edition's Final Fight roster, possessed variants, combos and finishers into this native game. A full Ryu clear is one verified playthrough, not proof of all character paths or full-game parity.
 
@@ -63,3 +63,12 @@ All 98 native compatibility cases retain identical RAM, video, audio hashes and 
 
 
 2026-11-27: Optional two-button special shortcuts now emit original controller motions for the native roster. The per-fighter guide lists chords, native charge and meter requirements, jump-buffered 720 supers and airborne grab follow-ups. Seven exposed original dispatch paths are recovered. All 300 new/old-style activation cases across both slots, ten independent diagnostic replays, 98 legacy cases and four full browser arcade clears pass. The 206-file corresponding source rebuilds 91 units and reproduces eight artifacts exactly. Native Final Fight, possessed variants and finishers remain incomplete; see NATIVE-SSF2T-SHORTCUTS.md for scope and evidence.
+
+
+## Instant-play Turbo (0.1.147)
+
+The main VERSION selector now includes SUPER STREET FIGHTER II TURBO. Choose it and 1P ARCADE or 2P VERSUS to open the original native engine inside the game page, with verified assets loaded automatically and ordinary coin/Start inputs taking the selected players to character select. Back to version menu or Escape returns to the same selector. Main-engine simulation and audio stop while Turbo owns the game view.
+
+The 10.5 MB compressed native-assets.pack is prepared deterministically with `python scripts/build-turbo-assets.py <local-original-archive>`. All 23 source files are checked before assembly. Startup checks the compressed package hash, original program/graphics/sound/sample region hashes and the decrypted program hash. The original ZIP is not published. The WASM and original controllers remain unchanged; the clock clamps stale negative animation timestamps after synchronous boot so first inputs are accepted immediately.
+
+Validation commands: `node tests/turbo-assets.test.cjs`; `python tests/turbo-browser.py --baseline-ref c17ec7b --artifacts <outside-repository-directory>`. The latter uses the installed Python Playwright package, serves the real files locally with a sufficient connection queue, exercises keyboard/tap version selection, both player modes, a native fight, sound, pause/reset/return, saved edition and a mobile layout, and compares WW/CE state/pixel hashes against the supplied baseline. Use `--base <published-site-root>` for hosted checks. For the old local-file diagnostic tests, explicitly add `manualrom=1` to their native URL.

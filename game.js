@@ -2042,6 +2042,8 @@ function pointCommand(x,y){
 
     if(row===4)cycleEdition(x<W/2?-1:1);
 
+    else if(VER.edition==='st')return 0;
+
     else if(row===2)changeDifficulty(x<W/2?-1:1);
 
     else{const q=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(q+(x<W/2?RTIMES.length-1:1))%RTIMES.length];}
@@ -2853,7 +2855,9 @@ function scenestep(k1,k2,ng){const n1=k1&~selprev[0],n2=k2&~selprev[1];selprev=[
 
     if(G.menu===4&&n1&(K_L|K_R)){cycleEdition(n1&K_L?-1:1);sfxc(0x21,SN_BLOCK,0.3);}
 
-    if(G.menu>=2&&G.menu<4&&n1&(K_L|K_R)){const d=n1&K_R?1:-1; if(G.menu===2)changeDifficulty(d); else {const i=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(i+d+4)%4];} saveEditionSettings();sfxc(0x21,SN_BLOCK,0.3);}
+    if(VER.edition!=='st'&&G.menu>=2&&G.menu<4&&n1&(K_L|K_R)){const d=n1&K_R?1:-1; if(G.menu===2)changeDifficulty(d); else {const i=RTIMES.indexOf(G.rtime);G.rtime=RTIMES[(i+d+4)%4];} saveEditionSettings();sfxc(0x21,SN_BLOCK,0.3);}
+
+    if(ok&&G.st>20&&G.menu<2&&VER.edition==='st'){window.SF2Turbo.open(G.menu);break;}
 
     if(ok&&G.st>20&&G.menu<2&&!(G.wantce&&VER.cur!=='CE')){sfxc(0x20,SN_BLOCK,0.4);G.mode2p=G.menu;G.arc=G.menu?0:1;if(aiEnabled()){AICFG.selectedProfiles=[null,null];AICFG.colors=[null,null];delete G.AIColor;delete G.AINextMatchSeed;}G.selstep=0;G.sel=[0,4];if(VER.cur==='CE'){G.cep=[0,6];}go('select');} break;
 
@@ -3011,9 +3015,9 @@ function scenerender(){cx.fillStyle='#000';cx.fillRect(0,0,W,H);ceFill(BLUE,0,0,
 
     {const c=i=>G.menu===i?'#ffe000':'#888';tx('1P  ARCADE',W/2,166,10,c(0),'#000');tx('2P  VERSUS',W/2,178,10,c(1),'#000');
 
-    tx('DIFFICULTY  < '+difficultyLabel()+' >',W/2,192,8,c(2),'#000');tx('TIME  < '+(G.rtime||'INF')+' >',W/2,203,8,c(3),'#000');
+    tx('DIFFICULTY  < '+(VER.edition==='st'?'IN GAME':difficultyLabel())+' >',W/2,192,8,c(2),'#000');tx('TIME  < '+(VER.edition==='st'?'IN GAME':G.rtime||'INF')+' >',W/2,203,8,c(3),'#000');
 
-    tx('VERSION  < '+(G.wantce&&VER.cur!=='CE'?(VER.loading===3?'CE LOAD FAILED':'LOADING CE'):VER.edition==='ai'?'AI EDITION':VER.cur==='CE'?'CHAMPION EDITION':'WORLD WARRIOR')+' >',W/2,214,8,c(4),'#000');}
+    tx('VERSION  < '+(VER.edition==='st'?'SUPER STREET FIGHTER II TURBO':G.wantce&&VER.cur!=='CE'?(VER.loading===3?'CE LOAD FAILED':'LOADING CE'):VER.edition==='ai'?'AI EDITION':VER.cur==='CE'?'CHAMPION EDITION':'WORLD WARRIOR')+' >',W/2,214,VER.edition==='st'?6:8,c(4),'#000');}
 
     break;
 
@@ -3111,7 +3115,7 @@ const FRMS=1000/59.637;  /* CPS1 vertical refresh (59.637Hz), the arcade game sp
 
 function loop(now){if(window.SF2.freeze){last=now;requestAnimationFrame(loop);return;}accum+=Math.min(250,now-last);last=now;let advanced=false;while(accum>=FRMS){step();accum-=FRMS;advanced=true;}if(!aiEnabled()||advanced)render();requestAnimationFrame(loop);}
 
-window.SF2={health:{alive:hpAlive,damage:hpDamage},VER,setEdition,get edition(){return VER.edition;},aiRoom,aiViewWidth,get paused(){return CONTROL.paused;},clearInput:clearinput,boxw,setver,get FIA(){return FIA},get FI(){return FI},get IDEL(){return IDEL},set IDEL(v){IDEL=v;IQ.length=0},music,LVL,musOpts,MUSC,STM,get SN(){return SN},D,G,P,startfight,step,render,resetmatch,down,pads,snd,audioInit,SB,startarcade,matchend,bonusinit,get RK(){return RK},get cmdlog(){return G.cmdlog},soundStats};
+window.SF2={suspendForTurbo(){G.TurboResumeAudio=AC?.state==='running';clearinput();SF2.freeze=1;AC?.suspend().catch(()=>{});},resumeFromTurbo(){clearinput();CONTROL.paused=false;G.menu=4;G.st=0;SF2.freeze=0;if(G.TurboResumeAudio)AC?.resume().catch(()=>{});delete G.TurboResumeAudio;},health:{alive:hpAlive,damage:hpDamage},VER,setEdition,get edition(){return VER.edition;},aiRoom,aiViewWidth,get paused(){return CONTROL.paused;},clearInput:clearinput,boxw,setver,get FIA(){return FIA},get FI(){return FI},get IDEL(){return IDEL},set IDEL(v){IDEL=v;IQ.length=0},music,LVL,musOpts,MUSC,STM,get SN(){return SN},D,G,P,startfight,step,render,resetmatch,down,pads,snd,audioInit,SB,startarcade,matchend,bonusinit,get RK(){return RK},get cmdlog(){return G.cmdlog},soundStats};
 AI_FINISHERS=window.SF2AIFINISHERS?.bindSF2()||null;
 window.SF2CESTAGEANIMATIONS?.setSound(sfxc);
 
@@ -3162,7 +3166,7 @@ SF2.net={
 
 async function setEdition(id,options={}){
 
-  if(!['ww','ce','ai'].includes(id))throw new Error('Unknown edition');AI_FINISHERS?.clear('edition-change');
+  if(!['ww','ce','ai','st'].includes(id))throw new Error('Unknown edition');AI_FINISHERS?.clear('edition-change');
 
   if(id==='ai'){const artwork=await Promise.all([SF2AIWEATHER.ready,SF2AISCENE.ready,SF2AIATMOSPHERE.ready]);if(artwork.some(ok=>!ok))throw new Error('AI scenery artwork could not load');}
   if(id==='ai')await Promise.all([SF2AIDamnd.ready,SF2AIFF.ready,SF2AIHeroes.ready]);
@@ -3177,11 +3181,13 @@ async function setEdition(id,options={}){
 
   if(!options.prototype){try{localStorage.setItem('sf2:edition:v1',id);}catch{}}
 
-  window.SF2AIWEATHER?.stop();window.SF2AIHeroWeapons?.clear();VER.edition=id;G.wantce=id!=='ww';AICFG.selectedProfiles=[null,null];AICFG.colors=[null,null];delete G.AIColor;delete G.AINextMatchSeed;AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
+  window.SF2AIWEATHER?.stop();window.SF2AIHeroWeapons?.clear();VER.edition=id;G.wantce=id==='ce'||id==='ai';AICFG.selectedProfiles=[null,null];AICFG.colors=[null,null];delete G.AIColor;delete G.AINextMatchSeed;AICFG.prototype=!!options.prototype&&id==='ai';AICFG.configured=AICFG.prototype;
 
   for(const p of P)aiClearProfile(p);
 
   if(G.scene!=='title'){go('title');}CONTROL.paused=false;if(!options.keepMenuInput)clearinput();
+
+  if(id==='st'){if(oldAI){AI_DEATH_FX.length=0;aiBloodReset();}return VER.edition;}
 
   if(id==='ww')setver('WW',true);
 
@@ -3210,7 +3216,7 @@ async function setEdition(id,options={}){
 
 }
 
-function cycleEdition(direction){const ids=['ww','ce','ai'];setEdition(ids[(ids.indexOf(VER.edition)+direction+3)%3],{keepMenuInput:true}).catch(e=>{console.error(e);});}
+function cycleEdition(direction){const ids=['ww','ce','ai','st'];setEdition(ids[(ids.indexOf(VER.edition)+direction+ids.length)%ids.length],{keepMenuInput:true}).catch(e=>{console.error(e);});}
 
 
 
@@ -3335,4 +3341,4 @@ Promise.all([...STI.flat(),FXI,...FI,...SCRI,...CEFXI.filter(Boolean),...AI_REEL
 
 restoreEditionSettings('ce');G.wantce=1;loadce();
 
-try{const query=new URLSearchParams(location.search),explicit=query.get('edition');let saved=null;try{saved=localStorage.getItem('sf2:edition:v1');}catch{}const edition=['ww','ce','ai'].includes(explicit)?explicit:query.has('online')?null:saved;if(['ww','ce','ai'].includes(edition)){if(explicit==='ai'&&query.get('mode')==='arcade')SF2AI.startArcade(Object.hasOwn(AI_PROFILES,query.get('fighter'))?query.get('fighter'):'ryu').catch(console.error);else if(explicit==='ai'&&(ffGuestIds().includes(query.get('fighter'))||ffGuestIds().includes(query.get('opponent'))||SF2AIEVIL.get(query.get('fighter'))||SF2AIEVIL.get(query.get('opponent'))))SF2AI.configure({p1:Object.hasOwn(AI_PROFILES,query.get('fighter'))?query.get('fighter'):'ryu',p2:Object.hasOwn(AI_PROFILES,query.get('opponent'))?query.get('opponent'):'ken',training:false,mode:'cpu',dummy:'cpu'}).catch(console.error);else if(explicit==='ai'&&query.get('prototype')==='evil-ryu')SF2AI.configure({p1:'evil-ryu',p2:'ryu',training:query.get('mode')==='practice',mode:query.get('mode')==='versus'?'versus':'cpu',dummy:['stand','block','cpu'].includes(query.get('dummy'))?query.get('dummy'):'stand'}).catch(console.error);else setEdition(edition).catch(console.error);}}catch(e){console.error(e);}
+try{const query=new URLSearchParams(location.search),explicit=query.get('edition');let saved=null;try{saved=localStorage.getItem('sf2:edition:v1');}catch{}const edition=['ww','ce','ai','st'].includes(explicit)?explicit:query.has('online')?null:saved;if(['ww','ce','ai','st'].includes(edition)){if(explicit==='ai'&&query.get('mode')==='arcade')SF2AI.startArcade(Object.hasOwn(AI_PROFILES,query.get('fighter'))?query.get('fighter'):'ryu').catch(console.error);else if(explicit==='ai'&&(ffGuestIds().includes(query.get('fighter'))||ffGuestIds().includes(query.get('opponent'))||SF2AIEVIL.get(query.get('fighter'))||SF2AIEVIL.get(query.get('opponent'))))SF2AI.configure({p1:Object.hasOwn(AI_PROFILES,query.get('fighter'))?query.get('fighter'):'ryu',p2:Object.hasOwn(AI_PROFILES,query.get('opponent'))?query.get('opponent'):'ken',training:false,mode:'cpu',dummy:'cpu'}).catch(console.error);else if(explicit==='ai'&&query.get('prototype')==='evil-ryu')SF2AI.configure({p1:'evil-ryu',p2:'ryu',training:query.get('mode')==='practice',mode:query.get('mode')==='versus'?'versus':'cpu',dummy:['stand','block','cpu'].includes(query.get('dummy'))?query.get('dummy'):'stand'}).catch(console.error);else setEdition(edition).catch(console.error);}}catch(e){console.error(e);}

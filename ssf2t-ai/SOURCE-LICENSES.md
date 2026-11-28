@@ -6,7 +6,7 @@ The MAME-derived CPS2 cipher is BSD-3-Clause (Paul Leaman, Andreas Naive, Nicola
 
 Static functions were recovered from the user's verified European SSF2T 940223 program, using independent opcode/data views. Japanese entry names seed discovery only; actual function bodies come from the European program. The original version 1.04 sound program drives the QSound reference mixer. The European master key comes from official historical MAME hardware records, not an invented byte-identical key file.
 
-No raw ROM archive, DATA/OPS dump, graphics/sample region or private preload pack is distributed. The player supplies matching original files locally. The browser verifies all 23 original files and all five assembled regions; no archive or extracted ROM is sent to a server.
+The instant-play route includes a compressed runtime package prepared from the verified original European set. Its original program data, graphics and audio remain Capcom material, separate from the GPL runtime. The browser verifies the package and five original region hashes. The original ZIP and separate DATA/OPS dumps are not published; the optional local-file diagnostic route never uploads its file.
 
 See [SCOPE.md?v=4a19b021c2ad0ca9](SCOPE.md?v=4a19b021c2ad0ca9) and [source-proof.json?v=4a19b021c2ad0ca9](source-proof.json?v=4a19b021c2ad0ca9) for verified evidence and limits. Complete Ryu, Ken and Cammy arcade clears through the original ending, staff roll and title are verified. Other fighter endings and mechanics remain under test; the full-game goal is not complete. The reference mixer omits Q1 spatial DSP/ADPCM features, and internal byte comparisons do not establish hardware parity.
 

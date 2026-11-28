@@ -14,7 +14,7 @@ All sixteen standard fighters in both slots and sixteen old forms plus Akuma hav
 
 Remaining: other full fighter playthroughs, every mechanic/exceptional branch, and hardware graphics/DSP parity. Additional ending discovery uses explicitly logged diagnostic health/ladder fixtures and is not counted as actual arcade completion. Existing AI Edition blood, finishers and Final Fight additions remain separate. The original 1.04 sound program drives a reference mixer still lacking Q1 spatial DSP and three ADPCM voices. Internal equality does not establish hardware parity.
 
-Controls: P1 arrows; A/S/D punches, Z/X/C kicks, 5 coin, Enter start. P2 I/J/K/L; numpad 7/8/9 punches, 4/5/6 kicks, with U/O/P and N/M/comma aliases; 6 coin, 2 start. F fullscreen, Esc exits. The player supplies the original Europe 940223 ZIP locally; it is never uploaded. No ROM is included.
+Controls: P1 arrows; A/S/D punches, Z/X/C kicks, 5 coin, Enter start. P2 I/J/K/L; numpad 7/8/9 punches, 4/5/6 kicks, with U/O/P and N/M/comma aliases; 6 coin, 2 start. F fullscreen, Esc exits. The normal route loads its bundled verified runtime data automatically; no ZIP prompt or upload is needed. An explicit manual-ROM diagnostic route remains available for source comparisons.
 
 
 ## Special-input branch recovery

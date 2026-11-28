@@ -1,0 +1,38 @@
+/* Verify bundled assets against the original manifest and run the shipped native engine. */
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),vm=require('node:vm'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const root=path.resolve(__dirname,'../ssf2t-ai');
+(async()=>{
+ const context=vm.createContext({window:{},crypto:crypto.webcrypto,TextDecoder,Blob,Response,DecompressionStream});
+ for(const file of ['rom-manifest.js','bundled-assets.js','asset-loader.js'])vm.runInContext(fs.readFileSync(path.join(root,file),'utf8'),context);
+ context.SSF2TROMManifest=context.window.SSF2TROMManifest;
+ const meta=context.window.SSF2TBundledAssets,packed=fs.readFileSync(path.join(root,meta.file));
+ assert.equal(packed.length,meta.bytes);
+ assert.equal(crypto.createHash('sha256').update(packed).digest('hex'),meta.sha256);
+ context.fetch=async()=>new Response(packed);
+ const createNative=require(path.join(root,'ssf2t-native.js'));
+ const compiled=new WebAssembly.Module(fs.readFileSync(path.join(root,'ssf2t-native.wasm')));
+ const mod=await createNative({instantiateWasm(imports,receive){receive(new WebAssembly.Instance(compiled,imports));},print:()=>{},printErr:()=>{}});
+ const info=await context.window.SSF2TLoadBundledAssets(mod);
+ assert.equal(info.source,'bundled');assert.equal(info.verifiedFiles,23);
+ assert.equal(JSON.stringify(info.regions),JSON.stringify(context.window.SSF2TROMManifest.regions));
+ assert.ok(mod._ssf_init());mod._ssf_drawing(0);
+ for(let n=0;n<3000;n++)mod._ssf_tick(0,0);
+ const ptr=mod._ssf_state()>>2,state=Array.from(mod.HEAP32.subarray(ptr,ptr+29));
+ assert.equal(state[0],3000);assert.equal(state[24],0);assert.equal(state[25],0);
+ const run=(n,k=0,j=0)=>{for(let t=0;t<n;t++)mod._ssf_tick(k,j);};
+ run(1);run(30,2048);run(30);run(30,2048);run(60);run(12,1024);run(238);
+ const selectState=Array.from(mod.HEAP32.subarray(mod._ssf_state()>>2,(mod._ssf_state()>>2)+29));
+ assert.equal(selectState[2],2,'Ordinary native character selection');
+ run(12,16);run(646);
+ const fightState=Array.from(mod.HEAP32.subarray(mod._ssf_state()>>2,(mod._ssf_state()>>2)+29));
+ assert.equal(fightState[3],4,'Original arcade fight after confirming Ryu');
+ context.fetch=async()=>new Response('',{status:404});
+ await assert.rejects(()=>context.window.SSF2TLoadBundledAssets(mod),/could not load/);
+ const broken=Buffer.from(packed);broken[broken.length-1]^=1;
+ context.fetch=async()=>new Response(broken);
+ await assert.rejects(()=>context.window.SSF2TLoadBundledAssets(mod),/did not pass verification/);
+ context.fetch=async()=>new Response(packed);
+ await context.window.SSF2TLoadBundledAssets(mod);
+ console.log(JSON.stringify({bytes:packed.length,verifiedRegions:Object.keys(info.regions),originalFrames:state[0],selectMode:selectState[2],fightStep:fightState[3],cpuFallback:state[24],soundFallback:state[25],missingAndCorruptRejected:true,retry:true}));
+})().catch(e=>{console.error(e);process.exitCode=1;});
