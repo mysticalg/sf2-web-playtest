@@ -549,17 +549,30 @@ function aiRiftStep(p){
 
 }
 
+function aiJuggleHeld(p){return !!(p.AIFFHeld||p.AINativeHeld||p.CETHV||p.CEBV||p.CEHHV||p.opp?.THV&&p.opp.ST===S_SPEC&&p.ST===S_HIT);}
 function aiJuggleContact(p,d,damage,source){
   const core=window.SF2AIJuggles;if(!core||G.scene!=='fight'||G.gph!==1||AI_FINISHERS?.active())return;
-  if(d.CESpecial||d.AIFFHeld||d.AINativeHeld||d.CETHV||d.CEBV){delete d.AIJuggle;return;}
+  if(d.CESpecial||aiJuggleHeld(d)){delete d.AIJuggle;return;}
   const previous=d.AIJuggle,button=btnof(p.cur),state=core.contact(previous,{accepted:true,blocked:false,damage,dead:!hpAlive(d),held:false,finisher:false,y:d.Y/256,airborne:!!previous||d.Y>0,direction:d.X>=p.X?1:-1,heavyKick:source==='melee'&&[S_ATK,S_AIR].includes(p.ST)&&button===5,serial:(G.AIJuggleSerial=(G.AIJuggleSerial||0)+1)});
   if(!state||state===previous)return;state.dizzyOnLand=previous?.dizzyOnLand||d.DIZZY===1;d.AIJuggle=state;
+  if(!previous){if(ffAdapter(d).disarm(d,state.direction))ffSound(d,'weapon');SF2AIFFChair.dismount(d,'juggle');}
   SF2CEDIZZY.interrupt(d);d.DIZZY=0;d.CES=d.MV=null;delete d.AIAir;delete d.AIRift;for(const key of['CER','CERSTOP','CEPF','CEGUARD','CEVNSTART','CENORMALINIT','CEVLAND','CESHAKE','CERHOSTTICK','CERRESUME'])delete d[key];
   Object.assign(d,{ST:S_HIT,STUN:1,KB:0,VX:state.vx*256,VY:state.vy*256,AX:0,AY:state.gravity*256,RETCR:0,PJ:0,JA:0});setanim(d,AN_HITL+2,0);
   if(source==='melee'&&p.ST===S_ATK&&button===5)p.AIJuggleLaunch={serial:p.AIAttackSerial,target:d.i};if(source==='melee'&&p.ST===S_AIR)p.AIJuggleAirConfirm=p.AIAttackSerial;
+  aiJuggleCameraFit();
+}
+function aiJuggleCameraWidth(){
+  if(!aiEnabled()||G.scene!=='fight'||!P.some(p=>p.AIJuggle&&!aiJuggleHeld(p))||AI_FINISHERS?.active())return 0;
+  const top=Math.max(...P.map(p=>p.Y/256-fighterArtBase(p).rect[5]))-(SF2CECAMERA.state.main||0);
+  return W*Math.max(0,top)/(GROUND-44);
+}
+function aiJuggleCameraFit(){
+  const needed=aiJuggleCameraWidth();if(!needed)return;const room=aiRoom(),width=Math.min(room.right-room.left,Math.max(G.AIViewWidth||W,needed));
+  if(width<=(G.AIViewWidth||W))return;G.AIViewWidth=width;const follow=G.AICamera||(G.AICamera={velocity:0,target:W,hold:0});follow.target=Math.max(follow.target,width);follow.hold=20;follow.velocity=Math.max(0,follow.velocity);follow.centre=(P[0].X+P[1].X)/512;G.cam=Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
 }
 function aiJuggleStep(p){
-  const state=p.AIJuggle;if(!state)return false;if(p.ST!==S_HIT||!hpAlive(p)||p.AIFFHeld||p.AINativeHeld||p.CESpecial){delete p.AIJuggle;return false;}
+  const state=p.AIJuggle;if(!state)return false;if(p.ST!==S_HIT||!hpAlive(p)||aiJuggleHeld(p)||p.CESpecial){delete p.AIJuggle;return false;}
+  p.X0=p.X;
   const room=aiRoom(),motion=SF2AIJuggles.step(state,{x:p.X/256,y:p.Y/256},{left:room.left+12,right:room.right-12});
   Object.assign(p,{X:Math.round(motion.x*256),Y:Math.round(motion.y*256),VX:Math.round(motion.vx*256),VY:Math.round(motion.vy*256),AY:Math.round(state.gravity*256),AX:0,KB:0,STUN:1,PREV:p.KEYS,HZK:p.KEYS});
   if(state.contactAge>=5&&p.cur!==AN_FALL)setanim(p,AN_FALL,0);animstep(p);if(motion.landed){delete p.AIJuggle;Object.assign(p,{ST:S_DOWN,STUN:0,DOWNT:0,FALLW:0,VX:0,VY:0,AX:0,AY:0x48,DIZZY:state.dizzyOnLand?1:0});setanim(p,AN_FALL+1,0);sfxc(XS(p)&&0x2e);}
@@ -1693,10 +1706,10 @@ function camera(){
     const shot=AI_FINISHERS?.cameraLock();if(shot){G.cam=shot.cam;G.AIViewWidth=shot.width;G.AICamera??={};G.AICamera.inset=shot.inset;Object.assign(SF2CECAMERA.state,shot.vertical,{video:{...shot.vertical.video}});return;}
     window.SF2CECAMERA?.step(G.stage,P,{throw:P.some(p=>p.THV),shake:!!G.CECameraShake});
     const room=aiRoom(),xs=P.map(p=>p.X/256);
-    // Zoom follows only horizontal fighter separation, never jump height or
-    // animation bounds. A 320px close view caps normal zoom at 1.2x, leaving HUD headroom.
+    // Ordinary jumps keep horizontal framing. An active AI juggle also fits
+    // actual source art height; confirmed impacts can expand immediately.
     const span=room.right-room.left,minWidth=Math.min(320,span);
-    const needed=Math.min(span,Math.max(minWidth,Math.abs(xs[1]-xs[0])+128,AI_FINISHERS?.framing()?.width||0));
+    const needed=Math.min(span,Math.max(minWidth,Math.abs(xs[1]-xs[0])+128,aiJuggleCameraWidth(),AI_FINISHERS?.framing()?.width||0));
     const follow=G.AICamera||(G.AICamera={velocity:0,target:W,hold:0});
     const target=needed;
     follow.target=Math.max(minWidth,Math.min(span,follow.target));
