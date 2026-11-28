@@ -1,7 +1,7 @@
 /* Imagegen side-on energy corridor. Fixed draw/particle bounds; no gameplay RNG. */
 'use strict';
 window.SF2AIFinisherTunnel=(()=>{
- const image=new Image(),base=document.currentScript?.src||location.href;image.src=new URL('ai-effects/finisher-side-portal.png?v=side-portal-1',base).href;
+ const image=new Image(),base=document.currentScript?.src||location.href,asset='ai-effects/finisher-side-portal.png',revision=window.SF2BUILD?.assetRevisions?.[asset]||'side-portal-1';image.src=new URL(asset+'?v='+revision,base).href;
  const ready=image.decode().then(()=>true,()=>false),LIMITS=Object.freeze({layers:3,streaks:48,portalPoints:48,maxTiles:12,maxImageDraws:16,renderHz:30});
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),ease=t=>{t=clamp(t,0,1);return t*t*(3-2*t);},wrap=(v,p)=>((v%p)+p)%p;
  let last={draws:0,streaks:0,alpha:0};

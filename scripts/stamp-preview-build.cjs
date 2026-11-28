@@ -13,7 +13,7 @@ function stamp(directory,commit,builtAt=new Date().toISOString()){
   // Guest media is requested dynamically, outside the HTML reference rewrite.
   // Keep unchanged art/audio cached while invalidating an edited file itself.
   const media=dir=>fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?media(path.join(dir,e.name)):e.isFile()&&/\.(png|mp3)$/i.test(e.name)?[path.join(dir,e.name)]:[]);
-  for(const name of ['ai-ff','ai-heroes']){
+  for(const name of ['ai-ff','ai-heroes','ai-effects']){
     const directory=path.join(root,name);
     if(fs.existsSync(directory))for(const file of media(directory))assetRevisions[path.relative(root,file).split(path.sep).join('/')]=hash(file).slice(0,16);
   }

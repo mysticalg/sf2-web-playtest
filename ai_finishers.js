@@ -121,7 +121,7 @@ window.SF2AIFINISHERS=(()=>{
    }rebuild();
   }
   function contact(id,canFinish=true){
-   const s=state,c=context(),finalStage=s.stage===s.plan.buttons.length,special=action().kind==='special',key=s.stage+':'+id;if(s.seen.has(key))return;s.seen.add(key);if(s.stageContacts>0)s.plan.hits++;s.contacts++;s.lastContact=c.tick;
+   const s=state;if(s.finalStrike)return;const c=context(),finalStage=s.stage===s.plan.buttons.length,special=action().kind==='special',key=s.stage+':'+id;if(s.seen.has(key))return;s.seen.add(key);if(s.stageContacts>0)s.plan.hits++;s.contacts++;s.lastContact=c.tick;
    const [w,d]=actors();host.damagePose?.(d,s.contacts,{special,final:finalStage&&canFinish});if(finalStage&&canFinish){s.victimPose=copyArt(host.art(d));s.parts=partition(s.victimPose,host.anatomy?.(d,s.victimPose));s.remaining=copyArt(s.victimPose);}const a=s.parts.parts[0],p=host.mouth?.(d)||cutPoint(a);s.recoil=5;s.stageContacts++;
    const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail();const frames=s.plan.exceptional&&s.stage/s.plan.buttons.length>=.75?config.exceptionalHitstop:config.hitstop;s.hitstopUntil=c.tick+frames;s.normalBudget=0;event('hitstop',{frames,until:s.hitstopUntil});
    if(!special&&(s.stage===5||s.victimMotion||d.Y>0||action().button===5)){const dir=d.X>=w.X?1:-1;s.anchor.x=d.X/256;s.anchor.y=d.Y/256;s.victimMotion={vx:dir*3.5,vy:Math.min(s.anchor.y>0?7:10,Math.sqrt(2*.375*Math.max(0,192-s.anchor.y)))};s.recoil=0;if(s.launched===undefined){s.launched=c.tick;event('launch');}if(s.winnerMotion?.y>0)s.winnerMotion.vy=Math.max(s.winnerMotion.vy,2);event('juggle-bounce',{vx:s.victimMotion.vx,vy:s.victimMotion.vy});}
@@ -135,7 +135,7 @@ window.SF2AIFINISHERS=(()=>{
    const s=state,[w]=actors(),now=keys&12,pressed=now&~(s.directionPrevious??now);s.directionPrevious=now;
    if(!['approach','combo'].includes(s.phase)||host.isCPU?.(w)||pressed===12||!pressed)return;
    const current=s.controlled?s.requestedPosture:(section()==='air'?'airborne':'standing');
-   s.controlled=true;s.requestedPosture=pressed&8?(current==='airborne'?'standing':'crouching'):(current==='crouching'?'standing':current==='standing'?'airborne':'airborne');
+   s.controlled=true;s.retryGround=false;s.requestedPosture=pressed&8?(current==='airborne'?'standing':'crouching'):(current==='crouching'?'standing':current==='standing'?'airborne':'airborne');
    event('posture-input',{posture:s.requestedPosture});
   }
   function applyPosture(){
@@ -146,7 +146,7 @@ window.SF2AIFINISHERS=(()=>{
   function motionStep(){
    const s=state,[w,d]=actors();if(!['approach','combo'].includes(s.phase)||s.move?.action.kind==='special'&&s.phase==='combo')return;
    s.winnerMotion??={y:w.Y/256,vy:0};const a=s.winnerMotion;
-   if(!s.controlled&&s.phase==='approach'&&s.anchor.y>24&&a.y===0&&s.stage<s.plan.buttons.length){a.vy=9.5;event('jump-chase');}
+   if(!s.controlled&&!s.retryGround&&s.phase==='approach'&&s.anchor.y>24&&a.y===0&&s.stage<s.plan.buttons.length){a.vy=9.5;event('jump-chase');}
    if(a.y>0||a.vy>0){a.vy-=.375;a.y=Math.max(0,a.y+a.vy);if(!a.y){a.vy=0;if(s.controlled&&s.posture==='airborne')s.posture=s.requestedPosture='standing';event('attacker-landed');}}
    const v=s.victimMotion;if(v){v.vy-=.375;s.anchor.x+=v.vx;s.anchor.y=Math.max(0,s.anchor.y+v.vy);if(!s.anchor.y){s.victimMotion=null;event('victim-landed');}if(s.phase==='combo')host.position(w,{x:w.X/256+v.vx,y:a.y,face:w.FACE});}
   }
@@ -169,8 +169,8 @@ window.SF2AIFINISHERS=(()=>{
    if(result.advance!==false)s.moveAge++;
    if(result.done||s.moveAge>=move.duration){
     if(c.tick<(s.hitstopUntil||0)){move.finishPending=true;return;}
-    host.finishMove?.(w,move);if(move.action.kind==='special'){s.anchor.x=d.X/256;s.anchor.y=d.Y/256;s.victimMotion=d.Y>0?{vx:d.VX/256||0,vy:Math.min(0,d.VY/256||0)}:null;}if(!s.stageContacts&&move.action.kind==='normal'&&(s.whiffRetries||0)<3){s.whiffRetries=(s.whiffRetries||0)+1;s.phase='approach';s.phaseStart=c.tick;s.move=null;event('whiff-retry',{attempt:s.whiffRetries});return;}if(!s.stageContacts||s.stage===s.plan.buttons.length&&!s.finalStrike){const reason=s.stage===s.plan.buttons.length?'missing-special-contact':'missing-normal-contact';event(reason);host.aborted?.(reason);clear(reason,true);return;}
-    s.whiffRetries=0;if(s.stage<s.plan.buttons.length){s.stage++;s.phase='approach';s.phaseStart=c.tick;}else{s.phase='settle';s.phaseStart=c.tick;host.pose(w,'win');event('settle');}
+    host.finishMove?.(w,move);if(move.action.kind==='special'){s.anchor.x=d.X/256;s.anchor.y=d.Y/256;s.victimMotion=d.Y>0?{vx:d.VX/256||0,vy:Math.min(0,d.VY/256||0)}:null;}if(!s.stageContacts&&move.action.kind==='normal'&&(s.whiffRetries||0)<3){s.whiffRetries=(s.whiffRetries||0)+1;if(!s.controlled&&move.action.section==='air')s.retryGround=true;s.phase='approach';s.phaseStart=c.tick;s.move=null;event('whiff-retry',{attempt:s.whiffRetries});return;}if(!s.stageContacts||s.stage===s.plan.buttons.length&&!s.finalStrike){const reason=s.stage===s.plan.buttons.length?'missing-special-contact':'missing-normal-contact';event(reason);host.aborted?.(reason);clear(reason,true);return;}
+    s.whiffRetries=0;s.retryGround=false;if(s.stage<s.plan.buttons.length){s.stage++;s.phase='approach';s.phaseStart=c.tick;}else{s.phase='settle';s.phaseStart=c.tick;host.pose(w,'win');event('settle');}
    }
   }
   function sampleTrail(){
@@ -228,7 +228,7 @@ window.SF2AIFINISHERS=(()=>{
       applyPosture();const next=action(),f=flight(),dir=w.X/256<s.anchor.x?1:-1,target=s.anchor.x-dir*(host.gap?.(w,d,next)??44),x=w.X/256,delta=target-x,travel=4+6*progress*progress;
       host.position(w,{x:x+clamp(delta,-travel,travel),y:f.winner,face:dir>0?1:0});host.pose(w,f.winner>0?'jump':s.controlled&&s.posture==='crouching'?'crouch':Math.abs(delta)>travel?'walk':'idle');
       host.position(d,{...s.anchor,y:f.victim});
-      const flightReady=next.kind==='special'?f.winner===0&&f.victim===0:f.aligned;
+      const flightReady=next.kind==='special'||s.retryGround?f.winner===0&&f.victim===0:f.aligned;
       if(Math.abs(delta)<=travel&&c.tick-s.lastContact>=contactInterval()&&flightReady){s.anchor.face=dir>0?0:1;startMove();}
      }else advanceMove();
      if(state&&(c.tick<(s.hitstopUntil||0)||s.move?.action.kind==='special'))break;

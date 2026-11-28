@@ -6,6 +6,8 @@ try{
   fs.mkdirSync(path.join(root,'ai'));
   fs.mkdirSync(path.join(root,'ai-ff','audio'),{recursive:true});
   fs.mkdirSync(path.join(root,'ai-heroes','audio'),{recursive:true});
+  fs.mkdirSync(path.join(root,'ai-effects'),{recursive:true});
+  fs.writeFileSync(path.join(root,'ai-effects','finisher-side-portal.png'),'original portal');
   for(const file of ['ai-ff/sodom.png','ai-ff/sodom-front-blades.png','ai-ff/audio/12.mp3','ai-heroes/guy.png','ai-heroes/audio/00.mp3'])fs.writeFileSync(path.join(root,file),'original '+file);
   fs.writeFileSync(path.join(root,'build.json'),JSON.stringify({status:'work-in-progress',version:'0.1.146',commit:'old',files:[{file:'obsolete.js'}]}));
   fs.writeFileSync(path.join(root,'game.js'),'first game');fs.writeFileSync(path.join(root,'ai_ff_data.js'),'same data');
