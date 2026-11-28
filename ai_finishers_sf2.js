@@ -147,7 +147,8 @@ window.SF2AIFINISHERS.bindSF2=()=>{
    return{x:p.X/256+sign*part.pivot[0],y:p.Y/256-part.pivot[1],face:p.FACE,angle:0};
   },
   blood:(packet,d)=>aiBloodAdd(packet,d.i),stain:aiClothesStain,
-  impact:e=>{if(!e.special)G.hfz=Math.min(G.hfz,Math.round(4*(1-(e.progress??0))**2));G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
+  hitstop(){G.hfz=0;},
+  impact:e=>{G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
   finalImpact:e=>{playDeathVoice(e.victim);aiFinalHitEcho(e.winner);},
   fire:e=>{fire={tick:G.tick,x:e.point.x,y:e.point.y};AI_RETCH[e.victim.i]=AI_TEETH[e.victim.i]=AI_FLOOR_COUGHS[e.victim.i]=null;},
   echo:(w,request)=>{if(lastMove?.nativeSlot===-1)pendingEcho={owner:w,request};else aiSpecialKOEcho(w,{special:true,projectile:!!w.FBON});},

@@ -4,8 +4,8 @@
  */
 'use strict';
 window.SF2AIFINISHERS=(()=>{
- const VERSION=5,ATTACK=1008,BUTTONS=Object.freeze([0,1,2,3,4,5]);
- const LIMITS=Object.freeze({prompt:240,ready:20,cpu:48,move:600,sequence:4200,settle:100,trails:24,trailLife:90,trailDrift:420,pieces:6,emitters:10,bloodPacket:48});
+ const VERSION=6,ATTACK=1008,BUTTONS=Object.freeze([0,1,2,3,4,5]);
+ const LIMITS=Object.freeze({hitstop:6,exceptionalHitstop:2,prompt:240,ready:20,cpu:48,move:600,sequence:4200,settle:100,trails:24,trailLife:90,trailDrift:420,pieces:6,emitters:10,bloodPacket:48});
  const PARTS=Object.freeze(['head','arm-left','arm-right','leg-left','leg-right','torso']);
  const COLORS=Object.freeze(['#b20b22','#d3132b','#ed263c']);
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -123,7 +123,7 @@ window.SF2AIFINISHERS=(()=>{
   function contact(id,canFinish=true){
    const s=state,c=context(),special=s.stage===s.plan.buttons.length,key=s.stage+':'+id;if(s.seen.has(key)||s.stageContacts>0||special&&!canFinish||c.tick-s.lastContact<contactInterval())return;s.seen.add(key);s.contacts++;s.lastContact=c.tick;
    const [w,d]=actors(),a=s.parts.parts[0],p=host.mouth?.(d)||cutPoint(a);s.recoil=5;s.stageContacts++;
-   const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail();if(!special)s.pause=Math.round(3*(1-s.stage/s.plan.buttons.length)**3);
+   const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail();const frames=s.plan.exceptional&&s.stage/s.plan.buttons.length>=.75?config.exceptionalHitstop:config.hitstop;s.hitstopUntil=c.tick+frames;s.normalBudget=0;event('hitstop',{frames,until:s.hitstopUntil});
    if(s.stage===5&&!s.controlled){s.launched=c.tick;event('launch');}
    if(s.stage===s.plan.buttons.length&&canFinish&&!s.finalStrike){s.finalStrike=true;s.trails.length=0;event('trails-stopped');host.finalImpact?.({winner:w,victim:d,request:s.request});detach(['arm-left','arm-right','leg-left','leg-right','head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});event('final-strike');}
   }
@@ -168,12 +168,13 @@ window.SF2AIFINISHERS=(()=>{
   }
   function advanceMove(){
    const s=state,c=context(),[w,d]=actors();
-   const move=s.move,age=s.moveAge,result=host.animate(w,move,age,d)||{};
+   const move=s.move,age=s.moveAge,result=move.finishPending?{done:true,advance:false}:host.animate(w,move,age,d)||{};
    for(const id of result.contacts||[])contact('native:'+id);
    for(const t of move.contacts)if(t===age)contact('window:'+t);
    if(!state)return;
    if(result.advance!==false)s.moveAge++;
    if(result.done||s.moveAge>=move.duration){
+    if(c.tick<(s.hitstopUntil||0)){move.finishPending=true;return;}
     host.finishMove?.(w,move);if(!s.stageContacts||s.stage===s.plan.buttons.length&&!s.finalStrike){const reason=s.stage===s.plan.buttons.length?'missing-special-contact':'missing-normal-contact';event(reason);host.aborted?.(reason);clear(reason,true);return;}
     if(s.stage<s.plan.buttons.length){s.stage++;s.phase='approach';s.phaseStart=c.tick;}else{s.phase='settle';s.phaseStart=c.tick;host.pose(w,'win');event('settle');}
    }
@@ -214,6 +215,12 @@ window.SF2AIFINISHERS=(()=>{
     if(state?.phase==='prompt'&&c.tick-s.phaseStart>=config.prompt){event('timeout');clear('timeout',true);return false;}
    }
    steer(c.keys?.[w.i]??w.KEYS??0);
+   // Contact holds use the physical scene clock, never the accelerated move budget.
+   if(c.tick<(s.hitstopUntil||0)){
+    host.hitstop?.(w,d,{remaining:s.hitstopUntil-c.tick,finalStrike:!!s.finalStrike});
+    if(s.launched!==undefined)s.launched++;if(s.manualFlight)s.manualFlight.tick++;if(s.landing)s.landing.tick++;
+    host.camera?.(w,!s.completed,{victim:d,phase:s.phase,section:section(),launched:s.launched!==undefined});effects();return active();
+   }
    // Retain the scene clock. Real normal substeps can accelerate, but admission
    // of the next contact remains gated by the 10/3-tick cadence. The selected
    // special advances once per tick, including its native projectiles/grabs.
@@ -221,7 +228,6 @@ window.SF2AIFINISHERS=(()=>{
     const progress=s.stage/Math.max(1,s.plan.buttons.length-1),speed=s.plan.exceptional&&progress>=.75?8:comboPace(progress);s.normalSpeed=speed;s.normalBudget=(s.normalBudget||0)+speed;
     let steps=Math.min(8,Math.floor(s.normalBudget));s.normalBudget-=steps;
     while(state&&steps-->0&&['approach','combo'].includes(state.phase)){
-     if(s.pause>0){s.pause--;continue;}
      if(s.phase==='approach'){
       applyPosture();const next=action(),f=flight(),dir=w.X/256<s.anchor.x?1:-1,target=s.anchor.x-dir*(host.gap?.(w,d,next)??44),x=w.X/256,delta=target-x,travel=4+6*progress*progress;
       host.position(w,{x:x+clamp(delta,-travel,travel),y:f.winner,face:dir>0?1:0});host.pose(w,f.winner>0?'jump':s.controlled&&s.posture==='crouching'?'crouch':Math.abs(delta)>travel?'walk':'idle');
@@ -229,6 +235,7 @@ window.SF2AIFINISHERS=(()=>{
       const flightReady=s.controlled?(s.stage===s.plan.buttons.length?f.winner===0:f.aligned):s.stage<=5||(s.stage<s.plan.buttons.length?c.tick-s.launched>=38&&f.aligned:f.winner===0);
       if(Math.abs(delta)<=travel&&c.tick-s.lastContact>=contactInterval()&&flightReady){s.anchor.face=dir>0?0:1;startMove();}
      }else advanceMove();
+     if(state&&c.tick<(s.hitstopUntil||0))break;
     }
    }else if(state?.phase==='special')advanceMove();
    if(state?.phase==='settle'&&c.tick-s.phaseStart>=config.settle){s.completed=true;s.completedAt=c.tick;s.phase='result';host.banner?.('');host.camera?.(w,false);event('complete');host.complete(w,d);}
@@ -249,7 +256,7 @@ window.SF2AIFINISHERS=(()=>{
    else for(const p of s.pieces)paintPart(ctx,p.part,p.x-camera,ground-p.y,p.face,1,p.angle);
    ctx.restore();
   }
-  function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,section:section(),posture:s.controlled?s.posture:(section()==='air'?'airborne':'standing'),requestedPosture:s.requestedPosture,controlled:!!s.controlled,exceptional:s.plan.exceptional,contactInterval:contactInterval(),winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,contacts:s.contacts,targetHits:s.plan.hits,normalSpeed:s.normalSpeed??.8,normalOrder:s.plan.buttons.slice(),request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
+  function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,section:section(),posture:s.controlled?s.posture:(section()==='air'?'airborne':'standing'),requestedPosture:s.requestedPosture,controlled:!!s.controlled,exceptional:s.plan.exceptional,contactInterval:contactInterval(),winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,hitstop:Math.max(0,(s.hitstopUntil||0)-c.tick),contacts:s.contacts,targetHits:s.plan.hits,normalSpeed:s.normalSpeed??.8,normalOrder:s.plan.buttons.slice(),request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
   function notify(winner,victim,id,meta={}){if(!active()||!state||!['combo','special'].includes(state.phase)||winner.i!==state.winner||victim.i!==state.victim)return false;contact('actual:'+id,meta.final!==false);return true;}
   function fragmentBounds(){return state?.pieces.map(p=>{const sin=Math.sin(p.angle),cos=Math.cos(p.angle),sign=p.face?-1:1,points=p.part.hull.map(q=>[p.x+cos*q[0]*sign-sin*q[1],p.y-sin*q[0]*sign-cos*q[1]]);return{left:Math.min(...points.map(q=>q[0])),right:Math.max(...points.map(q=>q[0])),bottom:Math.min(...points.map(q=>q[1])),top:Math.max(...points.map(q=>q[1]))};})||[];}
   function blocksRound(){if(!active())return false;const[w]=actors();if(w?.HP<=0){clear('winner-ko');return false;}return true;}

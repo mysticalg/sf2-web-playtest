@@ -12,7 +12,7 @@ Abigail retains his five existing specials and gains **Choke Hold** on **HP + LK
 
 The held player changes directions and taps attacks to fill the existing **BREAK FREE** meter. Fresh attack presses contribute two points; a new non-neutral direction contributes one, capped at three points per tick. Fourteen points releases the victim. A held button does not repeatedly add escape points. The hold inflicts four damage after 20 ticks, then every 30 ticks, and releases after at most 180 ticks. Interruption, either fighter's KO and round reset release the attachment.
 
-When selected as a death move, the first actual damaging choke contact is its final impact. The attachment releases in that same tick, and the winner enters the victory pose without clutching the hidden victim. Andore's selected finishing choke uses the same final-contact release; his ordinary nonlethal carry, jump and slam controls remain intact. The finisher adapter's automatic hold-to-jump input is scoped to Andore.
+When selected as a death move, the first actual damaging choke contact is its final impact. The attachment releases in that same tick. After the short final-contact pause, the winner enters the victory pose without clutching the hidden victim. Andore's selected finishing choke uses the same final-contact release; his ordinary nonlethal carry, jump and slam controls remain intact. The finisher adapter's automatic hold-to-jump input is scoped to Andore.
 
 ## Guest fire reactions
 
