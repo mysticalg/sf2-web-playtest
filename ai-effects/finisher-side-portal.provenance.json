@@ -1,0 +1,18 @@
+{
+  "tool": "OpenAI built-in image_gen",
+  "source": "exec-90fba211-9ba6-4106-8ff5-4380e785e9ad.png",
+  "sha256": "8601e42be848e7885dafc3e32ca30d51d46191b38e750d8a3ea7fd408338d661",
+  "asset": "finisher-side-portal.png",
+  "prompt": "Use case: stylized-concept. Asset type: a horizontal SIDE-SCROLLING game background texture for a 2D fighting game's portal/energy corridor. Show the tunnel SIDE ON, as a long horizontal channel of rushing plasma, viewed from the side at fighter height. The fighters will travel sideways from left to right across the map, and this art will scroll horizontally behind them in parallax. NO looking down a tunnel, NO central vanishing point, NO radial starburst, NO end-on concentric rings. A broad dark horizontal central lane spans the full width; bright cyan and electric blue plasma ribbons, violet lightning filaments and flowing energy veins run roughly horizontally along the upper and lower walls. Distant dim blue energy layers and closer sharp luminous flowing bands suggest several scrolling depth layers. Both left and right edges should continue naturally as a repeatable horizontal strip. Wide panoramic composition, impressive rich arcade special-effect detail, controlled white highlights around the perimeter while the middle stays dark and uncluttered for small pixel-art fighters. No people, characters, vehicles, letters, text, logos, symbols, interface, or literal flooring. High quality polished original visual-effect artwork. Landscape 3:2 or wider.",
+  "orientation": "side-on horizontal",
+  "rendering": {
+    "cachedPixels": [
+      384,
+      224
+    ],
+    "effectHz": 30,
+    "gameHz": 60,
+    "maxTextureDraws": 16,
+    "maxStreaks": 48
+  }
+}
