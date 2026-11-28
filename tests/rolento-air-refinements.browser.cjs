@@ -18,12 +18,12 @@ const {chromium,install,url,artifacts}=require('./browser-runtime.cjs'),fs=requi
   for(const side of[0,1])for(const index of[2,6]){
    const {w,d,step}=await setup(side);d.X=(side?220:580)*256;const mask=SF2AIRULES.mapping(w).find(m=>m.index===index).mask;step(mask);let ticks=0,previous=null,maxStep=0,phases=new Set(),frames=new Set(),changed=[],hp=d.HP,hits=0;
    for(;ticks<440&&(ticks<10||w.ST===11);ticks++){const x=w.X/256;step();maxStep=Math.max(maxStep,Math.abs(w.X/256-x));if(w.AIFFMove?.phase!==undefined)phases.add(w.AIFFMove.phase);if(w.cur===117){frames.add(ent(w)[0]);if(previous!==ent(w)[0])changed.push(G.tick);previous=ent(w)[0];}if(d.HP!==hp){hits++;hp=d.HP;}}
-   walls.push({side,index,ticks,maxStep,phases:[...phases],frames:[...frames],cadence:changed.slice(1).map((v,i)=>v-changed[i]),hits,state:w.ST,y:w.Y});
+   walls.push({side,index,ticks,maxStep,phases:[...phases],frames:[...frames],cadence:changed.slice(1).map((v,i)=>v-changed[i]),hits,damage:10000-d.HP,state:w.ST,y:w.Y});
   }
   return{barrages,kicks,walls};
  });
  fs.writeFileSync(artifacts('rolento-air-refinements.json'),JSON.stringify({result,errors},null,2));console.log(JSON.stringify({result,errors},null,2));assert.deepEqual(errors,[]);
  for(const r of result.barrages){assert.ok(r.startY>0);assert.ok(r.admitted);assert.ok(r.recoil);assert.deepEqual(r.shots,[0,1,2]);assert.ok(r.minBack>30);assert.equal(r.state.st,0);assert.equal(r.state.y,0);assert.equal(r.state.move,false);assert.equal(r.state.grenades,0);assert.ok(r.normalDamage>0);}
  for(const r of result.kicks){assert.equal(r.committed,r.down);if(r.down){assert.ok(r.downward);assert.ok(r.lowestBox<10);}assert.ok(r.contacts<=1);assert.equal(r.y,0);assert.ok([0,3].includes(r.state));assert.equal(r.stale,false);}
- for(const r of result.walls){for(const p of['approach','wall','dive','recover'])assert.ok(r.phases.includes(p));assert.ok(r.frames.length>=3);assert.ok(r.cadence.some(n=>n===5));assert.ok(r.maxStep<=12);assert.equal(r.hits,1);assert.equal(r.state,0);assert.equal(r.y,0);}
+ for(const r of result.walls){for(const p of['approach','wall','dive','recover'])assert.ok(r.phases.includes(p));assert.ok(r.frames.length>=3);assert.ok(r.cadence.some(n=>n===5));assert.ok(r.maxStep<=12);assert.equal(r.hits,1);assert.equal(r.damage,r.index===6?40:30);assert.equal(r.state,0);assert.equal(r.y,0);}
 }finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});
