@@ -1304,7 +1304,7 @@ function spec(p,input){const result=spec0(p,input);if(aiEnabled()&&p.AIAir&&p.ST
 function spec0(p,input){if(aiEnabled()&&SF2AINativeGrabs.step(p,aiNativeGrabHooks()))return;const m=p.MV;if(isFFGuest(p)&&!isDamnd(p)&&['ff','throw'].includes(m?.kind)){ffAdapter(p).step(p,{idle:toidle,gravity,room:aiRoom,cost:(q,n)=>hpDamage(q,Math.min(n,Math.max(0,q.HP-1))),sound:code=>{if(isFFHero(p)){if(!muted&&!netReplaying)SF2AIHeroes.playSound(code,AC,MG);}else ffSound(p,code===0x12||code===0x1e?'shot':code===0x10?'weapon':code===0x2f?'land':code===0x2b?'throw':'special');},release:relth,anim:setanim,throwMove:THROW,grab:q=>trythrow(q,2,2),hold:q=>trythrow(q,1,1),cpu:q=>q.i===1&&!G.mode2p,releaseHeld:(q,keep=false)=>{Object.assign(q,{ST:S_AIR,STUN:0,KB:0,VX:keep?q.VX:0,VY:keep?q.VY:0,AY:keep?(q.AY||0x48):0x48,AX:0,JA:keep?0:1,JN:1,PJ:0});setanim(q,AN_JUMPN,0);},head:aiHeadPoint,invertedHead:aiInvertedHead,groundImpact:q=>{G.AISlamImpact={start:G.tick,slot:q.i};G.hfz=Math.max(G.hfz,10);if(!muted&&!netReplaying&&AC&&MG)SF2AIFF.playSound(13,AC,MG,{volume:.85,rate:.55,delay:.04});},finishedVictim:q=>!!AI_FINISHERS?.hidden(q),chokeDamage:(q,n)=>{hpDamage(q.opp,n,{special:true});aiBloodBurst(q.opp,0);},slam:q=>{const o=q.opp,v=q.THV;q.THV=null;o.AIFFSlamImpact=true;hpDamage(o,v.dmg,{special:true});aiBloodBurst(o,2,false,true);delete o.AIFFSlamImpact;o.ST=S_HIT;o.STUN=999;o.KB=o.VX=o.VY=0;},releaseSlam:q=>{const o=q.opp;delete o.AIFFHeld;o.Y=0;fallst(o,hpAlive(o)?S_DOWN:S_KO,q.AIFFThrow.dir);o.VX=0;o.VY=0x240;},drop:q=>fallst(q,hpAlive(q)?S_DOWN:S_KO,q.FACE?-1:1)});return;}if(isDamnd(p)&&['damnd','throw'].includes(m?.kind)){SF2AIDamnd.step(p,{idle:toidle,gravity,sound:sfxc,release:relth,whistle:()=>{const voice={commands:[],sample:null,buffer:SF2AIDamnd.whistleBuffer,kind:'barrel-call',tick:G.tick};AI_SPECIAL_VOICES[p.i]={last:voice,projectile:voice};if(!muted&&!netReplaying&&AC&&MG)SF2AIDamnd.whistle(AC,MG);}});return;}if((VER.edition==='ce'||aiEnabled()&&!isFFGuest(p))&&window.SF2CEHONDAHOLD?.step(p,hondaHooks()))return;p.FBTK=(p.FBTK||0)+1;
   if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.step(p,cethooks()))return;
 
-  if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.step(p,{find:AI,anim:setanim,tick:animstep,idle:toidle,freeze:n=>{G.hfz=n;},hit:q=>sfxc(XS(q)&&XS(q).hit[2]),land:q=>sfxc(XS(q)&&0x2f)}))return;
+  if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.step(p,{find:AI,anim:setanim,tick:animstep,idle:toidle,freeze:n=>{G.hfz=n;},hit:q=>sfxc(XS(q)&&(aiEnabled()?0x27:XS(q).hit[2])),land:q=>sfxc(XS(q)&&0x2f)}))return;
 
   let landed=false;
 
@@ -1425,6 +1425,13 @@ function ceNativeCombat(p,d,region,projectile=false){
 
 }
 
+// CE 0x957ea..0x95806: the actual contact record owns its impact cue;
+// guard overrides it with 0x72. AI guests/custom records retain their own audio.
+function aiSourceImpactCue(p,blocked,fallback,record){
+  if(!aiEnabled()||isFFGuest(p))return fallback;
+  return blocked?0x72:Number.isInteger(record?.[6])?record[6]:fallback;
+}
+
 /* M13d: hits are probed for both fighters first, then applied, so simultaneous hits trade like the arcade */
 
 function aiChairContacts(){
@@ -1473,7 +1480,7 @@ function hitcheck(p,pr){if(!pr)return;
 
   const sp=p.ST===S_SPEC,dc=VER.cur==='CE'&&!isFFGuest(p)&&!sp&&DMG_CE[p.fid]&&DMG_CE[p.fid][p.cur],mh=dc&&MHIT_CE[p.fid]&&MHIT_CE[p.fid][p.cur],dm=isFFGuest(p)&&!isDamnd(p)?ffAdapter(p).damage(p,e[8]):isDamnd(p)?(sp?(p.MV?.a===100?(p.AIDamndMove?.punch===2?22:14):p.MV?.a===101?(p.AIDamndMove?.spinHit===2?16:8):30):[12,19,27][Math.min(2,e[8])]):native?native.damage:vc?vc.damage:dc?Math.max(1,(mh?(p.aidx>=mh?dc-(dc>>1):dc>>1):dc)+((rand()>>>20)%3)-1):dmgof(e[7]); /* unsupported/custom entries retain the recovered path */
 
-  const before=d.ST,hp=d.HP,normal=p.ST===S_ATK&&p.Y===0,dir=d.X>=p.X?1:-1;
+  const before=d.ST,hp=d.HP,normal=p.ST===S_ATK&&p.Y===0,dir=d.X>=p.X?1:-1,impactRecord=aiEnabled()&&!isFFGuest(p)?window.SF2CECOMBAT?.record(p):null;
 
   const bl=applyhit(d,dm,native?native.strength:vc?vc.strength:e[8],kd,p.ST===S_AIR?-1:e[10],dir,native?native.chip:vc?vc.chip:bisonStop?0:sp?dm>>2:0,p.HREG,bisonStop||common,native||vc||specialAI);
 
@@ -1485,7 +1492,7 @@ function hitcheck(p,pr){if(!pr)return;
   if(isFFGuest(p)&&!isDamnd(p)&&!bl)return;
   const X=XS(p),old=bl?SN_BLOCK:p.ST===S_SPEC?SN_HIT[2]:SN_HIT[Math.min(2,e[8])];
 
-  if(!X)snd(old); else {const k=sp?p.F.moves.indexOf(p.MV):-1,b=btnof(p.cur); sfxc(bl?X.blk:sp?(k>=0?X.sph[k]:p.fid===11?0x36:0x2a):X.hit[b>=0?b:Math.min(2,e[8])],old);}}
+  if(!X)snd(old); else {const k=sp?p.F.moves.indexOf(p.MV):-1,b=btnof(p.cur); const cue=aiSourceImpactCue(p,bl==='blk',bl?X.blk:sp?(k>=0?X.sph[k]:p.fid===11?0x36:0x2a):X.hit[b>=0?b:Math.min(2,e[8])],impactRecord);if(cue!==0)sfxc(cue,old);}}
 
 // ---- M9 feel model, measured on the arcade program in the emulator (60Hz ticks; see README) ----
 
@@ -1665,7 +1672,7 @@ function ceYogaHit(a,p){
  const block=SF2CEREACTION.resolveBlock(d,record,region);if(!block)return;const result=SF2CECOMBAT.calculate(profile,rand,block);if(!result)return;
  const native={...result,...block,profile,reactionCode:SF2CESPECIAL.aiReaction(d,record,region,block),nativeBlocked:block.blocked},before=d.ST,hp=d.HP;
  const bl=applyhit(d,result.damage,result.strength,0,0,a.face?1:-1,result.chip,region,false,native,true),X=XS(p);a.health=a.kind===1?65534:65535;if(a.kind===1){const hurt=boxw(d,region);if(hurt)SF2CEPROJECTILES.bodyImpact(p,[(box[0]+hurt[0])>>1,(box[1]+hurt[1])>>1],{tick:G.tick,rand});}p.CEYogaMetrics.hits=(p.CEYogaMetrics.hits||0)+1;
- if(aiEnabled())aiContact(p,d,before,bl==='blk',hp-d.HP,false);sfxc(X&&(bl==='blk'?X.blk:X.fbhit),bl==='blk'?SN_BLOCK:SN_HIT[2]);
+ if(aiEnabled())aiContact(p,d,before,bl==='blk',hp-d.HP,false);const cue=aiSourceImpactCue(p,bl==='blk',X&&(bl==='blk'?X.blk:X.fbhit),record);if(cue!==0)sfxc(cue,bl==='blk'?SN_BLOCK:SN_HIT[2]);
 }
 
 function fbhit(p,nativeStep=false){if(isFFHero(p)&&p.FBK==='hero-knife'){const d=p.opp;if(!hurtable(d))return;for(const c of SF2AIHeroes.knifeContacts(p)){const region=hurtregion(c.box,d);if(region<0)continue;const hp=d.HP,before=d.ST,blocked=applyhit(d,c.damage,2,0,0,c.direction,4,region,false,null,true);c.knife.hit=true;aiContact(p,d,before,blocked==='blk',hp-d.HP,false);ffSound(p,'hit');}return;}if(aiEnabled()&&p.AIFFBullets){const d=p.opp;if(!hurtable(d))return;for(const contact of SF2AIFF.bulletContacts(p)){const region=hurtregion(contact.box,d);if(region<0)continue;const b=contact.bullet,hp=d.HP,before=d.ST;const blocked=applyhit(d,18+2*b.strength,2,0,0,b.dir,4,region,false,null,true);b.hit=true;aiContact(p,d,before,blocked==='blk',hp-d.HP,false);if(blocked==='blk')sfxc(0x2b,SN_BLOCK);}return;}if(aiEnabled()&&p.AIFFGrenades){const d=p.opp;if(!hurtable(d))return;for(const contact of SF2AIFF.grenadeContacts(p)){const region=hurtregion(contact.box,d);if(region<0)continue;const g=contact.grenade,hp=d.HP,before=d.ST,finisher=!g.combo||g.index===2;const blocked=applyhit(d,g.combo?(finisher?24:14):24+2*g.strength,finisher?2:1,finisher?1:0,0,g.dir,4,region,false,null,true);if(!finisher){d.KB=Math.trunc(d.KB*.2);if(blocked!=='blk'&&d.ST===S_HIT)d.STUN=Math.max(d.STUN,20);}g.hit=true;aiContact(p,d,before,blocked==='blk',hp-d.HP,false);if(blocked==='blk')sfxc(0x2b,SN_BLOCK);}return;}if(aiEnabled()&&p.AIFFProjectile){const b=p.AIFFProjectile,d=p.opp;if(!p.FBON||!hurtable(d))return;const region=hurtregion(fbbox(p),d);if(region<0)return;const hp=d.HP,before=d.ST,blocked=applyhit(d,b.type==='grenade'?26:b.type==='rain'?24:18+2*b.strength,2,b.type==='grenade'?1:0,0,b.dir,4,region,false,null,true);aiContact(p,d,before,blocked==='blk',hp-d.HP,false);p.FBON=0;delete p.AIFFProjectile;sfxc(blocked?0x2b:0x2a,SN_HIT[2]);return;}if(isDamnd(p)&&p.AIDamndBarrel){const b=p.AIDamndBarrel,d=p.opp;if(!p.FBON||b.broken||!hurtable(d))return;const region=hurtregion(fbbox(p),d);if(region<0)return;const hp=d.HP,before=d.ST,blocked=applyhit(d,24+3*b.strength,2,1,1,b.direction,4,region,false,null,true);aiContact(p,d,before,blocked==='blk',hp-d.HP,false);b.broken=12;sfxc(blocked?0x2b:0x2a,SN_HIT[2]);return;}if(ceYogaProjectile(p))return;if(ceBoundProjectile(p)&&!nativeStep)return;if(!p.FBON||ceShotoProjectile(p)&&(p.FBINIT||p.FBIMPACT||((G.tick+(p.FBSLOT||0))&1)))return;const d=p.opp;if(!hurtable(d))return;
@@ -1678,7 +1685,7 @@ function fbhit(p,nativeStep=false){if(isFFHero(p)&&p.FBK==='hero-knife'){const d
 
   const localStop=VER.cur==='CE'&&(p.fid===0||p.fid===4),oldPose=localStop?ceProjectilePose(d):null;
 
-  const native=ceNativeCombat(p,d,region,true),damage=native?native.damage:20+((rand()>>>20)%3)-1;
+  const native=ceNativeCombat(p,d,region,true),damage=native?native.damage:20+((rand()>>>20)%3)-1,impactRecord=aiEnabled()?window.SF2CECOMBAT?.projectileRecord(p):null;
 
   const bl=applyhit(d,isEvilKen(p)?Math.floor(damage*192/256):damage,native?native.strength:s,0,0,p.FBVX>=0?1:-1,native?native.chip:s<2?5:8,region,localStop,native,true),X=XS(p);
 
@@ -1686,7 +1693,7 @@ function fbhit(p,nativeStep=false){if(isFFHero(p)&&p.FBK==='hero-knife'){const d
 
   if(localStop){d.CEPF={init:1,ticks:14,pose:ceProjectilePose(d)};Object.assign(d,oldPose);d.anim=d.F.anims[d.cur];}
 
-  sfxc(X&&(bl?X.blk:X.fbhit),bl?SN_BLOCK:SN_HIT[2]);}
+  const cue=aiSourceImpactCue(p,bl==='blk',X&&(bl?X.blk:X.fbhit),impactRecord);if(cue!==0)sfxc(cue,bl?SN_BLOCK:SN_HIT[2]);}
 
 // ---- camera / clamp (M5 clamps to a fixed 320 view; here the 864px stage scrolls) ----
 
