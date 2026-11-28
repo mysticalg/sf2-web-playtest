@@ -16,7 +16,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  const anatomy=(p,a)=>{const r=a.rect,h=boxw(p,0),b=boxw(p,1),sign=p.FACE?-1:1,x=q=>(q[0]-p.X/256)*sign-r[4],y=q=>p.Y/256-q[1]-r[5];return{head:h?{x:x(h),y:y(h),rx:h[2]*1.28,ry:h[3]*1.4}:undefined,neck:h?y(h)+h[3]*.85:undefined,cx:b?x(b):r[2]*.5,hip:r[3]*.6,halfTorso:b?Math.max(9,b[2]*.62):r[2]*.17};};
  function resetActor(p){
   SF2CESPECIAL.interrupt(p);SF2CEDIZZY.interrupt(p);
-  for(const k of['AINativeGrab','AINativeHeld','AIFFMove','AIFFHold','AIFFHeld','AIFFThrow','AIFFNormal','AIFFWall','AIFFSlide','AIFFProjectile','AIFFGrenades','AIFFBullets','AIHeroMove','AIHeroGrab','AIHeroWall','AIHeroAir','AIHeroPhase','AIHeroInvuln','AIDamndMove','AIDamndBarrel','AIAir','CES','CEPF','CEKO','CETH','CETHV','CEHH','CEHHV','CEHHRecovery','CEHHDesired','CEHHPrevKeys','CEHHVLAND','CEHHPush','CEHHPostPush','CEBV','CEB','CER','CERSTOP','CEGUARD','CESHAKE','CERHOSTTICK','CERRESUME','CEVSL','CEVNSTART','CENORMALINIT','CE_FatalHitPending','CEVLAND','AIFinishPose'])delete p[k];
+  for(const k of['AINativeGrab','AINativeHeld','AIFFMove','AIFFHold','AIFFHeld','AIFFThrow','AIFFNormal','AIFFWall','AIFFSlide','AIFFProjectile','AIFFGrenades','AIFFBullets','AIHeroMove','AIHeroGrab','AIHeroWall','AIHeroAir','AIHeroPhase','AIHeroInvuln','AIDamndMove','AIDamndBarrel','AIAir','CES','CEPF','CEKO','CETH','CETHV','CEHH','CEHHV','CEHHRecovery','CEHHDesired','CEHHPrevKeys','CEHHVLAND','CEHHPush','CEHHPostPush','CEBV','CEB','CER','CERSTOP','CEGUARD','CESHAKE','CERHOSTTICK','CERRESUME','CEVSL','CEVNSTART','CENORMALINIT','CE_FatalHitPending','CEVLAND','AIFinishPose','AIJuggle','AIJuggleLaunch','AIJuggleAirConfirm','AIJuggleUpPrevious'])delete p[k];
   p.THV=p.MV=p.AIRift=null;p.AIRiftRequest=0;p.VX=p.VY=p.AX=p.AY=p.KB=p.DIZZY=p.FBON=p.SCNT=p.PJ=p.JA=p.ZG=0;p.Y=0;p.ST=0;p.FORCE=0;p.VQ=null;SF2AIRULES.block(p,p.KEYS);aiBreakCombo(p);if(window.SF2AIHeroes?.get(p.aiProfile))SF2AIHeroes.normalStep(p);if(isEvilKen(p)&&p.AIEvilKen?.adapter.heat.move)SF2AIEvilKen.update(p,{keys:0,pressed:0,commands:[]},{anim:setanim,idle:toidle,tick:animstep,sound:()=>{}});
  }
  function victimPose(p){
@@ -38,10 +38,24 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   const n=name==='win'?31:name==='walk'?1:name==='jump'?5:name==='crouch'?3:0;if(p.cur!==n)setanim(p,n,0);else animstep(p);p.ST=name==='win'?9:name==='jump'?2:name==='crouch'?3:0;p.STUN=0;
  }
  function protectedVictim(d){return finisher?.isVictim(d)&&d.AIFinishProtected;}
+ function victimOwned(d){return !!(d.AINativeHeld||d.AIFFHeld||d.CETHV||d.CEBV||d.CEHHV||d.CESpecial);}
+ function retainReaction(d){
+  if(!protectedVictim(d)||victimOwned(d)||!d.AIFinishPose)return;
+  const {slot,entry}=d.AIFinishPose;if(d.cur!==slot||d.aidx!==entry)setanim(d,slot,entry);
+  d.ST=5;d.STUN=9999;d.DIZZY=d.STP=0;
+ }
+ function stepProtectedVictim(d){
+  if(!protectedVictim(d)||victimOwned(d)){update(d);return;}
+  // Keep the visible source hurt pose hittable while the actual launch and
+  // knockback continue. No position alignment or synthetic contact is applied.
+  if(d.Y>0||d.VY>0)gravity(d);
+  if(d.KB){d.X+=(d.KB*29)>>6;let k=d.KB-((d.KB*29)>>8);if(k+63>>>0<127)k=0;d.KB=k;}
+  retainReaction(d);
+ }
  function restoreTarget(d){const y=d.Y;pose(d,'dizzy');d.Y=y;d.KB=d.VX=d.VY=d.AX=d.AY=0;d.HP=1;d.HPD=0;}
  function normalSlot(p,button,distance=Math.abs(p.opp.X-p.X)/256){return distance<NTHR[p.fid][button]&&p.F.anims[47+button]?47+button:8+button;}
  function normalPlan(p,d,button,section='ground'){
-  const key=section+':'+button,cached=normalPlans.get(key);if(cached&&cached.weapon===p.AIHeroWeaponAnimKey)return cached;
+  const key=section+':'+button+':'+d.AIFinishPose?.slot+':'+d.AIFinishPose?.entry,cached=normalPlans.get(key);if(cached&&cached.weapon===p.AIHeroWeaponAnimKey)return cached;
   const selected=d.AIFinishPose,target=selected?d.F.anims[selected.slot].ents[selected.entry]:ent(d),hurt=[target[2],target[3],target[4]].filter(b=>b?.[2]);let best=null;
   if(section==='air'){
    for(const base of[53,59]){const slot=base+button,a=p.F.anims[slot];if(!a)continue;
@@ -53,7 +67,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
     const score=contacts*10-Math.abs(gap-46)-Math.abs(offset-16)*1000;if(contacts&&(!best||score>best.score))best={slot,gap,offset,crouch:false,score,air:true};
     }
    }
-  }else for(const crouch of ['launch','crouching'].includes(section)?[true]:section==='standing'?[false]:[false,true]){
+  }else for(const crouch of section==='launch'&&p.fid===9&&button===5?[false]:['launch','crouching'].includes(section)?[true]:section==='standing'?[false]:[false,true]){
    for(let gap=20;gap<=144;gap++){
     const slot=crouch?14+button:normalSlot(p,button,gap),a=p.F.anims[slot];if(!a)continue;let contacts=0;
     for(const e of a.ents){const b=e[6];if(!b?.[2])continue;if(hurt.some(h=>Math.abs(b[1]-h[1])<b[3]+h[3]-1&&Math.abs(-b[0]-gap-h[0])<b[2]+h[2]-3))contacts++;}
@@ -62,25 +76,42 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   }
   best??={slot:8+button,gap:40,crouch:false,score:0,air:false};best.weapon=p.AIHeroWeaponAnimKey;normalPlans.set(key,best);return best;
  }
+ function tatsuSpacing(w,d,strength,startup=false){
+  const slot=AN_TAT+Math.min(2,strength),a=w.F.anims[slot],direction=w.FACE?1:-1;
+  if(!a)return 28;const attack=boxw({...w,cur:slot,anim:a,aidx:0,X:0,Y:w.Y+(startup?Math.round(23.375*256):0)},4),hurt=[0,1,2].map(k=>boxw(d,k)).filter(Boolean);if(!attack)return 28;
+  let best=null;for(let distance=20;distance<=56;distance++){
+   const contacts=hurt.filter(b=>Math.abs(attack[1]-b[1])<attack[3]+b[3]-2&&Math.abs(attack[0]*direction-distance-(b[0]-d.X/256)*direction)<attack[2]+b[2]-3).length;
+   const score=contacts*100-Math.abs(distance-38);if(contacts&&(!best||score>best.score))best={distance,score};
+  }return best?.distance??28;
+ }
  function gap(w,d,action){
   if(action.kind==='normal')return normalPlan(w,d,action.button,action.section).gap;
   const m=w.F.moves[action.index];if(!m)return 48;
   if(m.inp==='ppp'||m.inp==='kkk')return 38;
+  if(m.kind==='tat')return tatsuSpacing(w,d,action.strength??2,true)+11*(TATVX[Math.min(2,action.strength??2)]/65536);
   if(m.inp==='qcfu')return 58;
   if(m.role==='far')return 110;
   if(m.kind==='fb'||['pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','bullet','burst','rain','retreat','belger-retreat','barrel'].includes(m.style)||isDamnd(w)&&action.index===3)return 110;
   if(['dash','sodom-charge','rage'].includes(m.style)||m.kind==='dash')return 110;
   return 38;
  }
+ function normalLead(w,d,action){
+  const plan=normalPlan(w,d,action.button,action.section),a=w.F.anims[plan.slot];if(!a)return 0;let lead=0;
+  for(let i=0;i<a.ents.length;i++){
+   const b=boxw({...w,cur:plan.slot,anim:a,aidx:i,X:0,Y:0,FACE:0},4);if(b?.[2]&&b[0]<=0)return lead;
+   lead+=!plan.air&&ceNativeNormal(w,plan.slot)&&a.nativeDurations?a.nativeDurations[i]:a.ents[i][1];
+  }return lead;
+ }
  function begin(p,action,d){
   const y=p.Y;resetActor(p);p.Y=y;restoreTarget(d);p.KEYS=p.PREV=p.HZK=0;SF2AIRULES.block(p,0);
-  lastMove={action,started:G.tick,nativeSlot:-1,nativeName:'starting',contacts:0};
+  lastMove={action,started:G.tick,nativeSlot:-1,nativeName:'starting',contacts:0,sourceFrames:[],contactFrames:[]};
   if(action.kind==='normal'){
    const plan=normalPlan(p,d,action.button,action.section),slot=plan.slot;setanim(p,slot,0);p.ST=plan.air?2:1;p.JA=plan.air?1:0;p.RETCR=plan.crouch?1:0;if(!plan.air)p.CENORMALINIT=ceNativeNormal(p,slot);
   }else if(action.command){
    if(action.command==='rift')return null;
    SF2AIEvilKen.reset(p);if(!SF2AIEvilKen.update(p,{keys:0,pressed:0,commands:['ember-kick']},{anim:setanim,idle:toidle,tick:animstep,sound:sfxc}))return null;
   }else if(!startspec(p,[],(action.strength<<4)|(action.index+1)))return null;
+  if(action.kind==='special'&&p.fid===4&&p.MV?.kind==='tat')p.SPKD=0;
   lastMove.nativeSlot=p.cur;lastMove.nativeName=p.anim.name;lastMove.components=[{slot:p.cur,name:p.anim.name,index:action.index??null}];
   if(pendingEcho){aiSpecialKOEcho(pendingEcho.owner,{special:true,projectile:!!pendingEcho.owner.FBON});pendingEcho=null;}
   return{duration:600,contacts:[],nativeSlot:p.cur,nativeName:p.anim.name,action};
@@ -101,26 +132,44 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   p.KEYS=keys;p.FORCE=0;SF2AIRULES.block(p,keys);d.KEYS=d.FORCE=0;SF2AIRULES.block(d,0);
   if(move.action.command){const current=p.AIEvilKen?.adapter.heat.move,target=move.action.command,next=current==='ember-kick'&&target!=='ember-kick'?'furnace-kick':current==='furnace-kick'&&target==='cinder-break'?'cinder-break':null;if(next)p.AIButtons.queue={command:next,tick:G.tick};}
   if(!special)restoreTarget(d);
+  if(special&&p.MV?.kind==='tat'&&p.SPPH===1){
+   // AI finisher steering stays within the selected native horizontal speed.
+   // Approach accounts for startup travel; chase changes velocity, never X/Y.
+   const direction=p.FACE?1:-1,delta=(d.X-p.X)/256-direction*tatsuSpacing(p,d,p.SPSTR),speed=TATVX[Math.min(2,p.SPSTR)]/65536;
+   p.SVX=Math.round(Math.max(-speed,Math.min(speed,delta*.25))*65536);
+  }
   if(VER.cur==='CE')SF2CEPROJECTILES.stepEffects({tick:G.tick});
   SF2CEDHALSIM.objects(G,P,{hit:ceYogaHit,fire:ceYogaCollision,visible:ceObjectVisible});
-  if(move.action.section==='air'){animstep(p);}else update(p);if(special)update(d);clampx(p);
+  if(move.action.section==='air'){animstep(p);}else update(p);if(special)stepProtectedVictim(d);clampx(p);
+  const frame=p.cur+':'+p.aidx;if(lastMove.sourceFrames.length<128&&!lastMove.sourceFrames.includes(frame))lastMove.sourceFrames.push(frame);
   if(special&&p.AIHeroMove?.style==='wall'&&p.AIHeroMove.phase==='dive'&&!move.wallAimed){
    const attack=p.anim.ents.find(e=>e[6]?.[2])?.[6],head=boxw(d,0),sign=p.FACE?1:-1;if(attack&&head){let elapsed=0,activeEnd=0;for(const e of p.anim.ents){elapsed+=e[1];if(e[6]?.[2])activeEnd=elapsed;}const y=Math.max(0,head[1]-attack[1]),height=Math.max(0,p.Y/256-y),vy=p.VY/256,ay=Math.max(.1,p.AY/256),ticks=Math.max(8,Math.min(60,(vy+Math.sqrt(vy*vy+2*ay*height))/ay,activeEnd?activeEnd-3:60)),target=head[0]-(p.FACE?-attack[0]:attack[0]);p.VX=Math.round(sign*Math.max(0x200,Math.min(0x1600,Math.abs(target-p.X/256)/ticks*256)));lastMove.wallAim={vx:p.VX,ticks,target};}move.wallAimed=true;
   }
   if(move.action.command){const current=p.AIEvilKen?.adapter.heat.move;if(current&&move.heatVoice!==current){move.heatVoice=current;const code=current==='cinder-break'?p.F.sfx.sp[2][0][1]:p.F.sfx.wh[5];AI_SPECIAL_VOICES[p.i]={last:{commands:[[0,code]],sample:null,kind:'evil-ken-heat',tick:G.tick}};}}
+  const priorContacts=lastMove.contacts,trajectory=special&&p.MV?.kind==='tat'&&priorContacts>0&&!victimOwned(d)?{VX:d.VX,VY:d.VY,AX:d.AX,AY:d.AY,KB:d.KB}:null;
   fbmove(p);const probe=hitprobe(p);hitcheck(p,probe);fbhit(p);fbafter(p);
+  // A multihit whirlwind follows its first real launch arc. Later real spin
+  // contacts change the hurt pose without restarting that arc on every pulse.
+  if(trajectory&&lastMove.contacts>priorContacts&&protectedVictim(d)&&!victimOwned(d))Object.assign(d,trajectory);
+  if(special)retainReaction(d);
   if(!special||move.action.command&&p.AIEvilKen?.adapter.heat.move!==move.action.command)restoreTarget(d);
   G.slow=0;
   const attached=!!(p.AINativeGrab||d.AINativeHeld||p.THV||p.AIFFHold||p.AIFFThrow||p.AIHeroGrab||p.CETH||d.CETHV||d.AIFFHeld),projectile=!!(p.FBON||p.AIFFBullets?.length||p.AIFFGrenades?.length||p.AIFFProjectile||p.AIDamndBarrel);
   const done=!attached&&!projectile&&p.ST!==1&&p.ST!==2&&p.ST!==11&&age>0;
   const selected=p.F.moves[move.action.index],escape=special&&(p.aiProfile==='vega'&&selected?.inp==='bb'||p.aiProfile==='belger'&&['vault','belger-hop','belger-retreat'].includes(selected?.style)||['escape','movement'].includes(selected?.role));
   if(done&&escape&&!move.escapeFollowup&&lastMove.contacts===0){move.escapeFollowup=true;return{};}
-  return{done:!special?lastMove.contacts>0||p.adone:done};
+  return{done:!special?(p.adone||p.ST!==1&&p.ST!==2):done};
+ }
+ const hurtPoses=new WeakMap();
+ function damagePose(p,sequence){
+  if(p.AINativeHeld||p.AIFFHeld||p.CETHV||p.CEBV||p.CEHHV)return;
+  let poses=hurtPoses.get(p.F);if(!poses){const seen=new Set();poses=[];for(const slot of[20,21,22]){const a=p.F.anims[slot];if(!a)continue;for(let entry=0;entry<a.ents.length;entry++){const frame=a.ents[entry][0];if(seen.has(frame))continue;seen.add(frame);poses.push({slot,entry});}}hurtPoses.set(p.F,poses);}
+  if(!poses.length)return;const at=poses.findIndex(q=>q.slot===p.AIFinishPose?.slot&&q.entry===p.AIFinishPose?.entry),next=poses[(Math.max(-1,at)+1)%poses.length];p.AIFinishPose={...next};setanim(p,next.slot,next.entry);p.ST=5;p.STUN=9999;
  }
  function playDeathVoice(d){if(deathVoicePlayed)return;deathVoicePlayed=true;G.AIFinisherDeathVoice={tick:G.tick,slot:d.i};if(isFFGuest(d))ffSound(d,'ko');else sfxc(XS(d)?.ko,SN_KO);}
  const host={
   context:()=>({enabled:aiEnabled(),scene:G.scene,tick:G.tick,phase:G.gph,seed:G.AIMatchSeed,players:P,room:aiRoom(),training:!!AICFG.prototype&&!!AICFG.training,keys:P.map(p=>p.KEYS)}),
-  art:nativeArt,anatomy,mouth:aiMouth,
+  art:nativeArt,anatomy,mouth:aiMouth,damagePose,
   captureSource:(w,d,source)=>({...source,special:source.special??(w.ST===11&&!['throw','athrow','ai-rift'].includes(w.MV?.kind))}),
   prepare(w,d){deathVoicePlayed=false;savedDeathVoice=AI_SPECIAL_VOICES[w.i];resetActor(w);resetActor(d);for(const p of[w,d])SF2AIFFChair.dismount(p,'finisher');normalPlans.clear();SF2CEDHALSIM.reset(G,P);window.SF2AIHeroWeapons?.disarm(d,d.FACE?-1:1);window.SF2AIHeroWeapons?.cancelFlights(null,aiRoom());inputPrevious=w.KEYS;promptPrevious=0;d.AIFinishProtected=true;d.HP=1;d.HPD=0;G.hfz=G.slow=0;G.CESpecialObjects=null;delete G.CESpecialSlow;AI_RETCH[d.i]=null;AI_FLOOR_COUGHS[d.i]=null;AI_DEATH_FX.length=0;},
   input(w,phase){const keys=w.KEYS,nw=keys&~inputPrevious,rel=inputPrevious&~keys,events=motion(w,keys,nw,rel);inputPrevious=keys;if(phase!=='prompt')return;for(const event of events){const index=w.F.moves.findIndex(m=>m.inp===event[0]&&m.btn===event[1]);if(index>=0&&finisher.request(w.i,{index,strength:event[2]},{fresh:true,serial:G.tick}))break;}},
@@ -132,14 +181,16 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   recovered:()=>!!(recovery?.phase==='getup'&&P[finisher.view().victim].adone),
   stun(d){const slot=isFFGuest(d)?103:21;setanim(d,slot,0);d.anim={...d.anim,mode:0,loop:0};d.ST=5;d.STUN=9999;d.DIZZY=2;},
   promptMove(w,d,options={}){const raw=w.KEYS,keys=raw&15,previous=promptPrevious;promptPrevious=keys;w.X0=w.X;w.KEYS=keys;SF2AIRULES.block(w,keys);controls(w,{keys,nw:keys&~previous,rel:previous&~keys,ev:[],force:0});clampx(w);w.KEYS=raw;w.PREV=raw;if(!options.ready)animstep(d);},
-  pose,gap,airOffset:(w,d,a)=>normalPlan(w,d,a.button,a.section).offset??16,
+  pose,gap,normalLead,airOffset:(w,d,a)=>normalPlan(w,d,a.button,a.section).offset??16,
   specials:p=>SF2AIRULES.mapping(p).filter(m=>m.command!=='rift'&&(!m.command||isEvilKen(p))).map(m=>({...m})),
+  rotationMoves:(p,moves)=>moves.filter(m=>m.command?isEvilKen(p):p.F.moves[m.index]?.kind!=='evade'&&!['escape','movement'].includes(p.F.moves[m.index]?.role)),
   valid:(p,m)=>m.command?isEvilKen(p):!!p.F.moves[m.index]&&(window.SF2AIHeroWeapons?.validMove(p,p.F.moves[m.index])??true),
   isCPU:p=>p.i===1&&!G.mode2p,
   begin,animate,
-  finishMove(p){resetActor(p);},
+  travel:(w,d,dx)=>aiFinisherTravel(w,d,dx),
+  finishMove(p){if(lastMove)lastMove.finished={tick:G.tick,state:p.ST,slot:p.cur,entry:p.aidx,adone:p.adone,FBTK:p.FBTK,SPEND:p.SPEND,SPPH:p.SPPH};resetActor(p);},
   position:(p,v)=>{p.X=Math.round(v.x*256);p.Y=Math.round(v.y*256);p.FACE=v.face;},
-  lockVictim:(w,d,phase)=>phase!=='special',
+  lockVictim:(w,d,phase)=>phase!=='special'&&lastMove?.action.kind!=='special',
   remainingArt:(p,a)=>SF2AIFF.heldArt(p,a),
   partPoint(p,part,pose){
    const sign=p.FACE?-1:1;
@@ -147,6 +198,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
    return{x:p.X/256+sign*part.pivot[0],y:p.Y/256-part.pivot[1],face:p.FACE,angle:0};
   },
   blood:(packet,d)=>aiBloodAdd(packet,d.i),stain:aiClothesStain,
+  backdrop(ctx,args){ctx.save();ctx.translate(-aiHorizontalInset,0);window.SF2AIFinisherTunnel?.draw(ctx,{...args,top:aiWorldTop,width:aiViewWidth(),height:aiWorldSurface.height});ctx.restore();},
   hitstop(){G.hfz=0;},
   impact:e=>{G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
   finalImpact:e=>{playDeathVoice(e.victim);aiFinalHitEcho(e.winner);},
@@ -173,6 +225,16 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  };
  finisher=SF2AIFINISHERS.create(host);
  window.render_game_to_text??=()=>JSON.stringify({edition:VER.edition,scene:G.scene,phase:G.gph,players:P.map(p=>({slot:p.i,profile:aiIdentity(p),baseProfile:p.aiProfile||CE_KEYS[p.fid],x:p.X/256,y:p.Y/256,hp:finisher.isVictim(p)?0:p.HP,maxHP:aiMax(p),wins:p.WINS,state:p.ST,animation:p.anim?.name,frame:p.aidx})),finisher:finisher.info(),blood:{particles:AI_BLOOD.particles.length,stains:AI_BLOOD.stains.length},camera:{x:G.cam,width:aiViewWidth()},coordinates:'world pixels; Y upwards'});
+ function lastMoveFinal(p,target,current){
+  if(target)return target===current;
+  if(p.MV?.kind!=='tat')return true;
+  if(p.SPPH!==1)return false;
+  const active=ent(p)[6];if(!active?.[2]||active[0]>0)return false;
+  const end=p.SPEND-(TATLANDF[p.fid]||12);if(!p.SPEND)return false;
+  const entries=p.anim.ents;let remaining=-p.acc,first=0,found=false;
+  for(let i=0;i<entries.length;i++){if(i>=p.aidx)remaining+=entries[i][1];const b=entries[i][6];if(!found&&b?.[2]&&b[0]<=0)found=true;else if(!found)first+=entries[i][1];}
+  return found&&p.FBTK+Math.max(1,remaining)+first>=end;
+ }
  function measureFraming(render=false){
   const state=finisher.view();if(!state||G.scene!=='fight')return null;const actors=render?SF2CECAMERA.poses||P:P,bounds=[];
   for(const p of actors){if(finisher.hidden(p))continue;const r=finisher.art(p,nativeArt(p)).rect,x=p.X/256,y=p.Y/256,left=x+(p.FACE?-r[4]-r[2]:r[4]);bounds.push({left,right:left+r[2],top:y-r[5],bottom:y-r[5]-r[3]});}
@@ -181,7 +243,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  }
  const burn=Object.values(SF2CESPECIALDATA.fighters[0]).find(a=>a.name==='ceSpecialBurn15350'),frames=burn.extraArt.map(a=>{const image=new Image();image.src=SF2CESPECIALDATA.images[a.images[0]];return{image,rect:a.rect};});
  return Object.assign(finisher,{
-  damage(d,amount){if(!protectedVictim(d))return false;if(amount>0&&G.tick-lastDamage>=finisher.info().contactInterval){lastDamage=G.tick;lastMove&&(lastMove.contacts++);const target=lastMove?.action.command,current=d.opp.AIEvilKen?.adapter.heat.move;finisher.notify(d.opp,d,++contactSerial,{final:!target||target===current});}d.HP=1;d.HPD=0;return true;},
+  damage(d,amount){if(!protectedVictim(d))return false;if(amount>0){lastDamage=G.tick;lastMove&&(lastMove.contacts++);const w=d.opp,target=lastMove?.action.command,current=w.AIEvilKen?.adapter.heat.move,final=lastMoveFinal(w,target,current);if(lastMove&&lastMove.contactFrames.length<128)lastMove.contactFrames.push({tick:G.tick,slot:w.cur,entry:w.aidx,acc:w.acc,FBTK:w.FBTK,SPEND:w.SPEND,SPPH:w.SPPH,final,attack:boxw(w,4),hurt:[0,1,2].map(k=>boxw(d,k))});finisher.notify(w,d,++contactSerial,{final});}d.HP=1;d.HPD=0;return true;},
   nativeMove:()=>lastMove?{...lastMove,action:{...lastMove.action}}:null,
   sourceBox(p,k){const selected=p.AIFinishPose;if(!protectedVictim(p)||k>2||!selected||!(p.AIFFHeld||p.CETHV||p.CEBV))return undefined;const b=p.F.anims[selected.slot].ents[selected.entry][2+k];return b?.[2]?[(p.FACE?-b[0]:b[0])+p.X/256,b[1]+p.Y/256,b[2],b[3]]:null;},
   banner:()=>banner,
