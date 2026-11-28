@@ -1,0 +1,18 @@
+const {chromium,install,url,artifacts}=require('./browser-runtime.cjs'),fs=require('node:fs'),assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch(),page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));try{await install(page);await page.goto(url,{waitUntil:'domcontentloaded',timeout:120000});await page.waitForFunction(()=>window.SF2?.VER.loading===2&&FIN,null,{timeout:120000});await page.addScriptTag({url:new URL('ai_juggles.js',url).href});
+const result=await page.evaluate(async()=>{
+ const rows=[];
+ async function setup(side,owner='ryu',target='ryu',distance=55){FIN.clear('air-combo-test');await SF2AI.configure({p1:side?target:owner,p2:side?owner:target,mode:'versus',training:false,seed:42});SF2.freeze=1;IDEL=0;G.gph=1;G.hfz=G.slow=0;const w=P[side],d=w.opp;w.WINS=d.WINS=0;w.X=360*256;d.X=w.X+(side?-distance:distance)*256;w.FACE=side?0:1;d.FACE=1-w.FACE;d.HP=2000;d.STP=d.DIZZY=0;const trace=[];return{w,d,trace,tick:(a=0,b=0)=>{const keys=[0,0];keys[side]=a;keys[1-side]=b;SF2.step(keys);trace.push({owner:{x:w.X/256,y:w.Y/256,state:w.ST,cur:w.cur,entry:w.aidx,PJ:w.PJ},tick:G.tick,x:d.X/256,y:d.Y/256,vx:d.VX/256,vy:d.VY/256,state:d.ST,cur:d.cur,entry:d.aidx,juggle:d.AIJuggle?{...d.AIJuggle}:null,hp:d.HP,freeze:G.hfz,head:boxw(d,0),body:boxw(d,1),legs:boxw(d,2)});}};}
+ for(const owner of['ryu','ken','evil-sagat','andore','abigail','guy','cody','haggar','sodom','rolento','edi','belger','damnd'])for(const side of[0,1])for(const target of['ryu','andore']){
+  const{w,d,tick,trace}=await setup(side,owner,target);const hp=d.HP;tick(512);for(let n=0;n<250;n++)tick();rows.push({kind:'launch',owner,target,side,damage:hp-d.HP,peak:Math.max(...trace.map(q=>q.y)),launched:trace.some(q=>q.juggle),poses:new Set(trace.filter(q=>q.juggle).map(q=>q.cur+':'+q.entry)).size,landed:!d.AIJuggle&&d.Y===0&&[0,3].includes(d.ST),trace});
+ }
+ for(const side of[0,1])for(const mode of['guard','whiff','medium','followup','reset']){
+  const{w,d,tick,trace}=await setup(side,'ryu','ryu',mode==='whiff'?180:55),hp=d.HP;tick(mode==='medium'?256:512,mode==='guard'?(side?1:2):0);
+  if(mode==='followup'){let n=0;while(n++<65&&!d.AIJuggle)tick();tick((side?1:2)|4);for(n=0;n<50&&(w.ST!==2||w.PJ||w.Y<=0);n++)tick(side?1:2);for(n=0;n<3;n++)tick(side?1:2);tick(512);for(n=0;n<60;n++)tick(side?1:2);}
+  else if(mode==='reset'){let n=0;while(n++<65&&!d.AIJuggle)tick();SF2AI.resetRound();tick();}
+  for(let n=0;n<250;n++)tick(0,mode==='guard'?(side?1:2):0);
+  rows.push({kind:mode,side,damage:hp-d.HP,peak:Math.max(...trace.map(q=>q.y)),juggleHits:Math.max(0,...trace.map(q=>q.juggle?.hits||0)),landed:!d.AIJuggle&&d.Y===0&&[0,3].includes(d.ST),trace});
+ }
+ return rows;
+});fs.writeFileSync(artifacts('air-juggles.json'),JSON.stringify({result,errors},null,2));console.log(JSON.stringify({errors,rows:result.map(({trace,...r})=>r)},null,2));assert.deepEqual(errors,[]);for(const r of result){if(r.kind==='launch'){assert.ok(r.damage>0,JSON.stringify({...r,trace:undefined}));assert.equal(r.launched,true,JSON.stringify({...r,trace:undefined}));assert.ok(r.peak>20);assert.ok(r.poses>1);assert.equal(r.landed,true,JSON.stringify({...r,trace:undefined}));}else if(['guard','whiff','medium'].includes(r.kind))assert.equal(r.juggleHits,0,JSON.stringify({...r,trace:undefined}));else if(r.kind==='reset')assert.equal(r.landed,true);else{assert.ok(r.juggleHits>=2,JSON.stringify({...r,trace:undefined}));assert.equal(r.landed,true);}}
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exitCode=1;});
