@@ -1704,10 +1704,10 @@ function camera(){
 
   if(aiEnabled()&&G.scene==='fight'){
     const shot=AI_FINISHERS?.cameraLock();if(shot){G.cam=shot.cam;G.AIViewWidth=shot.width;G.AICamera??={};G.AICamera.inset=shot.inset;Object.assign(SF2CECAMERA.state,shot.vertical,{video:{...shot.vertical.video}});return;}
-    window.SF2CECAMERA?.step(G.stage,P,{throw:P.some(p=>p.THV),shake:!!G.CECameraShake});
-    const room=aiRoom(),xs=P.map(p=>p.X/256);
-    // Ordinary jumps keep horizontal framing. An active AI juggle also fits
-    // actual source art height; confirmed impacts can expand immediately.
+    window.SF2CECAMERA?.step(G.stage,P,{throw:P.some(p=>p.THV||p.AINativeGrab),shake:!!G.CECameraShake});
+    // Attached sprite offsets orbit around the holder; they are not camera movement.
+    const room=aiRoom(),nativeGrab=P.find(p=>p.AINativeGrab),xs=P.map(p=>p.AINativeHeld&&nativeGrab?.AINativeGrab&&!nativeGrab.AINativeGrab.released?(nativeGrab.X/256+nativeGrab.AINativeGrab.cameraVictimOffset):p.X/256);
+    // Ordinary jumps keep horizontal framing. Active juggles fit source art height.
     const span=room.right-room.left,minWidth=Math.min(320,span);
     const needed=Math.min(span,Math.max(minWidth,Math.abs(xs[1]-xs[0])+128,aiJuggleCameraWidth(),AI_FINISHERS?.framing()?.width||0));
     const follow=G.AICamera||(G.AICamera={velocity:0,target:W,hold:0});
@@ -1727,7 +1727,9 @@ function camera(){
     // airborne VX must not pan the scenery or keep it drifting after landing.
     // Follow position directly so a fighter and the floor stop together.
     follow.centre=(xs[0]+xs[1])/2;
-    G.cam=Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
+    const desired=Math.max(room.left,Math.min(room.right-width,follow.centre-width/2));
+    // Bound attach/release corrections to the original CE pan limit.
+    if(nativeGrab||follow.nativeGrabPan){const delta=desired-G.cam;G.cam+=Math.max(-6,Math.min(6,delta));follow.nativeGrabPan=!!nativeGrab||Math.abs(delta)>6;}else G.cam=desired;
     follow.inset=0;
     return;
   }
@@ -2692,7 +2694,7 @@ function fighterBounds(p){
   return b;
 }
 function fighterArtBase(p){return SF2AIFF.heldArt(p,fighterArtBase0(p));}
-function fighterArtBase0(p){const finish=AI_FINISHERS?.sourceArt(p);if(finish)return finish;if(isFFGuest(p)){const nativeReaction=window.SF2CESPECIAL?.art(p,false);if(nativeReaction&&!p.anim?.name?.startsWith('ceDizzy'))return nativeReaction;return ffArt(p);}const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CESPECIAL?.art(p,alternate)||( VER.edition==='ce'?(window.SF2CEWINNER?.art(p,alternate)||window.SF2CEDIZZY?.art(p,alternate)):null)||window.SF2CEDHALSIM?.art(p,alternate)||window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:extra?.fixedPalette?extra.image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],nativeEyeFrame:extra?(extra.nativeEyeFrame??(p.F.frames.includes(extra.rect)?p.F.frames.indexOf(extra.rect):null)):ent(p)[0],alternate};}
+function fighterArtBase0(p){const finish=AI_FINISHERS?.sourceArt(p);if(finish)return finish;if(isFFGuest(p)){const nativeReaction=window.SF2CESPECIAL?.art(p,false);if(nativeReaction&&!p.anim?.name?.startsWith('ceDizzy'))return nativeReaction;return ffArt(p);}const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CESPECIAL?.art(p,alternate)||(aiEnabled()?SF2AINativeGrabs.art(p,alternate):null)||( VER.edition==='ce'?(window.SF2CEWINNER?.art(p,alternate)||window.SF2CEDIZZY?.art(p,alternate)):null)||window.SF2CEDHALSIM?.art(p,alternate)||window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:extra?.fixedPalette?extra.image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],nativeEyeFrame:extra?(extra.nativeEyeFrame??(p.F.frames.includes(extra.rect)?p.F.frames.indexOf(extra.rect):null)):ent(p)[0],alternate};}
 function fighterArt(p){const base=fighterArtBase(p),art=aiEnabled()?aiFaceInjuryArt(p,aiClothesArt(p,base),base):base;const eyes=aiEnabled()?SF2AIEVIL.art(p,art,base.nativeEyeFrame):art;return AI_FINISHERS?.art(p,eyes)||eyes;}
 const aiWorldSurface=document.createElement('canvas');
 let aiWorldTop=-32,aiHorizontalInset=0;

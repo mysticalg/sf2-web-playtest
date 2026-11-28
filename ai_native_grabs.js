@@ -27,7 +27,7 @@ window.SF2AINativeGrabs=(()=>{
  function unlink(p){const d=p.opp;if(d.AINativeHeld?.owner===p.i)delete d.AINativeHeld;if(d.AIFFHeld?.native&&d.AIFFHeld.owner===p.i)delete d.AIFFHeld;}
  function cancel(p,h){const c=p.AINativeGrab;if(!c)return false;delete p.AINativeGrab;unlink(p);p.THV=null;const d=p.opp;if(d.ST===5&&d.STUN>=500){d.STUN=0;h.fall(d,h.alive(d)?7:8,c.dir);}if(p.MV?.kind==='ai-native-grab')p.MV=null;if(p.ST===11){if(p.Y>0||!h.alive(p))h.fall(p,h.alive(p)?7:8,c.dir);else h.idle(p);}return true;}
  function finish(p,h){unlink(p);delete p.AINativeGrab;p.THV=p.MV=null;if(p.Y>0){h.fall(p,h.alive(p)?7:8,p.FACE?1:-1);}else h.idle(p);}
- function start(p,name,kind,h,extra={}){const slot=register(p).poses[name];if(slot===undefined)return false;const d=p.opp;h.interrupt(d);d.DIZZY=0;p.CES=p.CETH=p.THV=null;p.MV={kind:'ai-native-grab'};p.ST=11;p.KB=p.RETCR=p.SPK=p.SPKD=0;p.hitdone=1;p.Y=p.VX=p.VY=p.AX=p.AY=0;p.AINativeGrab={kind,name,phase:0,age:0,dir:p.FACE?1:-1,face:p.FACE,hits:0,escape:0,previous:d.KEYS,ownerPrevious:p.KEYS,lastMarker:-1,...extra};d.AINativeHeld={owner:p.i};d.ST=5;d.STUN=999;d.KB=0;h.anim(p,slot,0);p.acc=-1;poseVictim(p,p.AINativeGrab,h);h.sound(kind==='spd'?0x47:kind==='hold'?(p.fid===7?0x25:0x23):p.fid===6?(name==='giefMP'?0x46:0x47):(p.F.sfx?.thr||0x27));return true;}
+ function start(p,name,kind,h,extra={}){const slot=register(p).poses[name];if(slot===undefined)return false;const d=p.opp;h.interrupt(d);d.DIZZY=0;p.CES=p.CETH=p.THV=null;p.MV={kind:'ai-native-grab'};p.ST=11;p.KB=p.RETCR=p.SPK=p.SPKD=0;p.hitdone=1;p.Y=p.VX=p.VY=p.AX=p.AY=0;p.AINativeGrab={kind,name,phase:0,age:0,dir:p.FACE?1:-1,face:p.FACE,hits:0,escape:0,previous:d.KEYS,ownerPrevious:p.KEYS,lastMarker:-1,cameraVictimOffset:(d.X-p.X)/256,...extra};d.AINativeHeld={owner:p.i};d.ST=5;d.STUN=999;d.KB=0;h.anim(p,slot,0);p.acc=-1;poseVictim(p,p.AINativeGrab,h);h.sound(kind==='spd'?0x47:kind==='hold'?(p.fid===7?0x25:0x23):p.fid===6?(name==='giefMP'?0x46:0x47):(p.F.sfx?.thr||0x27));return true;}
  function init(p,button,h){
   if(h.guest(p))return false;
   if(p.fid===1&&button===1)return start(p,'hondaMP','toss',h,{flip:true,finishShift:40});
@@ -54,11 +54,13 @@ window.SF2AINativeGrabs=(()=>{
    if(!c.released&&marker){c.dir=-(c.face?1:-1);release(p,c,h,c.damageCode??13);}
    if(p.adone||p.anim.flags[p.aidx]&0x8000){if(c.flip)p.FACE^=1;if(c.finishShift)p.X+=(p.FACE?1:-1)*c.finishShift*256;if(!c.released){c.dir=-(c.face?1:-1);release(p,c,h);}finish(p,h);}else if(!c.released)poseVictim(p,c,h);return true;
   }
-  if(c.phase===0){if(marker===1){c.phase=1;c.vx=(p.KEYS&3?((p.KEYS&2)?1:-1):c.dir)*(c.kind==='spd'?0x100:0x200);c.vy=c.kind==='spd'?0x700:0x600;c.ay=c.kind==='spd'?0x28:0x48;p.VX=c.vx;p.VY=c.vy;p.AY=c.ay;}poseVictim(p,c,h);return true;}
+  // MP 041DF8..041E1A samples absolute RIGHT at takeoff; neutral goes left.
+  if(c.phase===0){if(marker===1){c.phase=1;c.vx=c.kind==='spd'?c.dir*0x100:(p.KEYS&2?1:-1)*0x200;c.vy=c.kind==='spd'?0x700:0x600;c.ay=c.kind==='spd'?0x28:0x48;p.VX=c.vx;p.VY=c.vy;p.AY=c.ay;}poseVictim(p,c,h);return true;}
   if(c.phase===1||c.phase===2){
    move(p,c);if(c.kind==='spd'&&c.phase===1&&c.vy<0){c.phase=2;c.vy=0;c.ay=0x90;}
    if(c.kind==='jump-slam'&&marker===2)p.acc--;
-   if(c.vy<0&&p.Y<=0){p.Y=0;c.phase=3;c.at=c.age;p.VX=p.VY=0;if(c.kind==='spd'){h.anim(p,register(p).poses.giefSPDImpact,0);p.acc=-1;}poseVictim(p,c,h);h.damage(p,d,h.throwDamage(p,d,c.kind==='spd'?16:13));c.hits++;h.freeze(12);h.sound(0x2e);unlink(p);h.fall(d,h.alive(d)?7:8,c.dir);d.VX=c.dir*0x100;d.VY=0x180;c.released=true;return true;}poseVictim(p,c,h);return true;
+   // Original victim descriptor2 (0391B6) and14 (0394CA) launch after the slam.
+   if(c.vy<0&&p.Y<=0){p.Y=0;c.phase=3;c.at=c.age;p.VX=p.VY=0;if(c.kind==='spd'){h.anim(p,register(p).poses.giefSPDImpact,0);p.acc=-1;}poseVictim(p,c,h);h.damage(p,d,h.throwDamage(p,d,c.kind==='spd'?16:13));c.hits++;h.freeze(12);h.sound(0x2e);unlink(p);if(h.guest(d))d.Y=0;h.release(d,c.kind==='spd'?14:2,c.dir,0);if(d.CETHV){Object.assign(d.CETHV,{vx:c.dir*(c.kind==='spd'?0x280:0x200),vy:c.kind==='spd'?0x880:0x600,ay:0x58});}c.released=true;return true;}poseVictim(p,c,h);return true;
   }
   if(c.phase===3){if(c.age-c.at<1){p.acc--;return true;}c.phase=4;c.vx=-(c.face?1:-1)*(c.kind==='spd'?0x300:0x280);c.vy=c.kind==='spd'?0x800:0x280;c.ay=c.kind==='spd'?0x60:0x48;return true;}
   move(p,c);if(c.vy<0&&p.Y<=0){p.Y=0;p.VX=p.VY=0;finish(p,h);}return true;
