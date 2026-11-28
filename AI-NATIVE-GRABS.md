@@ -13,3 +13,19 @@ Repeated holds permit fresh directional/button presses to escape. Holding one in
 `ai_native_grabs_data.js` contains original animation metadata, palette-specific sprite crops, attachment rows from `0xaaff4` and shared held poses from status `0x3e`. It contains no raw program ROM. Extraction is pinned to CE program SHA-256 `aca6c7212ffbcd1894add413e1276e647e5ccbe1a8ee36327aceabd0e0f8fcf9`; the extraction receipt records the exact animation addresses and output hash.
 
 The native frame lists, attachment records, marker timing and listed motion constants are source-backed. The JavaScript lifecycle integration, bounded stage placement, missing guest-body pose fallback and Noogie/boxer escape threshold are authored AI adapters. Complete original scheduler, RNG, every throw variation and hardware parity are not claimed. Guests retain their own sprites; unavailable native held poses use their own hurt/inverted art and head anchor, with grounded bodies kept above the floor.
+
+The 153 follow-up fixes the actual render path: extracted grab sprites were
+previously used for bounds but omitted from `fighterArtBase0`, causing the four
+Spinning Piledriver rotation entries to display atlas frame 0. They now render
+their original extracted art. Camera framing uses the captured pre-grab offset
+while a victim is attached, freezes native vertical throw scrolling, and limits
+attach/release pan corrections to 6 pixels per tick. A rotating attachment pose
+cannot move the scenery independently of the holder's physical movement.
+
+The MP jump samples absolute RIGHT at takeoff (041DF8..041E1A); neutral uses the
+leftward branch, independently of facing. Post-slam victim motion uses the source
+descriptor 2 values (0391B6: VX200/VY600/gravity58), while SPD uses descriptor14
+(0394CA: VX280/VY880/gravity58). Damage still occurs once at the holder's real
+floor impact; the released victim's remaining fall/bounce carries zero damage.
+Guests start the released upright motion at floor height rather than inheriting
+the inverted head attachment's unrelated sprite-origin height.
