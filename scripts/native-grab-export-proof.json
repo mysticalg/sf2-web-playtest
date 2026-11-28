@@ -1,0 +1,44 @@
+{
+  "programSHA256": "aca6c7212ffbcd1894add413e1276e647e5ccbe1a8ee36327aceabd0e0f8fcf9",
+  "poses": {
+    "1": {
+      "hondaMP": 338382
+    },
+    "6": {
+      "giefMP": 472612,
+      "giefHP": 472908,
+      "giefMK": 473348,
+      "giefHK": 473640,
+      "giefCMP": 473908,
+      "giefCHP": 474060,
+      "giefSPD": 474476,
+      "giefSPDImpact": 472732
+    },
+    "7": {
+      "noogie": 504220,
+      "yogaThrow": 504368
+    },
+    "9": {
+      "sagatThrow": 552564
+    },
+    "10": {
+      "headbuttHold": 567168
+    }
+  },
+  "images": 40,
+  "victimPoseCounts": {
+    "0": 25,
+    "1": 23,
+    "2": 27,
+    "3": 25,
+    "4": 25,
+    "5": 24,
+    "6": 24,
+    "7": 23,
+    "8": 28,
+    "9": 19,
+    "10": 19,
+    "11": 23
+  },
+  "outputSHA256": "00909e07a5c931d122c8add30377d5328dc423e84d542fd3f788e8f661c7d8de"
+}

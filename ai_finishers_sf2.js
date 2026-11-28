@@ -16,7 +16,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  const anatomy=(p,a)=>{const r=a.rect,h=boxw(p,0),b=boxw(p,1),sign=p.FACE?-1:1,x=q=>(q[0]-p.X/256)*sign-r[4],y=q=>p.Y/256-q[1]-r[5];return{head:h?{x:x(h),y:y(h),rx:h[2]*1.28,ry:h[3]*1.4}:undefined,neck:h?y(h)+h[3]*.85:undefined,cx:b?x(b):r[2]*.5,hip:r[3]*.6,halfTorso:b?Math.max(9,b[2]*.62):r[2]*.17};};
  function resetActor(p){
   SF2CESPECIAL.interrupt(p);SF2CEDIZZY.interrupt(p);
-  for(const k of['AIFFMove','AIFFHold','AIFFHeld','AIFFThrow','AIFFNormal','AIFFWall','AIFFSlide','AIFFProjectile','AIFFGrenades','AIFFBullets','AIHeroMove','AIHeroGrab','AIHeroWall','AIHeroAir','AIHeroPhase','AIHeroInvuln','AIDamndMove','AIDamndBarrel','AIAir','CES','CEPF','CEKO','CETH','CETHV','CEHH','CEHHV','CEHHPush','CEHHPostPush','CEBV','CEB','CER','CERSTOP','CEGUARD','CESHAKE','CERHOSTTICK','CERRESUME','CEVSL','CEVNSTART','CENORMALINIT','CE_FatalHitPending','CEVLAND','AIFinishPose'])delete p[k];
+  for(const k of['AINativeGrab','AINativeHeld','AIFFMove','AIFFHold','AIFFHeld','AIFFThrow','AIFFNormal','AIFFWall','AIFFSlide','AIFFProjectile','AIFFGrenades','AIFFBullets','AIHeroMove','AIHeroGrab','AIHeroWall','AIHeroAir','AIHeroPhase','AIHeroInvuln','AIDamndMove','AIDamndBarrel','AIAir','CES','CEPF','CEKO','CETH','CETHV','CEHH','CEHHV','CEHHRecovery','CEHHDesired','CEHHPrevKeys','CEHHVLAND','CEHHPush','CEHHPostPush','CEBV','CEB','CER','CERSTOP','CEGUARD','CESHAKE','CERHOSTTICK','CERRESUME','CEVSL','CEVNSTART','CENORMALINIT','CE_FatalHitPending','CEVLAND','AIFinishPose'])delete p[k];
   p.THV=p.MV=p.AIRift=null;p.AIRiftRequest=0;p.VX=p.VY=p.AX=p.AY=p.KB=p.DIZZY=p.FBON=p.SCNT=p.PJ=p.JA=p.ZG=0;p.Y=0;p.ST=0;p.FORCE=0;p.VQ=null;SF2AIRULES.block(p,p.KEYS);aiBreakCombo(p);if(window.SF2AIHeroes?.get(p.aiProfile))SF2AIHeroes.normalStep(p);if(isEvilKen(p)&&p.AIEvilKen?.adapter.heat.move)SF2AIEvilKen.update(p,{keys:0,pressed:0,commands:[]},{anim:setanim,idle:toidle,tick:animstep,sound:()=>{}});
  }
  function victimPose(p){
@@ -111,7 +111,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   fbmove(p);const probe=hitprobe(p);hitcheck(p,probe);fbhit(p);fbafter(p);
   if(!special||move.action.command&&p.AIEvilKen?.adapter.heat.move!==move.action.command)restoreTarget(d);
   G.slow=0;
-  const attached=!!(p.THV||p.AIFFHold||p.AIFFThrow||p.AIHeroGrab||p.CETH||d.CETHV||d.AIFFHeld),projectile=!!(p.FBON||p.AIFFBullets?.length||p.AIFFGrenades?.length||p.AIFFProjectile||p.AIDamndBarrel);
+  const attached=!!(p.AINativeGrab||d.AINativeHeld||p.THV||p.AIFFHold||p.AIFFThrow||p.AIHeroGrab||p.CETH||d.CETHV||d.AIFFHeld),projectile=!!(p.FBON||p.AIFFBullets?.length||p.AIFFGrenades?.length||p.AIFFProjectile||p.AIDamndBarrel);
   const done=!attached&&!projectile&&p.ST!==1&&p.ST!==2&&p.ST!==11&&age>0;
   const selected=p.F.moves[move.action.index],escape=special&&(p.aiProfile==='vega'&&selected?.inp==='bb'||p.aiProfile==='belger'&&['vault','belger-hop','belger-retreat'].includes(selected?.style)||['escape','movement'].includes(selected?.role));
   if(done&&escape&&!move.escapeFollowup&&lastMove.contacts===0){move.escapeFollowup=true;return{};}
