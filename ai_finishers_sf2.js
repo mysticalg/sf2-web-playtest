@@ -96,7 +96,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   }
   if(special&&p.CES?.kind==='vegawall'&&p.CES.phase===4&&p.CES.vy<0&&p.Y<44*256&&Math.abs(p.X-d.X)<96*256){keys=(d.X<p.X?1:2)|16;d.ST=0;}
   // Original Andore hold: jump after two shakes, then punch in the air to invert.
-  if(special&&p.AIFFHold){if(p.AIFFHold.pulses>=2&&!p.AIFFHold.airborne)keys=4;else if(p.AIFFHold.airborne&&p.AIFFHold.airAge>=12)keys=16;}
+  if(special&&p.aiProfile==='andore'&&p.AIFFHold){if(p.AIFFHold.pulses>=2&&!p.AIFFHold.airborne)keys=4;else if(p.AIFFHold.airborne&&p.AIFFHold.airAge>=12)keys=16;}
   if(special&&p.AIHeroGrab){const grab=p.AIHeroGrab;if(grab.phase==='hold'&&grab.age>=32)keys=4;else if(grab.phase==='jump'&&!grab.pile&&grab.airAge>=10)keys=16;}
   p.KEYS=keys;p.FORCE=0;SF2AIRULES.block(p,keys);d.KEYS=d.FORCE=0;SF2AIRULES.block(d,0);
   if(move.action.command){const current=p.AIEvilKen?.adapter.heat.move,target=move.action.command,next=current==='ember-kick'&&target!=='ember-kick'?'furnace-kick':current==='furnace-kick'&&target==='cinder-break'?'cinder-break':null;if(next)p.AIButtons.queue={command:next,tick:G.tick};}

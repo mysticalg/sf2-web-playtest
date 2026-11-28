@@ -188,15 +188,41 @@ function aiClothesArt(p,art){
 }
 const AI_FACE_IMAGES=new WeakMap();
 function aiFaceInjuryLevel(p){const ratio=p.HP/aiMax(p);return !aiEnabled()||ratio>=.2?0:Math.min(10,1+Math.floor((.2-Math.max(0,ratio))/.02));}
+// Face registration is source-frame local, independent of changing hit boxes.
+const AI_FACE_LANDMARKS=new WeakMap();
+function aiFaceLandmark(p,art){
+  if(art.fixedPalette||p.CESpecial)return null;
+  // Original tucked Abigail frame27 has its visible white eye at41,7.
+  const frame=art.nativeEyeFrame??art.nativeSourceFrame,identity=SF2AIEVIL.base(p),reviewed=SF2AIEVILEYES.frames[identity],points=identity==='abigail'&&frame===27?[[41,7,1,1]]:reviewed?.[frame];
+  const mirror=point=>p.AIFFHeld?.inverted?{...point,x:art.rect[2]-1-point.x,y:art.rect[3]-1-point.y}:point;
+  if(points?.length)return mirror({x:points[0][0]+(points[0][2]-1)/2,y:points[0][1]+(points[0][3]-1)/2,source:'reviewed'});
+  const source=AI_CLOTH_SOURCES.get(art.image);if(!source||!Number.isInteger(frame)||p.AIFFHeld?.inverted)return null;
+  let bank=AI_FACE_LANDMARKS.get(source.image);if(!bank){bank=new Map();AI_FACE_LANDMARKS.set(source.image,bank);}
+  const key=identity+':'+frame;if(bank.has(key))return bank.get(key);
+  const r=art.rect,head=boxw(p,0);if(!reviewed||!head){bank.set(key,null);return null;}
+  const image=document.createElement('canvas'),ctx=image.getContext('2d',{willReadFrequently:true}),crop=rect=>{image.width=rect[2];image.height=rect[3];ctx.clearRect(0,0,image.width,image.height);ctx.drawImage(source.image,...rect.slice(0,4),0,0,image.width,image.height);return ctx.getImageData(0,0,image.width,image.height).data;};
+  const target=crop(r),hx=(head[0]-(p.X>>8))*(p.FACE?-1:1)-r[4],hy=(p.Y>>8)-head[1]-r[5],templates=bank.get(identity+':templates')||[];
+  if(!bank.has(identity+':templates')){const seen=new Set();for(const [id,eyes]of Object.entries(reviewed)){
+    const rect=p.F.frames[+id];if(!rect||rect[0]+rect[2]>source.image.width||rect[1]+rect[3]>source.image.height)continue;
+    const data=crop(rect),eye=eyes[0],ex=eye[0],ey=eye[1],samples=[];
+    for(let dy=-3;dy<=3;dy++)for(let dx=-3;dx<=3;dx++){const x=ex+dx,y=ey+dy;if(x<0||y<0||x>=rect[2]||y>=rect[3])continue;const at=(y*rect[2]+x)*4;if(data[at+3])samples.push([dx,dy,data[at],data[at+1],data[at+2],dx===0&&dy===0?6:1]);}
+    if(samples.length>=30){const signature=JSON.stringify(samples);if(!seen.has(signature)){samples.eye=samples.find(q=>q[0]===0&&q[1]===0)?.slice(2,5);templates.push(samples);seen.add(signature);}}
+  }bank.set(identity+':templates',templates);}
+  let best=null;
+  for(let y=Math.max(0,Math.floor(hy-head[3]-5));y<=Math.min(r[3]-1,Math.ceil(hy+head[3]*.5));y++)for(let x=Math.max(0,Math.floor(hx-head[2]-5));x<=Math.min(r[2]-1,Math.ceil(hx+head[2]+5));x++){
+    const at=(y*r[2]+x)*4;if(!target[at+3])continue;
+    for(const samples of templates){const eye=samples.eye;if(eye&&Math.abs(target[at]-eye[0])+Math.abs(target[at+1]-eye[1])+Math.abs(target[at+2]-eye[2])>90)continue;let sum=0,weight=0;for(const[dx,dy,red,green,blue,w]of samples){weight+=w;const xx=x+dx,yy=y+dy;if(xx<0||yy<0||xx>=r[2]||yy>=r[3])continue;const to=(yy*r[2]+xx)*4;if(!target[to+3])continue;const difference=Math.abs(target[to]-red)+Math.abs(target[to+1]-green)+Math.abs(target[to+2]-blue);sum+=w*Math.max(0,1-difference/240);}
+      const score=sum/weight;if(score>=.76&&(!best||score>best.score))best={x,y,score,source:'matched'};
+    }
+  }
+  bank.set(key,best);return best;
+}
 function aiFaceRegion(p,art){
-  const r=art.rect,head=boxw(p,0);
-  if(isFFGuest(p)){const mouth=ffMouth(p);return{x:(mouth.x-p.X/256)*(p.FACE?-1:1)-r[4]+2,y:p.Y/256-mouth.y-r[5]-4,rx:7,ry:6};}
-  // Collision head centres use integer world pixels. Remove that same origin
-  // before locating the bruise in the sprite; subpixel movement must not create
-  // a new wound texture (and another canvas) every rendered frame.
-  if(head)return{x:(head[0]-(p.X>>8))*(p.FACE?-1:1)-r[4]-head[2]*.22,y:(p.Y>>8)-head[1]-r[5]+head[3]*.22,rx:Math.max(4,head[2]*.7),ry:Math.max(4,head[3]*.65)};
-  const point=p.cur===AN_FALL+1?AI_LIE_MOUTHS[p.fid]:p.cur===AN_FALL?AI_KO_MOUTHS[p.fid]?.[p.aidx]:null;
-  if(!point)return null;return{x:point[0]-1,y:point[1]-3,rx:5,ry:4};
+  const eye=aiFaceLandmark(p,art);if(eye)return{x:eye.x+1.5,y:eye.y+4,rx:7,ry:7};
+  // Recovered mouth landmarks cover visible falling/lying faces; uncertain
+  // or hidden faces receive no guessed mark on their cheek, nose or helmet.
+  const point=!isFFGuest(p)&&(p.cur===AN_FALL+1?AI_LIE_MOUTHS[p.fid]:p.cur===AN_FALL?AI_KO_MOUTHS[p.fid]?.[p.aidx]:null);
+  return point?{x:point[0]-1,y:point[1]-3,rx:5,ry:4}:null;
 }
 function aiFaceInjuryArt(p,art,base){
   const level=aiFaceInjuryLevel(p);if(!level)return art;const region=aiFaceRegion(p,base),severity=(level-1)/9,face=region?{...region,rx:region.rx*(.9+.3*severity),ry:region.ry*(.9+.25*severity)}:null,frame=face&&aiClothFrame(p,base);if(!frame?.skinPixels.length)return art;
@@ -1232,7 +1258,7 @@ function ceVegaControlRelease(p,input){
 function aiResumeAir(p){const a=p.AIAir;delete p.AIAir;p.CES=null;p.MV=null;p.ST=S_AIR;p.PJ=p.JA=0;p.VX=a.vx||0;p.VY=Math.min(a.vy||0,-0x100);p.AY=a.ay||0x48;setanim(p,a.jan||AN_JUMPN,0);}
 function aiOnFloor(p){return(p.Y>>8)===0||carMode(p)&&!!p.CARSUPPORT;}
 function spec(p,input){const result=spec0(p,input);if(aiEnabled()&&p.AIAir&&p.ST!==S_SPEC){if([S_FREE,S_CR,S_UP].includes(p.ST)&&!aiOnFloor(p))aiResumeAir(p);else{delete p.AIAir;p.CES=p.MV=null;}}return result;}
-function spec0(p,input){if(aiEnabled()&&SF2AINativeGrabs.step(p,aiNativeGrabHooks()))return;const m=p.MV;if(isFFGuest(p)&&!isDamnd(p)&&['ff','throw'].includes(m?.kind)){ffAdapter(p).step(p,{idle:toidle,gravity,room:aiRoom,cost:(q,n)=>hpDamage(q,Math.min(n,Math.max(0,q.HP-1))),sound:code=>{if(isFFHero(p)){if(!muted&&!netReplaying)SF2AIHeroes.playSound(code,AC,MG);}else ffSound(p,code===0x12||code===0x1e?'shot':code===0x10?'weapon':code===0x2f?'land':code===0x2b?'throw':'special');},release:relth,anim:setanim,throwMove:THROW,grab:q=>trythrow(q,2,2),hold:q=>trythrow(q,1,1),cpu:q=>q.i===1&&!G.mode2p,releaseHeld:(q,keep=false)=>{Object.assign(q,{ST:S_AIR,STUN:0,KB:0,VX:keep?q.VX:0,VY:keep?q.VY:0,AY:keep?(q.AY||0x48):0x48,AX:0,JA:keep?0:1,JN:1,PJ:0});setanim(q,AN_JUMPN,0);},head:aiHeadPoint,invertedHead:aiInvertedHead,groundImpact:q=>{G.AISlamImpact={start:G.tick,slot:q.i};G.hfz=Math.max(G.hfz,10);if(!muted&&!netReplaying&&AC&&MG)SF2AIFF.playSound(13,AC,MG,{volume:.85,rate:.55,delay:.04});},chokeDamage:(q,n)=>{hpDamage(q.opp,n,{special:true});aiBloodBurst(q.opp,0);},slam:q=>{const o=q.opp,v=q.THV;q.THV=null;o.AIFFSlamImpact=true;hpDamage(o,v.dmg,{special:true});aiBloodBurst(o,2,false,true);delete o.AIFFSlamImpact;o.ST=S_HIT;o.STUN=999;o.KB=o.VX=o.VY=0;},releaseSlam:q=>{const o=q.opp;delete o.AIFFHeld;o.Y=0;fallst(o,hpAlive(o)?S_DOWN:S_KO,q.AIFFThrow.dir);o.VX=0;o.VY=0x240;},drop:q=>fallst(q,hpAlive(q)?S_DOWN:S_KO,q.FACE?-1:1)});return;}if(isDamnd(p)&&['damnd','throw'].includes(m?.kind)){SF2AIDamnd.step(p,{idle:toidle,gravity,sound:sfxc,release:relth,whistle:()=>{const voice={commands:[],sample:null,buffer:SF2AIDamnd.whistleBuffer,kind:'barrel-call',tick:G.tick};AI_SPECIAL_VOICES[p.i]={last:voice,projectile:voice};if(!muted&&!netReplaying&&AC&&MG)SF2AIDamnd.whistle(AC,MG);}});return;}if((VER.edition==='ce'||aiEnabled()&&!isFFGuest(p))&&window.SF2CEHONDAHOLD?.step(p,hondaHooks()))return;p.FBTK=(p.FBTK||0)+1;
+function spec0(p,input){if(aiEnabled()&&SF2AINativeGrabs.step(p,aiNativeGrabHooks()))return;const m=p.MV;if(isFFGuest(p)&&!isDamnd(p)&&['ff','throw'].includes(m?.kind)){ffAdapter(p).step(p,{idle:toidle,gravity,room:aiRoom,cost:(q,n)=>hpDamage(q,Math.min(n,Math.max(0,q.HP-1))),sound:code=>{if(isFFHero(p)){if(!muted&&!netReplaying)SF2AIHeroes.playSound(code,AC,MG);}else ffSound(p,code===0x12||code===0x1e?'shot':code===0x10?'weapon':code===0x2f?'land':code===0x2b?'throw':'special');},release:relth,anim:setanim,throwMove:THROW,grab:q=>trythrow(q,2,2),hold:q=>trythrow(q,1,1),cpu:q=>q.i===1&&!G.mode2p,releaseHeld:(q,keep=false)=>{Object.assign(q,{ST:S_AIR,STUN:0,KB:0,VX:keep?q.VX:0,VY:keep?q.VY:0,AY:keep?(q.AY||0x48):0x48,AX:0,JA:keep?0:1,JN:1,PJ:0});setanim(q,AN_JUMPN,0);},head:aiHeadPoint,invertedHead:aiInvertedHead,groundImpact:q=>{G.AISlamImpact={start:G.tick,slot:q.i};G.hfz=Math.max(G.hfz,10);if(!muted&&!netReplaying&&AC&&MG)SF2AIFF.playSound(13,AC,MG,{volume:.85,rate:.55,delay:.04});},finishedVictim:q=>!!AI_FINISHERS?.hidden(q),chokeDamage:(q,n)=>{hpDamage(q.opp,n,{special:true});aiBloodBurst(q.opp,0);},slam:q=>{const o=q.opp,v=q.THV;q.THV=null;o.AIFFSlamImpact=true;hpDamage(o,v.dmg,{special:true});aiBloodBurst(o,2,false,true);delete o.AIFFSlamImpact;o.ST=S_HIT;o.STUN=999;o.KB=o.VX=o.VY=0;},releaseSlam:q=>{const o=q.opp;delete o.AIFFHeld;o.Y=0;fallst(o,hpAlive(o)?S_DOWN:S_KO,q.AIFFThrow.dir);o.VX=0;o.VY=0x240;},drop:q=>fallst(q,hpAlive(q)?S_DOWN:S_KO,q.FACE?-1:1)});return;}if(isDamnd(p)&&['damnd','throw'].includes(m?.kind)){SF2AIDamnd.step(p,{idle:toidle,gravity,sound:sfxc,release:relth,whistle:()=>{const voice={commands:[],sample:null,buffer:SF2AIDamnd.whistleBuffer,kind:'barrel-call',tick:G.tick};AI_SPECIAL_VOICES[p.i]={last:voice,projectile:voice};if(!muted&&!netReplaying&&AC&&MG)SF2AIDamnd.whistle(AC,MG);}});return;}if((VER.edition==='ce'||aiEnabled()&&!isFFGuest(p))&&window.SF2CEHONDAHOLD?.step(p,hondaHooks()))return;p.FBTK=(p.FBTK||0)+1;
   if(VER.cur==='CE'&&window.SF2CETHROWS&&SF2CETHROWS.step(p,cethooks()))return;
 
   if(VER.cur==='CE'&&window.SF2CEBITE&&SF2CEBITE.step(p,{find:AI,anim:setanim,tick:animstep,idle:toidle,freeze:n=>{G.hfz=n;},hit:q=>sfxc(XS(q)&&XS(q).hit[2]),land:q=>sfxc(XS(q)&&0x2f)}))return;
@@ -1594,7 +1620,7 @@ function ceYogaHit(a,p){
  const box=[(a.x>>>16)-256+(a.face?-record[0]:record[0]),(a.y>>>16)-40+record[1],record[2],record[3]],region=hurtregion(box,d);if(region<0)return;
  const profile=SF2CECOMBAT.profile(p,d,region,{projectile:true,rawRecord:record,attackWorldBox:box});if(!profile)return;profile.source=a.source;
  const block=SF2CEREACTION.resolveBlock(d,record,region);if(!block)return;const result=SF2CECOMBAT.calculate(profile,rand,block);if(!result)return;
- const native={...result,...block,profile,reactionCode:SF2CEREACTION.reactionCode(d,record,region,block),nativeBlocked:block.blocked},before=d.ST,hp=d.HP;
+ const native={...result,...block,profile,reactionCode:SF2CESPECIAL.aiReaction(d,record,region,block),nativeBlocked:block.blocked},before=d.ST,hp=d.HP;
  const bl=applyhit(d,result.damage,result.strength,0,0,a.face?1:-1,result.chip,region,false,native,true),X=XS(p);a.health=a.kind===1?65534:65535;if(a.kind===1){const hurt=boxw(d,region);if(hurt)SF2CEPROJECTILES.bodyImpact(p,[(box[0]+hurt[0])>>1,(box[1]+hurt[1])>>1],{tick:G.tick,rand});}p.CEYogaMetrics.hits=(p.CEYogaMetrics.hits||0)+1;
  if(aiEnabled())aiContact(p,d,before,bl==='blk',hp-d.HP,false);sfxc(X&&(bl==='blk'?X.blk:X.fbhit),bl==='blk'?SN_BLOCK:SN_HIT[2]);
 }
@@ -2609,7 +2635,7 @@ function fighterBounds(p){
   return b;
 }
 function fighterArtBase(p){return SF2AIFF.heldArt(p,fighterArtBase0(p));}
-function fighterArtBase0(p){const finish=AI_FINISHERS?.sourceArt(p);if(finish)return finish;if(isFFGuest(p)){const nativeReaction=window.SF2CESPECIAL?.art(p,false);if(nativeReaction)return nativeReaction;return ffArt(p);}const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CESPECIAL?.art(p,alternate)||( VER.edition==='ce'?(window.SF2CEWINNER?.art(p,alternate)||window.SF2CEDIZZY?.art(p,alternate)):null)||window.SF2CEDHALSIM?.art(p,alternate)||window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:extra?.fixedPalette?extra.image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],nativeEyeFrame:extra?(extra.nativeEyeFrame??(p.F.frames.includes(extra.rect)?p.F.frames.indexOf(extra.rect):null)):ent(p)[0],alternate};}
+function fighterArtBase0(p){const finish=AI_FINISHERS?.sourceArt(p);if(finish)return finish;if(isFFGuest(p)){const nativeReaction=window.SF2CESPECIAL?.art(p,false);if(nativeReaction&&!p.anim?.name?.startsWith('ceDizzy'))return nativeReaction;return ffArt(p);}const alternate=p.i===1&&P[0].fid===p.fid&&!!FIA[p.fid].ready,extra=VER.cur==='CE'?(window.SF2CESPECIAL?.art(p,alternate)||( VER.edition==='ce'?(window.SF2CEWINNER?.art(p,alternate)||window.SF2CEDIZZY?.art(p,alternate)):null)||window.SF2CEDHALSIM?.art(p,alternate)||window.SF2CEHONDAHANDS?.art(p,alternate)||window.SF2CEVEGA?.art(p,alternate)||(VER.edition==='ce'?window.SF2CEROUND?.art(p,alternate):null)):null;return{image:extra?.fixedPalette?extra.image:aiSprite(p,extra?.image||(isEvilKen(p)?(p.i===1&&P[0].fighterKey===P[1].fighterKey?p.AIAtlasAlt:p.AIAtlas):aiEnabled()&&p.AIAtlas?p.AIAtlas:aiEnabled()&&['ryu','ken'].includes(p.aiProfile)&&(AICFG.prototype||P.some(q=>q.fid===p.fid&&q.aiProfile==='evil-'+p.aiProfile))?FI[p.fid]:p.i===1&&P[0].fid===P[1].fid&&FIA[p.fid].ready?FIA[p.fid]:FI[p.fid]),alternate&&!!extra),rect:extra?.rect||p.F.frames[ent(p)[0]],nativeEyeFrame:extra?(extra.nativeEyeFrame??(p.F.frames.includes(extra.rect)?p.F.frames.indexOf(extra.rect):null)):ent(p)[0],alternate};}
 function fighterArt(p){const base=fighterArtBase(p),art=aiEnabled()?aiFaceInjuryArt(p,aiClothesArt(p,base),base):base;const eyes=aiEnabled()?SF2AIEVIL.art(p,art,base.nativeEyeFrame):art;return AI_FINISHERS?.art(p,eyes)||eyes;}
 const aiWorldSurface=document.createElement('canvas');
 let aiWorldTop=-32,aiHorizontalInset=0;

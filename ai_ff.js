@@ -7,7 +7,7 @@ window.SF2AIFF=(()=>{
   sodom:{name:'Sodom',district:'Subway Ring',hp:340,speed:0x240,jump:0x650,point:[171,115],idle:'neutral',walk:'walk',hurt:'hurt',crouch:[42],fall:'fall',lie:'down',recover:'recover',throw:'jab',win:'entry',normal:[[25,24,25],[25,24,25],[25,24,25],[18,19],[18,19,20],[18,19,20]],specials:[['Katana Rush','sodom-charge','charge'],['Twin Blade Chops','sodom-double','slash'],['Heavy Sword Chop','sodom-chop','slash'],['Gut Buster','grab','jab']]},
   edi:{name:'Edi. E',district:'West Side',hp:330,speed:0x200,jump:0x5a0,point:[173,85],idle:[0,1,2,3],walk:[5,6,7,8],hurt:[17,18],crouch:[21],fall:[17,20,26],lie:[26],recover:[21,19,0],throw:[12,14,15],win:[9,4],normal:[[9,10,11],[9,10,11],[9,10,11],[11,12,13],[11,13,14],[9,10,11]],specials:[['Police Pistol','pistol',[24,25,28,29]],['Baton Rush','baton-rush',[9,10,11]],['Baton Smash','baton',[9,10,11]],['Arrest and Batter','grab-batter',[12,14,15]],['Pistol Burst','pistol-burst',[24,25,28,29]],['Left Holster Fire','pistol',[12,13,14]]]},
   rolento:{name:'Rolento',district:'Industrial Area',hp:300,speed:0x500,jump:0x740,point:[221,118],idle:[10,11],walk:[10,11,12,13],hurt:[8,25],crouch:[9],fall:[25,26,21],lie:[22],recover:[17,8,10],throw:[14,15],win:[0,1,2,3],normal:[[13,14,13],[13,15,13],[13,14,15,13],[17,18,19,17],[17,19,18,17],[17,18,19,17]],specials:[['Patriot Circle','spin',[13,14,15,14]],['Grenade Throw','grenade',[20]],['Wall Kick','wallkick',[9,5,6,7,18]],['Shoulder Toss','grab',[14,15]],['Grenade Barrage','grenade-barrage',[20]],['Grenade Retreat','retreat',[20,5,6,7]],['Wall Punch','wallpunch',[16]]]},
-  abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[4,5,6,7,8,9],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Spinning Piledriver','abigail-spd',[19,20,21]],['Power Punch','power',[15,16,18]]]},
+  abigail:{name:'Abigail',district:'Bay Area',hp:420,speed:0x1e0,jump:0x590,point:[260,130],idle:[4,5,6,7],walk:[4,5,6,7,8,9],hurt:[25],crouch:[20],fall:[22,24,23],lie:[23],recover:[25,26,4],throw:[19,21],win:[17,18],normal:[[17,18,17],[17,18,17],[15,16,17],[19,20,19],[19,21,19],[17,18,17]],specials:[['Rage Charge','rage',[10,11,12,13,14,15,16]],['Giant Throw','grab',[19,21]],['Hammer Punch','power',[19,21,18]],['Spinning Piledriver','abigail-spd',[19,20,21]],['Power Punch','power',[15,16,18]],['Choke Hold','hold',[19,21,19]]]},
   belger:{name:'Belger',district:'Uptown Penthouse',hp:320,speed:0x240,jump:0x630,point:[220,99],idle:[0,1,2,3],walk:[0,1,2,3,4,5],hurt:[9,10],crouch:[10],fall:[9,13,18],lie:[18],recover:[10,9,7],throw:[7,12],win:[7,8],normal:[[7,14,7],[7,15,7],[7,12,7],[10,8,10],[10,8,10],[7,8,7]],specials:[['Crossbow Volley','bolts',[7,14,15,16]],['Escape Leap','belger-hop',[9,8,7]],['Sky Bolt Rain','bolt-rain',[7,12]],['Escape Hop','belger-retreat',[9,8,7]],['Crossbow Butt','power',[7,12]]]},
   andore:{name:'Andore',district:'West Side Cage',hp:400,speed:0x200,jump:0x5f0,point:[161,96],idle:[0],walk:'neutral',hurt:'hurt',crouch:[11],fall:'fall',lie:'down',recover:'recover',throw:'strike',win:[6],normal:['jab','strike','strike','jab','strike','slam'],specials:[['Bull Rush','dash','rush'],['Chest Bump','power','strike'],['Headbutt','power','jab'],['Piledriver','grab','strike'],['Choke Hold','hold','strike'],['Flying Seat Drop','seatdrop',[18]]]},
  };
@@ -105,7 +105,7 @@ window.SF2AIFF=(()=>{
   const put=(i,n,seq,o)=>f.anims[i]=anim(p,n,seq,o),one=(s,t=7)=>[sequence(p,s)[0]].map(([f])=>[f,t]);
   put(0,'idle',one(p.idle,12),{loop:true});put(1,'walkf',p.walk,{loop:true});put(2,'walkb',sequence(p,p.walk).reverse(),{loop:true});
   put(3,'crouch',[...one(p.idle,2),...one(p.crouch,3),...one(p.crouch,8)],{loop:true,crouch:true});f.anims[3].loop=2;put(4,'standup',[...one(p.crouch,3),...one(p.idle,3)]);
-  const jumpFrame={sodom:0,edi:17,rolento:18,abigail:20,belger:9,andore:11}[p.id];for(let i=5;i<=7;i++)put(i,['jumpn','jumpf','jumpb'][i-5],[[jumpFrame,12]],{loop:true});
+  const jumpFrame={sodom:0,edi:17,rolento:18,abigail:27,belger:9,andore:11}[p.id];for(let i=5;i<=7;i++)put(i,['jumpn','jumpf','jumpb'][i-5],[[jumpFrame,12]],{loop:true});
   for(let b=0;b<6;b++)for(const base of[8,14,47,53,59]){let seq=sequence(p,p.normal[b]);if(seq.length<3)seq=[...one(p.idle,4),...seq,...one(p.idle,8)];else seq=[...one(base===14?p.crouch:p.idle,b%3===2?7:4),...seq,...one(base===14?p.crouch:p.idle,8)];put(base+b,'ff'+base+'_'+b,seq,{attack:true,strength:b%3,low:base===14,crouch:base===14,kd:base===14&&b===5});}
   for(let i=20;i<=25;i++)put(i,'ffHit'+i,p.hurt);put(26,'blockS',one(p.idle),{loop:true});put(27,'blockC',one(p.crouch),{loop:true,crouch:true});put(28,'fall',p.fall);put(29,'lie',p.lie);put(30,'getup',p.recover);put(31,'win',p.win,{loop:true});put(46,'throw',p.throw);put(103,'ffDizzy',p.hurt,{loop:true});put(104,'ffBurn',p.hurt);
   f.moves=p.specials.map(([name,style,pose],i)=>{const a=p.id==='andore'&&i===5?112:[100,101,102,105,106,107,126][i],source=sequence(p,pose),seq=[...one(p.idle,6),...source,...one(p.idle,12)];if(['spin','dash'].includes(style))seq.splice(1,0,...source,...source);put(a,name,seq,{attack:!['bullet','burst','grenade','rain','retreat','grenade-barrage','hold','pistol','pistol-burst','grab-batter','bolts','bolt-rain','belger-hop','belger-retreat','abigail-spd'].includes(style),strength:2,kd:!['dash','spin'].includes(style)});if(style==='dash'&&p.id==='andore')f.anims[a].ents.forEach((e,j)=>{if(j>0&&j<f.anims[a].ents.length-1){e[6]=[-40,48,28,28];e[7]=24;}});return{name,kind:'ff',style,a,inp:['qcf','qcf','dp','qcb','qcb','hcf','dp'][i],btn:['P','K','P','P','K','P','P'][i],role:['grab','grab-batter','hold','power','baton','sodom-chop','sodom-double','abigail-spd'].includes(style)?'near':style==='rise'?'rise':['dash','sodom-charge','rage','baton-rush','bullet','burst','pistol','pistol-burst','bolts','bolt-rain','grenade','grenade-barrage','rain'].includes(style)?'far':'mid'};});
@@ -154,6 +154,7 @@ window.SF2AIFF=(()=>{
    Object.assign(f.moves[3],{inp:'360',btn:'P'});
    for(const slot of[101,105])f.anims[slot].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
    put(111,'Abigail Piledriver Grip',[[19,10]],{loop:true});put(112,'Abigail Piledriver Squat',[[20,12]],{loop:true});put(113,'Abigail Piledriver Spin',p.data.spinningPile.frames.map(i=>[i,4]),{loop:true});put(114,'Abigail Piledriver Landing',[[p.data.spinningPile.frames[0],12],[26,8],[4,8]]);put(115,'Abigail Piledriver Lift',[[21,12]],{loop:true});
+   put(133,'Abigail Choke Grip',[[19,20],[21,6],[19,10]],{loop:true});
    put(107,'Abigail Throw Grip',[[19,9]],{loop:true});put(108,'Abigail Throw Lift',[[21,12]],{loop:true});put(109,'Abigail Throw Recovery',[[17,20],[4,8]]);
   }
   if(p.id==='sodom'){
@@ -253,7 +254,8 @@ window.SF2AIFF=(()=>{
  function swordCPU(player,danger){const w=player.AIFFSword;if(player.aiProfile!=='sodom'||!w||w.phase!=='floor'||danger||player.HP<=0||player.opp.HP<=0)return null;const dx=w.x-player.X/256;return Math.abs(dx)<=22?8|16:dx>0?2:1;}
  function bind(player,native,id){const p=get(id);player.F=clone(build(p,native));player.AIAtlas=player.AIAtlasAlt=p.image;player.ft=[p.speed,p.speed*.72|0,[0,0,p.jump,0x40],[-0x240,0,p.jump,0x40],[0x280,0,p.jump,0x40]];}
  function art(player){const p=get(player.aiProfile),f=player.F;let frame;
-  if(player.DIZZY===2)frame=sequence(p,p.hurt)[Math.floor((player.STUN||0)/10)%sequence(p,p.hurt).length][0];
+  if(player.DIZZY===2)frame=sequence(p,p.hurt)[Math.floor((player.STUN||player.CESpecial?.remaining||player.CESpecial?.age||0)/10)%sequence(p,p.hurt).length][0];
+  else if(player.CESpecial&&player.anim?.name?.startsWith('ceDizzy40_')){const recovery=f.anims[30].ents;frame=recovery[Math.min(recovery.length-1,Math.floor(player.aidx/Math.max(1,player.anim.ents.length)*recovery.length))][0];}
   else if(player.CESpecial&&player.anim?.name?.startsWith('ceSpecialBurn'))frame=sequence(p,p.hurt)[0][0];
   else if(player.anim?.guest)frame=player.anim.ents[Math.min(player.aidx,player.anim.ents.length-1)][0];
   else frame=f.anims[[7,8].includes(player.ST)?player.Y>8*256?28:29:player.ST===10?30:player.ST===5?22:0].ents[0][0];
@@ -288,18 +290,22 @@ window.SF2AIFF=(()=>{
  }
  function abigailNormals(pack,f){
   if(pack.id!=='abigail')return;
-  const source=pack.image,hand=f.frames[19],proof=[],append=(bodyIndex,name)=>{const body=f.frames[bodyIndex],c=document.createElement('canvas');c.width=body[2]+4;c.height=body[3];const g=c.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(source,...body.slice(0,4),4,0,body[2],body[3]);g.clearRect(4,26,16,15);g.drawImage(source,hand[0],hand[1]+11,22,16,0,20,22,16);proof.push({name,body:bodyIndex,bodyShift:[4,0],erase:[4,26,16,15],hand:19,handSource:[0,11,22,16],handDestination:[0,20],canvas:c,origin:[body[4]-4,body[5]]});return c;};
-  append(17,'prep');append(18,'palm');append(f.crouchPunch.frame,'low');
-  const atlas=document.createElement('canvas');atlas.width=source.width;atlas.height=source.height+Math.max(...proof.map(q=>q.canvas.height))+2;const g=atlas.getContext('2d');g.imageSmoothingEnabled=false;g.drawImage(source,0,0);let x=0;for(const q of proof){g.drawImage(q.canvas,x,source.height+1);q.frame=f.frames.length;f.frames.push([x,source.height+1,q.canvas.width,q.canvas.height,...q.origin]);x+=q.canvas.width+2;delete q.canvas;}pack.image=atlas;f.abigailPalm={prep:proof[0].frame,frame:proof[1].frame,low:proof[2].frame,proof};
-  for(const base of[8,47,53,59])for(let button=0;button<6;button++){const strength=button%3,palm=button>=3,prep=palm?proof[0].frame:17,frame=palm?proof[1].frame:18,a=anim(pack,'Abigail '+(palm?'Open Palm':'Fist')+' '+base+' '+strength,[[17,[3,6,10][strength]],[18,[3,5,7][strength]],[17,[6,10,16][strength]]]);a.ents[0][0]=a.ents[2][0]=prep;a.ents[1][0]=frame;Object.assign(a.ents[1],{6:palm?[-64,74,24,16]:[-61,70,22,13],7:[10,17,25][strength],8:strength,10:base>=53?-1:0});a.normalTiming={strength,startup:[3,6,10][strength],total:[12,21,33][strength]};f.anims[base+button]=a;}
-  for(let button=0;button<6;button++){const strength=button%3;f.anims[14+button].normalTiming={strength,startup:[3,6,10][strength],total:[12,21,33][strength]};if(button>=3)for(const e of f.anims[14+button].ents)if(e[6]?.[2]){e[0]=proof[2].frame;e[6]=[-68,60,26,15];}}
+  // Complete original palms retain the native wrist, elbow and shoulder.
+  // Crouching frame20 also preserves the approved original waist/legs.
+  f.abigailPalm={prep:17,frame:19,low:20,sourceFrames:true,proof:[17,19,20].map(frame=>({frame,sourceRect:f.frames[frame].slice()}))};
+  for(const base of[8,47,53,59])for(let button=0;button<6;button++){
+   const strength=button%3,palm=button>=3,frame=palm?19:18,a=anim(pack,'Abigail '+(palm?'Open Palm':'Fist')+' '+base+' '+strength,[[17,[3,6,10][strength]],[frame,[3,5,7][strength]],[17,[6,10,16][strength]]]);
+   Object.assign(a.ents[1],{6:palm?[-63,88,24,16]:[-61,70,22,13],7:[10,17,25][strength],8:strength,10:base>=53?-1:0});a.normalTiming={strength,startup:[3,6,10][strength],total:[12,21,33][strength]};f.anims[base+button]=a;
+  }
+  for(let button=0;button<6;button++){const strength=button%3;f.anims[14+button].normalTiming={strength,startup:[3,6,10][strength],total:[12,21,33][strength]};if(button>=3)for(const e of f.anims[14+button].ents)if(e[6]?.[2]){e[0]=20;e[6]=[-59,62,26,15];}}
+
  }
  function bodyScale(player){return get(player.aiProfile)?.data.sizeAdjustment?.factor||1;}
  function mouth(player){const scale=bodyScale(player),r=art(player).rect,lying=player.cur===29,x=lying?r[4]+r[2]*.72:-12*scale;return{x:player.X/256+(player.FACE?-x:x),y:player.Y/256+(lying?12*scale:Math.min(98*scale,Math.max(35*scale,-r[5]-17*scale)))};}
  function start(player,m,str,h){if(['bullet','burst','grenade','rain','retreat','grenade-barrage','pistol','pistol-burst','bolts','bolt-rain'].includes(m.style)&&player.FBON&&!(player.aiProfile==='edi'&&m.style==='pistol'))return false;Object.assign(player,{ST:11,MV:m,SPSTR:str,SPK:1,SPKD:['dash','spin'].includes(m.style)?0:1,RETCR:0,KB:0,hitdone:0,AIFFMove:{age:0,phase:-1,launched:false,shots:0,dir:player.FACE?1:-1,fromAir:player.Y>0}});h.anim(player,!swordEquipped(player)&&m.style==='sodom-double'?128:!swordEquipped(player)&&m.style==='sodom-chop'?129:m.a,0);h.sound(0x25);return true;}
  function spawn(player,type,age){const dir=player.FACE?1:-1;player.AIFFProjectile={type,age:0,dir,strength:player.SPSTR};player.FBON=1;player.FBK='ff-'+type;player.FBDEF=null;player.FBAN=null;player.FBIMPACT=0;player.FBX=type==='rain'?player.opp.X-dir*30*256:player.X+dir*40*256;player.FBY=(type==='grenade'?84:type==='rain'?150:68)*256;player.FBVX=dir*(type==='grenade'?0x300:type==='rain'?0x60:0x580);player.AIFFProjectile.vy=type==='grenade'?0x280:type==='rain'?-0x480:0;}
  function step(player,h){const p=get(player.aiProfile),m=player.MV,s=player.AIFFMove;
-  if(m?.kind==='throw'&&player.AIFFHold){if(player.AIFFHold.kind==='batter')batterStep(player,h);else holdStep(player,h);return;}
+  if(m?.kind==='throw'&&player.AIFFHold){if(player.AIFFHold.kind==='batter')batterStep(player,h);else if(player.AIFFHold.kind==='abigail-choke')abigailChokeStep(player,h);else holdStep(player,h);return;}
   if(m?.kind==='throw'&&player.AIFFThrow){if(player.AIFFThrow.kind==='abigail-spd')abigailPileStep(player,h);else if(player.AIFFThrow.kind==='shoulder')shoulderStep(player,h);else if(player.AIFFThrow.kind==='toss')tossStep(player,h);else pileStep(player,h);return;}
   if(m?.kind==='throw'){if(player.THV){player.opp.X=player.X-player.THV.d*28*256;player.opp.Y=0;player.opp.STUN=999;if(--player.THV.t<=0)h.release(player);}if(--player.SCNT<=0)h.idle(player);return;}
   if(!s||m?.kind!=='ff')return;s.age++;
@@ -309,6 +315,7 @@ window.SF2AIFF=(()=>{
   if(p.id==='belger'){belgerStep(player,h);return;}
   if(p.id==='edi'){ediStep(player,h);return;}
   if(p.id==='abigail'&&m.style==='rage'){rageStep(player,h);return;}
+  if(p.id==='abigail'&&m.style==='hold'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.hold(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='abigail'&&['grab','abigail-spd'].includes(m.style)){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&(m.style==='abigail-spd'?[0,1,3,4,5,6]:[0,3,4,5,6]).includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='rolento'&&m.style==='grab'){if(s.age===8&&Math.abs(player.X-player.opp.X)<=64*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0&&player.opp.HP>0)h.grab(player);else if(s.age>=28){delete player.AIFFMove;h.idle(player);}return;}
   if(p.id==='rolento'&&['grenade','grenade-barrage','retreat','wallkick','wallpunch'].includes(m.style)){rolentoStep(player,h);return;}
@@ -336,7 +343,7 @@ window.SF2AIFF=(()=>{
   if(m.style==='grab'&&s.age===8&&Math.abs(player.X-player.opp.X)<76*256&&[0,3,4,5,6].includes(player.opp.ST)&&player.opp.Y===0){player.THV={t:12,dmg:p.id==='andore'?40:34,d:player.FACE?-1:1};player.MV=h.throwMove;player.SCNT=32;player.hitdone=1;Object.assign(player.opp,{ST:5,STUN:999,KB:0,RETCR:0});h.anim(player.opp,22,0);return;}
   const end=m.style==='burst'?s.age>=55:player.adone||s.age>85;if(end&&!['rise','vault','retreat'].includes(m.style)){delete player.AIFFMove;h.idle(player);}
  }
- function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='rolento')return shoulderStart(player,h);if(p.id==='edi'||p.id==='sodom')return batterStart(player,h);if(p.id==='abigail')return player.MV?.style==='abigail-spd'?abigailPileStart(player,h):tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
+ function throwStart(player,atk,h){const p=get(player.aiProfile);if(p.id==='rolento')return shoulderStart(player,h);if(p.id==='edi'||p.id==='sodom')return batterStart(player,h);if(p.id==='abigail'&&player.MV?.style==='hold')return abigailChokeStart(player,h);if(p.id==='abigail')return player.MV?.style==='abigail-spd'?abigailPileStart(player,h):tossStart(player,h);if(p.id==='andore'&&!h.special)return holdStart(player,h);
   if(p.id==='andore'){
    const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:121,THV:{t:999,dmg:40,d:player.FACE?1:-1},hitdone:1,AIFFThrow:{age:0,phase:'grip',dir:player.FACE?1:-1}});
    Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,121,0);h.anim(o,22,0);headGrip(player,h,player.AIFFThrow.dir);h.sound(0x2b);return true;
@@ -398,6 +405,7 @@ window.SF2AIFF=(()=>{
  }
  function batterStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{kind:'batter',age:0,pulses:0,dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
  function batterStep(player,h){const s=player.AIFFHold,o=player.opp;s.age++;
+  if(player.HP<=0){cancelThrow(player,h);h.drop?.(player);return;}
   if(!player.THV||o.HP<=0){holdRelease(player,h,true);return;}
   o.X=player.X+s.dir*47*256;o.Y=0;o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;
   const gut=player.aiProfile==='sodom';
@@ -420,7 +428,7 @@ window.SF2AIFF=(()=>{
   if(s.phase!=='recover')abigailHeadGrip(player,h);
   if(s.age>=49){delete player.AIFFThrow;h.idle(player);}
  }
- function abigailHeadGrip(player,h){const o=player.opp,dir=player.AIFFThrow?.dir??(player.FACE?1:-1),frame=player.anim?.ents[player.aidx]?.[0],local=get('abigail').data.handAnchors?.[frame]||[63,88],head=h.head?.(o),x=player.X/256+dir*local[0],y=player.Y/256+local[1];if(head){o.X=Math.round((x-(head.x-(o.X>>8)))*256);o.Y=Math.round((y-(head.y-(o.Y>>8)))*256);}else{o.X=player.X+dir*40*256;o.Y=20*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
+ function abigailHeadGrip(player,h){const o=player.opp,dir=player.AIFFThrow?.dir??player.AIFFHold?.dir??(player.FACE?1:-1),frame=player.anim?.ents[player.aidx]?.[0],local=get('abigail').data.handAnchors?.[frame]||[63,88],head=h.head?.(o),x=player.X/256+dir*local[0],y=player.Y/256+local[1];if(head){o.X=Math.round((x-(head.x-(o.X>>8)))*256);o.Y=Math.round((y-(head.y-(o.Y>>8)))*256);}else{o.X=player.X+dir*40*256;o.Y=20*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
  function abigailPileStart(player,h){const o=player.opp,dir=player.FACE?1:-1;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:46,d:dir},hitdone:1,AIFFThrow:{kind:'abigail-spd',age:0,phase:'grip',dir}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,AIFFHeld:{owner:player.i,inverted:false}});h.anim(player,111,0);h.anim(o,22,0);if(h.head?.(o)?.y-o.Y/256>88)h.anim(o,27,0);abigailHeadGrip(player,h);h.sound(0x2b);return true;}
  function abigailPileGrip(player,h,impact=false){const o=player.opp,head=h.invertedHead?.(o),x=player.X/256,y=player.Y/256+12;if(head){o.X+=Math.round((x-head.x)*256);o.Y=impact?Math.round(head.minimumY*256):o.Y+Math.round((y-head.y)*256);}else{o.X=player.X;o.Y=player.Y+60*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
  function abigailPileStep(player,h){const s=player.AIFFThrow,o=player.opp;s.age++;
@@ -438,6 +446,22 @@ window.SF2AIFF=(()=>{
  function boltFrame(b){const n=SF2AIFFData.belger.nativeRecovery.projectiles,seq=b.rain?n.upward:b.diagonal?n.diagonal:n.horizontal;let age=Math.max(0,b.age-(b.rain?1:0));for(const[f,t]of seq){if(age<t)return f;age-=t;}return seq[seq.length-1][0];}
  function bulletDraw(ctx,player,camera,ground){ctx.save();ctx.imageSmoothingEnabled=false;for(const b of player.AIFFBullets||[]){if(b.hit)continue;ctx.save();ctx.translate(Math.round(b.x-camera),Math.round(ground-b.y));if(b.type==='bolt'){if(b.dir>0)ctx.scale(-1,1);const pack=get('belger'),r=pack.data.frames[boltFrame(b)];ctx.drawImage(pack.image,...r.slice(0,4),r[4],r[5],r[2],r[3]);}else{if(b.dir>0)ctx.scale(-1,1);ctx.drawImage(bulletImage,-5,-1);}ctx.restore();}ctx.restore();}
  function holdStart(player,h){const o=player.opp;delete player.AIFFMove;Object.assign(player,{MV:h.move,ST:11,SPK:0,SPKD:0,RETCR:0,KB:0,Y:0,VX:0,VY:0,THAN:111,THV:{t:999,dmg:0,d:player.FACE?1:-1},hitdone:1,AIFFHold:{age:0,pulses:0,escape:0,walk:0,ownerPrevious:player.AIButtons?.raw||0,ownerDirections:player.KEYS&15,previous:((o.AIButtons?.raw||0)|(o.KEYS&15)),dir:player.FACE?1:-1}});Object.assign(o,{ST:5,STUN:999,KB:0,RETCR:0,VX:0,VY:0,Y:0,AIFFHeld:{owner:player.i,inverted:false,choke:true}});h.anim(player,111,0);h.anim(o,22,0);h.sound(0x2b);return true;}
+ function abigailChokeStart(player,h){
+  holdStart(player,h);Object.assign(player.AIFFHold,{kind:'abigail-choke',previous:((player.opp.AIButtons?.raw||0)|(player.opp.KEYS&15))});player.THAN=133;h.anim(player,133,0);abigailHeadGrip(player,h);return true;
+ }
+ function abigailChokeStep(player,h){
+  const s=player.AIFFHold,o=player.opp;s.age++;
+  if(!player.THV||o.HP<=0){holdRelease(player,h,true);return;}
+  const raw=(o.AIButtons?.raw||0)|(o.KEYS&15),fresh=(raw&~s.previous)&1008,direction=raw&15;
+  let points=(fresh?2:0)+(direction&&direction!==(s.previous&15)?1:0);s.previous=raw;
+  if(h.cpu?.(o)&&s.age>18&&s.age%6===0)points+=2;s.escape=Math.min(14,s.escape+Math.min(3,points));
+  if(s.escape>=14||s.age>=180){s.escaped=s.escape>=14;holdRelease(player,h,false);return;}
+  // Original grip/lift poses animate the squeeze; no invented hand composite.
+  const phase=s.age%36,index=phase<20?0:phase<26?1:2;
+  if(player.cur!==133||player.aidx!==index)h.anim(player,133,index);player.acc=-1;
+  abigailHeadGrip(player,h);
+  if(s.age>=20&&(s.age-20)%30===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0||h.finishedVictim?.(o))holdRelease(player,h,true);}
+ }
  function holdStep(player,h){const s=player.AIFFHold,o=player.opp;s.age++;
   const attack=player.AIButtons?.raw||0,punch=(attack&~s.ownerPrevious)&112,jump=!!(player.KEYS&4)&&!(s.ownerDirections&4);s.ownerPrevious=attack;s.ownerDirections=player.KEYS&15;
   if(!s.airborne&&(attack&288)===288){delete o.AIFFHeld;delete player.AIFFHold;player.THV=null;throwStart(player,2,{...h,move:h.throwMove,special:true});return;}
@@ -459,7 +483,7 @@ window.SF2AIFF=(()=>{
   }
   const phase=s.age>=20?(s.age-20)%24:24,shaking=phase<10;const move=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);if(move){const room=h.room(),margin=96;player.X=Math.max((room.left+margin)*256,Math.min((room.right-margin)*256,player.X+move*0x180));s.walk++;}const chokeAnim=move?(shaking?115:114):111,chokeIndex=move?Math.floor(s.walk/4)%6:shaking?((phase>>1)%2):0;if(player.cur!==chokeAnim||player.aidx!==chokeIndex)h.anim(player,chokeAnim,chokeIndex);player.acc=-1;
   headGrip(player,h,s.dir);
-  if(s.age>=20&&(s.age-20)%24===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0){holdRelease(player,h,true);return;}h.anim(o,22,0);}
+  if(s.age>=20&&(s.age-20)%24===0){s.pulses++;h.chokeDamage(player,4);h.sound(0x2b);if(o.HP<=0||h.finishedVictim?.(o)){holdRelease(player,h,true);return;}h.anim(o,22,0);}
  }
  function headGrip(player,h,dir){const o=player.opp,grip=art(player).rect,head=h.head?.(o),gx=player.X/256+dir*(-grip[4]-4),gy=player.Y/256-grip[5]-10;if(head){o.X=Math.round((gx-(head.x-o.X/256))*256);o.Y=Math.round((gy-(head.y-o.Y/256))*256);}else{o.X=player.X+dir*24*bodyScale(player)*256;o.Y=38*bodyScale(player)*256;}o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}
  function invertedGrip(player,h,dir,impact=false){const o=player.opp,scale=bodyScale(player),squat=player.cur===116||impact,head=h.invertedHead?.(o),x=player.X/256-dir*(squat?2:12)*scale,y=player.Y/256+(squat?14:8)*scale;if(head){o.X+=Math.round((x-head.x)*256);o.Y=Math.max(Math.round(head.minimumY*256),o.Y+Math.round((y-head.y)*256));}else{o.X=player.X+dir*7*scale*256;o.Y=player.Y+66*scale*256;}if(impact&&head)o.Y=Math.round(head.minimumY*256);o.ST=5;o.STUN=999;o.KB=o.VX=o.VY=0;}

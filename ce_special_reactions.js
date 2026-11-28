@@ -74,10 +74,17 @@ module.exports={step(bytes,entry,D,h){
 
 return module.exports;})();
  function register(p){if(registered.has(p.F))return registered.get(p.F);const poses={};for(const a of Object.values(D.fighters[p.fid])){const slot=p.F.anims.length;p.F.anims.push({...a,ents:a.ents.map(e=>e.map(v=>Array.isArray(v)?v.slice():v)),flags:a.flags.slice()});for(let i=0;i<a.ents.length;i++)poses[a.source+24*i]=[slot,i];}Object.assign(SF2CESHADOWDATA.selectors,D.shadows);Object.assign(SF2CEREACTIONDATA.postures,D.postures);const r={poses};registered.set(p.F,r);return r;}
- const accepts=(p,reaction)=>!!reaction?.record&&[24,26,34].includes(reaction.reactionCode)&&(p.Y>>8)===0;
+ const accepts=(p,reaction)=>!!reaction?.record&&[24,26,34].includes(reaction.reactionCode)&&((p.Y>>8)===0||window.SF2?.edition==='ai'&&[24,34].includes(reaction.reactionCode)&&!!(window.SF2AIFF?.get(p.aiProfile)||window.SF2AIHeroes?.get(p.aiProfile)||p.aiProfile==='damnd'));
  function reset(p){delete p.CESpecial;}
  function interrupt(p){if(!p.CESpecial)return;reset(p);SF2CEDIZZY.interrupt(p);}
- function describe(p,d,region){const record=SF2CECOMBAT.record(p);if(!record)return null;const reactionCode=SF2CEREACTION.reactionCode(d,record,region,{});return [24,26,34].includes(reactionCode)?{record,reactionCode,strength:record[8],profile:{projectile:false}}:null;}
+ // AI guests reuse the native burn fall from their current airborne height.
+ // The record still supplies the actual orange/blue reaction, never move names.
+ function aiReaction(d,raw,region,block){
+  const native=SF2CEREACTION.reactionCode(d,raw,region,block);
+  const guest=window.SF2?.edition==='ai'&&!!(window.SF2AIFF?.get(d.aiProfile)||window.SF2AIHeroes?.get(d.aiProfile)||d.aiProfile==='damnd');
+  return native===null&&guest&&(d.Y>>8)>0&&!block?.blocked&&raw[7]>=3&&[24,34].includes(raw[11])?raw[11]:native;
+ }
+ function describe(p,d,region){const record=SF2CECOMBAT.record(p);if(!record)return null;const reactionCode=aiReaction(d,record,region,{});return [24,26,34].includes(reactionCode)?{record,reactionCode,strength:record[8],profile:{projectile:false}}:null;}
  function start(p,reaction,dir,h,fatal=false){
   const dc=SF2CEDIZZY.state(p),raw=reaction.record,kind=raw[5]&255;
   dc.activeDizzy=dc.dizzy=0;dc.fall=dc.pending=null;dc.legacy=false;p.DIZZY=0;
@@ -104,5 +111,5 @@ return module.exports;})();
  function physical(G,P){const s=G.CESpecialSlow;if(s?.pending){if(P[s.victim].CEKO?.stop>0)return true;s.pending=false;s.gate=180;}if(!s?.gate)return true;s.gate--;s.divider--;if(!s.divider){s.divider=s.period;return true;}return false;}
  function aiKO(G,P){const p=P.find(p=>p.CESpecial?.fatal);if(p){G.slow=0;G.CESpecialSlow={pending:true,victim:p.i,gate:0,divider:3,period:3};return true;}return false;}
  function gateObject(a,P,h){const p=P[a.parent===0x83be?0:1];if(!a.bypass&&(p.CESpecial?.bytes[0x47]||p.CEKO?.stop||p.CERSTOP?.ticks||0))return false;h.world.CESpecialSlow={gate:a.child?180:60,divider:a.child?3:2,period:a.child?3:2};return true;}
- window.SF2CESPECIAL={ready,register,accepts,reset,interrupt,describe,start,body,art,aiObjects,physical,gateObject,aiKO};
+ window.SF2CESPECIAL={ready,register,accepts,reset,interrupt,aiReaction,describe,start,body,art,aiObjects,physical,gateObject,aiKO};
 })();
