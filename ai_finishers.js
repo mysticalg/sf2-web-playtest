@@ -125,7 +125,7 @@ window.SF2AIFINISHERS=(()=>{
    const [w,d]=actors(),a=s.parts.parts[0],p=host.mouth?.(d)||cutPoint(a);s.recoil=5;s.stageContacts++;
    const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail();if(!special)s.pause=Math.round(3*(1-s.stage/s.plan.buttons.length)**3);
    if(s.stage===5&&!s.controlled){s.launched=c.tick;event('launch');}
-   if(s.stage===s.plan.buttons.length&&canFinish&&!s.finalStrike){s.finalStrike=true;host.finalImpact?.({winner:w,victim:d,request:s.request});detach(['arm-left','arm-right','leg-left','leg-right','head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});event('final-strike');}
+   if(s.stage===s.plan.buttons.length&&canFinish&&!s.finalStrike){s.finalStrike=true;s.trails.length=0;event('trails-stopped');host.finalImpact?.({winner:w,victim:d,request:s.request});detach(['arm-left','arm-right','leg-left','leg-right','head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});event('final-strike');}
   }
   function section(){if(state.controlled&&state.stage<state.plan.buttons.length)return state.posture==='airborne'?'air':state.posture;return state.stage<5?'ground':state.stage===5?'launch':state.stage<state.plan.buttons.length?'air':'special';}
   function contactInterval(){return state.plan.exceptional&&state.stage/state.plan.buttons.length>=.75?3:10;}
@@ -180,7 +180,7 @@ window.SF2AIFINISHERS=(()=>{
   }
   function sampleTrail(){
    const s=state,c=context(),[w]=actors();s.trails=s.trails.filter(t=>c.tick-t.tick<config.trailLife);
-   if(!s.contacts||s.lastTrail>=0&&c.tick-s.lastTrail<10)return;s.lastTrail=c.tick;const art=host.art(w);if(!art?.image)return;
+   if(s.finalStrike||!s.contacts||s.lastTrail>=0&&c.tick-s.lastTrail<10)return;s.lastTrail=c.tick;const art=host.art(w);if(!art?.image)return;
    const fixed=copyArt(art),black=canvas(fixed.image.width,fixed.image.height),g=black.getContext('2d');g.drawImage(fixed.image,0,0);g.globalCompositeOperation='source-in';g.fillStyle='#000';g.fillRect(0,0,black.width,black.height);
    s.trails.push({image:fixed.image,black,rect:fixed.rect,x:w.X/256,y:w.Y/256,face:w.FACE,tick:c.tick});if(s.trails.length>config.trails)s.trails.shift();
   }

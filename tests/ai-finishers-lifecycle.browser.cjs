@@ -63,12 +63,12 @@ const{chromium,install,artifacts,url}=require('./browser-runtime.cjs'),fs=requir
   if(r.test==='render-pure'&&!r.pure||r.test==='paused-cinematic'&&r.ageBefore!==r.ageAfter)bad.push(r);
   if(r.test==='cleanup'&&(r.reached!==r.phase||r.active||r.protect||r.attached||r.action!=='skip'&&r.retained||r.action==='skip'&&r.wins!==2||r.action==='reset'&&r.hp<=0))bad.push(r);
   if(r.test==='real-pile-interrupt'&&(!r.attached||!r.pure)||r.test==='pile-cleanup'&&(r.held||r.protect||r.wins!==2))bad.push(r);
-  if(r.test==='result-persistence'&&(r.scene!=='win'||r.phase!=='result'||r.trails!==9||r.pieces!==6||!r.stains))bad.push(r);
+  if(r.test==='result-persistence'&&(r.scene!=='win'||r.phase!=='result'||r.trails!==0||r.pieces!==6||!r.stains))bad.push(r);
   if(r.test==='configured-auto-return'&&(r.scene!=='select'||!Array.isArray(r.grid)||r.prototype||r.retained||r.protected))bad.push(r);
   if(r.test==='configured-return-reselect'&&(r.chosen!=='sodom'||r.profile!=='sodom'||r.scene!=='fight'||r.active||r.protected))bad.push(r);
   if(r.test==='cpu-automatic'&&(r.phase!=='result'||r.wins!==2)||r.test==='edition-clear'&&(r.edition!=='ce'||r.active||r.retained||r.marks))bad.push(r);
   if(r.test==='native-error-fallback'&&(r.phase!=='idle'||r.hp!==0||r.protect||r.wins!==2||!r.reason?.startsWith('host-error:')))bad.push(r);
-  if(r.test==='bounded-blood'&&(r.phase!=='result'||r.maximum>384||r.stains!==1536||r.pieces!==6||r.trails!==9))bad.push(r);
+  if(r.test==='bounded-blood'&&(r.phase!=='result'||r.maximum>384||r.stains!==1536||r.pieces!==6||r.trails!==0))bad.push(r);
   if(r.test==='watchdog'&&(r.phase!=='idle'||r.fallbacks!==1||r.clears!==1))bad.push(r);
  }
  console.log(JSON.stringify({cases:result.rows.length,errors,bad},null,2));assert.deepEqual(errors,[]);assert.deepEqual(bad,[]);await browser.close();

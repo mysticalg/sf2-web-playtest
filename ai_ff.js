@@ -130,7 +130,7 @@ window.SF2AIFF=(()=>{
    put(110,'Rolento Wall Kick Dive',[[18,5],[19,5]],{loop:true});for(const e of f.anims[110].ents)Object.assign(e,{6:[-45,20,35,32],7:30,8:2,9:1,10:-1});
    put(123,'Rolento Wall Brace',[[17,5]],{loop:true});put(124,'Rolento Wall Punch Dive',[[16,12]],{loop:true});Object.assign(f.anims[124].ents[0],{6:[-38,52,34,28],7:32,8:2,9:1,10:-1});put(125,'Rolento Wall Dive Landing',[[9,5],[10,7]]);
    f.anims[126].ents.forEach(e=>{e[6]=[0,0,0,0];e[7]=0;});
-   put(102,'Rolento Wall Kick',[[9,5],...p.data.acrobaticFrames.map(i=>[i,3]),[18,12],[10,8]],{attack:false});put(117,'Rolento Acrobatic Roll',p.data.acrobaticFrames.map(i=>[i,3]),{loop:true});
+   put(102,'Rolento Wall Kick',[[9,5],...p.data.acrobaticFrames.map(i=>[i,3]),[18,12],[10,8]],{attack:false});put(117,'Rolento Acrobatic Roll',p.data.acrobaticFrames.map(i=>[i,5]),{loop:true});
    for(let i=5;i<=7;i++)put(i,['jumpn','jumpf','jumpb'][i-5],p.data.acrobaticFrames.map(frame=>[frame,3]),{loop:true});
    for(const base of[53,59])for(let strength=0;strength<3;strength++){const a=put(base+3+strength,'Rolento Flying Kick '+strength,[[17,[3,6,10][strength]],[18,[3,5,7][strength]],[17,[6,10,16][strength]]]);Object.assign(a.ents[1],{6:[-45,20,35,28],7:[10,17,25][strength],8:strength,10:-1});}
    // Compact rolling bodies do not retain the empty standing push-box space.
@@ -500,7 +500,11 @@ window.SF2AIFF=(()=>{
  function rolentoStep(player,h){const s=player.AIFFMove,m=player.MV,a=s.age;
   if(m.style==='wallkick'||m.style==='wallpunch'){wallDiveStep(player,h);return;}
   if(['grenade','grenade-barrage'].includes(m.style)){
-   const release=m.style==='grenade'?[9]:[9,19,29];if(release.includes(a)){spawnGrenade(player,s.shots++);h.sound(0x25);}if(player.Y>0)h.gravity(player);if(a>=(m.style==='grenade'?35:52)&&player.Y<=0){delete player.AIFFMove;h.idle(player);}return;
+   const release=m.style==='grenade'?[9]:[9,19,29];if(release.includes(a)){spawnGrenade(player,s.shots++);h.sound(0x25);}
+   // An airborne barrage commits all three throws, then rolls backward on release.
+   if(m.style==='grenade-barrage'&&s.fromAir&&a===29){s.recoiled=true;Object.assign(player,{VX:-s.dir*0x380,VY:0x500,AX:0,AY:0x48});h.anim(player,117,0);}
+   if(player.Y>0||s.recoiled&&player.VY>0)h.gravity(player);
+   if(a>=(m.style==='grenade'?35:52)&&player.Y<=0){delete player.AIFFMove;h.idle(player);}return;
   }
   if(!s.launched&&a>=5){s.launched=true;player.VX=-s.dir*0x540;player.VY=0x640;player.AY=0x44;player.AX=0;h.anim(player,117,0);}
   if(s.launched){
@@ -513,24 +517,33 @@ window.SF2AIFF=(()=>{
   const s=player.AIFFMove,room=h.room();
   if(s.phase===-1){
    if(s.age<5)return;const keys=player.KEYS&3,dir=keys?(keys&1?-1:1):(player.X/256<(room.left+room.right)/2?-1:1);
-   s.phase='approach';s.launched=true;s.from={x:player.X,y:player.Y};s.wallX=(dir<0?room.left+40:room.right-40)*256;s.wallY=(96+player.SPSTR*8)*256;s.approachAt=s.age;s.travel=Math.max(8,Math.ceil(Math.abs(s.wallX-player.X)/(9*256)));player.VX=player.VY=player.AX=player.AY=0;player.FACE=dir>0?1:0;h.anim(player,117,0);
+   s.phase='approach';s.launched=true;s.from={x:player.X,y:player.Y};s.wallX=(dir<0?room.left+40:room.right-40)*256;s.wallY=(96+player.SPSTR*8)*256;s.approachAt=s.age;s.travel=Math.max(8,Math.ceil(Math.abs(s.wallX-player.X)/(6*256)));player.VX=player.VY=player.AX=player.AY=0;player.FACE=dir>0?1:0;h.anim(player,117,0);
   }
   if(s.phase==='approach'){
    const elapsed=s.age-s.approachAt+1,t=Math.min(1,elapsed/s.travel),rise=Math.min(1,elapsed/Math.min(16,s.travel)),lift=rise*rise*(3-2*rise);player.X=Math.round(s.from.x+(s.wallX-s.from.x)*t);player.Y=Math.round(s.from.y+(s.wallY-s.from.y)*lift+Math.sin(Math.PI*t)*64*256);
    if(t===1){s.phase='wall';s.wallAt=s.age;s.bounced=true;h.anim(player,123,0);h.sound(0x2f);}return;
   }
   if(s.phase==='wall'){
-   player.acc=-1;if(s.age-s.wallAt<5)return;s.phase='dive';s.diveAt=s.age;const dir=player.X<player.opp.X?1:-1,target=Math.max(room.left+40,Math.min(room.right-40,player.opp.X/256+dir*24)),ticks=Math.max(18,Math.ceil(Math.abs(target-player.X/256)/11));
+   player.acc=-1;if(s.age-s.wallAt<5)return;s.phase='dive';s.diveAt=s.age;const dir=player.X<player.opp.X?1:-1,target=Math.max(room.left+40,Math.min(room.right-40,player.opp.X/256+dir*24)),ticks=Math.max(18,Math.ceil(Math.abs(target-player.X/256)/7));
    player.FACE=dir>0?1:0;player.VX=Math.round((target*256-player.X)/ticks);player.AY=0x18;player.VY=Math.round(player.AY*(ticks+1)/2-player.Y/ticks);player.hitdone=0;player.SPKD=1;h.anim(player,player.MV.style==='wallpunch'?124:110,0);h.sound(0x25);return;
   }
   if(s.phase==='dive'){
    // Small steering corrections retain the committed leap and leave room to evade.
-   const steer=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);player.VX=Math.max(-0xb00,Math.min(0xb00,player.VX+steer*8));
+   const steer=((player.KEYS&2)?1:0)-((player.KEYS&1)?1:0);player.VX=Math.max(-0x800,Math.min(0x800,player.VX+steer*6));
    if(!h.gravity(player)){s.phase='recover';s.landed=s.age;h.anim(player,125,0);h.sound(0x2f);}return;
   }
   if(s.phase==='recover'&&s.age-s.landed>=12){delete player.AIFFMove;h.idle(player);}
  }
  function normalStep(player){
+  if(player.aiProfile==='rolento'&&player.ST===2&&player.JA&&[56,57,58,62,63,64].includes(player.cur)){
+   let s=player.AIFFSlide;
+   if(!s||s.kind!=='air-kick'||s.serial!==player.AIAttackSerial){delete player.AIFFSlide;if(!(player.KEYS&8))return;s=player.AIFFSlide={kind:'air-kick',serial:player.AIAttackSerial,launched:false};
+    // The original extended foot is the contact point; Down commits its descent.
+    player.anim={...player.anim,ents:player.anim.ents.map(e=>{const q=e.slice();if(q[6]?.[2])q[6]=[-45,4,24,15];return q;})};
+   }
+   if(!s.launched&&player.anim.ents[player.aidx]?.[6]?.[2]){s.launched=true;player.VX=(player.FACE?1:-1)*0x280;player.VY=Math.min(player.VY,-0x580);player.AX=0;player.AY=0x60;}
+   return;
+  }
   if(['sodom','edi'].includes(player.aiProfile)){sodomNormalStep(player);return;}
   if(player.aiProfile!=='rolento'||player.ST!==1||!player.RETCR||player.cur<17||player.cur>19||player.Y!==0){delete player.AIFFSlide;return;}
   let s=player.AIFFSlide;if(!s||s.slot!==player.cur||s.serial!==player.AIAttackSerial)s=player.AIFFSlide={slot:player.cur,serial:player.AIAttackSerial,dir:player.FACE?1:-1,speed:0,contact:false};

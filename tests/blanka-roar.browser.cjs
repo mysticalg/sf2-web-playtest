@@ -1,0 +1,11 @@
+const {chromium,install,url,artifacts}=require('./browser-runtime.cjs'),fs=require('fs'),assert=require('assert/strict');
+(async()=>{const browser=await chromium.launch(),page=await browser.newPage(),errors=[];page.on('pageerror',e=>errors.push(e.message));try{
+ await install(page);await page.goto(url,{waitUntil:'domcontentloaded',timeout:120000});await page.waitForFunction(()=>window.SF2?.VER.loading===2&&FIN,null,{timeout:120000});
+ const result=await page.evaluate(async()=>{
+  const rows=[];SF2AI.setSound(true);
+  for(const side of[0,1])for(const strength of[0,1,2]){await SF2AI.configure({p1:'ryu',p2:'ken',mode:'versus',training:false,seed:42});SF2.freeze=1;IDEL=0;G.gph=1;AICFG.selectedProfiles[side]=null;setfighter(P[side],2);resetround();G.gph=1;const w=P[side],d=w.opp;w.X=(side?600:200)*256;d.X=(side?200:600)*256;w.FACE=side?0:1;d.FACE=1-w.FACE;const pair=[0,0],back=side?2:1,forward=side?1:2;for(let n=0;n<65;n++){pair[side]=back;SF2.step(pair);}const before=(G.cmdlog||[]).length,roars=[],original=sfxc;sfxc=function(code,...args){if(code===0x6d)roars.push({tick:G.tick,kind:w.CES?.kind});return original(code,...args);};pair[side]=forward|(16<<strength);SF2.step(pair);const init=(G.cmdlog||[]).slice(before);let admissionTick=w.CES?.kind==='rolling'?G.tick:null;for(let n=0;n<10;n++){pair[side]=0;SF2.step(pair);if(admissionTick===null&&w.CES?.kind==='rolling')admissionTick=G.tick;}sfxc=original;rows.push({side,strength,kind:w.CES?.kind,init,roars,admissionTick,commands:(G.cmdlog||[]).slice(before)});}
+  const buffer=aiEchoBuffer({commands:[[0,0x6d]],sample:null}),pcm=buffer?.getChannelData(0),peak=pcm?Math.max(...pcm):0;
+  return{rows,peak,duration:buffer?.duration};
+ });
+ fs.writeFileSync(artifacts('blanka-roar.json'),JSON.stringify({result,errors},null,2));console.log(JSON.stringify({result,errors},null,2));assert.deepEqual(errors,[]);for(const r of result.rows){assert.equal(r.kind,'rolling');assert.equal(r.commands.filter(c=>c===0x6d).length,r.strength===2?1:0);if(r.strength===2){assert.equal(r.roars[0].kind,'rolling');assert.equal(r.roars[0].tick,r.admissionTick);}}assert.ok(result.peak>.01);assert.ok(result.duration>0);
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

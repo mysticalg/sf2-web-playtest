@@ -25,6 +25,8 @@
           time:p.fid===1?10:[25,25,60][p.SPSTR],land};
         h.anim(p,a,0);
         if(c.kind==='rolling'){
+          // CE 0x3f446..0x3f452: only heavy Rolling Attack requests roar 0x6d.
+          if(window.SF2?.edition==='ai'&&p.SPSTR===2)h.sound(0x6d);
           // The three original status-0x50 lists loop to their first entry.
           p.anim.mode=0;p.anim.loop=0;p.X+=c.vx; // Init falls through 0x235e.
         }
