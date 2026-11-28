@@ -157,7 +157,7 @@ window.SF2AIFINISHERS=(()=>{
   }
   function startMove(){
    const s=state,c=context(),[w,d]=actors(),next=action();s.stageContacts=0;s.phase=s.stage===s.plan.buttons.length?'special':'combo';
-   const move=host.begin(w,next,d);if(!move||!Number.isFinite(move.duration)||move.duration<1){event('unsupported-move',{stage:s.stage});host.aborted?.('unsupported-move');clear('unsupported-move',true);return;}
+   const move=host.begin(w,next,d,{victimMotion:s.victimMotion?{...s.victimMotion}:null});if(!move||!Number.isFinite(move.duration)||move.duration<1){event('unsupported-move',{stage:s.stage});host.aborted?.('unsupported-move');clear('unsupported-move',true);return;}
    s.move={...move,duration:clamp(Math.ceil(move.duration),1,config.move),contacts:[...new Set(move.contacts||[])].filter(n=>Number.isInteger(n)&&n>=0&&n<=config.move).sort((a,b)=>a-b),started:c.tick,action:next};s.moveAge=0;s.phase=s.stage===s.plan.buttons.length?'special':'combo';event('move',{stage:s.stage,action:next.kind,section:next.section||'special',button:next.button??null,index:next.index??null});
   }
   function advanceMove(){

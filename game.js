@@ -33,7 +33,7 @@ const MAXHP=144;
 function hpAlive(p){return VER.edition==='ce'?p.HP>=0:p.HP>0;}
 
 let AI_FINISHERS=null;
-function hpDamage(p,amount,effect=null){if(aiEnabled()&&AI_FINISHERS?.damage(p,amount))return p.HP;const alive=hpAlive(p);p.HP=Math.max(VER.edition==='ce'?-1:0,p.HP-amount);if(aiEnabled())SF2AIFFChair.sync(p);if(alive&&!hpAlive(p)){if(!AI_FINISHERS?.offer(p,{...effect,unblocked:effect?.blocked!==true})){ffSound(p,'ko');aiDeathBegin(p,effect);}}return p.HP;}
+function hpDamage(p,amount,effect=null){if(aiEnabled()&&AI_FINISHERS?.damage(p,amount,effect))return p.HP;const alive=hpAlive(p);p.HP=Math.max(VER.edition==='ce'?-1:0,p.HP-amount);if(aiEnabled())SF2AIFFChair.sync(p);if(alive&&!hpAlive(p)){if(!AI_FINISHERS?.offer(p,{...effect,unblocked:effect?.blocked!==true})){ffSound(p,'ko');aiDeathBegin(p,effect);}}return p.HP;}
 
 // Explicit per-player identity; base fid remains 0 for inherited CE tables.
 
