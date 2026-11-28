@@ -120,9 +120,10 @@ window.SF2AIFINISHERS.bindSF2=()=>{
    const source=w.F.moves[action.index],unreachable=action.kind==='normal'?action.section!=='air'&&normalPlan(w,d,action.button,action.section).score===0:source?.kind==='tat'&&!tatsuPlan(w,d,action.strength??2,true).overlaps;
    if(!unreachable&&!(isFFGuest(d)&&d.AIFinishPose?.slot===28))return true;
    if(!d.F.anims[30]||d.AIFinishPose?.slot===0)return true;
-   recovery=d.AIFinishRecovery={tick:G.tick,started:G.tick,frames:[]};d.DIZZY=d.STP=0;SF2CEDIZZY.interrupt(d);setanim(d,30,0);d.ST=10;d.STUN=0;d.KEYS=d.FORCE=0;SF2AIRULES.block(d,0);return false;
+   recovery=d.AIFinishRecovery={tick:G.tick,started:G.tick,phase:d.CEPF?'projectile-stop':'getup',frames:[]};d.DIZZY=d.STP=0;SF2CEDIZZY.interrupt(d);if(recovery.phase==='getup')setanim(d,30,0);d.ST=10;d.STUN=0;d.KEYS=d.FORCE=0;SF2AIRULES.block(d,0);return false;
   }
   if(recovery.tick===G.tick)return false;recovery.tick=G.tick;d.KEYS=d.FORCE=0;SF2AIRULES.block(d,0);update(d);const frame=d.cur+':'+d.aidx;if(!recovery.frames.includes(frame))recovery.frames.push(frame);
+  if(recovery.phase==='projectile-stop'){if(d.CEPF)return false;recovery.phase='getup';setanim(d,30,0);d.ST=10;d.STUN=0;return false;}
   if(d.ST===10)return false;
   d.AIFinishPose={slot:0,entry:0};setanim(d,0,0);d.ST=5;d.STUN=9999;d.DIZZY=d.STP=0;G.AIFinisherRecovery={slot:d.i,started:recovery.started,ended:G.tick,frames:recovery.frames.slice()};delete d.AIFinishRecovery;return true;
  }
