@@ -55,16 +55,16 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  function restoreTarget(d){const y=d.Y;pose(d,'dizzy');d.Y=y;d.KB=d.VX=d.VY=d.AX=d.AY=0;d.HP=1;d.HPD=0;}
  function normalSlot(p,button,distance=Math.abs(p.opp.X-p.X)/256){return distance<NTHR[p.fid][button]&&p.F.anims[47+button]?47+button:8+button;}
  function normalPlan(p,d,button,section='ground'){
-  const key=section+':'+button+':'+d.AIFinishPose?.slot+':'+d.AIFinishPose?.entry,cached=normalPlans.get(key);if(cached&&cached.weapon===p.AIHeroWeaponAnimKey)return cached;
+  const relativeHeight=section==='air'?Math.round(Math.max(-96,Math.min(96,(d.Y-p.Y)/256))/8)*8:0,key=section+':'+button+':'+d.AIFinishPose?.slot+':'+d.AIFinishPose?.entry+':'+relativeHeight,cached=normalPlans.get(key);if(cached&&cached.weapon===p.AIHeroWeaponAnimKey)return cached;
   const selected=d.AIFinishPose,target=selected?d.F.anims[selected.slot].ents[selected.entry]:ent(d),hurt=[target[2],target[3],target[4]].filter(b=>b?.[2]);let best=null;
   if(section==='air'){
    for(const base of[53,59]){const slot=base+button,a=p.F.anims[slot];if(!a)continue;
     // Probe the owning collision accessor, including CE's signed long-limb
     // offset correction (not just the raw descriptor's unsigned X field).
     const boxes=a.ents.map((e,i)=>boxw({...p,cur:slot,anim:a,aidx:i,X:0,Y:0,FACE:0},4)).filter(Boolean),forward=Math.max(...a.ents.map(e=>-(p.F.frames[e[0]]?.[4]??0)));
-    for(let offset=-40;offset<=60;offset+=2)for(let gap=Math.max(22,Math.ceil((forward-60)/2)*2);gap<=320;gap+=2){let contacts=0;
+    for(let offset=-96;offset<=96;offset+=2)for(let gap=Math.max(22,Math.ceil((forward-60)/2)*2);gap<=320;gap+=2){let contacts=0;
     for(const b of boxes)if(hurt.some(h=>Math.abs(b[1]-offset-h[1])<b[3]+h[3]-3&&Math.abs(-b[0]-gap-h[0])<b[2]+h[2]-5))contacts++;
-    const score=contacts*10-Math.abs(gap-46)-Math.abs(offset-16)*1000;if(contacts&&(!best||score>best.score))best={slot,gap,offset,crouch:false,score,air:true};
+    const score=contacts*10-Math.abs(gap-46)-Math.abs(offset-relativeHeight)*1000;if(contacts&&(!best||score>best.score))best={slot,gap,offset,crouch:false,score,air:true};
     }
    }
   }else for(const crouch of section==='launch'&&p.fid===9&&button===5?[false]:['launch','crouching'].includes(section)?[true]:section==='standing'?[false]:[false,true]){
