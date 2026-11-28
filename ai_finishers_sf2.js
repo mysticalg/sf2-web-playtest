@@ -151,7 +151,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   finalImpact:e=>{playDeathVoice(e.victim);aiFinalHitEcho(e.winner);},
   fire:e=>{fire={tick:G.tick,x:e.point.x,y:e.point.y};AI_RETCH[e.victim.i]=AI_TEETH[e.victim.i]=AI_FLOOR_COUGHS[e.victim.i]=null;},
   echo:(w,request)=>{if(lastMove?.nativeSlot===-1)pendingEcho={owner:w,request};else aiSpecialKOEcho(w,{special:true,projectile:!!w.FBON});},
-  start(){const v=SF2CECAMERA.state;cinema={started:G.tick,fromCam:G.cam,fromWidth:aiViewWidth(),cam:G.cam,width:aiViewWidth(),panY:0,inset:G.AICamera?.inset||0,vertical:{...v,video:{...v.video}},frame:null};AI_SKO_VIEW=null;},
+  start(w){if(AC&&!muted)try{aiFinalHitBuffer(w);}catch{}const v=SF2CECAMERA.state;cinema={started:G.tick,fromCam:G.cam,fromWidth:aiViewWidth(),cam:G.cam,width:aiViewWidth(),panY:0,inset:G.AICamera?.inset||0,vertical:{...v,video:{...v.video}},frame:null};AI_SKO_VIEW=null;},
   camera(w,active,meta={}){
    AI_SKO_VIEW=null;if(!active){cinema=null;return;}if(!cinema||!['approach','combo','special','settle'].includes(meta.phase))return;
    const f=measureFraming(false);if(!f)return;const room=aiRoom(),v=cinema.vertical;
