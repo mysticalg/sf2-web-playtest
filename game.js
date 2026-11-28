@@ -715,7 +715,7 @@ function crn(p,atk){if(isFFGuest(p))return AN_CLP+atk;const t=VER.cur==='CE'&&CN
 
 const MHIT_CE={0:{52:3},4:{52:3},1:{18:3,52:4},2:{51:5},6:{52:5},7:{49:3},9:{11:3,12:3}};
 
-function resetp(p,x,face){delete p.AINativeGrab;delete p.AINativeHeld;delete p.CEPriorFace;if(VER.edition==='ce'&&[0,4,9].includes(p.fid))p.CEPriorFace=face;window.SF2CEDIZZY?.reset(p);window.SF2CESPECIAL?.reset(p);delete p.CEDizzyPrev;delete p.CEHHPush;delete p.CEHHPushSide;delete p.CEHHDesired;delete p.CEHH;delete p.CEHHV;delete p.CEHHRecovery;delete p.CEHHVLAND;delete p.CEHHPrevKeys;delete p.CEHHSInput;delete p.CEHHSEdges;delete p.CEHHSCancel;Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CEGI:null,CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
+function resetp(p,x,face){delete p.AIVictoryAudio;delete p.AINativeGrab;delete p.AINativeHeld;delete p.CEPriorFace;if(VER.edition==='ce'&&[0,4,9].includes(p.fid))p.CEPriorFace=face;window.SF2CEDIZZY?.reset(p);window.SF2CESPECIAL?.reset(p);delete p.CEDizzyPrev;delete p.CEHHPush;delete p.CEHHPushSide;delete p.CEHHDesired;delete p.CEHH;delete p.CEHHV;delete p.CEHHRecovery;delete p.CEHHVLAND;delete p.CEHHPrevKeys;delete p.CEHHSInput;delete p.CEHHSEdges;delete p.CEHHSCancel;Object.assign(p,{CARSUPPORT:0,CARLATCH:0,CARY0:0,CARSIDE:0,CES:null,MV:null,SPEND:0,PST:0,EVB:null,WAKET:0,LANDT:0,VQ:null,VT:0,X:x,FACE:face,Y:0,VX:0,VY:0,AX:0,AY:0,ST:0,KB:0,FBON:0,FORCE:0,HP:aiMax(p),HPD:aiMax(p),PENDT:0,MASHF:null,STUN:0,STP:0,STPE:0,DIZZY:0,DOWNT:0,MSEQ:[[0,0],[0,0],[0,0]],HCF:[0,0],CEGI:null,CB:0,CBLW:0,CD:0,CBW:0,CDW:0,CETH:null,CETHV:null,CEB:null,CEBV:null,NSL:null,CESLREC:0,CEBC:null,CELI:null,CELK:0,CEST:null,MQP:[],MQK:[],PREV:0,KEYS:0});
   if(VER.cur==='CE'){p.CEWALL=0;p.CEVSL=null;}else{delete p.CEWALL;delete p.CEVSL;}
 
   delete p.CEPF;delete p.FBIMPACT;delete p.FBDEFER;delete p.FBSLOT;delete p.FBCLASH;delete p.CER;delete p.CERSTOP;delete p.CEGUARD;delete p.CESHAKE;delete p.CERHOSTTICK;delete p.CERRESUME;delete p.CE_DAMAGE_TRACE;delete p.CEVLAND;delete p.CEVBB;delete p.CEVNSTART;delete p.CENORMALINIT;delete p.CECameraIgnore;delete p.CEKO_THROW;delete p.CEKO;delete p.CEWin;delete p.CEKOOwnerStop;delete p.CEKO_GROUND;delete p.CEKO_DIR;
@@ -1140,7 +1140,7 @@ function controls(p,input,ceCommonReleased=false,ceSkipAnimation=false){
 
 // knockback now applied every 60Hz frame (was the 25fps cadence): same total distance, decay 0.75^(5/12) per frame
 
-function end(p,skipAnimation=false){if(isFFHero(p)){SF2AIHeroes.normalStep(p);SF2AIHeroes.wallJump(p,{anim:setanim,room:aiRoom,sound:code=>SF2AIHeroes.playSound(code,AC,MG)});}if(aiEnabled())SF2AIFF.victoryStep(p);if(aiEnabled()&&p.aiProfile==='rolento')SF2AIFF.wallJump(p,{anim:setanim,room:aiRoom,cpu:q=>q.i===1&&!G.mode2p,sound:()=>ffSound(p,'swing')});if(aiEnabled()&&['rolento','sodom','edi'].includes(p.aiProfile))SF2AIFF.normalStep(p);if(p.fid===1&&p.CEHHSCancel>0)p.CEHHSCancel--;if(aiEnabled()&&[S_FREE,S_CR,S_UP].includes(p.ST)&&(p.Y>>8)===0)p.Y=0;if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.actor(p,{rand});if(VER.cur==='CE'&&window.SF2CEVEGA)SF2CEVEGA.normal(p,{find:AI,anim:setanim,idle:toidle});const ceNormalOwns=VER.cur==='CE'&&window.SF2CENORMALS&&SF2CENORMALS.step(p,{tick:animstep,slideFinish:q=>{setanim(q,AN_CROUCH,2);q.ST=S_CR;animstep(q);if(!(q.KEYS&K_D)){const timer=q.anim.ents[q.aidx][1]-q.acc;setanim(q,AN_STANDUP,0);q.acc=q.anim.ents[0][1]-timer;q.ST=S_UP;}},finish:q=>{const face=q.opp.X>q.X?1:0,a=AI(q,'slidecrouch');if(face!==q.FACE&&a>=0){q.FACE=face;setanim(q,a,0);q.acc=-1;q.ST=S_UP;q.CESLREC=1;}else if(q.KEYS&K_D){setanim(q,AN_CROUCH,2);q.ST=S_CR;}else toidle(q);}});
+function end(p,skipAnimation=false){aiVictorySound(p);if(isFFHero(p)){SF2AIHeroes.normalStep(p);SF2AIHeroes.wallJump(p,{anim:setanim,room:aiRoom,sound:code=>SF2AIHeroes.playSound(code,AC,MG)});}if(aiEnabled())SF2AIFF.victoryStep(p);if(aiEnabled()&&p.aiProfile==='rolento')SF2AIFF.wallJump(p,{anim:setanim,room:aiRoom,cpu:q=>q.i===1&&!G.mode2p,sound:()=>ffSound(p,'swing')});if(aiEnabled()&&['rolento','sodom','edi'].includes(p.aiProfile))SF2AIFF.normalStep(p);if(p.fid===1&&p.CEHHSCancel>0)p.CEHHSCancel--;if(aiEnabled()&&[S_FREE,S_CR,S_UP].includes(p.ST)&&(p.Y>>8)===0)p.Y=0;if(VER.cur==='CE'&&window.SF2CEVEGACLAW)SF2CEVEGACLAW.actor(p,{rand});if(VER.cur==='CE'&&window.SF2CEVEGA)SF2CEVEGA.normal(p,{find:AI,anim:setanim,idle:toidle});const ceNormalOwns=VER.cur==='CE'&&window.SF2CENORMALS&&SF2CENORMALS.step(p,{tick:animstep,slideFinish:q=>{setanim(q,AN_CROUCH,2);q.ST=S_CR;animstep(q);if(!(q.KEYS&K_D)){const timer=q.anim.ents[q.aidx][1]-q.acc;setanim(q,AN_STANDUP,0);q.acc=q.anim.ents[0][1]-timer;q.ST=S_UP;}},finish:q=>{const face=q.opp.X>q.X?1:0,a=AI(q,'slidecrouch');if(face!==q.FACE&&a>=0){q.FACE=face;setanim(q,a,0);q.acc=-1;q.ST=S_UP;q.CESLREC=1;}else if(q.KEYS&K_D){setanim(q,AN_CROUCH,2);q.ST=S_CR;}else toidle(q);}});
   if(p.KB){p.X+=(p.KB*29)>>6;let k=p.KB-((p.KB*29)>>8);if(k+63>>>0<127)k=0;p.KB=k;}if(!skipAnimation&&!ceNormalOwns)animstep(p);if(p.CESLREC&&(p.anim.flags[p.aidx]&0x8000)){p.CESLREC=0;if(p.KEYS&K_D){setanim(p,AN_CROUCH,2);p.ST=S_CR;}else toidle(p);}}
 
 const DASHV=[0x300,0x400,0x500];
@@ -1788,6 +1788,18 @@ function ceRoundClock(){if(AI_FINISHERS?.blocksRound())return false;
 
 // Original Dhalsim 0x42fc4..0x42fd4 holds60 actor updates before pose admission.
 
+// Original winner animation markers are commands, except Chun-Li's signed
+// handshake marker and Bison's shirt/Dhalsim's turn flags. AI uses its own round
+// controller, so dispatch these source-owned cues explicitly, once per pose.
+function aiVictorySound(p){
+ if(!aiEnabled()||p.ST!==S_WIN||isFFGuest(p))return;
+ const marker=(p.anim.flags?.[p.aidx]||0)&255,source=p.anim.source;
+ let code=[1,2,3,6,11].includes(p.fid)?marker:p.fid===5&&marker<128?marker:0;
+ if(p.fid===9&&source===556032&&p.aidx===0)code=0x4a;
+ if(!code)return;
+ const token=G.round+':'+p.WINS,s=p.AIVictoryAudio?.token===token?p.AIVictoryAudio:(p.AIVictoryAudio={token,seen:new Set()}),key=source+':'+p.cur+':'+p.aidx;
+ if(s.seen.has(key))return;s.seen.add(key);sfxc(code);
+}
 function ceVictoryHold(p){return VER.edition==='ce'&&p.fid===7?60:0;}
 
 function phase(){if(AI_FINISHERS?.blocksRound())return;
@@ -1823,6 +1835,8 @@ function phase(){if(AI_FINISHERS?.blocksRound())return;
     setanim(p,n,0);p.Y=p.VX=p.VY=0;p.ST=S_WIN;if(isDamnd(p)&&!muted&&!netReplaying&&AC&&MG)SF2AIDamnd.laugh(AC,MG);if(VER.edition==='ce'&&p.fid===7)p.CECameraIgnore=true;}
 
     if(G.gt===96+victoryHold&&G.winmask!==3){const w=G.winmask&1?0:1;G.bann=(VER.cur==='CE'||G.mode2p||!G.arc?aiName(P[w]).toUpperCase()+' WIN':w?'YOU LOSE':'YOU WIN')+(P[w].HP===aiMax(P[w])?'  PERFECT':'');if(VER.cur==='CE'&&window.SF2CEANNOUNCER){G.ann=SF2CEANNOUNCER.init(isFFGuest(P[w])?(G.mode2p||w===0?12:13):G.mode2p?P[w].fid:w?13:12);for(const code of SF2CEANNOUNCER.step(G.ann))sfxc(code);}}
+
+  if(aiEnabled()&&G.gt===128+victoryHold&&G.winmask!==3){const w=P[G.winmask&1?0:1];if(w.HP===aiMax(w))sfxc(0x55);}
 
   if(G.gt===96+victoryHold&&G.winmask===3)G.bann=G.ko?'DOUBLE K.O.':'DRAW GAME';
 
