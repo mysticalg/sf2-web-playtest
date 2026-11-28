@@ -4,7 +4,7 @@
  */
 'use strict';
 window.SF2AIFINISHERS.bindSF2=()=>{
- let finisher,banner='',fire=null,portrait=null,pendingEcho=null,savedDeathVoice=null,contactSerial=0,lastMove=null,inputPrevious=0,promptPrevious=0,cinema=null,recovery=null,savedMusic=null,lastDamage=-Infinity;const normalPlans=new Map();
+ let finisher,banner='',fire=null,portrait=null,pendingEcho=null,savedDeathVoice=null,contactSerial=0,lastMove=null,inputPrevious=0,promptPrevious=0,cinema=null,recovery=null,savedMusic=null,lastDamage=-Infinity,deathVoicePlayed=false;const normalPlans=new Map();
  function portraitCutout(w,d){
   const source=CWIN?.[w.fid]?.win;if(!source)return null;const base=window.SF2CEFADE?.mirrorWinner?.(w.i,w.fid,d.fid)||source,image=aiPortraitImage(base,w.i,w.fid,'win'),c=document.createElement('canvas');c.width=image.width;c.height=image.height;const g=c.getContext('2d',{willReadFrequently:true});g.drawImage(image,0,0);const p=g.getImageData(0,0,c.width,c.height),data=p.data,key=data.slice(0,4),seen=new Uint8Array(c.width*c.height),queue=[];
   const enqueue=i=>{if(i<0||i>=seen.length||seen[i])return;seen[i]=1;const k=i*4;if(data[k]===key[0]&&data[k+1]===key[1]&&data[k+2]===key[2]&&data[k+3]===key[3])queue.push(i);};
@@ -35,7 +35,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  function pose(p,name){
   if(name==='dizzy'){victimPose(p);p.ST=5;p.STUN=9999;return;}
   if(window.SF2AIHeroes?.get(p.aiProfile))SF2AIHeroWeapons.prepare(p);
-  const n=name==='win'?31:name==='walk'?1:name==='jump'?5:0;if(p.cur!==n)setanim(p,n,0);else animstep(p);p.ST=name==='win'?9:name==='jump'?2:0;p.STUN=0;
+  const n=name==='win'?31:name==='walk'?1:name==='jump'?5:name==='crouch'?3:0;if(p.cur!==n)setanim(p,n,0);else animstep(p);p.ST=name==='win'?9:name==='jump'?2:name==='crouch'?3:0;p.STUN=0;
  }
  function protectedVictim(d){return finisher?.isVictim(d)&&d.AIFinishProtected;}
  function restoreTarget(d){const y=d.Y;pose(d,'dizzy');d.Y=y;d.KB=d.VX=d.VY=d.AX=d.AY=0;d.HP=1;d.HPD=0;}
@@ -53,7 +53,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
     const score=contacts*10-Math.abs(gap-46)-Math.abs(offset-16)*1000;if(contacts&&(!best||score>best.score))best={slot,gap,offset,crouch:false,score,air:true};
     }
    }
-  }else for(const crouch of section==='launch'?[true]:[false,true]){
+  }else for(const crouch of ['launch','crouching'].includes(section)?[true]:section==='standing'?[false]:[false,true]){
    for(let gap=20;gap<=144;gap++){
     const slot=crouch?14+button:normalSlot(p,button,gap),a=p.F.anims[slot];if(!a)continue;let contacts=0;
     for(const e of a.ents){const b=e[6];if(!b?.[2])continue;if(hurt.some(h=>Math.abs(b[1]-h[1])<b[3]+h[3]-1&&Math.abs(-b[0]-gap-h[0])<b[2]+h[2]-3))contacts++;}
@@ -117,11 +117,12 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   if(done&&escape&&!move.escapeFollowup&&lastMove.contacts===0){move.escapeFollowup=true;return{};}
   return{done:!special?lastMove.contacts>0||p.adone:done};
  }
+ function playDeathVoice(d){if(deathVoicePlayed)return;deathVoicePlayed=true;G.AIFinisherDeathVoice={tick:G.tick,slot:d.i};if(isFFGuest(d))ffSound(d,'ko');else sfxc(XS(d)?.ko,SN_KO);}
  const host={
   context:()=>({enabled:aiEnabled(),scene:G.scene,tick:G.tick,phase:G.gph,seed:G.AIMatchSeed,players:P,room:aiRoom(),training:!!AICFG.prototype&&!!AICFG.training,keys:P.map(p=>p.KEYS)}),
   art:nativeArt,anatomy,mouth:aiMouth,
   captureSource:(w,d,source)=>({...source,special:source.special??(w.ST===11&&!['throw','athrow','ai-rift'].includes(w.MV?.kind))}),
-  prepare(w,d){savedDeathVoice=AI_SPECIAL_VOICES[w.i];resetActor(w);resetActor(d);for(const p of[w,d])SF2AIFFChair.dismount(p,'finisher');normalPlans.clear();SF2CEDHALSIM.reset(G,P);window.SF2AIHeroWeapons?.disarm(d,d.FACE?-1:1);window.SF2AIHeroWeapons?.cancelFlights(null,aiRoom());inputPrevious=w.KEYS;promptPrevious=0;d.AIFinishProtected=true;d.HP=1;d.HPD=0;G.hfz=G.slow=0;G.CESpecialObjects=null;delete G.CESpecialSlow;AI_RETCH[d.i]=null;AI_FLOOR_COUGHS[d.i]=null;AI_DEATH_FX.length=0;},
+  prepare(w,d){deathVoicePlayed=false;savedDeathVoice=AI_SPECIAL_VOICES[w.i];resetActor(w);resetActor(d);for(const p of[w,d])SF2AIFFChair.dismount(p,'finisher');normalPlans.clear();SF2CEDHALSIM.reset(G,P);window.SF2AIHeroWeapons?.disarm(d,d.FACE?-1:1);window.SF2AIHeroWeapons?.cancelFlights(null,aiRoom());inputPrevious=w.KEYS;promptPrevious=0;d.AIFinishProtected=true;d.HP=1;d.HPD=0;G.hfz=G.slow=0;G.CESpecialObjects=null;delete G.CESpecialSlow;AI_RETCH[d.i]=null;AI_FLOOR_COUGHS[d.i]=null;AI_DEATH_FX.length=0;},
   input(w,phase){const keys=w.KEYS,nw=keys&~inputPrevious,rel=inputPrevious&~keys,events=motion(w,keys,nw,rel);inputPrevious=keys;if(phase!=='prompt')return;for(const event of events){const index=w.F.moves.findIndex(m=>m.inp===event[0]&&m.btn===event[1]);if(index>=0&&finisher.request(w.i,{index,strength:event[2]},{fresh:true,serial:G.tick}))break;}},
   // Native knockdown physics, a one-second floor hold, then half-speed get-up.
   recover(d){fallst(d,7,d.FACE?-1:1);recovery={phase:'fall',age:0,hold:0};return 20;},
@@ -130,7 +131,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
    else if(recovery.phase==='getup'&&!d.adone&&recovery.age%2===0)animstep(d);},
   recovered:()=>!!(recovery?.phase==='getup'&&P[finisher.view().victim].adone),
   stun(d){const slot=isFFGuest(d)?103:21;setanim(d,slot,0);d.anim={...d.anim,mode:0,loop:0};d.ST=5;d.STUN=9999;d.DIZZY=2;},
-  promptMove(w,d){const raw=w.KEYS,keys=raw&15,previous=promptPrevious;promptPrevious=keys;w.X0=w.X;w.KEYS=keys;SF2AIRULES.block(w,keys);controls(w,{keys,nw:keys&~previous,rel:previous&~keys,ev:[],force:0});clampx(w);w.KEYS=raw;w.PREV=raw;animstep(d);},
+  promptMove(w,d,options={}){const raw=w.KEYS,keys=raw&15,previous=promptPrevious;promptPrevious=keys;w.X0=w.X;w.KEYS=keys;SF2AIRULES.block(w,keys);controls(w,{keys,nw:keys&~previous,rel:previous&~keys,ev:[],force:0});clampx(w);w.KEYS=raw;w.PREV=raw;if(!options.ready)animstep(d);},
   pose,gap,airOffset:(w,d,a)=>normalPlan(w,d,a.button,a.section).offset??16,
   specials:p=>SF2AIRULES.mapping(p).filter(m=>m.command!=='rift'&&(!m.command||isEvilKen(p))).map(m=>({...m})),
   valid:(p,m)=>m.command?isEvilKen(p):!!p.F.moves[m.index]&&(window.SF2AIHeroWeapons?.validMove(p,p.F.moves[m.index])??true),
@@ -147,23 +148,26 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   },
   blood:(packet,d)=>aiBloodAdd(packet,d.i),stain:aiClothesStain,
   impact:e=>{if(!e.special)G.hfz=Math.min(G.hfz,Math.round(4*(1-(e.progress??0))**2));G.AIFinisherContact={tick:G.tick,button:e.button,special:e.special,sequence:e.sequence};},
+  finalImpact:e=>{playDeathVoice(e.victim);aiFinalHitEcho(e.winner);},
   fire:e=>{fire={tick:G.tick,x:e.point.x,y:e.point.y};AI_RETCH[e.victim.i]=AI_TEETH[e.victim.i]=AI_FLOOR_COUGHS[e.victim.i]=null;},
   echo:(w,request)=>{if(lastMove?.nativeSlot===-1)pendingEcho={owner:w,request};else aiSpecialKOEcho(w,{special:true,projectile:!!w.FBON});},
+  start(){const v=SF2CECAMERA.state;cinema={started:G.tick,fromCam:G.cam,fromWidth:aiViewWidth(),cam:G.cam,width:aiViewWidth(),panY:0,inset:G.AICamera?.inset||0,vertical:{...v,video:{...v.video}},frame:null};AI_SKO_VIEW=null;},
   camera(w,active,meta={}){
-   AI_SKO_VIEW=null;if(!active){cinema=null;return;}if(!['approach','combo','special','settle'].includes(meta.phase))return;
-   const f=measureFraming(false);if(!f)return;const v=SF2CECAMERA.state,room=aiRoom(),centre=(w.X+(meta.victim?.X??w.X))/512;
-   if(!cinema)cinema={started:G.tick,fromCam:G.cam,fromWidth:aiViewWidth(),cam:G.cam,width:aiViewWidth(),inset:G.AICamera?.inset||0,vertical:{...v,video:{...v.video}},frame:f};
-   // Reserve the launch envelope before takeoff. Expand only: attack-frame
-   // bounds and landings cannot pump the zoom or reverse the camera every hit.
-   const width=Math.min(room.right-room.left,Math.max(cinema.width,f.width,meta.section==='special'?room.right-room.left:620));
-   cinema.width+=Math.min(8,(width-cinema.width)*.08);const target=Math.max(room.left,Math.min(room.right-cinema.width,centre-cinema.width/2));cinema.cam=Math.max(room.left,Math.min(room.right-cinema.width,cinema.cam+(target-cinema.cam)*.08));cinema.frame=f;
-   const ground=GROUND+v.main,targetY=ground-Math.max(122,f.top>280?(f.top+f.bottom)/2:f.top/2);cinema.focus={zoom:W/cinema.width,screenY:H*.59,x:centre,y:cinema.focus?cinema.focus.y+(targetY-cinema.focus.y)*.12:targetY,top:ground-Math.max(244,f.top+14)};
+   AI_SKO_VIEW=null;if(!active){cinema=null;return;}if(!cinema||!['approach','combo','special','settle'].includes(meta.phase))return;
+   const f=measureFraming(false);if(!f)return;const room=aiRoom(),v=cinema.vertical;
+   // Keep the captured projection. Expand only when a fighter reaches its bounds.
+   const required=Math.min(room.right-room.left,Math.max(cinema.width,f.right-f.left+16,(f.top-f.bottom+16)*W/(H-56)));
+   cinema.width=Math.max(cinema.width,required);
+   const zoom=W/cinema.width,top=GROUND+zoom*(v.main-f.top),bottom=GROUND+zoom*(v.main-f.bottom);cinema.panY=Math.max(56-top,Math.min(H-8-bottom,cinema.panY));
+   const lo=Math.max(room.left,f.right+8+cinema.inset-cinema.width),hi=Math.min(room.right-cinema.width,f.left-8+cinema.inset);
+   if(lo<=hi)cinema.cam=Math.max(lo,Math.min(hi,cinema.cam));
+   cinema.cam=Math.max(room.left,Math.min(room.right-cinema.width,cinema.cam));cinema.frame=f;
   },
   // SF2ENDCE[8].mus = 0x8c: original CE boss-ending march, not stage BGM.
   banner(text){banner=text;if(text&&savedMusic===null){savedMusic=MUS;music(0x8c);}},
-  complete(w,d){if(savedMusic!==null){music(savedMusic);savedMusic=null;}savedDeathVoice=null;resetActor(w);resetActor(d);delete d.AIFinishProtected;d.HP=d.HPD=0;d.ST=8;pose(w,'win');portrait=portraitCutout(w,d);endround(1<<w.i);},
-  fallback(w,d,source={special:false}){resetActor(w);resetActor(d);if(savedDeathVoice)AI_SPECIAL_VOICES[w.i]=savedDeathVoice;savedDeathVoice=null;delete d.AIFinishProtected;d.HP=d.HPD=0;aiDeathBegin(d,{...source,special:source.special&&!source.alreadyFinished});fallst(d,8,d.FACE?-1:1);endround(1<<w.i);},
-  cleanup(reason,w,d,meta={}){cinema=recovery=null;if(savedMusic!==null){music(savedMusic);savedMusic=null;}lastDamage=-Infinity;if(w)resetActor(w);if(d){resetActor(d);if(d.AIFinishProtected){delete d.AIFinishProtected;d.HP=d.HPD=0;}}if(reason==='winner-ko'){for(const p of[w,d])if(p&&p.HP<=0)fallst(p,8,p.FACE?-1:1);}if(!meta.fallback)savedDeathVoice=null;banner='';fire=portrait=pendingEcho=null;lastMove=null;AI_SKO_VIEW=null;},
+  complete(w,d){if(savedMusic!==null){music(savedMusic);savedMusic=null;}savedDeathVoice=null;resetActor(w);resetActor(d);delete d.AIFinishProtected;d.HP=d.HPD=0;d.ST=8;pose(w,'win');portrait=portraitCutout(w,d);endround(1<<w.i,false,{koVoicePlayed:deathVoicePlayed});},
+  fallback(w,d,source={special:false}){if(!source.alreadyFinished)playDeathVoice(d);resetActor(w);resetActor(d);if(savedDeathVoice)AI_SPECIAL_VOICES[w.i]=savedDeathVoice;savedDeathVoice=null;delete d.AIFinishProtected;d.HP=d.HPD=0;aiDeathBegin(d,{...source,special:source.special&&!source.alreadyFinished});fallst(d,8,d.FACE?-1:1);endround(1<<w.i,false,{koVoicePlayed:deathVoicePlayed});},
+  cleanup(reason,w,d,meta={}){aiEchoStop();cinema=recovery=null;if(savedMusic!==null){music(savedMusic);savedMusic=null;}lastDamage=-Infinity;if(w)resetActor(w);if(d){resetActor(d);if(d.AIFinishProtected){delete d.AIFinishProtected;d.HP=d.HPD=0;}}if(reason==='winner-ko'){for(const p of[w,d])if(p&&p.HP<=0)fallst(p,8,p.FACE?-1:1);}if(!meta.fallback)savedDeathVoice=null;banner='';fire=portrait=pendingEcho=null;lastMove=null;AI_SKO_VIEW=null;},
   aborted:reason=>{G.AIFinisherAbort=reason;}
  };
  finisher=SF2AIFINISHERS.create(host);
@@ -171,7 +175,6 @@ window.SF2AIFINISHERS.bindSF2=()=>{
  function measureFraming(render=false){
   const state=finisher.view();if(!state||G.scene!=='fight')return null;const actors=render?SF2CECAMERA.poses||P:P,bounds=[];
   for(const p of actors){if(finisher.hidden(p))continue;const r=finisher.art(p,nativeArt(p)).rect,x=p.X/256,y=p.Y/256,left=x+(p.FACE?-r[4]-r[2]:r[4]);bounds.push({left,right:left+r[2],top:y-r[5],bottom:y-r[5]-r[3]});}
-  if(fire){bounds.push({left:fire.x-12,right:fire.x+12,top:12,bottom:0});for(const b of finisher.fragmentBounds())if(Math.abs((b.left+b.right)/2-fire.x)<=120)bounds.push(b);}
   if(!bounds.length)return null;const left=Math.min(...bounds.map(b=>b.left)),right=Math.max(...bounds.map(b=>b.right)),top=Math.max(...bounds.map(b=>b.top)),bottom=Math.min(...bounds.map(b=>b.bottom)),width=right-left+28,height=top-bottom+12,zoom=Math.min(2.2,W/width,(H-72)/height);
   return{left,right,top,bottom,zoom,width:Math.max(320,width,height*W/(H-72))};
  }
@@ -185,7 +188,7 @@ window.SF2AIFINISHERS.bindSF2=()=>{
   counter:()=>{const s=finisher.info();return s.contacts&&s.phase!=='result'?s.contacts+' HIT'+(s.contacts===1?'':'S'):'';},
   framing:()=>cinema&&G.scene==='fight'?cinema.frame:null,
   cameraLock:()=>cinema&&G.scene==='fight'?cinema:null,
-  focus(){if(!cinema||G.scene!=='fight')return null;const t=Math.min(1,(G.tick-cinema.started)/18);return{...cinema.focus,weight:t*t*(3-2*t)};},
+  focus:()=>null,
   drawFire(ctx,camera,ground){if(!fire)return;const age=G.tick-fire.tick;if(age>=24)return;const a=frames[Math.floor(age/2)%frames.length];if(!a.image.complete)return;ctx.save();ctx.globalAlpha=.9;spr(a.image,a.rect,fire.x-camera,ground-12,0);ctx.restore();},
   drawResult(ctx){if(G.scene!=='win'||!finisher.retained()||!portrait)return;const s=finisher.view();ctx.save();if(s.winner===1){ctx.translate(W,0);ctx.scale(-1,1);}ctx.beginPath();ctx.rect(0,16,192,144);ctx.clip();for(const offset of[18,12,6]){ctx.globalAlpha=.7-offset/40;ctx.drawImage(portrait,offset+Math.round(Math.sin(G.tick/9)),16);}ctx.globalAlpha=1;ctx.drawImage(portrait,0,16);ctx.restore();},
   ready:Promise.all(frames.map(a=>a.image.decode()))

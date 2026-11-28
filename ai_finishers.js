@@ -4,7 +4,7 @@
  */
 'use strict';
 window.SF2AIFINISHERS=(()=>{
- const VERSION=4,ATTACK=1008,BUTTONS=Object.freeze([0,1,2,3,4,5]);
+ const VERSION=5,ATTACK=1008,BUTTONS=Object.freeze([0,1,2,3,4,5]);
  const LIMITS=Object.freeze({prompt:240,ready:20,cpu:48,move:600,sequence:4200,settle:100,trails:24,trailLife:90,trailDrift:420,pieces:6,emitters:10,bloodPacket:48});
  const PARTS=Object.freeze(['head','arm-left','arm-right','leg-left','leg-right','torso']);
  const COLORS=Object.freeze(['#b20b22','#d3132b','#ed263c']);
@@ -91,7 +91,7 @@ window.SF2AIFINISHERS=(()=>{
   function request(slot,move,meta={}){
    const s=state,c=context();if(!s||s.phase!=='prompt'||slot!==s.winner||meta.fresh!==true||meta.serial===s.lastInput)return false;
    const own=s.moves.find(m=>m.index===move?.index&&(m.command||null)===(move?.command||null));if(!own||host.valid?.(c.players[slot],own)===false)return false;
-   s.lastInput=meta.serial??c.tick;s.request={...own,strength:clamp(move.strength??own.strength??2,0,2)};s.phase='approach';s.phaseStart=c.tick;host.banner?.('');event('triggered',{index:own.index,command:own.command||null});return true;
+   s.lastInput=meta.serial??c.tick;s.request={...own,strength:clamp(move.strength??own.strength??2,0,2)};s.phase='approach';s.phaseStart=c.tick;s.directionPrevious=(c.keys?.[slot]??c.players[slot].KEYS??0)&12;s.posture=s.requestedPosture='standing';host.start?.(c.players[slot]);host.banner?.('');event('triggered',{index:own.index,command:own.command||null});return true;
   }
   function input(slot,keys){
    const s=state;if(!s||slot!==s.winner)return false;const now=keys&ATTACK,prev=s.lastKeys;s.inputBlocked&=now;s.lastKeys=now;
@@ -123,17 +123,38 @@ window.SF2AIFINISHERS=(()=>{
   function contact(id,canFinish=true){
    const s=state,c=context(),special=s.stage===s.plan.buttons.length,key=s.stage+':'+id;if(s.seen.has(key)||s.stageContacts>0||special&&!canFinish||c.tick-s.lastContact<contactInterval())return;s.seen.add(key);s.contacts++;s.lastContact=c.tick;
    const [w,d]=actors(),a=s.parts.parts[0],p=host.mouth?.(d)||cutPoint(a);s.recoil=5;s.stageContacts++;
-   const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail(true);if(!special)s.pause=Math.round(3*(1-s.stage/s.plan.buttons.length)**3);
-   if(s.stage===5){s.launched=c.tick;event('launch');}
-   if(s.stage===s.plan.buttons.length-2)detach(['arm-left','arm-right']);
-   if(s.stage===s.plan.buttons.length-1)detach(['leg-left','leg-right']);
-   if(s.stage===s.plan.buttons.length&&canFinish&&!s.finalStrike){s.finalStrike=true;detach(['head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});host.echo?.(w,s.request);event('final-strike');}
+   const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail();if(!special)s.pause=Math.round(3*(1-s.stage/s.plan.buttons.length)**3);
+   if(s.stage===5&&!s.controlled){s.launched=c.tick;event('launch');}
+   if(s.stage===s.plan.buttons.length&&canFinish&&!s.finalStrike){s.finalStrike=true;host.finalImpact?.({winner:w,victim:d,request:s.request});detach(['arm-left','arm-right','leg-left','leg-right','head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});event('final-strike');}
   }
-  function section(){return state.stage<5?'ground':state.stage===5?'launch':state.stage<state.plan.buttons.length?'air':'special';}
+  function section(){if(state.controlled&&state.stage<state.plan.buttons.length)return state.posture==='airborne'?'air':state.posture;return state.stage<5?'ground':state.stage===5?'launch':state.stage<state.plan.buttons.length?'air':'special';}
   function contactInterval(){return state.plan.exceptional&&state.stage/state.plan.buttons.length>=.75?3:10;}
   function action(){const s=state;return s.stage<s.plan.buttons.length?{kind:'normal',button:s.plan.buttons[s.stage],section:section()}:{kind:'special',...s.request};}
+  // Direction edges are sampled once per scene tick, before native moves consume KEYS.
+  function steer(keys){
+   const s=state,[w]=actors(),now=keys&12,pressed=now&~(s.directionPrevious??now);s.directionPrevious=now;
+   if(!['approach','combo'].includes(s.phase)||host.isCPU?.(w)||pressed===12||!pressed)return;
+   const current=s.controlled?s.requestedPosture:(section()==='air'?'airborne':'standing');
+   s.controlled=true;s.requestedPosture=pressed&8?(current==='airborne'?'standing':'crouching'):(current==='crouching'?'standing':current==='standing'?'airborne':'airborne');
+   event('posture-input',{posture:s.requestedPosture});
+  }
+  function applyPosture(){
+   const s=state;if(!s.controlled||s.posture===s.requestedPosture)return;
+   s.posture=s.requestedPosture;s.manualFlight={tick:context().tick,winner:actors()[0].Y/256,victim:actors()[1].Y/256};event('posture',{posture:s.posture});
+  }
   function flight(){
-   const s=state;if(s.launched===undefined)return{winner:0,victim:0};const age=context().tick-s.launched,rise=clamp(age/28,0,1),ease=t=>t*t*(3-2*t);
+   const s=state;
+   if(s.controlled){
+    const now=context().tick,ease=t=>{t=clamp(t,0,1);return t*t*(3-2*t);},f=s.manualFlight??{tick:now,winner:0,victim:0},age=now-f.tick;let winner,victim;
+    if(s.posture==='airborne'){
+     winner=age<28?f.winner+(96-f.winner)*ease(age/28):Math.max(0,96-.42*(age-28)-.0015*(age-28)**2);
+     const offset=host.airOffset?.(...actors(),{kind:'normal',button:s.plan.buttons[s.stage]??0,section:'air'})??16;victim=winner+offset*ease(age/20);
+     if(winner===0&&age>=28){s.requestedPosture='standing';if(s.phase==='approach')applyPosture();}
+    }else{const t=1-ease(age/12);winner=f.winner*t;victim=f.victim*t;}
+    if(s.stage===s.plan.buttons.length){s.landing??={tick:now,winner,victim};const t=1-ease((now-s.landing.tick)/32);return{winner:s.landing.winner*t,victim:s.landing.victim*t,aligned:true};}
+    return{winner,victim,aligned:s.posture==='airborne'?age>=28:winner===0&&victim===0};
+   }
+   if(s.launched===undefined)return{winner:0,victim:0};const age=context().tick-s.launched,rise=clamp(age/28,0,1),ease=t=>t*t*(3-2*t);
    const victim=104*ease(rise)+8*Math.sin(Math.max(0,age-28)/20)*ease(rise),winner=88*ease(clamp((age-9)/24,0,1))+6*Math.sin(Math.max(0,age-33)/20)*ease(clamp((age-9)/24,0,1));
    if(s.stage===s.plan.buttons.length){s.landing??={tick:context().tick,winner,victim};const t=1-ease(clamp((context().tick-s.landing.tick)/32,0,1));return{winner:s.landing.winner*t,victim:s.landing.victim*t};}
    const offset=s.stage>5&&s.stage<s.plan.buttons.length?host.airOffset?.(...actors(),action())??16:16;
@@ -157,9 +178,9 @@ window.SF2AIFINISHERS=(()=>{
     if(s.stage<s.plan.buttons.length){s.stage++;s.phase='approach';s.phaseStart=c.tick;}else{s.phase='settle';s.phaseStart=c.tick;host.pose(w,'win');event('settle');}
    }
   }
-  function sampleTrail(force=false){
+  function sampleTrail(){
    const s=state,c=context(),[w]=actors();s.trails=s.trails.filter(t=>c.tick-t.tick<config.trailLife);
-   if(!s.contacts||!force&&c.tick-s.lastTrail<3)return;s.lastTrail=c.tick;const art=host.art(w);if(!art?.image)return;
+   if(!s.contacts||s.lastTrail>=0&&c.tick-s.lastTrail<10)return;s.lastTrail=c.tick;const art=host.art(w);if(!art?.image)return;
    const fixed=copyArt(art),black=canvas(fixed.image.width,fixed.image.height),g=black.getContext('2d');g.drawImage(fixed.image,0,0);g.globalCompositeOperation='source-in';g.fillStyle='#000';g.fillRect(0,0,black.width,black.height);
    s.trails.push({image:fixed.image,black,rect:fixed.rect,x:w.X/256,y:w.Y/256,face:w.FACE,tick:c.tick});if(s.trails.length>config.trails)s.trails.shift();
   }
@@ -184,7 +205,7 @@ window.SF2AIFINISHERS=(()=>{
    if(c.tick-s.started>config.sequence){host.aborted?.('watchdog');clear('watchdog',true);return false;}
    if(s.phase==='ready')host.recoverStep?.(d);
    if(s.phase==='ready'&&c.tick-s.phaseStart>=s.readyDuration&&host.recovered?.(d)!==false){s.anchor.x=d.X/256;host.stun?.(d);s.phase='prompt';s.phaseStart=c.tick;host.banner?.('FINISH THEM');event('prompt');}
-   if(s.phase==='ready')host.input?.(w,s.phase);
+   if(s.phase==='ready'){host.input?.(w,s.phase);host.promptMove?.(w,d,{ready:true});}
    if(s.phase==='prompt'){
     if(c.keys)input(w.i,c.keys[w.i]||0);
     if(state?.phase==='prompt')host.input?.(w,s.phase);
@@ -192,6 +213,7 @@ window.SF2AIFINISHERS=(()=>{
     if(state?.phase==='prompt'&&c.tick-s.phaseStart>=config.cpu)selectCPU();
     if(state?.phase==='prompt'&&c.tick-s.phaseStart>=config.prompt){event('timeout');clear('timeout',true);return false;}
    }
+   steer(c.keys?.[w.i]??w.KEYS??0);
    // Retain the scene clock. Real normal substeps can accelerate, but admission
    // of the next contact remains gated by the 10/3-tick cadence. The selected
    // special advances once per tick, including its native projectiles/grabs.
@@ -201,16 +223,16 @@ window.SF2AIFINISHERS=(()=>{
     while(state&&steps-->0&&['approach','combo'].includes(state.phase)){
      if(s.pause>0){s.pause--;continue;}
      if(s.phase==='approach'){
-      const next=action(),f=flight(),dir=w.X/256<s.anchor.x?1:-1,target=s.anchor.x-dir*(host.gap?.(w,d,next)??44),x=w.X/256,delta=target-x,travel=4+6*progress*progress;
-      host.position(w,{x:x+clamp(delta,-travel,travel),y:f.winner,face:dir>0?1:0});host.pose(w,f.winner>0?'jump':Math.abs(delta)>travel?'walk':'idle');
+      applyPosture();const next=action(),f=flight(),dir=w.X/256<s.anchor.x?1:-1,target=s.anchor.x-dir*(host.gap?.(w,d,next)??44),x=w.X/256,delta=target-x,travel=4+6*progress*progress;
+      host.position(w,{x:x+clamp(delta,-travel,travel),y:f.winner,face:dir>0?1:0});host.pose(w,f.winner>0?'jump':s.controlled&&s.posture==='crouching'?'crouch':Math.abs(delta)>travel?'walk':'idle');
       host.position(d,{...s.anchor,y:f.victim});
-      const flightReady=s.stage<=5||(s.stage<s.plan.buttons.length?c.tick-s.launched>=38&&f.aligned:f.winner===0);
+      const flightReady=s.controlled?(s.stage===s.plan.buttons.length?f.winner===0:f.aligned):s.stage<=5||(s.stage<s.plan.buttons.length?c.tick-s.launched>=38&&f.aligned:f.winner===0);
       if(Math.abs(delta)<=travel&&c.tick-s.lastContact>=contactInterval()&&flightReady){s.anchor.face=dir>0?0:1;startMove();}
      }else advanceMove();
     }
    }else if(state?.phase==='special')advanceMove();
    if(state?.phase==='settle'&&c.tick-s.phaseStart>=config.settle){s.completed=true;s.completedAt=c.tick;s.phase='result';host.banner?.('');host.camera?.(w,false);event('complete');host.complete(w,d);}
-   if(state){if(s.recoil>0)s.recoil--;const dir=w.X/256<s.anchor.x?1:-1,f=flight();if(['combo','approach'].includes(s.phase)&&s.stage>5)host.position(w,{x:w.X/256,y:f.winner,face:w.FACE});if(host.lockVictim?.(w,d,s.phase)!==false&&s.phase!=='ready')host.position(d,{...s.anchor,y:f.victim,x:s.anchor.x+dir*s.recoil});host.camera?.(w,!s.completed,{victim:d,phase:s.phase,section:section(),launched:s.launched!==undefined});effects();}
+   if(state){if(s.recoil>0)s.recoil--;const dir=w.X/256<s.anchor.x?1:-1,f=flight();if(['combo','approach'].includes(s.phase)&&(s.controlled||s.stage>5))host.position(w,{x:w.X/256,y:f.winner,face:w.FACE});if(host.lockVictim?.(w,d,s.phase)!==false&&s.phase!=='ready')host.position(d,{...s.anchor,y:f.victim,x:s.anchor.x+dir*s.recoil});host.camera?.(w,!s.completed,{victim:d,phase:s.phase,section:section(),launched:s.launched!==undefined});effects();}
    return active();
   }
   function step(){try{return step0();}catch(error){const reason='host-error:'+String(error?.message||error);try{host.aborted?.(reason);}finally{if(state)clear(reason,true);}return false;}}
@@ -227,7 +249,7 @@ window.SF2AIFINISHERS=(()=>{
    else for(const p of s.pieces)paintPart(ctx,p.part,p.x-camera,ground-p.y,p.face,1,p.angle);
    ctx.restore();
   }
-  function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,section:section(),exceptional:s.plan.exceptional,contactInterval:contactInterval(),winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,contacts:s.contacts,targetHits:s.plan.hits,normalSpeed:s.normalSpeed??.8,normalOrder:s.plan.buttons.slice(),request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
+  function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,section:section(),posture:s.controlled?s.posture:(section()==='air'?'airborne':'standing'),requestedPosture:s.requestedPosture,controlled:!!s.controlled,exceptional:s.plan.exceptional,contactInterval:contactInterval(),winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,contacts:s.contacts,targetHits:s.plan.hits,normalSpeed:s.normalSpeed??.8,normalOrder:s.plan.buttons.slice(),request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
   function notify(winner,victim,id,meta={}){if(!active()||!state||!['combo','special'].includes(state.phase)||winner.i!==state.winner||victim.i!==state.victim)return false;contact('actual:'+id,meta.final!==false);return true;}
   function fragmentBounds(){return state?.pieces.map(p=>{const sin=Math.sin(p.angle),cos=Math.cos(p.angle),sign=p.face?-1:1,points=p.part.hull.map(q=>[p.x+cos*q[0]*sign-sin*q[1],p.y-sin*q[0]*sign-cos*q[1]]);return{left:Math.min(...points.map(q=>q[0])),right:Math.max(...points.map(q=>q[0])),bottom:Math.min(...points.map(q=>q[1])),top:Math.max(...points.map(q=>q[1]))};})||[];}
   function blocksRound(){if(!active())return false;const[w]=actors();if(w?.HP<=0){clear('winner-ko');return false;}return true;}
