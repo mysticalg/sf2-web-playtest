@@ -52,3 +52,21 @@ against5905382 pass four cases,60 state hashes and four pixel hashes.
 The coordinator must load `ai_juggles.js` before `game.js` in release assets.
 Super Turbo can reuse the same core on its accepted native-contact boundary;
 this source adapter does not by itself install the native ST host.
+
+The additional camera rule applies only while an ordinary juggle is active.
+It fits both actual source sprite tops, aiming for44 pixels of headroom within
+the existing stage extent. A new impact can widen immediately without ticking
+the native vertical camera again; the existing hold/spring restores close framing.
+Eight real-combo cases (Ryu, Andore, Abigail and Belger victims, both slots) keep
+their full source rectangles inside the viewport. A140-frame baseline comparison
+confirms ordinary jumping retains the previous camera exactly. FIN lock/active
+states bypass this pressure, including a real finisher offer from an airborne
+juggle and an unchanged320-pixel baseline at request in both slots.
+
+Twenty additional guest chase cases cover all ten guests in both slots: each
+lands a real air follow-up and returns to the floor. Ten of these also connect
+the second fresh heavy kick; the other second kicks miss by real height/range.
+No counter is advanced for those whiffs. Native/guest held-state handoffs clear
+ordinary physics before a throw/bite/hug controller runs. First launch retains
+the existing knockdown policies: Sodom/Cody drop held weapons and Belger dismounts
+his original chair. Six source-drop and twelve held-state/reset cases pass.
