@@ -6,8 +6,8 @@ window.SF2AIFinisherTunnel=(()=>{
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v)),ease=t=>{t=clamp(t,0,1);return t*t*(3-2*t);},wrap=(v,p)=>((v%p)+p)%p;
  let last={draws:0,streaks:0,alpha:0};
  function strip(ctx,camera,clock,top,height,width,depth,speed,alpha,sourceY=0,sourceH=image.height){
-  const tile=768,pan=camera*depth+clock*speed,start=-wrap(pan,tile);ctx.globalAlpha=alpha;
-  for(let n=0,x=start;x<width&&n<LIMITS.maxTiles&&last.draws<LIMITS.maxImageDraws;n++,x+=tile){ctx.save();ctx.translate(x+(n%2?tile:0),0);if(n%2)ctx.scale(-1,1);ctx.drawImage(image,0,sourceY,image.width,sourceH,0,top,tile,height);ctx.restore();last.draws++;}
+  const tile=768,pan=camera*depth+clock*speed,first=Math.floor(pan/tile),start=-wrap(pan,tile);ctx.globalAlpha=alpha;
+  for(let n=0,x=start;x<width&&n<LIMITS.maxTiles&&last.draws<LIMITS.maxImageDraws;n++,x+=tile){ctx.save();ctx.translate(x+((first+n)%2?tile:0),0);if((first+n)%2)ctx.scale(-1,1);ctx.drawImage(image,0,sourceY,image.width,sourceH,0,top,tile,height);ctx.restore();last.draws++;}
  }
  function paint(ctx,{camera=0,ground=0,top=-224,width=384,height=224,tick=0,started=tick,phase='combo',phaseAge=0,direction=1,seed=0}={}){
   if(!['approach','combo','special','settle'].includes(phase))return;const age=Math.max(0,tick-started),alpha=ease(age/30)*(phase==='settle'?1-ease(phaseAge/65):1);last={draws:0,streaks:0,alpha};if(alpha<=0)return;

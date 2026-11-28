@@ -4,8 +4,8 @@
  */
 'use strict';
 window.SF2AIFINISHERS=(()=>{
- const VERSION=6,ATTACK=1008,BUTTONS=Object.freeze([0,1,2,3,4,5]);
- const LIMITS=Object.freeze({hitstop:6,exceptionalHitstop:2,prompt:240,ready:20,cpu:48,move:600,sequence:4200,settle:100,trails:24,trailLife:90,trailDrift:420,pieces:6,emitters:10,bloodPacket:48});
+ const VERSION=7,ATTACK=1008,BUTTONS=Object.freeze([0,1,2,3,4,5]);
+ const LIMITS=Object.freeze({hitstop:10,exceptionalHitstop:3,prompt:240,ready:20,cpu:48,move:600,sequence:15000,settle:100,trails:24,trailLife:90,trailDrift:420,pieces:6,emitters:10,bloodPacket:48});
  const PARTS=Object.freeze(['head','arm-left','arm-right','leg-left','leg-right','torso']);
  const COLORS=Object.freeze(['#b20b22','#d3132b','#ed263c']);
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
@@ -70,7 +70,7 @@ window.SF2AIFINISHERS=(()=>{
   const context=()=>host.context();
   function active(){return !!state&&['ready','prompt','approach','combo','special','settle'].includes(state.phase);}
   function actors(){const c=context();return state?[c.players[state.winner],c.players[state.victim]]:[null,null];}
-  function event(type,detail={}){if(!state)return;state.events.push({tick:context().tick,type,...detail});if(state.events.length>768)state.events.shift();}
+  function event(type,detail={}){if(!state)return;state.events.push({tick:context().tick,type,...detail});if(state.events.length>2048)state.events.shift();}
   function clear(reason='reset',fallback=false){
    if(!state){lastTick=-1;return false;}const s=state,[w,d]=actors();state=null;lastTick=-1;
    try{host.camera?.(w,false);host.banner?.('');host.cleanup?.(reason,w,d,{fallback});}finally{if(fallback&&!s.completed)host.fallback(w,d,{...s.source,alreadyFinished:!!s.finalStrike});}
@@ -91,7 +91,7 @@ window.SF2AIFINISHERS=(()=>{
   function request(slot,move,meta={}){
    const s=state,c=context();if(!s||s.phase!=='prompt'||slot!==s.winner||meta.fresh!==true||meta.serial===s.lastInput)return false;
    const own=s.moves.find(m=>m.index===move?.index&&(m.command||null)===(move?.command||null));if(!own||host.valid?.(c.players[slot],own)===false)return false;
-   s.lastInput=meta.serial??c.tick;s.request={...own,strength:clamp(move.strength??own.strength??2,0,2)};s.phase='approach';s.phaseStart=c.tick;s.directionPrevious=(c.keys?.[slot]??c.players[slot].KEYS??0)&12;s.posture=s.requestedPosture='standing';host.start?.(c.players[slot]);host.banner?.('');event('triggered',{index:own.index,command:own.command||null});return true;
+   s.lastInput=meta.serial??c.tick;s.request={...own,strength:clamp(move.strength??own.strength??2,0,2)};s.phase='approach';s.phaseStart=c.tick;s.comboStart=c.tick;s.rotation=s.plan.buttons.map(button=>({kind:'normal',button}));const pool=(host.rotationMoves?.(c.players[slot],s.moves)||s.moves).filter(m=>host.valid?.(c.players[slot],m)!==false);if(pool.length)for(let stage=12,n=0;stage<s.rotation.length;stage+=7,n++)s.rotation[stage]={kind:'special',...pool[(hash(s.id,71)+n)%pool.length],strength:pool[(hash(s.id,71)+n)%pool.length].strength??2,rotation:true};s.directionPrevious=(c.keys?.[slot]??c.players[slot].KEYS??0)&12;s.posture=s.requestedPosture='standing';host.start?.(c.players[slot]);host.banner?.('');event('triggered',{index:own.index,command:own.command||null});return true;
   }
   function input(slot,keys){
    const s=state;if(!s||slot!==s.winner)return false;const now=keys&ATTACK,prev=s.lastKeys;s.inputBlocked&=now;s.lastKeys=now;
@@ -121,15 +121,15 @@ window.SF2AIFINISHERS=(()=>{
    }rebuild();
   }
   function contact(id,canFinish=true){
-   const s=state,c=context(),special=s.stage===s.plan.buttons.length,key=s.stage+':'+id;if(s.seen.has(key)||s.stageContacts>0||special&&!canFinish||c.tick-s.lastContact<contactInterval())return;s.seen.add(key);s.contacts++;s.lastContact=c.tick;
-   const [w,d]=actors(),a=s.parts.parts[0],p=host.mouth?.(d)||cutPoint(a);s.recoil=5;s.stageContacts++;
+   const s=state,c=context(),finalStage=s.stage===s.plan.buttons.length,special=action().kind==='special',key=s.stage+':'+id;if(s.seen.has(key))return;s.seen.add(key);if(s.stageContacts>0)s.plan.hits++;s.contacts++;s.lastContact=c.tick;
+   const [w,d]=actors();host.damagePose?.(d,s.contacts,{special,final:finalStage&&canFinish});if(finalStage&&canFinish){s.victimPose=copyArt(host.art(d));s.parts=partition(s.victimPose,host.anatomy?.(d,s.victimPose));s.remaining=copyArt(s.victimPose);}const a=s.parts.parts[0],p=host.mouth?.(d)||cutPoint(a);s.recoil=5;s.stageContacts++;
    const progress=s.stage/s.plan.buttons.length*6;blood(p,10+s.stage,1+progress*.11);host.stain?.(d,1+progress*.2);host.impact?.({winner:w,victim:d,button:s.plan.buttons[s.stage]??null,special,contact:id,sequence:s.contacts,progress:s.stage/s.plan.buttons.length});event('contact',{stage:s.stage,id,section:section(),winnerY:w.Y/256,victimY:d.Y/256});sampleTrail();const frames=s.plan.exceptional&&s.stage/s.plan.buttons.length>=.75?config.exceptionalHitstop:config.hitstop;s.hitstopUntil=c.tick+frames;s.normalBudget=0;event('hitstop',{frames,until:s.hitstopUntil});
-   if(s.stage===5&&!s.controlled){s.launched=c.tick;event('launch');}
-   if(s.stage===s.plan.buttons.length&&canFinish&&!s.finalStrike){s.finalStrike=true;s.trails.length=0;event('trails-stopped');host.finalImpact?.({winner:w,victim:d,request:s.request});detach(['arm-left','arm-right','leg-left','leg-right','head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});event('final-strike');}
+   if(!special&&(s.stage===5||s.victimMotion||d.Y>0||action().button===5)){const dir=d.X>=w.X?1:-1;s.anchor.x=d.X/256;s.anchor.y=d.Y/256;s.victimMotion={vx:dir*3.5,vy:Math.min(s.anchor.y>0?7:10,Math.sqrt(2*.375*Math.max(0,192-s.anchor.y)))};s.recoil=0;if(s.launched===undefined){s.launched=c.tick;event('launch');}if(s.winnerMotion?.y>0)s.winnerMotion.vy=Math.max(s.winnerMotion.vy,2);event('juggle-bounce',{vx:s.victimMotion.vx,vy:s.victimMotion.vy});}
+   if(finalStage&&canFinish&&!s.finalStrike){s.finalStrike=true;s.trails.length=0;event('trails-stopped');host.finalImpact?.({winner:w,victim:d,request:s.request});detach(['arm-left','arm-right','leg-left','leg-right','head','torso']);host.fire?.({winner:w,victim:d,point:p,request:s.request});event('final-strike');}
   }
-  function section(){if(state.controlled&&state.stage<state.plan.buttons.length)return state.posture==='airborne'?'air':state.posture;return state.stage<5?'ground':state.stage===5?'launch':state.stage<state.plan.buttons.length?'air':'special';}
+  function section(){const s=state;if(s.rotation?.[s.stage]?.kind==='special'||s.stage===s.plan.buttons.length)return 'special';if(s.controlled)return s.posture==='airborne'?'air':s.posture;if(s.stage<5)return 'ground';if(s.stage===5)return 'launch';return (s.winnerMotion?.y||0)>0?'air':'ground';}
   function contactInterval(){return state.plan.exceptional&&state.stage/state.plan.buttons.length>=.75?3:10;}
-  function action(){const s=state;return s.stage<s.plan.buttons.length?{kind:'normal',button:s.plan.buttons[s.stage],section:section()}:{kind:'special',...s.request};}
+  function action(){const s=state;return s.stage<s.plan.buttons.length?{...(s.rotation?.[s.stage]||{kind:'normal',button:s.plan.buttons[s.stage]}),section:section()}:{kind:'special',...s.request};}
   // Direction edges are sampled once per scene tick, before native moves consume KEYS.
   function steer(keys){
    const s=state,[w]=actors(),now=keys&12,pressed=now&~(s.directionPrevious??now);s.directionPrevious=now;
@@ -140,26 +140,20 @@ window.SF2AIFINISHERS=(()=>{
   }
   function applyPosture(){
    const s=state;if(!s.controlled||s.posture===s.requestedPosture)return;
-   s.posture=s.requestedPosture;s.manualFlight={tick:context().tick,winner:actors()[0].Y/256,victim:actors()[1].Y/256};event('posture',{posture:s.posture});
+   s.posture=s.requestedPosture;s.winnerMotion??={y:actors()[0].Y/256,vy:0};if(s.posture==='airborne'&&s.winnerMotion.y===0)s.winnerMotion.vy=9.5;else if(s.posture!=='airborne')s.winnerMotion.vy=Math.min(-8,s.winnerMotion.vy);s.manualFlight={tick:context().tick,winner:actors()[0].Y/256,victim:actors()[1].Y/256};event('posture',{posture:s.posture});
+  }
+  // Physical arcs advance once per scene tick, independently of animation speed.
+  function motionStep(){
+   const s=state,[w,d]=actors();if(!['approach','combo'].includes(s.phase)||s.move?.action.kind==='special'&&s.phase==='combo')return;
+   s.winnerMotion??={y:w.Y/256,vy:0};const a=s.winnerMotion;
+   if(!s.controlled&&s.phase==='approach'&&s.anchor.y>24&&a.y===0&&s.stage<s.plan.buttons.length){a.vy=9.5;event('jump-chase');}
+   if(a.y>0||a.vy>0){a.vy-=.375;a.y=Math.max(0,a.y+a.vy);if(!a.y){a.vy=0;if(s.controlled&&s.posture==='airborne')s.posture=s.requestedPosture='standing';event('attacker-landed');}}
+   const v=s.victimMotion;if(v){v.vy-=.375;s.anchor.x+=v.vx;s.anchor.y=Math.max(0,s.anchor.y+v.vy);if(!s.anchor.y){s.victimMotion=null;event('victim-landed');}if(s.phase==='combo')host.position(w,{x:w.X/256+v.vx,y:a.y,face:w.FACE});}
   }
   function flight(){
-   const s=state;
-   if(s.controlled){
-    const now=context().tick,ease=t=>{t=clamp(t,0,1);return t*t*(3-2*t);},f=s.manualFlight??{tick:now,winner:0,victim:0},age=now-f.tick;let winner,victim;
-    if(s.posture==='airborne'){
-     winner=age<28?f.winner+(96-f.winner)*ease(age/28):Math.max(0,96-.42*(age-28)-.0015*(age-28)**2);
-     const offset=host.airOffset?.(...actors(),{kind:'normal',button:s.plan.buttons[s.stage]??0,section:'air'})??16;victim=winner+offset*ease(age/20);
-     if(winner===0&&age>=28){s.requestedPosture='standing';if(s.phase==='approach')applyPosture();}
-    }else{const t=1-ease(age/12);winner=f.winner*t;victim=f.victim*t;}
-    if(s.stage===s.plan.buttons.length){s.landing??={tick:now,winner,victim};const t=1-ease((now-s.landing.tick)/32);return{winner:s.landing.winner*t,victim:s.landing.victim*t,aligned:true};}
-    return{winner,victim,aligned:s.posture==='airborne'?age>=28:winner===0&&victim===0};
-   }
-   if(s.launched===undefined)return{winner:0,victim:0};const age=context().tick-s.launched,rise=clamp(age/28,0,1),ease=t=>t*t*(3-2*t);
-   const victim=104*ease(rise)+8*Math.sin(Math.max(0,age-28)/20)*ease(rise),winner=88*ease(clamp((age-9)/24,0,1))+6*Math.sin(Math.max(0,age-33)/20)*ease(clamp((age-9)/24,0,1));
-   if(s.stage===s.plan.buttons.length){s.landing??={tick:context().tick,winner,victim};const t=1-ease(clamp((context().tick-s.landing.tick)/32,0,1));return{winner:s.landing.winner*t,victim:s.landing.victim*t};}
-   const offset=s.stage>5&&s.stage<s.plan.buttons.length?host.airOffset?.(...actors(),action())??16:16;
-   if(s.flightTick!==context().tick){s.airOffset=(s.airOffset??16)+clamp(offset-(s.airOffset??16),-3,3);s.flightTick=context().tick;}
-   return{winner:age>=38?victim-s.airOffset:winner,victim,aligned:Math.abs(s.airOffset-offset)<1};
+   const s=state,[w]=actors(),winner=s.winnerMotion?.y??w.Y/256,victim=s.anchor.y||0,air=section()==='air',offset=air?(host.airOffset?.(...actors(),action())??16):0;
+   const lead=Math.max(0,Math.ceil((host.normalLead?.(...actors(),action())||0)/Math.max(.1,s.normalSpeed||1))),predict=(y,vy)=>{for(let n=0;n<lead;n++){vy-=.375;y=Math.max(0,y+vy);if(!y)vy=0;}return y;},futureWinner=predict(winner,s.winnerMotion?.vy||0),futureVictim=predict(victim,s.victimMotion?.vy||0);
+   return{winner,victim,aligned:air?Math.abs(futureVictim-futureWinner-offset)<12:winner===0&&futureVictim<24};
   }
   function startMove(){
    const s=state,c=context(),[w,d]=actors(),next=action();s.stageContacts=0;s.phase=s.stage===s.plan.buttons.length?'special':'combo';
@@ -175,8 +169,8 @@ window.SF2AIFINISHERS=(()=>{
    if(result.advance!==false)s.moveAge++;
    if(result.done||s.moveAge>=move.duration){
     if(c.tick<(s.hitstopUntil||0)){move.finishPending=true;return;}
-    host.finishMove?.(w,move);if(!s.stageContacts||s.stage===s.plan.buttons.length&&!s.finalStrike){const reason=s.stage===s.plan.buttons.length?'missing-special-contact':'missing-normal-contact';event(reason);host.aborted?.(reason);clear(reason,true);return;}
-    if(s.stage<s.plan.buttons.length){s.stage++;s.phase='approach';s.phaseStart=c.tick;}else{s.phase='settle';s.phaseStart=c.tick;host.pose(w,'win');event('settle');}
+    host.finishMove?.(w,move);if(move.action.kind==='special'){s.anchor.x=d.X/256;s.anchor.y=d.Y/256;s.victimMotion=d.Y>0?{vx:d.VX/256||0,vy:Math.min(0,d.VY/256||0)}:null;}if(!s.stageContacts&&move.action.kind==='normal'&&(s.whiffRetries||0)<3){s.whiffRetries=(s.whiffRetries||0)+1;s.phase='approach';s.phaseStart=c.tick;s.move=null;event('whiff-retry',{attempt:s.whiffRetries});return;}if(!s.stageContacts||s.stage===s.plan.buttons.length&&!s.finalStrike){const reason=s.stage===s.plan.buttons.length?'missing-special-contact':'missing-normal-contact';event(reason);host.aborted?.(reason);clear(reason,true);return;}
+    s.whiffRetries=0;if(s.stage<s.plan.buttons.length){s.stage++;s.phase='approach';s.phaseStart=c.tick;}else{s.phase='settle';s.phaseStart=c.tick;host.pose(w,'win');event('settle');}
    }
   }
   function sampleTrail(){
@@ -214,17 +208,19 @@ window.SF2AIFINISHERS=(()=>{
     if(state?.phase==='prompt'&&c.tick-s.phaseStart>=config.cpu)selectCPU();
     if(state?.phase==='prompt'&&c.tick-s.phaseStart>=config.prompt){event('timeout');clear('timeout',true);return false;}
    }
-   steer(c.keys?.[w.i]??w.KEYS??0);
+   steer(c.keys?.[w.i]??w.KEYS??0);if(s.contacts)host.refreshDamageArt?.(d,{tick:c.tick,sequence:s.contacts,finalStrike:!!s.finalStrike});
    // Contact holds use the physical scene clock, never the accelerated move budget.
    if(c.tick<(s.hitstopUntil||0)){
     host.hitstop?.(w,d,{remaining:s.hitstopUntil-c.tick,finalStrike:!!s.finalStrike});
     if(s.launched!==undefined)s.launched++;if(s.manualFlight)s.manualFlight.tick++;if(s.landing)s.landing.tick++;
     host.camera?.(w,!s.completed,{victim:d,phase:s.phase,section:section(),launched:s.launched!==undefined});effects();return active();
    }
+   if(s.contacts&&!s.finalStrike&&['approach','combo','special'].includes(s.phase)&&host.travel){const dx=(w.FACE?1:-1)*config.trailDrift/config.trailLife;const moved=host.travel(w,d,dx),rebase=moved?.rebase||0;s.anchor.x+=moved?.shift??dx;if(rebase){s.worldOrigin=(s.worldOrigin||0)-rebase;for(const list of[s.trails,s.pieces,s.emitters])for(const p of list)p.x+=rebase;}s.travel=(s.travel||0)+dx;}
+   motionStep();
    // Retain the scene clock. Real normal substeps can accelerate, but admission
    // of the next contact remains gated by the 10/3-tick cadence. The selected
    // special advances once per tick, including its native projectiles/grabs.
-   if(state&&['approach','combo'].includes(state.phase)){
+   if(state&&['approach','combo'].includes(state.phase)&&!(s.phase==='combo'&&s.move?.action.kind==='special')){
     const progress=s.stage/Math.max(1,s.plan.buttons.length-1),speed=s.plan.exceptional&&progress>=.75?8:comboPace(progress);s.normalSpeed=speed;s.normalBudget=(s.normalBudget||0)+speed;
     let steps=Math.min(8,Math.floor(s.normalBudget));s.normalBudget-=steps;
     while(state&&steps-->0&&['approach','combo'].includes(state.phase)){
@@ -232,37 +228,38 @@ window.SF2AIFINISHERS=(()=>{
       applyPosture();const next=action(),f=flight(),dir=w.X/256<s.anchor.x?1:-1,target=s.anchor.x-dir*(host.gap?.(w,d,next)??44),x=w.X/256,delta=target-x,travel=4+6*progress*progress;
       host.position(w,{x:x+clamp(delta,-travel,travel),y:f.winner,face:dir>0?1:0});host.pose(w,f.winner>0?'jump':s.controlled&&s.posture==='crouching'?'crouch':Math.abs(delta)>travel?'walk':'idle');
       host.position(d,{...s.anchor,y:f.victim});
-      const flightReady=s.controlled?(s.stage===s.plan.buttons.length?f.winner===0:f.aligned):s.stage<=5||(s.stage<s.plan.buttons.length?c.tick-s.launched>=38&&f.aligned:f.winner===0);
+      const flightReady=next.kind==='special'?f.winner===0&&f.victim===0:f.aligned;
       if(Math.abs(delta)<=travel&&c.tick-s.lastContact>=contactInterval()&&flightReady){s.anchor.face=dir>0?0:1;startMove();}
      }else advanceMove();
-     if(state&&c.tick<(s.hitstopUntil||0))break;
+     if(state&&(c.tick<(s.hitstopUntil||0)||s.move?.action.kind==='special'))break;
     }
-   }else if(state?.phase==='special')advanceMove();
+   }else if(state?.phase==='special'||state?.phase==='combo'&&s.move?.action.kind==='special')advanceMove();
    if(state?.phase==='settle'&&c.tick-s.phaseStart>=config.settle){s.completed=true;s.completedAt=c.tick;s.phase='result';host.banner?.('');host.camera?.(w,false);event('complete');host.complete(w,d);}
-   if(state){if(s.recoil>0)s.recoil--;const dir=w.X/256<s.anchor.x?1:-1,f=flight();if(['combo','approach'].includes(s.phase)&&(s.controlled||s.stage>5))host.position(w,{x:w.X/256,y:f.winner,face:w.FACE});if(host.lockVictim?.(w,d,s.phase)!==false&&s.phase!=='ready')host.position(d,{...s.anchor,y:f.victim,x:s.anchor.x+dir*s.recoil});host.camera?.(w,!s.completed,{victim:d,phase:s.phase,section:section(),launched:s.launched!==undefined});effects();}
+   if(state){if(s.recoil>0)s.recoil--;const dir=w.X/256<s.anchor.x?1:-1,f=flight();if(['combo','approach'].includes(s.phase)&&s.move?.action.kind!=='special'&&(s.controlled||s.stage>5))host.position(w,{x:w.X/256,y:f.winner,face:w.FACE});if(host.lockVictim?.(w,d,s.phase)!==false&&s.phase!=='ready')host.position(d,{...s.anchor,y:f.victim,x:s.anchor.x+dir*s.recoil});host.camera?.(w,!s.completed,{victim:d,phase:s.phase,section:section(),launched:s.launched!==undefined});effects();}
    return active();
   }
   function step(){try{return step0();}catch(error){const reason='host-error:'+String(error?.message||error);try{host.aborted?.(reason);}finally{if(state)clear(reason,true);}return false;}}
   function art(actor,base){
    const s=state;if(!s?.prepared||actor.i!==s.victim||['ready','prompt'].includes(s.phase))return base;
-   return host.remainingArt?.(actor,s.remaining||base)||s.remaining||base;
+   if(!s.removed.size)return base;return host.remainingArt?.(actor,s.remaining||base)||s.remaining||base;
   }
   function draw(ctx,camera,ground,layer='back'){
    const s=state;if(!s?.prepared)return;const c=context();ctx.save();ctx.imageSmoothingEnabled=false;
    if(layer==='back'){
-    for(const t of s.trails){const age=clamp((c.tick-t.tick)/config.trailLife,0,1),r=t.rect,drift=(t.face?-1:1)*age*config.trailDrift,x=t.x+drift;
+    host.backdrop?.(ctx,{camera:camera+(s.worldOrigin||0),ground,tick:c.tick,started:s.comboStart??s.started,phase:s.phase,phaseAge:c.tick-s.phaseStart,direction:actors()[0].FACE?1:-1,seed:s.id});
+    for(const t of s.trails){const age=clamp((c.tick-t.tick)/config.trailLife,0,1),r=t.rect,x=t.x;
      ctx.save();ctx.translate(Math.round(x-camera),Math.round(ground-t.y));ctx.scale(t.face?-1:1,1);ctx.drawImage(t.image,r[0],r[1],r[2],r[3],r[4],r[5],r[2],r[3]);ctx.globalAlpha*=Math.min(1,age*2.5);ctx.drawImage(t.black,r[4],r[5]);ctx.restore();}
    }
    else for(const p of s.pieces)paintPart(ctx,p.part,p.x-camera,ground-p.y,p.face,1,p.angle);
    ctx.restore();
   }
-  function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,section:section(),posture:s.controlled?s.posture:(section()==='air'?'airborne':'standing'),requestedPosture:s.requestedPosture,controlled:!!s.controlled,exceptional:s.plan.exceptional,contactInterval:contactInterval(),winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,hitstop:Math.max(0,(s.hitstopUntil||0)-c.tick),contacts:s.contacts,targetHits:s.plan.hits,normalSpeed:s.normalSpeed??.8,normalOrder:s.plan.buttons.slice(),request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
+  function info(){if(!state)return{active:false,phase:'idle'};const s=state,c=context();return{active:active(),id:s.id,phase:s.phase,section:section(),posture:s.controlled?s.posture:(section()==='air'?'airborne':'standing'),requestedPosture:s.requestedPosture,controlled:!!s.controlled,exceptional:s.plan.exceptional,travel:s.travel||0,contactInterval:contactInterval(),winner:s.winner,victim:s.victim,age:c.tick-s.started,stage:s.stage,moveAge:s.moveAge??0,hitstop:Math.max(0,(s.hitstopUntil||0)-c.tick),contacts:s.contacts,stageContacts:s.stageContacts||0,targetHits:s.plan.hits,actions:s.rotation?.map(a=>({...a}))||[],normalSpeed:s.normalSpeed??.8,normalOrder:s.plan.buttons.slice(),request:s.request?{...s.request}:null,parts:s.pieces.map(p=>({name:p.part.name,pixels:p.part.pixels,x:p.x,y:p.y,rest:p.rest})),removed:[...s.removed].map(id=>PARTS[id]),trails:s.trails.length,emitters:s.emitters.length,completed:s.completed,sourcePixels:s.parts?.pixelCount||0,events:s.events.map(e=>({...e}))};}
   function notify(winner,victim,id,meta={}){if(!active()||!state||!['combo','special'].includes(state.phase)||winner.i!==state.winner||victim.i!==state.victim)return false;contact('actual:'+id,meta.final!==false);return true;}
   function fragmentBounds(){return state?.pieces.map(p=>{const sin=Math.sin(p.angle),cos=Math.cos(p.angle),sign=p.face?-1:1,points=p.part.hull.map(q=>[p.x+cos*q[0]*sign-sin*q[1],p.y-sin*q[0]*sign-cos*q[1]]);return{left:Math.min(...points.map(q=>q[0])),right:Math.max(...points.map(q=>q[0])),bottom:Math.min(...points.map(q=>q[1])),top:Math.max(...points.map(q=>q[1]))};})||[];}
   function blocksRound(){if(!active())return false;const[w]=actors();if(w?.HP<=0){clear('winner-ko');return false;}return true;}
-  function trailState(){return state?.trails.map(t=>{const age=clamp((context().tick-t.tick)/config.trailLife,0,1);return{tick:t.tick,origin:t.x,x:t.x+(t.face?-1:1)*age*config.trailDrift,y:t.y,face:t.face,age,darkness:Math.min(1,age*2.5)};})||[];}
+  function trailState(){return state?.trails.map(t=>{const age=clamp((context().tick-t.tick)/config.trailLife,0,1);return{tick:t.tick,origin:t.x+(state.worldOrigin||0),x:t.x+(state.worldOrigin||0),physicalX:t.x,y:t.y,face:t.face,age,darkness:Math.min(1,age*2.5)};})||[];}
   function view(){return state?{winner:state.winner,victim:state.victim,phase:state.phase,age:context().tick-state.started,completed:state.completed,completedAt:state.completedAt??null}:null;}
-  return{offer,request,input,notify,step,art,draw,clear,info,view,active,blocksRound,fragmentBounds,trailState,sourceArt:actor=>state?.prepared&&actor.i===state.victim&&!['ready','prompt'].includes(state.phase)?state.victimPose:null,hidden:actor=>!!state?.finalStrike&&actor.i===state.victim,owns:actor=>active()&&!!state&&[state.winner,state.victim].includes(actor.i),isVictim:actor=>active()&&!!state&&state.victim===actor.i,retained:()=>!!state?.completed};
+  return{offer,request,input,notify,step,art,draw,clear,info,view,active,blocksRound,fragmentBounds,trailState,sourceArt:actor=>state?.prepared&&state.removed.size>0&&actor.i===state.victim&&!['ready','prompt'].includes(state.phase)?state.victimPose:null,hidden:actor=>!!state?.finalStrike&&actor.i===state.victim,owns:actor=>active()&&!!state&&[state.winner,state.victim].includes(actor.i),isVictim:actor=>active()&&!!state&&state.victim===actor.i,retained:()=>!!state?.completed};
  }
  return{VERSION,LIMITS,PARTS,BUTTONS,comboPlan,comboPace,create,partition,paintPart};
 })();
