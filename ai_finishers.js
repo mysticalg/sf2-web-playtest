@@ -229,7 +229,8 @@ window.SF2AIFINISHERS=(()=>{
       host.position(w,{x:x+clamp(delta,-travel,travel),y:f.winner,face:dir>0?1:0});host.pose(w,f.winner>0?'jump':s.controlled&&s.posture==='crouching'?'crouch':Math.abs(delta)>travel?'walk':'idle');
       host.position(d,{...s.anchor,y:f.victim});
       const flightReady=next.kind==='special'||s.retryGround?f.winner===0&&f.victim===0:f.aligned;
-      if(Math.abs(delta)<=travel&&c.tick-s.lastContact>=contactInterval()&&flightReady){s.anchor.face=dir>0?0:1;startMove();}
+      if(s.readyTick!==c.tick||s.readyStage!==s.stage){s.readyTick=c.tick;s.readyStage=s.stage;s.moveReady=host.readyForMove?.(w,d,next)!==false;}
+      if(Math.abs(delta)<=travel&&c.tick-s.lastContact>=contactInterval()&&flightReady&&s.moveReady){s.anchor.face=dir>0?0:1;startMove();}
      }else advanceMove();
      if(state&&(c.tick<(s.hitstopUntil||0)||s.move?.action.kind==='special'))break;
     }
