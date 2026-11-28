@@ -43,3 +43,15 @@ eleven final heavy-Ken spin contacts, updated totals, and final audio-event tick
 alignment. Audio listening and physical hardware are outside that automated
 coverage. Numerical native-action traces are diagnostic data, not ROM parity
 claims; protected rehit/trajectory handling is an authored AI customization.
+
+Special admission accepts an optional fourth argument containing `victimMotion`
+in world pixels per physical tick. It retains that incoming velocity through
+target restoration and restores ordinary gravity for an airborne target. With
+no explicit motion packet it preserves the actor's existing motion fields.
+
+The Guy regression selects real finisher IDs 20 and 42, whose stage-12 rotation
+contains WallJumpKick, and also selects that wall kick for the finale. Both slots
+complete approach, cling, active source frame 111:1 and source recovery, with one
+real contact per wall move. Collision verification uses CE's inclusive edge
+contact rule. Shared floor readiness and translation of stored wall anchors are
+provided by the coordinator's runtime; no extra target repositioning is added.

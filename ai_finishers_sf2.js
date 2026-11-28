@@ -102,8 +102,10 @@ window.SF2AIFINISHERS.bindSF2=()=>{
    lead+=!plan.air&&ceNativeNormal(w,plan.slot)&&a.nativeDurations?a.nativeDurations[i]:a.ents[i][1];
   }return lead;
  }
- function begin(p,action,d){
-  const y=p.Y;resetActor(p);p.Y=y;restoreTarget(d);p.KEYS=p.PREV=p.HZK=0;SF2AIRULES.block(p,0);
+ function begin(p,action,d,physics={}){
+  const y=p.Y,vm=physics.victimMotion,motion=vm?{VX:Math.round(vm.vx*256),VY:Math.round(vm.vy*256),AX:0,AY:0x60}:{VX:d.VX,VY:d.VY,AX:d.AX,AY:d.AY};resetActor(p);p.Y=y;restoreTarget(d);
+  if(action.kind==='special'){Object.assign(d,motion);if(d.Y>0&&!d.AY)d.AY=0x60;}
+  p.KEYS=p.PREV=p.HZK=0;SF2AIRULES.block(p,0);
   lastMove={action,started:G.tick,nativeSlot:-1,nativeName:'starting',contacts:0,sourceFrames:[],contactFrames:[]};
   if(action.kind==='normal'){
    const plan=normalPlan(p,d,action.button,action.section),slot=plan.slot;setanim(p,slot,0);p.ST=plan.air?2:1;p.JA=plan.air?1:0;p.RETCR=plan.crouch?1:0;if(!plan.air)p.CENORMALINIT=ceNativeNormal(p,slot);
