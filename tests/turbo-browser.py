@@ -12,6 +12,7 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--base', help='Published site root; omit to serve this checkout locally.')
 parser.add_argument('--artifacts', required=True, type=Path)
 parser.add_argument('--baseline-ref', help='Compare WW/CE state and pixels with this game.js revision.')
+parser.add_argument('--gamepads', action='store_true', help='Exercise simulated standard gamepads through native browser polling.')
 args = parser.parse_args()
 args.artifacts.mkdir(parents=True, exist_ok=True)
 root = Path(__file__).resolve().parents[1]
@@ -38,6 +39,8 @@ def record(name, data=True):
 with sync_playwright() as p:
     browser = p.chromium.launch()
     context = browser.new_context(viewport={'width':1280, 'height':800})
+    if args.gamepads:
+        context.add_init_script("window.__testPads=[];Object.defineProperty(navigator,'getGamepads',{configurable:true,value:()=>window.__testPads});")
     page = context.new_page()
     page.on('pageerror', lambda e: errors.append(str(e)))
     page.on('requestfailed', lambda r: failures.append(dict(url=r.url, error=r.failure)))
@@ -59,6 +62,21 @@ with sync_playwright() as p:
         s = frame.evaluate('SSF2TNative.state()')
         assert s['error'] is None and s['cpuFallback'] == s['soundFallback'] == 0
         return frame
+
+    def connect_pads(frame):
+        frame.locator('canvas').click()
+        frame.evaluate("""()=>{const pad=index=>({index,connected:true,mapping:'standard',id:'Simulated standard controller',axes:[0,0],buttons:Array.from({length:17},()=>({pressed:false,value:0}))});window.__makePad=pad;window.__testPads=[pad(0),null,pad(2)];}""")
+        frame.wait_for_function('JSON.stringify(SSF2TNative.controllers().connected)==="[0,2]"')
+
+    def pad_button(frame,slot,button,pressed):
+        frame.evaluate('([slot,button,on])=>{const b=__testPads[slot?2:0].buttons[button];b.pressed=on;b.value=on?1:0}',[slot,button,pressed])
+
+    def pad_pulse(frame,slot,button,mask):
+        pad_button(frame,slot,button,True)
+        frame.wait_for_function('([slot,mask])=>(SSF2TNative.state().players[slot].input&mask)===mask',arg=[slot,mask])
+        page.wait_for_timeout(100)
+        pad_button(frame,slot,button,False)
+        frame.wait_for_function('([slot,mask])=>!(SSF2TNative.state().players[slot].input&mask)',arg=[slot,mask])
 
     try:
         page.goto(base+'/?edition=ce', wait_until='domcontentloaded', timeout=90000)
@@ -130,9 +148,14 @@ with sync_playwright() as p:
         frame = native_ready(3)
         record('Two-player automatic character select', frame.evaluate('SSF2TNative.state()'))
         frame.locator('canvas').click()
-        press('a'); press('u')
-        page.wait_for_timeout(500)
-        press('a'); press('u')
+        if args.gamepads:
+            connect_pads(frame)
+            pad_pulse(frame,0,2,16);pad_pulse(frame,1,2,16)
+            record('Gamepads select both fighters')
+        else:
+            press('a'); press('u')
+            page.wait_for_timeout(500)
+            press('a'); press('u')
         frame.wait_for_function('SSF2TNative.state().gameStep===4&&SSF2TNative.state().matchStep===10&&SSF2TNative.state().players.every(p=>p.hp>0)',timeout=30000)
         record('Native two-player fight', frame.evaluate('SSF2TNative.state()'))
         frame.locator('canvas').click()
@@ -141,7 +164,64 @@ with sync_playwright() as p:
         x1=frame.evaluate('SSF2TNative.state().players[0].x')
         assert x0!=x1
         record('Player movement in versus',dict(x0=x0,x1=x1))
-        page.get_by_role('button', name='Back to version menu', exact=True).click()
+        if args.gamepads:
+            for slot in [0,1]:
+                for button,mask in [(2,16),(3,32),(5,64),(0,128),(1,256),(7,512)]:
+                    pad_pulse(frame,slot,button,mask)
+            record('All six attacks in both controller slots')
+            x0=frame.evaluate('SSF2TNative.state().players[0].x')
+            frame.evaluate('__testPads[0].axes=[-.9,0]')
+            frame.wait_for_function('SSF2TNative.state().players[0].input&2')
+            page.wait_for_timeout(200)
+            x1=frame.evaluate('SSF2TNative.state().players[0].x')
+            assert x0!=x1
+            frame.evaluate('__testPads[0].axes=[0,0]')
+            frame.wait_for_function('!(SSF2TNative.state().players[0].input&3)')
+            record('Analog controller movement',dict(x0=x0,x1=x1))
+            pad_pulse(frame,1,12,8)
+            record('Controller two D-pad jump')
+            credits=frame.evaluate('SSF2TNative.state().credits')
+            pad_pulse(frame,0,8,2048)
+            frame.wait_for_function('n=>SSF2TNative.state().credits>n',arg=credits)
+            record('View button adds an original coin')
+            frame.evaluate('__testPads[0].axes=[.9,0]')
+            frame.wait_for_function('SSF2TNative.state().players[0].input&1')
+            frame.evaluate('__testPads[0]=null')
+            frame.wait_for_function('SSF2TNative.controllers().connected[0]===null&&SSF2TNative.state().players[0].input===0')
+            assert frame.evaluate('SSF2TNative.controllers().connected[1]')==2
+            record('Disconnect releases input without moving player two')
+            frame.evaluate('__testPads[0]=__makePad(0);__testPads[0].buttons[2]={pressed:true,value:1}')
+            frame.wait_for_function('SSF2TNative.controllers().connected[0]===0')
+            assert frame.evaluate('SSF2TNative.state().players[0].input')==0
+            pad_button(frame,0,2,False);page.wait_for_timeout(60)
+            pad_pulse(frame,0,2,16)
+            record('Held reconnect is gated until release')
+            frame.evaluate('__testPads[0].axes=[-.9,0]')
+            frame.wait_for_function('SSF2TNative.state().players[0].input&2')
+            page.get_by_role('button',name='Back to version menu',exact=True).focus()
+            frame.wait_for_function('SSF2TNative.state().players[0].input===0')
+            frame.locator('canvas').click()
+            assert frame.evaluate('SSF2TNative.state().players[0].input')==0
+            frame.evaluate('__testPads[0].axes=[0,0]');page.wait_for_timeout(60)
+            record('Focus loss releases held controls')
+            pad_button(frame,0,9,True)
+            frame.wait_for_function('SSF2TNative.state().paused')
+            paused_frame=frame.evaluate('SSF2TNative.state().frame')
+            page.wait_for_timeout(150)
+            assert frame.evaluate('SSF2TNative.state().frame')==paused_frame
+            pad_button(frame,0,9,False);page.wait_for_timeout(60)
+            pad_button(frame,0,9,True)
+            frame.wait_for_function('!SSF2TNative.state().paused')
+            pad_button(frame,0,9,False);page.wait_for_timeout(60)
+            record('Menu button pauses and resumes once per press')
+            pad_button(frame,0,9,True)
+            frame.wait_for_function('SSF2TNative.state().paused')
+            pad_button(frame,0,9,False);page.wait_for_timeout(60)
+            pad_button(frame,0,8,True)
+            page.wait_for_function('!SF2Turbo.active&&SF2.freeze===0')
+            record('Paused View returns to version menu')
+        else:
+            page.get_by_role('button', name='Back to version menu', exact=True).click()
         page.wait_for_function('!SF2Turbo.active&&SF2.freeze===0')
         for edition in ['ww','ce','ai','st']:
             press('ArrowRight')

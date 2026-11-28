@@ -51,9 +51,11 @@ jobs:
           mkdir -p _site/ai
           cp ai/index.html ai/edition.json _site/ai/
           mkdir -p _site/ssf2t-ai
-          cp ssf2t-ai/bundled-assets.js ssf2t-ai/asset-loader.js ssf2t-ai/native-assets.pack ssf2t-ai/index.html ssf2t-ai/bridge.js ssf2t-ai/ai-combat.js ssf2t-ai/audio-worklet.js ssf2t-ai/ai-shortcuts.js ssf2t-ai/rom-loader.js ssf2t-ai/rom-manifest.js ssf2t-ai/ssf2t-native.js ssf2t-ai/ssf2t-native.wasm ssf2t-ai/about.html ssf2t-ai/SCOPE.md ssf2t-ai/SOURCE-LICENSES.md ssf2t-ai/corresponding-source.zip ssf2t-ai/source-proof.json ssf2t-ai/deployment-allowlist.json _site/ssf2t-ai/
+          cp ssf2t-ai/gamepads.js ssf2t-ai/bundled-assets.js ssf2t-ai/asset-loader.js ssf2t-ai/native-assets.pack ssf2t-ai/index.html ssf2t-ai/bridge.js ssf2t-ai/ai-combat.js ssf2t-ai/audio-worklet.js ssf2t-ai/ai-shortcuts.js ssf2t-ai/rom-loader.js ssf2t-ai/rom-manifest.js ssf2t-ai/ssf2t-native.js ssf2t-ai/ssf2t-native.wasm ssf2t-ai/about.html ssf2t-ai/SCOPE.md ssf2t-ai/SOURCE-LICENSES.md ssf2t-ai/corresponding-source.zip ssf2t-ai/source-proof.json ssf2t-ai/deployment-allowlist.json _site/ssf2t-ai/
       - name: Stamp release metadata and browser asset revisions
         run: |
+          node tests/finisher-combo-plan.test.cjs
+          node tests/ssf2t-gamepads.test.cjs
           node tests/turbo-assets.test.cjs
           node tests/ssf2t-ai-combat.test.cjs
           node tests/ssf2t-shortcuts.test.cjs

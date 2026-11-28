@@ -15,3 +15,5 @@ The native AI presentation adapter is GPL-3.0-only. Original head-box and camera
 The native AI controller shortcut adapter is GPL-3.0-only. It emits original controller input and reads native state; no game assets are included in the adapter.
 
 The native audio streaming adapter and worklet are GPL-3.0-only. They play the original mixer PCM; no ROM assets are included.
+
+The standard gamepad adapter is GPL-3.0-only. It emits ordinary controller inputs; no native controller, collision or game asset is replaced.

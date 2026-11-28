@@ -20,7 +20,8 @@
     "deployment-allowlist.json",
     "bundled-assets.js",
     "asset-loader.js",
-    "native-assets.pack"
+    "native-assets.pack",
+    "gamepads.js"
   ],
   "neverCopy": [
     "private/",
@@ -31,6 +32,6 @@
     "ssf2t.zip",
     "opcode dumps"
   ],
-  "totalBytesWithoutThisManifest": 28992753,
+  "totalBytesWithoutThisManifest": 28996068,
   "assetPackage": "Verified prepared runtime regions; original ZIP archives remain excluded."
 }

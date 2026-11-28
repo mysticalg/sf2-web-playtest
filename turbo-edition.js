@@ -13,7 +13,7 @@ window.SF2Turbo=(()=>{
   if(frame)return;
   returnFocus=document.activeElement;window.SF2?.suspendForTurbo?.();host.hidden=false;status.hidden=false;document.body.classList.add('sf2-turbo-active');
   frame=document.createElement('iframe');frame.title='Super Street Fighter II Turbo';frame.allow='autoplay; fullscreen; gamepad';
-  frame.src='ssf2t-ai/?boot=1&embedded=1&start='+(mode?2:1);host.append(frame);
+  frame.src='ssf2t-ai/?boot=1&embedded=1&start='+(mode?2:1)+'&v='+encodeURIComponent(window.SF2BUILD?.commit||'local');host.append(frame);
   frame.onload=()=>{status.hidden=true;frame?.focus();};
  }
  back.onclick=close;
